@@ -1,0 +1,65 @@
+@import '../../MainStyles/Colors.scss';
+
+container{
+    width: 100%;
+}
+
+.header{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    p{
+        color: $secondary;
+        font-size: 1.5rem;
+    }
+}
+
+
+.rollSection{
+    width: 70%;
+    margin: auto;
+
+
+}
+
+.cardSection{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+
+.card{
+    width: 200px;
+    height: 250px;
+    padding: 20px;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.whoAreYou{
+    max-width: 130px;
+    margin: 50px auto;
+
+    
+    h3{
+       border-bottom: 5px solid $secondary; 
+    }
+}
+
+
+.cardImage{
+    margin-bottom: 25px;
+    
+    img{
+        width: 100%;
+        height: auto;
+    }
+}

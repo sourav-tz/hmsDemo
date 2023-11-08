@@ -1,0 +1,24 @@
+@import '../../MainStyles/Colors.scss';
+
+
+.contained{
+    min-width: 100%;
+    padding: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    color:white;
+    background-color: $secondary;
+    border: none;
+    border-radius:50px;
+    transition: ease 0.5s;
+
+    &:hover{
+        background-color: $tertiary;
+        color: $primary;
+    }
+
+    &:active{
+        background-color: $tertiary-active;
+    }
+}
+
