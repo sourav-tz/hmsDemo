@@ -12,10 +12,11 @@ export default function(){
 
 
     return <>
+        <main>
         <div className={styles.container} >
             <div className={styles.header}>
-            <h1>Welcome To</h1>
-            <p className={styles.logo}>NIT Hostel Management System</p>
+            <h3>Welcome To</h3>
+            <h2 className={styles.logo}>NIT <span className={styles.wrapText}>Hostel Management System</span> </h2>
             </div>
             <div className={styles.rollSection}>
             <div className={styles.whoAreYou}>
@@ -36,7 +37,8 @@ export default function(){
                 </div>
                 </div>
             </div>
-            <Footer />
        </div>
+       </main>
+            <Footer />
     </>
 }

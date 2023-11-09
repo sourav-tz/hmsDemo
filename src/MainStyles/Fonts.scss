@@ -1,3 +1,5 @@
+@import './Breakpoints.scss';
+
 *{
     font-family: 'Open Sans';
 }
@@ -13,3 +15,92 @@ h1,h2{
 h3,h4,h5,h6{
     font-family: 'Open Sans';
 }
+
+
+
+// Define your base font size and ratio
+$base-font-size: 14px; // Base font size in pixels
+$ratio: 1.5; // Font size ratio for responsive scaling
+
+// Define the responsive font size mixin
+@mixin responsive-font-size($target-font-size, $context: $base-font-size) {
+  font-size: $target-font-size;
+  font-size: calc(#{$target-font-size} / #{$context} * 1rem);
+}
+
+body {
+    @include responsive-font-size(14px); // Base font size for body
+  }
+  
+
+h1 {
+    @include responsive-font-size(24px); // Responsive font size for h1
+  }
+
+  h2 {
+    @include responsive-font-size(20px); // Responsive font size for h2
+  }
+  
+  h3 {
+    @include responsive-font-size(18px); // Responsive font size for h3
+  }
+  
+  p {
+    @include responsive-font-size(14px); // Responsive font size for paragraphs
+  }
+  
+
+
+@media #{breakpoint(md)}{
+    h1 {
+        @include responsive-font-size(28px);
+      }
+
+      h2 {
+        @include responsive-font-size(24px);
+      }
+    
+      h3 {
+        @include responsive-font-size(22px);
+      }
+    
+      p {
+        @include responsive-font-size(16px);
+      }
+}
+
+@media #{breakpoint(lg)}{
+    h1 {
+        @include responsive-font-size(32px);
+      }
+    
+      h2 {
+        @include responsive-font-size(28px);
+      }
+    
+      h3 {
+        @include responsive-font-size(24px);
+      }
+    
+      p {
+        @include responsive-font-size(18px);
+      }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

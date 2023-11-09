@@ -1,4 +1,7 @@
 @import '../../MainStyles/Colors.scss';
+@import '../../MainStyles/Breakpoints.scss';
+
+
 
 container{
     width: 100%;
@@ -9,13 +12,24 @@ container{
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    margin-top: 25px;
 
-    p{
+    h3{
+        font-weight: 400;
+    }
+
+    h2{
         color: $secondary;
-        font-size: 1.5rem;
+
     }
 }
 
+.logo{
+    text-align: center;
+}
+.wrapText{
+    overflow-wrap: break-word;
+}
 
 .rollSection{
     width: 70%;
@@ -26,15 +40,19 @@ container{
 
 .cardSection{
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     justify-content: space-evenly;
 }
 
 
+
 .card{
-    width: 200px;
-    height: 250px;
+    width: 150px;
+    height: 200px;
     padding: 20px;
+    margin-bottom: 30px;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
     border-radius: 10px;
     display: flex;
@@ -45,7 +63,9 @@ container{
 }
 
 .whoAreYou{
-    max-width: 130px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     margin: 50px auto;
 
     
@@ -63,3 +83,22 @@ container{
         height: auto;
     }
 }
+
+
+
+
+@media #{breakpoint(md)}{
+    .cardSection{
+        flex-direction: row;
+
+    }
+
+    .card{
+        width: 200px;
+        height: 250px;
+        padding: 20px;
+    }
+}
+
+
+

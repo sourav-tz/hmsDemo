@@ -5,8 +5,9 @@
 
 footer{
     width: 100%;
-    margin: auto;
-    position: absolute;
-    bottom: 0;
+    margin:50px auto 0 auto;
+    position: relative;
+    padding: 20px 0 20px 0;
     text-align: center;
+    color: $medium-grey;
 }
