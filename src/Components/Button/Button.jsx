@@ -2,13 +2,17 @@ import styles from './Button.module.scss';
 
 
 
-export default function(props){
-    if(props.variant === 'contained'){
+export default function({variant,onClick,text,style}){
+
+
+
+    if(variant === 'contained'){
         return<>
             <button 
-                onClick={props.onClick} 
+                onClick={onClick} 
+                style={style}
                 className={styles.contained}>
-                {props.text}
+                {text}
             </button>
         </>
     }else{

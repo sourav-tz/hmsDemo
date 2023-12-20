@@ -1,0 +1,32 @@
+@import '../../MainStyles/Colors.scss';
+@import '../../MainStyles/Breakpoints.scss';
+@import '../../MainStyles/global.scss';
+
+
+
+.Container{
+    max-width: 450px;
+    height: 300px;
+    box-shadow: $cardShadow;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    border-radius: 5px;
+}
+
+.Item{
+    border-right: 2px solid $light-grey;
+    border-bottom: 2px solid $light-grey;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding:25px;
+}
+
+@media #{breakpoint(md)}{
+
+    .Container{
+
+    }
+}
