@@ -27,6 +27,8 @@ module.exports = (sequelize, dataTypes) => {
     })
     bankdetails.associate = (models) => {
         bankdetails.belongsTo(models.students, {
+            onDelete:"cascade",
+            onUpdate:"cascade",
             foreignKey: {
                 name: 'rollNo'
               }
