@@ -13,11 +13,13 @@ module.exports = (sequelize, dataTypes) => {
             type: dataTypes.STRING,
         },
         gender: {
-            type: dataTypes.INTEGER,
+            type: dataTypes.STRING,
         },
         pEmail: {
             type: dataTypes.STRING,
-            isEmail: true,
+            validate:{
+                isEmail: true,
+            }
         },
         subAddress: {
             type: dataTypes.STRING,
@@ -89,6 +91,8 @@ module.exports = (sequelize, dataTypes) => {
     })
     profiles.associate = (models) => {
         profiles.belongsTo(models.students, {
+            onDelete:"cascade",
+            onUpdate:"cascade",
             foreignKey: {
                 name: 'rollNo'
               }
