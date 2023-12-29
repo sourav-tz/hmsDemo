@@ -1,16 +1,21 @@
 const express = require('express')
-const router = require('./routers/routes.js')
 const app = express();
+const studentRouter = require('./routers/students/routes');
+const db = require('./models')
+const HARouter = require('./routers/hostelAuthority/routes');
+const othersRouter = require('./routers/others/routes');
+
 app.use(express.json());
 
-const db = require('./models')
+//routers
+app.use('/student',studentRouter);
+app.use('/HA',HARouter);
+app.use('/others',othersRouter);
 
 
-app.use(router);
-
-db.sequelize.sync().then(() => {
-    app.listen(3001, () => {
-        console.log('listening on post 3001');
+db.sequelize.sync({force:true}).then(() => {
+    app.listen(3000, () => {
+        console.log('listening on post 3000');
     })
 })
 
