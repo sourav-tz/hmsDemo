@@ -1,8 +1,8 @@
 {
   "development": {
     "username": "root",
-    "password": "gltmysql@12345",
-    "database": "hostel11_v2",
+    "password": "root",
+    "database": "hostel11_V2",
     "host": "localhost",
     "dialect": "mysql",
     "logging":false

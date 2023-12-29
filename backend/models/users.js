@@ -12,17 +12,17 @@ module.exports = (sequelize, dataTypes) => {
             type: dataTypes.STRING,
             allowNull: false,
         },
-        role:{
-           type:dataTypes.STRING,
-           allowNull: false,
+        role: {
+            type: dataTypes.STRING,
+            allowNull: false,
         },
-        lastUpdatedBy:{
-           type:dataTypes.STRING,
-           allowNull: false,
-           field:'last_updated_by',
-           defaultValue: "adityaDon"
+        lastUpdatedBy: {
+            type: dataTypes.STRING,
+            allowNull: false,
+            field: 'last_updated_by',
+            defaultValue: "adityaDon"
         },
-    },{
+    }, {
         updatedAt: 'last_updated_at'
     })
 
