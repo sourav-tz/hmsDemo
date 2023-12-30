@@ -4,39 +4,38 @@ module.exports = (sequelize, dataTypes) => {
         email: {
             type: dataTypes.STRING,
             isEmail: true,
-            primaryKey:true,
-            references: {
-                model: 'users',
-                key: 'email',
-              },
+            primaryKey: true,
+
         },
         name: {
             type: dataTypes.STRING,
         },
-        roleType:{
-           type:dataTypes.STRING,
-           allowNull: false,
+        roleType: {
+            type: dataTypes.STRING,
+            allowNull: false,
         },
-        mobile:{
+        mobile: {
             type: dataTypes.STRING,
             validate: {
-              is: /^[0-9]{10}$/i, // Validates a 10-digit mobile number
+                is: /^[0-9]{10}$/i, // Validates a 10-digit mobile number
             },
         },
-        lastUpdatedBy:{
-           type:dataTypes.STRING,
-           allowNull: false,
-           field:'last_updated_by'
+
+        lastUpdatedBy: {
+            type: dataTypes.STRING,
+            allowNull: false,
+            field: 'last_updated_by',
+            defaultValue: "adityaDon"
         },
-    },{
+    }, {
         updatedAt: 'last_updated_at'
     })
     hostelauthoritys.associate = (models) => {
         hostelauthoritys.belongsTo(models.hostels, {
             foreignKey: {
                 name: 'hostelNo'
-              }
-          });
-      };
+            }
+        });
+    };
     return hostelauthoritys;
 }
