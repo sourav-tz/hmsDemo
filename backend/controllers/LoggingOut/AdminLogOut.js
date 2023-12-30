@@ -8,7 +8,7 @@ const AdminLogOut = async (req, res) => {
         if (!cookies) {
             return res.status(400).json('cookie expired you can log out');
         }
-        const prevToken = cookies.split("=")[0];
+        const prevToken = cookies.split("=")[1];
         console.log(String(prevToken));
 
         if (!prevToken) {
