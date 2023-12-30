@@ -1,0 +1,117 @@
+@import '../../MainStyles/Colors.scss';
+
+*{
+    padding:0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+ul{
+    list-style-type: none;
+}
+
+
+.sidebarContainer{
+        // stick navbar to left
+        position:fixed;
+        top:0;
+        left:0;
+
+        height: 100vh;
+        background-color: $primary;
+
+        color: white;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+}
+
+.inActive{
+   min-width: 75px;
+
+}
+
+.active{
+    min-width: 200px;
+
+}
+
+.hidden{
+    display: none;
+}
+
+
+
+.itemsContainer{
+    margin-top: 1.5rem;
+    padding:5px;
+}
+
+.userIcon{
+    background-color: $secondary;
+    width:50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50px;
+}
+
+.userItem{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    
+}
+
+.userRole{
+    color:$light-grey;
+}
+
+
+
+.item{
+    display: flex;
+    flex-direction: column;
+    padding: 0.3px;
+    border-radius: 0px;
+    margin: 20px 0px;
+    cursor: pointer;
+
+    li{
+        padding:10px 5px;
+        margin-left: 25px;
+    }
+
+}
+
+.activeItem{
+    padding: 10px;
+    border-radius: 5px;
+    color:$medium-grey;
+    background-color: $nav-active;
+}
+
+.ItemCloseMenu{
+    justify-content: center;
+    align-items: center;
+    padding: 3px;
+}
+
+.ItemOpenMenu{
+    justify-content: flex-start;
+}
+
+.subOptions{
+    margin-top: 5px;
+    &:hover{
+        background-color: $secondary;
+        border-radius: 5px;
+    }
+}
+
+.Settings{
+    margin-bottom: 50px;
+    padding: 5px;
+}

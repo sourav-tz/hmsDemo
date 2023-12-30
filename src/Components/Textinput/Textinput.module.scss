@@ -1,0 +1,58 @@
+@import '../../MainStyles/Breakpoints.scss';
+@import '../../MainStyles/Colors.scss';
+
+
+.inputWrapper{
+    position: relative;
+    width:100%;
+    padding: 0;
+    margin: 0;
+}
+
+.label{
+    position: absolute;
+    left: 20px;
+    pointer-events: none;
+    color:$secondary;
+    font-weight: 500;
+    bottom: 35px;
+    
+}
+
+.labelOnFocus{
+    color:$secondary;
+    font-weight: 500;
+    bottom: 35px;
+}
+
+
+
+.input{
+    
+    padding: 8px;
+    outline: none;
+    border: 1px solid $dark-grey;
+    border-radius: 50px;
+
+    
+    &:hover{
+        border:1px solid  $secondary;
+        transition: ease-in 0.5s;
+    }
+
+
+
+    &:focus{
+        border:1px solid  $secondary;
+        outline: 2px solid $secondary;
+        transition: ease-in 0.5s ;
+    }
+
+}
+
+@media #{breakpoint(md)}{
+    .input{
+        padding: 8px;
+    }
+}
+

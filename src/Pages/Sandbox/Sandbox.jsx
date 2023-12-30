@@ -1,7 +1,16 @@
 import Button from "../../Components/Button/Button"
+import Textinput from "../../Components/Textinput/Textinput"
+import Sidebar from "../../Components/Sidebar/Sidebar"
+import Style from './Sandbox.module.scss'
+
 
 export default function(){
     return <>
-    <Button onClick={()=>{console.log('hello world')}} variant='contained' text='click me'/>
+    <Sidebar />
+    <div className={Style.container}>
+        <div className={Style.elementContainer}>
+            
+        </div>
+    </div>
     </>
 }

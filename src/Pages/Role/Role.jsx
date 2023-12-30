@@ -27,13 +27,19 @@ export default function(){
                 <div className={styles.cardImage}>
                     <img src={studentImage} alt='Student-Image' />
                     </div>
-                    <Button onClick={()=>{Navigator('/studentLogin')}} variant='contained' text='Student' />
+                    <Button onClick={
+                        ()=>{
+                                Navigator('/studentLogin');
+                                localStorage.setItem('role','Student');
+                            }
+                        } 
+                    variant='contained' text='Student' />
                 </div>
                 <div className={styles.card}>
                 <div className={styles.cardImage}>
                     <img src={adminImage} alt='Admin-Image' />
                     </div>
-                    <Button onClick={()=>{Navigator('/adminLogin')}} variant='contained' text='Admin' />
+                    <Button onClick={()=>{Navigator('/adminLogin');localStorage.setItem('role','Admin');}} variant='contained' text='Admin' />
                 </div>
                 </div>
             </div>
