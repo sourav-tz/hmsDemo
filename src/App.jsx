@@ -1,16 +1,12 @@
-import { useEffect } from 'react';
 import Routing from './Routes/Routing';
-import { useNavigate } from 'react-router-dom';
+import Sidebar from './Components/Sidebar/Sidebar';
+import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+
 
 function App() {
 
-  const Navigator = useNavigate();
 
-  useEffect(()=>{
-    if(localStorage.getItem('role')!==undefined && localStorage.getItem('role') === 'Admin'){
-      Navigator('/Adminlogin');
-    }
-  },[])
 
   return (
     <>

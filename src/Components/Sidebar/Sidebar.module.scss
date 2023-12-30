@@ -7,34 +7,38 @@
 }
 
 ul{
-    list-style-type: none;
+    list-style-type : none;
 }
 
 
 .sidebarContainer{
-        // stick navbar to left
-        position:fixed;
-        top:0;
-        left:0;
+    // stick navbar to left
+    position:fixed;
+    top:0;
+    left:0;
 
-        height: 100vh;
-        background-color: $primary;
 
-        color: white;
 
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
+    height: 100vh;
+    background-color: $primary;
+
+    color: white;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    z-index: 100;
 }
 
 .inActive{
    min-width: 75px;
+   transition: 0.52s;
 
 }
 
 .active{
     min-width: 200px;
-
+    transition: 0.52s;
 }
 
 .hidden{
@@ -47,6 +51,8 @@ ul{
     margin-top: 1.5rem;
     padding:5px;
 }
+
+
 
 .userIcon{
     background-color: $secondary;
@@ -78,7 +84,7 @@ ul{
     border-radius: 0px;
     margin: 20px 0px;
     cursor: pointer;
-
+    transition: 0.52s;
     li{
         padding:10px 5px;
         margin-left: 25px;
@@ -111,7 +117,14 @@ ul{
     }
 }
 
+.activeSubOption{
+    background-color: $secondary;
+    border-radius: 5px;
+}
+
 .Settings{
     margin-bottom: 50px;
     padding: 5px;
 }
+
+

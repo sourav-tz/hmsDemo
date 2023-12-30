@@ -3,7 +3,7 @@ import RoomStatusBar from "./RoomStatusBar";
 
 
 export default {
-    title:'Room Status Bar',
+    title:'rooms/Room Status Bar',
     component:RoomStatusBar
 }
 

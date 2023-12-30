@@ -7,9 +7,18 @@ export default {
 }
 
 
-export const Primary = {
+export const Outlined = {
     args:{
-        text:'Primary',
-        variant:'contained'
+        text:'Outlined',
+        variant:'outlined',
+        style:null,
+    }
+}
+
+export const Contained = {
+    args:{
+        text:'Contained',
+        variant:'contained',
+        style:null,
     }
 }

@@ -1,23 +1,22 @@
 import styles from './Button.module.scss';
+import {useState,useEffect} from 'react';
 
 
+export default function({type,variant,onClick,text,style}){
 
-export default function({variant,onClick,text,style}){
+    const [svariant, setVariant] = useState('outlined');
 
+    useEffect(()=>{
+        setVariant(variant);
+    },[])
 
-
-    if(variant === 'contained'){
         return<>
             <button 
+                type={type}
                 onClick={onClick} 
                 style={style}
-                className={styles.contained}>
+                className={(svariant==='contained'?styles.contained:styles.outlined)+' '+styles.outlined}>
                 {text}
             </button>
         </>
-    }else{
-        return<>
-
-        </>
-    }
 }

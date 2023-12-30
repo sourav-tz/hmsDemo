@@ -1,0 +1,39 @@
+@import '../../../MainStyles/Colors.scss';
+
+.Header{
+    flex-basis: 100%;
+    margin-bottom: 35px;
+}
+
+.container{
+    display: flex;
+    flex-wrap: wrap;
+    width: 80%;
+}
+
+
+
+.uploadContainer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.uploadArea{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    min-width: 600px;
+    min-height: 300px;
+    border-radius: 1rem;
+    border:2px dashed $secondary;
+    color: $secondary;
+}
+
+
+.myFile{
+    display: none;
+}

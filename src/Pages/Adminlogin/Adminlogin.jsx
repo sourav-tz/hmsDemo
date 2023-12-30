@@ -5,9 +5,13 @@ import logoImage from '../../Assets/nit-logo.png'
 import { IoArrowBack } from "react-icons/io5";
 import { IconContext } from "react-icons";
 import { useNavigate } from 'react-router-dom';
+import { changeLoginStatus } from '../../Store/Reducers/loginSlice';
+import { useDispatch } from 'react-redux';
 
 export default function(){
 
+
+    const Dispatcher = useDispatch();
 
     const onMouse = ()=>{
         document.getElementById('role-content').innerText = "Change Role"; 
@@ -44,7 +48,7 @@ export default function(){
                 <div className={styles.inputBoxes}>
                     <Textinput style={{minWidth:'300px'}} label="Email"/>
                     <Textinput type='password' style={{marginTop:'25px',minWidth:'300px'}} label="Password"/>
-                    <Button variant="contained" style={{marginTop:'25px',minWidth:'300px'}} text="login"/>
+                    <Button onClick={()=>{Navigator('/adminDashboard'); Dispatcher(changeLoginStatus(true));}} variant="contained" style={{marginTop:'25px',minWidth:'300px'}} text="login"/>
                     <p style={{marginTop:'10px'}}>Forgot Password?</p>
                 </div>
                 </div>

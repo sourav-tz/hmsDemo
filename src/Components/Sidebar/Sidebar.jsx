@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './sidebar.module.scss';
 import { FaUserLarge } from "react-icons/fa6";
 import { IconContext } from 'react-icons';
@@ -7,11 +7,24 @@ import { FaRegEye } from "react-icons/fa6";
 import { FaInfo } from "react-icons/fa";
 import { MdOutlineBedroomChild } from "react-icons/md";
 import { FaGear } from "react-icons/fa6";
+import { useNavigate } from 'react-router-dom';
+import { useDispatch,useSelector } from 'react-redux';
+import { setActiveOption,setActiveSubOption } from '../../Store/Reducers/sideBarSlice';
 
 export default function Sidebar(){
 
-    const [state,changeMenuState] = useState(false);
-    const [activeOption,setActiveOption] = useState('Home');
+    
+    const Navigator = useNavigate();
+    const Dispatcher = useDispatch();
+
+    const [state,changeState] = useState(false);
+    const activeOption = useSelector(state=>state.sideBarStates.activeOption);
+    const activeSubOption = useSelector(state=>state.sideBarStates.activeSubOption);
+
+    useEffect(()=>{
+        console.log(activeOption);
+        console.log(activeSubOption);
+    },[activeOption])
 
     const [subHome,setSubHome] = useState(false);
     const [subStudent, setSubStudent] = useState(false);
@@ -19,11 +32,11 @@ export default function Sidebar(){
     const [subSettings, setSubSettings] = useState(false);
 
     const openMenu = ()=>{
-        changeMenuState(true);
+        changeState(true);
     }
 
     const closeMenu = ()=>{
-        changeMenuState(false);
+        changeState(false);
     }
 
     const changeSubMenu = (value)=>{
@@ -53,16 +66,11 @@ export default function Sidebar(){
     }
 
     const changeActiveOption = (value)=>{
-        if(value==='Home'){
-            setActiveOption('Home');
-        }else if(value === 'studentInfo'){
-            setActiveOption('studentInfo');
-        }else if(value === 'roomInfo'){
-            setActiveOption('roomInfo')
-        }else if(value==='settings'){
-            setActiveOption('settings')
-        }
+            Dispatcher(setActiveOption(value));
+    }
 
+    const changeActiveSubOption = (value)=>{
+        Dispatcher(setActiveSubOption(value));
     }
 
 
@@ -81,21 +89,21 @@ export default function Sidebar(){
             <div  className={styles.item +' '+' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
                         <p onClick={()=>{changeSubMenu('Home')}} className={activeOption==='Home'?styles.activeItem:null}><i><IoHome  size="20px"/></i> <span className={state?null:styles.hidden}>Main</span></p>
                         <ul className={state&&subHome?null:styles.hidden} >
-                        <li onClick={()=>{changeActiveOption('Home')}} className={styles.subOptions}>Home</li>
+                        <li onClick={()=>{changeActiveOption('Home');changeActiveSubOption('Home')}} className={styles.subOptions+' ' + (activeSubOption==='Home'?styles.activeSubOption:null)}>Home</li>
                         </ul>
             </div>
             <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
                         <p onClick={()=>{changeSubMenu('studentInfo')}} className={activeOption==='studentInfo'?styles.activeItem:null}><i><FaInfo /></i> <span className={state?null:styles.hidden}>Student Info</span></p>
                         <ul className={state&&subStudent?null:styles.hidden}>
-                        <li onClick={()=>{changeActiveOption('studentInfo')}} className={styles.subOptions}>View Info</li>
-                        <li onClick={()=>{changeActiveOption('studentInfo')}} className={styles.subOptions}>Upload Info</li>
+                        <li onClick={()=>{changeActiveOption('studentInfo'); changeActiveSubOption('siViewInfo')}} className={styles.subOptions+' ' + (activeSubOption==='siViewInfo'?styles.activeSubOption:null)}>View Info</li>
+                        <li onClick={()=>{changeActiveOption('studentInfo'); changeActiveSubOption('siUploadInfo')}} className={styles.subOptions+' ' + (activeSubOption==='siUploadInfo'?styles.activeSubOption:null)}>Upload Info</li>
                         </ul>
             </div>
             <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
                         <p onClick={()=>{changeSubMenu('roomInfo')}} className={activeOption==='roomInfo'?styles.activeItem:null}><i><MdOutlineBedroomChild /></i> <span className={state?null:styles.hidden}>Room Info</span></p>
                         <ul className={state&&subRoom?null:styles.hidden}>
-                        <li onClick={()=>{changeActiveOption('roomInfo')}} className={(state?null:styles.hidden)+' '+styles.subOptions}>Allot Rooms</li>
-                        <li onClick={()=>{changeActiveOption('roomInfo')}} className={(state?null:styles.hidden)+' '+styles.subOptions}>Upload Info</li>
+                        <li onClick={()=>{changeActiveOption('roomInfo');changeActiveSubOption('riAllotRoom')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='riAllotRoom'?styles.activeSubOption:null)}>Allot Rooms</li>
+                        <li onClick={()=>{changeActiveOption('roomInfo');changeActiveSubOption('riUploadInfo')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='riUploadInfo'?styles.activeSubOption:null)}>Upload Info</li>
                         </ul>
             </div>
             </div>
@@ -104,8 +112,8 @@ export default function Sidebar(){
             <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
                         <p onClick={()=>{changeSubMenu('settings')}} className={activeOption==='settings'?styles.activeItem:null}><i><FaGear /></i> <span className={state?null:styles.hidden}>Settings</span></p>
                         <ul className={state&&subSettings?null:styles.hidden}>
-                        <li onClick={()=>{changeActiveOption('settings')}} className={(state?null:styles.hidden)+' '+styles.subOptions}>Profile Settings</li>
-                        <li onClick={()=>{changeActiveOption('settings')}} className={(state?null:styles.hidden)+' '+styles.subOptions}>Security Settings</li>
+                        <li onClick={()=>{changeActiveOption('settings');changeActiveSubOption('profileSettings');changeActiveSubOption('profileSettings')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='profileSettings'?styles.activeSubOption:null)}>Profile Settings</li>
+                        <li onClick={()=>{changeActiveOption('settings');changeActiveSubOption('securitySettings');changeActiveSubOption('securitySettings')}} className={(state?null:styles.hidden)+' '+styles.subOptions +' ' + (activeSubOption==='securitySettings'?styles.activeSubOption:null)}>Security Settings</li>
                         </ul>
             </div>
             </div>

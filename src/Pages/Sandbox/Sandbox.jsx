@@ -6,10 +6,10 @@ import Style from './Sandbox.module.scss'
 
 export default function(){
     return <>
-    <Sidebar />
+    {/* <Sidebar /> */}
     <div className={Style.container}>
         <div className={Style.elementContainer}>
-            
+
         </div>
     </div>
     </>

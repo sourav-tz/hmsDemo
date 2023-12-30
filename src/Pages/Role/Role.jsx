@@ -4,15 +4,30 @@ import adminImage from './assets/admin.png';
 import studentImage from './assets/student.png';
 import Footer from '../../Components/Footer/Footer';
 import { useNavigate } from 'react-router-dom';
-
+import { useEffect, useState } from 'react';
+import Loadingpage from '../../Components/Loadingpage/Loadingpage';
 
 export default function(){
 
     const Navigator = useNavigate();
+    const [loadingPage,setLoadingPage] = useState(true);
 
+    useEffect(()=>{
+
+       setTimeout(()=>{
+        if(localStorage.getItem('role')!==undefined && localStorage.getItem('role') === 'Admin'){
+            Navigator('/Adminlogin');
+          }else if(localStorage.getItem('role')!==undefined && localStorage.getItem('role') === 'Student'){
+              Navigator('/studentLogin');
+          }else{
+              setLoadingPage(false);
+          }
+       },2000) 
+
+      },[])
 
     return <>
-        <main>
+        {loadingPage?<Loadingpage/>:<main>
         <div className={styles.container} >
             <div className={styles.header}>
             <h3>Welcome To</h3>
@@ -33,18 +48,19 @@ export default function(){
                                 localStorage.setItem('role','Student');
                             }
                         } 
+                        style={{width:'100%'}}
                     variant='contained' text='Student' />
                 </div>
                 <div className={styles.card}>
                 <div className={styles.cardImage}>
                     <img src={adminImage} alt='Admin-Image' />
                     </div>
-                    <Button onClick={()=>{Navigator('/adminLogin');localStorage.setItem('role','Admin');}} variant='contained' text='Admin' />
+                    <Button onClick={()=>{Navigator('/adminLogin');localStorage.setItem('role','Admin');}} style={{width:'100%'}} variant='contained' text='Admin' />
                 </div>
                 </div>
             </div>
        </div>
-       </main>
+       </main>}
             <Footer />
     </>
 }
