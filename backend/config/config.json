@@ -4,8 +4,8 @@
     "password": "root",
     "database": "hostel11_V2",
     "host": "localhost",
-    "dialect": "mysql",
-    "logging":false
+    "dialect": "mysql"
+    
   },
   "test": {
     "username": "root",
