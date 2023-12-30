@@ -4,7 +4,7 @@ const fs=require('fs');
 exports.csvToJsonConverter = async (req,res,next)=>{
     
 try {
-  csv()
+  csv({checkType:true,ignoreEmpty:true})
    .fromFile(req.file.path)
    .then(async (jsonObj)=>{
     try {

@@ -22,8 +22,8 @@ app.use('/others', othersRouter);
 
 
 db.sequelize.sync({ alter: true }).then(() => {
-    app.listen(3001, () => {
-        console.log('listening on post 3001');
+    app.listen(3000, () => {
+        console.log('listening on post 3000');
     })
 })
 

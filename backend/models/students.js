@@ -16,7 +16,9 @@ module.exports = (sequelize, dataTypes) => {
         },
         email: {
             type: dataTypes.STRING,
-            isEmail: true,
+             validate:{
+                isEmail: true,
+             },
             references: {
                 model: 'users',
                 key: 'email',
@@ -33,27 +35,35 @@ module.exports = (sequelize, dataTypes) => {
     students.associate = (models) => {
         students.hasOne(models.profiles, {
             onDelete: "cascade",
+            onUpdate:"cascade",
             foreignKey: {
                 name: 'rollNo'
               }
           });
           students.hasOne(models.bankdetails, {
             onDelete: "cascade",
+            onUpdate:"cascade",
             foreignKey: {
                 name: 'rollNo'
               }
           });
           students.belongsTo(models.courses, {
+            onDelete: "cascade",
+            onUpdate:"cascade",
             foreignKey: {
-                name: 'courseName'
+                name: 'courseId'
               }
           });
           students.belongsTo(models.hostels, {
+            onDelete: "SET NULL",
+            onUpdate:"cascade",
             foreignKey: {
                 name: 'hostelNo'
               }
           });
           students.belongsTo(models.rooms, {
+            onDelete: "SET NULL",
+            onUpdate:"cascade",
             foreignKey: {
                 name: 'roomId'
               }

@@ -30,16 +30,22 @@ module.exports = (sequelize, dataTypes) => {
     })
     rooms.associate = (models) => {
         rooms.hasMany(models.students, {
+            onDelete:"SET NULL",
+            onUpdate:"cascade",
             foreignKey: {
                 name: 'roomId'
               }
           });
         rooms.belongsTo(models.hostels, {
+            onDelete:"cascade",
+            onUpdate:"cascade",
             foreignKey: {
                 name: 'hostelNo'
               }
           });
         rooms.belongsTo(models.roomtypes, {
+            onDelete:"cascade",
+            onUpdate:"cascade",
             foreignKey: {
                 name: 'roomTypeNo'
               }
