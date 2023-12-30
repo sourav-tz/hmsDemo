@@ -6,12 +6,17 @@ const studentRouter = require('./routers/students/routes');
 const HARouter = require('./routers/hostelAuthority/routes');
 const othersRouter = require('./routers/others/routes');
 const cookieParser = require('cookie-parser');
+require("dotenv").config();
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(express.urlencoded());
+app.use(express.static('public'));  //*to access public folder
+app.disable('x-powered-by'); //*less hackers know about our stack
+
 
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: process.env.FRONTED_URL,
     credentials: true,
 }));
 
