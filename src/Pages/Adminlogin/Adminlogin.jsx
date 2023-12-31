@@ -7,9 +7,12 @@ import { IconContext } from "react-icons";
 import { useNavigate } from 'react-router-dom';
 import { changeLoginStatus } from '../../Store/Reducers/loginSlice';
 import { useDispatch } from 'react-redux';
+import {useState} from 'react';
+import axios from 'axios';
 
 export default function(){
 
+    const [data,setData] = useState({email:null,password:null});
 
     const Dispatcher = useDispatch();
 
@@ -23,7 +26,30 @@ export default function(){
 
     const Navigator = useNavigate();
 
+    const handleEmail = (e)=>{
+        setData((prev) =>{return {...prev,email:e.target.value}});
+        console.log(data);
+    }
 
+    const handlePassword = (e)=>{
+        setData((prev)=>{return {...prev,password:e.target.value}});
+        console.log(data);
+    }
+
+
+    const handleSubmit = ()=>{
+        const config = {
+            headers: {
+              "Content-Type": "application/json"
+              },
+              withCredentials: true
+            }
+        // axios.post('http://localhost:3000/HA/adminLogin',data,config).then((res)=>{
+        //     console.log(res)}).catch(err=>console.log(err));
+
+            axios.get('http://localhost:3000/HA/adminLogout',config).then((res)=>{
+            console.log(res)}).catch(err=>console.log(err));
+    }
 
     return <>
         <div className={styles.container}>
@@ -46,9 +72,9 @@ export default function(){
                 </div>
                 <div className={styles.inputSection}>
                 <div className={styles.inputBoxes}>
-                    <Textinput style={{minWidth:'300px'}} label="Email"/>
-                    <Textinput type='password' style={{marginTop:'25px',minWidth:'300px'}} label="Password"/>
-                    <Button onClick={()=>{Navigator('/adminDashboard'); Dispatcher(changeLoginStatus(true));}} variant="contained" style={{marginTop:'25px',minWidth:'300px'}} text="login"/>
+                    <Textinput style={{minWidth:'300px'}}  onChange={handleEmail} label="Email"/>
+                    <Textinput type='password' style={{marginTop:'25px',minWidth:'300px'}} onChange={handlePassword} label="Password"/>
+                    <Button onClick={handleSubmit} variant="contained" style={{marginTop:'25px',minWidth:'300px'}} text="login"/>
                     <p style={{marginTop:'10px'}}>Forgot Password?</p>
                 </div>
                 </div>
@@ -56,4 +82,3 @@ export default function(){
         </div>
     </>
 }
-

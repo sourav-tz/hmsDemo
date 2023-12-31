@@ -2,10 +2,14 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const path = require('path');
-const {csvToJsonConverter} = require('../../middlewares/csvToJsonConverter');
-const {bulkCreateController} = require('../../controllers/hostelAuthority/studentModule/bulkCreateController');
+const { csvToJsonConverter } = require('../../middlewares/csvToJsonConverter');
+const { bulkCreateController } = require('../../controllers/hostelAuthority/studentModule/bulkCreateController');
 const {studentsInfo} = require('../../controllers/hostelAuthority/studentModule/studentsInfo');
 const {singleStudentInfo} = require('../../controllers/hostelAuthority/studentModule/singleStudentInfo');
+const AdminLogin = require('../../controllers/Login/AdminLogin')
+const AdminRegister = require('../../controllers/Registration/AdminRegistration')
+const { validateUser, AdminRegAuth } = require('../../middlewares/AdminRegAuth')
+const AdminLogout = require('../../controllers/LoggingOut/AdminLogOut')
 
 
 var storage = multer.diskStorage({
@@ -22,8 +26,13 @@ var upload = multer({ storage: storage });
 router.get('/', (req, res) => {
     return res.send('success')
 })
-router.post('/bulkCreate', upload.single('file'),csvToJsonConverter,bulkCreateController);
+router.post('/bulkCreate', upload.single('file'), csvToJsonConverter, bulkCreateController);
 router.get('/studentsInfo', studentsInfo);
 router.get('/student/:rollNo', singleStudentInfo);
+
+router.post('/adminReg', validateUser, AdminRegAuth, AdminRegister)
+router.post('/adminLogin', AdminLogin)
+router.get('/adminLogout', AdminLogout)
+
 
 module.exports = router;
