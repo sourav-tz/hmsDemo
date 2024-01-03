@@ -4,8 +4,10 @@ const multer = require('multer');
 const path = require('path');
 const { csvToJsonConverter } = require('../../middlewares/csvToJsonConverter');
 const { bulkCreateController } = require('../../controllers/hostelAuthority/studentModule/bulkCreateController');
-const { studentsInfo } = require('../../controllers/hostelAuthority/studentModule/studentsInfo');
-const { singleStudentInfo } = require('../../controllers/hostelAuthority/studentModule/singleStudentInfo');
+const {studentsInfo} = require('../../controllers/hostelAuthority/studentModule/studentsInfo');
+const {deleteStudent} = require('../../controllers/hostelAuthority/studentModule/deleteStudent');
+const {singleStudentInfo} = require('../../controllers/hostelAuthority/studentModule/singleStudentInfo');
+const {singleStudentUpload} = require('../../controllers/hostelAuthority/studentModule/singleStudentUpload');
 const AdminLogin = require('../../controllers/Login/AdminLogin')
 const AdminLogout = require('../../controllers/LoggingOut/AdminLogOut')
 
@@ -26,7 +28,9 @@ router.get('/', (req, res) => {
 })
 router.post('/bulkCreate', upload.single('file'), csvToJsonConverter, bulkCreateController);
 router.get('/studentsInfo', studentsInfo);
+router.post('/singleStudentUpload', singleStudentUpload);
 router.get('/student/:rollNo', singleStudentInfo);
+router.delete('/deleteStudent', deleteStudent);
 
 
 router.post('/adminLogin', AdminLogin)

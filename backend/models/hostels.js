@@ -18,6 +18,7 @@ module.exports = (sequelize, dataTypes) => {
         }
     },{
         updatedAt: 'last_updated_at',
+        paranoid:true
     })
     hostels.associate = (models) => {
         hostels.hasMany(models.students, {
