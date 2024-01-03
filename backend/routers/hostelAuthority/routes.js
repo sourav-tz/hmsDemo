@@ -9,8 +9,6 @@ const {deleteStudent} = require('../../controllers/hostelAuthority/studentModule
 const {singleStudentInfo} = require('../../controllers/hostelAuthority/studentModule/singleStudentInfo');
 const {singleStudentUpload} = require('../../controllers/hostelAuthority/studentModule/singleStudentUpload');
 const AdminLogin = require('../../controllers/Login/AdminLogin')
-const AdminRegister = require('../../controllers/Registration/AdminRegistration')
-const { validateUser, AdminRegAuth } = require('../../middlewares/AdminRegAuth')
 const AdminLogout = require('../../controllers/LoggingOut/AdminLogOut')
 
 
@@ -34,7 +32,7 @@ router.post('/singleStudentUpload', singleStudentUpload);
 router.get('/student/:rollNo', singleStudentInfo);
 router.delete('/deleteStudent', deleteStudent);
 
-router.post('/adminReg', validateUser, AdminRegAuth, AdminRegister)
+
 router.post('/adminLogin', AdminLogin)
 router.get('/adminLogout', AdminLogout)
 
