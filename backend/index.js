@@ -2,6 +2,7 @@ const express = require('express')
 const app = express();
 const db = require('./models')
 const cors = require("cors");
+const superAdmin = require('./routers/superAdmin/routes');
 const studentRouter = require('./routers/students/routes');
 const HARouter = require('./routers/hostelAuthority/routes');
 const othersRouter = require('./routers/others/routes');
@@ -21,6 +22,7 @@ app.use(cors({
 }));
 
 // routers 
+app.use('/SA', superAdmin);
 app.use('/student', studentRouter);
 app.use('/HA', HARouter);
 app.use('/others', othersRouter);
