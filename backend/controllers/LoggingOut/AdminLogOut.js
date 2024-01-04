@@ -4,7 +4,7 @@ require("dotenv").config();
 const AdminLogOut = async (req, res) => {
     try {
         const cookies = req.headers.cookie;
-        console.log('logout cookies = ' + cookies + "\n");
+        // console.log('logout cookies = ' + cookies + "\n");
         if (!cookies) {
             return res.status(400).json('cookie expired you can log out');
         }
