@@ -3,12 +3,13 @@ import Sidebar from "../../Components/Sidebar/Sidebar";
 import Roomsbargraph from '../../Components/Roomsbargraph/Roomsbargraph';
 import ComplaintBox from '../../Components/ComplaintBox/ComplaintBox';
 import Rolestable from '../../Components/RolesTable/RolesTable';
-import {lazy, Suspense, useState} from 'react';
+import {lazy, Suspense, useState, useEffect} from 'react';
 import { useSelector } from 'react-redux';
 import Loadingpage from '../../Components/Loadingpage/Loadingpage';
 import { CiLogout } from "react-icons/ci";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import config from '../../config/config';
 // Lazy Imports
 const StudentUploadInfo = lazy(()=>import('./StudentsInfo/UploadInfo/UploadInfo'));
 const StudentViewInfo = lazy(()=>import('./StudentsInfo/ViewInfo/ViewInfo'));
@@ -18,7 +19,17 @@ const AdminDashboard = ()=>{
 
     const activeOptions = useSelector(state => state.sideBarStates.activeSubOption);
     const [loadingPage,setLoadingPage] = useState(false); 
+    const [isLoggedIn,setisLoggedIn] = useState(false);
     const Navigator = useNavigate();
+
+    useEffect(()=>{
+        axios.get('http://localhost:3000/HA/isCookie',config)
+        .then(res=>{console.log(res);setisLoggedIn(true)})
+        .catch(err=>{console.log(err);Navigator('/adminLogin')});
+    },[])
+
+
+
 
 
 const handleLogout = ()=>{
@@ -43,7 +54,7 @@ const handleLogout = ()=>{
 }   
 
 return <>
-    {loadingPage?<Loadingpage />:<div className={styles.container}>
+    {!isLoggedIn||loadingPage?<Loadingpage />:<div className={styles.container}>
 
     <div className={styles.sideBarSpace}>
         <Sidebar />

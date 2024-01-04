@@ -20,7 +20,7 @@ export default function(){
     const Dispatcher = useDispatch();
 
     useEffect(()=>{
-        axios.get('http://locahost:3000/HA/adminLogout',config)
+        axios.get('http://localhost:3000/HA/adminLogout',config)
         .then(res=>console.log(res))
         .catch(err=>console.log(err))
     },[])
