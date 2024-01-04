@@ -2,44 +2,67 @@ const db = require('../../../models/index')
 
 exports.studentsInfo=async (req,res)=>{
     try {
-      const page=parseInt(req.query.page);
+      let page=parseInt(req.query.page);
       const limit=parseInt(req.query.limit);
-      let totalpages=parseInt(req.query.totalpages);
-
+      let totalpages=parseInt(req.query.total);
+      // Define filters based on query parameters
+      const filters = {};
+      const filtersProfile = {};
+      if (req.query.rollNo) {
+        filters.rollNo = req.query.rollNo;
+      }
+      if (req.query.firstName) {
+        filters.firstName = req.query.firstName;
+      }
+      if (req.query.lastName) {
+        filters.lastName = req.query.lastName;
+      }
+      if (req.query.courseId) {
+        filters.courseId = req.query.courseId;
+      }
+      if (req.query.state) {
+        filtersProfile.state = req.query.state;
+      }
+      if(totalpages==0){
+        totalpages=Math.ceil((await db.students.count({
+          where:filters,
+          include:[
+            {
+              model:db.profiles,
+              where:filtersProfile
+            }
+          ]
+        }))/limit);
+        if(totalpages==0){
+        return res.json({totalpages:0,msg:"no pages to show"});
+        }
+        if(page>totalpages || page<1){
+          return res.json({msg:`page value out of range, total pages are ${totalpages}`});
+        }
+     }
       const startIndex=(page-1)*limit;
-
-        // Define filters based on query parameters
-        const filters = {};
-        if (req.query.rollNo) {
-          filters.rollNo = req.query.rollNo;
-        }
-        if (req.query.firstName) {
-          filters.firstName = req.query.firstName;
-        }
-        if (req.query.lastName) {
-          filters.lastName = req.query.lastName;
-        }
-        if (req.query.courseName) {
-          filters.courseName = req.query.courseName;
-        }
-        if(page==1){
-           totalpages=Math.ceil((await db.students.count())/limit);
-        }
         // Fetch data from the student table based on filters
         const students = await db.students.findAll({
           where: filters,
           offset:startIndex,
-          limit:limit
+          limit:limit,
+          include: [
+            {
+              model: db.profiles,
+              where: filtersProfile,
+            },
+          ]
         });
-    
         // Return the result
+        nextPage=page>=totalpages?totalpages:page+1
         students.unshift({next:{
-          page:page>=totalpages?totalpages:page+1,
+          page:nextPage,
           limit:limit,
           totalpages:totalpages
         }});
+        prevPage=page>1?page-1:1
         students.unshift({previous:{
-          page:page-1?page-1:1,
+          page:prevPage,
           limit:limit,
           totalpages:totalpages
         }})

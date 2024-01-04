@@ -16,13 +16,11 @@ module.exports = (sequelize, dataTypes) => {
         },
         email: {
             type: dataTypes.STRING,
+            required: true,
+            unique: true,
              validate:{
                 isEmail: true,
-             },
-            references: {
-                model: 'users',
-                key: 'email',
-              },
+             }
         },
         lastUpdatedBy:{
            type:dataTypes.STRING,
@@ -48,7 +46,7 @@ module.exports = (sequelize, dataTypes) => {
               }
           });
           students.belongsTo(models.courses, {
-            onDelete: "cascade",
+            onDelete: "NO ACTION",
             onUpdate:"cascade",
             foreignKey: {
                 name: 'courseId'

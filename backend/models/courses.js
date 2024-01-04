@@ -3,7 +3,8 @@ module.exports = (sequelize, dataTypes) => {
     const courses = sequelize.define('courses', {
         courseId:{
             type:dataTypes.INTEGER,
-            primaryKey:true
+            primaryKey:true,
+            autoIncrement: true,
         },
         courseName: {
             type: dataTypes.STRING,
@@ -23,11 +24,12 @@ module.exports = (sequelize, dataTypes) => {
            field:'last_updated_by'
         },
     },{
-        updatedAt: 'last_updated_at'
+        updatedAt: 'last_updated_at',
+        paranoid: true,
     })
     courses.associate = (models) => {
         courses.hasMany(models.students, {
-            onDelete:"SET NULL",
+            onDelete:"RESTRICT",
             onUpdate:"cascade",
             foreignKey: {
                 name: 'courseId'
