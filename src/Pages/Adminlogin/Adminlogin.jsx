@@ -7,14 +7,23 @@ import { IconContext } from "react-icons";
 import { useNavigate } from 'react-router-dom';
 import { changeLoginStatus } from '../../Store/Reducers/loginSlice';
 import { useDispatch } from 'react-redux';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import axios from 'axios';
+import { toast, ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
+import config from '../../config/config';
 
 export default function(){
 
     const [data,setData] = useState({email:null,password:null});
-
+    const [loading, setLoading] = useState(false);
     const Dispatcher = useDispatch();
+
+    useEffect(()=>{
+        axios.get('http://localhost:3000/HA/adminLogout',config)
+        .then(res=>console.log(res))
+        .catch(err=>console.log(err))
+    },[])
 
     const onMouse = ()=>{
         document.getElementById('role-content').innerText = "Change Role"; 
@@ -38,17 +47,29 @@ export default function(){
 
 
     const handleSubmit = ()=>{
+        setLoading(true);
         const config = {
             headers: {
               "Content-Type": "application/json"
               },
               withCredentials: true
             }
-        // axios.post('http://localhost:3000/HA/adminLogin',data,config).then((res)=>{
-        //     console.log(res)}).catch(err=>console.log(err));
+        axios.post('http://localhost:3000/HA/adminLogin',data,config)
+        .then((res)=>{
+            console.log(res)
+            Navigator('/adminDashboard')
+            setLoading(false);
+        })
+            .catch(err=>
+                {
+                    console.log(err);
+                    setLoading(false);
+                    toast.error("Invalid UserName or Password !", {
+                        position: toast.POSITION.TOP_RIGHT
+                      });
+                
+                });
 
-            axios.get('http://localhost:3000/HA/adminLogout',config).then((res)=>{
-            console.log(res)}).catch(err=>console.log(err));
     }
 
     return <>
@@ -74,11 +95,12 @@ export default function(){
                 <div className={styles.inputBoxes}>
                     <Textinput style={{minWidth:'300px'}}  onChange={handleEmail} label="Email"/>
                     <Textinput type='password' style={{marginTop:'25px',minWidth:'300px'}} onChange={handlePassword} label="Password"/>
-                    <Button onClick={handleSubmit} variant="contained" style={{marginTop:'25px',minWidth:'300px'}} text="login"/>
+                    <Button onClick={handleSubmit} loading={loading} variant="contained" style={{marginTop:'25px',minWidth:'300px'}} text="login"/>
                     <p style={{marginTop:'10px'}}>Forgot Password?</p>
                 </div>
                 </div>
             </div>
+            <ToastContainer />
         </div>
     </>
 }

@@ -11,7 +11,8 @@ export const Outlined = {
     args:{
         text:'Outlined',
         variant:'outlined',
-        style:null,
+        style:{},
+        loading:false
     }
 }
 
@@ -19,6 +20,7 @@ export const Contained = {
     args:{
         text:'Contained',
         variant:'contained',
-        style:null,
+        style:{},
+        loading:false
     }
 }

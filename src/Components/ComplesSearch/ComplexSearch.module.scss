@@ -1,0 +1,89 @@
+@import '../../MainStyles/Colors.scss';
+@import '../../MainStyles/global.scss';
+
+.inputContainer{
+    position:relative;
+    height: 0px;
+}
+
+.selector{
+    position: absolute;
+    cursor: pointer;
+    top:0.7rem;
+    left: 1rem;
+    display: flex;
+    justify-content: space-between;
+    min-width: 7rem;
+    padding-right: 10px;
+    border-right: 2px dashed rgb(189, 189, 189);
+    p{
+        margin-right: 10px;
+    }
+    margin-right: 10px;
+}
+
+.textInput{
+    padding: 0.7rem 0.7rem 0.7rem 11rem;
+    min-width: 450px;
+    border-radius: 0.5rem;
+}
+
+
+
+.inputList{
+    position: absolute;
+    margin-top: 5px;
+    border-radius: 0.5rem;
+    width: 300px;
+    box-shadow: $cardShadow;
+    height: 150px;
+    transform-origin: top;
+    transform-box: fill-box;
+    overflow-y: scroll;
+    z-index: 100;
+}
+
+.listItem{
+    cursor: pointer;
+    width: 100%;
+    padding: 0.5rem 0.7rem;
+    border-bottom: 2px solid rgb(232, 232, 232);
+    background-color:white;
+
+    &:hover{
+        background-color: rgb(202, 245, 245);
+
+    }
+}
+
+/* For Chrome, Safari, and Edge */
+::-webkit-scrollbar {
+    width: 5px; /* Adjust the width as needed */
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background-color: rgb(226, 226, 226);
+  }
+  
+  ::-webkit-scrollbar-button {
+    display: none;
+  }
+  
+  /* For Firefox */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(226, 226, 226) rgb(226, 226, 226);
+  }
+  
+  *::-webkit-scrollbar {
+    width: 5px; /* Adjust the width as needed */
+  }
+  
+  *::-webkit-scrollbar-thumb {
+    background-color: rgb(226, 226, 226);
+    border-radius: 5rem;
+  }
+  
+  *::-webkit-scrollbar-button {
+    display: none;
+  }

@@ -1,4 +1,5 @@
-@import '../../../MainStyles/Colors.scss';
+@import '../../../../MainStyles/Colors.scss';
+
 
 .Header{
     flex-basis: 100%;
@@ -36,4 +37,25 @@
 
 .myFile{
     display: none;
+}
+
+.duplicateTable{
+    display: flex;
+    flex-direction: column;
+    color:$medium-grey;
+    h3{
+        font-weight: 500;
+    }
+
+    .buttonArea{
+        display: flex;
+        margin-top: 25px;
+        justify-content: center;
+        align-items: center;
+    }
+}
+
+
+.drag{
+    background-color: rgb(199, 230, 241);
 }

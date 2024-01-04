@@ -13,7 +13,7 @@ useEffect(()=>{
         }else{
             setSelfIncrement(0);
         }
-    },1000)
+    },200)
 },[selfIncrement])
 
     return<>

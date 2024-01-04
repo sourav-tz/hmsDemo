@@ -3,8 +3,8 @@
 
 
 .outlined{
-    padding: 10px 20px ;
-    
+    padding: 10px 20px;
+    position: relative;
     font-weight: bold;
     cursor: pointer;
     color:white;
@@ -19,8 +19,18 @@
         color: white;
     }
 
-}   
+}  
 
+.loadingState{
+    padding: 10px 35px 10px 20px;
+}
+
+.outlined{
+    img{
+        position: absolute;
+        top:5px;
+    }
+}
 
 
 

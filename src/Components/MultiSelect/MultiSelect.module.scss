@@ -1,0 +1,77 @@
+@import '../../MainStyles/global.scss';
+
+.container{
+    cursor: pointer;
+    height: 0px;
+    box-sizing: border-box;
+}
+
+
+.selected{
+    min-width: 200px;
+    padding: 0.7rem;
+    border-radius: 0.5rem;
+    box-shadow: $cardShadow;
+    display: flex;
+    justify-content: space-between;
+}
+
+
+.inputList{
+    position: absolute;
+    margin-top: 5px;
+    border-radius: 0.5rem;
+    width: 300px;
+    box-shadow: $cardShadow;
+    background-color: white;
+    height: 150px;
+    transform-origin: top;
+    transform-box: fill-box;
+    overflow-y: scroll;
+    z-index: 100;
+}
+
+.listItem{
+    cursor: pointer;
+    width: 100%;
+    padding: 0.5rem 0.7rem;
+    border-bottom: 2px solid rgb(232, 232, 232);
+    background-color: white;
+
+    &:hover{
+        background-color: rgb(202, 245, 245);
+
+    }
+}
+
+/* For Chrome, Safari, and Edge */
+::-webkit-scrollbar {
+    width: 5px; /* Adjust the width as needed */
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background-color: rgb(226, 226, 226);
+  }
+  
+  ::-webkit-scrollbar-button {
+    display: none;
+  }
+  
+  /* For Firefox */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(226, 226, 226) rgb(226, 226, 226);
+  }
+  
+  *::-webkit-scrollbar {
+    width: 5px; /* Adjust the width as needed */
+  }
+  
+  *::-webkit-scrollbar-thumb {
+    background-color: rgb(226, 226, 226);
+    border-radius: 5rem;
+  }
+  
+  *::-webkit-scrollbar-button {
+    display: none;
+  }

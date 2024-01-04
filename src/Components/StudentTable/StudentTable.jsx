@@ -2,8 +2,8 @@ import './StudentTable.module.scss';
 import { AgGridReact } from 'ag-grid-react';
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
-import { useState } from 'react';
-
+import { useState,useCallback } from 'react';
+import './studentsTable.css';
 
 
 const StudentTable = ()=>{
@@ -41,7 +41,8 @@ const StudentTable = ()=>{
   
   // Column Definitions: Defines & controls grid columns.
   const [colDefs, setColDefs] = useState([
-        {field:'rollNo',pinned:'left',width:100},
+        {field:'rollNo',pinned:'left',width:100,headerCheckboxSelection: true,
+        checkboxSelection: true, },
         {field:'firstName', pinned:'left',width:120},
         {field:'lastName',pinned:'left',width:120},
         {field:'year',width:80},
@@ -70,11 +71,17 @@ const StudentTable = ()=>{
   ]);
 
 
+  
+  const onSelectionChanged = useCallback((event) => {
+    var rowCount = event.api.getSelectedNodes();
+    console.log(rowCount);
+  }, []);
+
 
     return<>
-        <div className="ag-theme-quartz" style={{ height: 500 }}>
+        <div className="ag-theme-quartz" style={{ height: 450, width:1000 }}>
         {/* The AG Grid component */}
-        <AgGridReact rowData={rowData} columnDefs={colDefs} />
+        <AgGridReact rowData={rowData} columnDefs={colDefs}  rowSelection='multiple' rowMultiSelectWithClick={true} showDisabledCheckboxes={true} onSelectionChanged={onSelectionChanged}/>
         </div>
     </>
 

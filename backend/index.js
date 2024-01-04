@@ -16,7 +16,7 @@ app.disable('x-powered-by'); //*less hackers know about our stack
 
 
 app.use(cors({
-    origin: process.env.FRONTED_URL,
+    origin: process.env.FRONTEND_URL,
     credentials: true,
 }));
 

@@ -3,20 +3,48 @@ import Sidebar from "../../Components/Sidebar/Sidebar";
 import Roomsbargraph from '../../Components/Roomsbargraph/Roomsbargraph';
 import ComplaintBox from '../../Components/ComplaintBox/ComplaintBox';
 import Rolestable from '../../Components/RolesTable/RolesTable';
-import {lazy, Suspense} from 'react';
+import {lazy, Suspense, useState} from 'react';
 import { useSelector } from 'react-redux';
 import Loadingpage from '../../Components/Loadingpage/Loadingpage';
-
-
+import { CiLogout } from "react-icons/ci";
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 // Lazy Imports
-const StudentUploadInfo = lazy(()=>import('./StudentsInfo/UploadInfo'));
+const StudentUploadInfo = lazy(()=>import('./StudentsInfo/UploadInfo/UploadInfo'));
+const StudentViewInfo = lazy(()=>import('./StudentsInfo/ViewInfo/ViewInfo'));
+
 
 const AdminDashboard = ()=>{
 
     const activeOptions = useSelector(state => state.sideBarStates.activeSubOption);
+    const [loadingPage,setLoadingPage] = useState(false); 
+    const Navigator = useNavigate();
+
+
+const handleLogout = ()=>{
+    console.log('called');
+    setLoadingPage(true);
+    const config = {
+        headers: {
+          "Content-Type": "application/json"
+          },
+          withCredentials: true
+        }
+    axios.get('http://localhost:3000/HA/adminLogout',config)
+    .then(res=>{
+        console.log(res);
+        setLoadingPage(false);
+        Navigator('/adminLogin');
+    })
+    .catch(err=>{
+        setLoadingPage(false);
+        console.log(err);
+    })
+}   
 
 return <>
-    <div className={styles.container}>
+    {loadingPage?<Loadingpage />:<div className={styles.container}>
+
     <div className={styles.sideBarSpace}>
         <Sidebar />
         </div>
@@ -31,9 +59,6 @@ return <>
         <div className={styles.complaintBox}>
             <ComplaintBox />
         </div>
-        <div className={styles.rolesTable} >
-            <Rolestable />
-        </div>
         </div>
         :null}
 
@@ -47,11 +72,22 @@ return <>
         </div>
         :null}
 
+        {activeOptions==='siViewInfo'?
+        <div className={styles.contentSpace}>
+            <Suspense fallback={<Loadingpage />}>
+                <StudentViewInfo />
+            </Suspense>
+        </div>
+        :null}
 
 
-
-
+        <div onClick={handleLogout} className={styles.logout}>
+        <div className={styles.logoutIcon}><CiLogout  /></div>
+        Logout
     </div>
+
+
+    </div>}
 </>
 }
 

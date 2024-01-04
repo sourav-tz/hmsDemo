@@ -1,9 +1,10 @@
 @import '../../MainStyles/global.scss';
-
+@import '../../MainStyles/Colors.scss';
 .container{
     display: flex;
     flex-direction: row;
     margin-top: 30px;
+    color:$primary;
 }
 
 
@@ -33,5 +34,29 @@
 .Header{
     flex-basis: 100%;
     margin-bottom: 35px;
+}
+
+.logout{
+    box-sizing: border-box;
+    font-weight:bold;
+    position: absolute;
+    display: flex;
+    top:25px;
+    right:25px;
+    padding:0 25px;
+    font-size: 20px;
+    cursor: pointer;
+    .logoutIcon{
+        margin-top: 3px;
+        margin-right: 5px;
+    }
+
+    &:hover{
+        background-color: $secondary;
+        padding:10px 15px;
+        color:white;
+        transition: ease 0.3s;
+        border-radius: 0.5rem;
+    }
 }
 
