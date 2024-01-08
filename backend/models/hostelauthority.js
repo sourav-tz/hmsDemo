@@ -21,6 +21,11 @@ module.exports = (sequelize, dataTypes) => {
             },
         },
 
+        avatar: {
+            type: dataTypes.STRING,
+            default: 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'
+        },
+
         lastUpdatedBy: {
             type: dataTypes.STRING,
             allowNull: false,
@@ -32,8 +37,8 @@ module.exports = (sequelize, dataTypes) => {
     })
     hostelauthoritys.associate = (models) => {
         hostelauthoritys.belongsTo(models.hostels, {
-            onDelete:"SET NULL",
-            onUpdate:"cascade",
+            onDelete: "SET NULL",
+            onUpdate: "cascade",
             foreignKey: {
                 name: 'hostelNo'
             }

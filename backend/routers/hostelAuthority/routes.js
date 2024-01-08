@@ -11,6 +11,7 @@ const { singleStudentUpload } = require('../../controllers/hostelAuthority/stude
 const AdminLogin = require('../../controllers/Login/AdminLogin')
 const AdminLogout = require('../../controllers/LoggingOut/AdminLogOut');
 const isCookie = require('../../controllers/isCookie');
+const AdminGoogleLogin = require('../../controllers/Login/AdminGoogleLogin');
 
 
 var storage = multer.diskStorage({
@@ -35,6 +36,7 @@ router.delete('/deleteStudent', deleteStudent);
 
 
 router.post('/adminLogin', AdminLogin)
+router.post('/adminGoogleLogin', AdminGoogleLogin)
 router.get('/adminLogout', AdminLogout)
 router.get('/isCookie', isCookie)
 
