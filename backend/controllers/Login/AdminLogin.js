@@ -39,9 +39,8 @@ const AdminLogin = async (req, res) => {
             }
 
             // we are storing cookie in jwtoken and it will expires in 30days
-            res.cookie(String(user.email), accessToken, options);
+            res.cookie(String(user.email), accessToken, options).json(hostelUser);
 
-            res.status(200).json("token successfully stored");
 
         } else {
             res.status(401).json("Invalid Username or Password");
