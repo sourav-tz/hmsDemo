@@ -13,6 +13,8 @@ import config from '../../config/config';
 // Lazy Imports
 const StudentUploadInfo = lazy(()=>import('./StudentsInfo/UploadInfo/UploadInfo'));
 const StudentViewInfo = lazy(()=>import('./StudentsInfo/ViewInfo/ViewInfo'));
+const RoomsAllotement = lazy(()=>import('./RoomInfo/AllotRooms/AllotRooms'));
+const RoomsUpload = lazy(()=>import('./RoomInfo/UploadInfo/RoomsUpload'));
 
 
 const AdminDashboard = ()=>{
@@ -90,6 +92,26 @@ return <>
             </Suspense>
         </div>
         :null}
+
+
+        {/* Room Allotement Module */}
+
+        {activeOptions==='riAllotRoom'?
+        <div className={styles.contentSpace}>
+            <Suspense fallback={<Loadingpage />}>
+                <RoomsAllotement />
+            </Suspense>
+        </div>
+        :null}
+
+        {activeOptions==='riUploadInfo'?
+        <div className={styles.contentSpace}>
+            <Suspense fallback={<Loadingpage />}>
+                <RoomsUpload />
+            </Suspense>
+        </div>
+        :null}
+
 
 
         <div onClick={handleLogout} className={styles.logout}>

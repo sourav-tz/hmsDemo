@@ -3,7 +3,6 @@
 
 .inputContainer{
     position:relative;
-    height: 0px;
 }
 
 .selector{
@@ -36,11 +35,11 @@
     border-radius: 0.5rem;
     width: 300px;
     box-shadow: $cardShadow;
-    height: 150px;
+    max-height: 150px;
     transform-origin: top;
     transform-box: fill-box;
     overflow-y: scroll;
-    z-index: 100;
+    z-index: 1000;
 }
 
 .listItem{

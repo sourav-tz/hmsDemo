@@ -1,4 +1,4 @@
-import styles from './UploadInfo.module.scss';
+import styles from '../../StudentsInfo/UploadInfo/UploadInfo.module.scss';
 import { IoIosCloudUpload } from "react-icons/io";
 import Button from '../../../../Components/Button/Button';
 import { useEffect, useRef,useState } from 'react';
@@ -12,7 +12,7 @@ import TableLoader from '../../../../Components/TableLoader/TableLoader';
 import StudentTable from '../../../../Components/StudentTable/StudentTable';
 import Accordion from '../../../../Components/Accordion/Accordion';
 
-const UploadInfo = ()=>{
+const RoomsUpload = ()=>{
 
     const inputElement = useRef();
     const [file,setFiles] = useState(0);
@@ -140,7 +140,7 @@ const handleDragEnter = (e) => {
 
     return<>
         <div className={styles.container}>
-            <div className={styles.Header}><h1>Upload Student Info</h1></div>
+            <div className={styles.Header}><h1>Upload Rooms Info</h1></div>
             <div className={styles.uploadContainer}>
 
                 <div  className={styles.uploadArea+' '+(dragging?styles.drag:null)}
@@ -170,6 +170,8 @@ const handleDragEnter = (e) => {
             <ToastContainer />
         </div>
     </>
+
 };
 
-export default UploadInfo;
+
+export default RoomsUpload;
