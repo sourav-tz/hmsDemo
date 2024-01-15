@@ -8,6 +8,7 @@ const { studentsInfo } = require('../../controllers/hostelAuthority/studentModul
 const { deleteStudent } = require('../../controllers/hostelAuthority/studentModule/deleteStudent');
 const { singleStudentInfo } = require('../../controllers/hostelAuthority/studentModule/singleStudentInfo');
 const { singleStudentUpload } = require('../../controllers/hostelAuthority/studentModule/singleStudentUpload');
+const { downloadFile } = require('../../controllers/hostelAuthority/studentModule/downloadFile');
 const AdminLogin = require('../../controllers/Login/AdminLogin')
 const AdminLogout = require('../../controllers/LoggingOut/AdminLogOut');
 const isCookie = require('../../controllers/isCookie');
@@ -39,5 +40,7 @@ router.post('/adminLogin', AdminLogin)
 router.post('/adminGoogleLogin', AdminGoogleLogin)
 router.get('/adminLogout', AdminLogout)
 router.get('/isCookie', isCookie)
+
+router.get('/downloadfile',downloadFile);
 
 module.exports = router;
