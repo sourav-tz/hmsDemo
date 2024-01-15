@@ -58,7 +58,7 @@ module.exports = (sequelize, dataTypes) => {
             type: dataTypes.STRING,
         },
         motherName: {
-            type: dataTypes.INTEGER,
+            type: dataTypes.STRING,
         },
         motherContact:{
             type: dataTypes.STRING,
@@ -73,7 +73,7 @@ module.exports = (sequelize, dataTypes) => {
             type: dataTypes.DATEONLY,
         },
         addharNumber: {
-            type: dataTypes.BIGINT(12),
+            type: dataTypes.STRING,
             validate: {
                 is: /^[0-9]{12}$/i, // Validates a 10-digit mobile number
               },
