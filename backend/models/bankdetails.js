@@ -12,7 +12,7 @@ module.exports = (sequelize, dataTypes) => {
             type: dataTypes.STRING,
         },
         accNumber: {
-            type: dataTypes.INTEGER,
+            type: dataTypes.STRING,
         },
         IFSC: {
             type:dataTypes.STRING,

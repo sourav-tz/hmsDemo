@@ -19,7 +19,9 @@ module.exports = (sequelize, dataTypes) => {
             required: true,
             unique: true,
              validate:{
-                isEmail: true,
+                isEmail: {
+                    msg:"Email is not a valid email address"
+                },
              }
         },
         lastUpdatedBy:{

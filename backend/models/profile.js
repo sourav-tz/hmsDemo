@@ -18,7 +18,9 @@ module.exports = (sequelize, dataTypes) => {
         pEmail: {
             type: dataTypes.STRING,
             validate:{
-                isEmail: true,
+                isEmail: {
+                    msg:"pEmail is not an valid email"
+                },
             }
         },
         subAddress: {
@@ -36,13 +38,19 @@ module.exports = (sequelize, dataTypes) => {
         contactNumber:{
             type: dataTypes.STRING,
             validate: {
-              is: /^[0-9]{10}$/i, // Validates a 10-digit mobile number
+                is: {
+                    args:/^[0-9]{10}$/i,
+                    msg:"contactNumber must be 10 digits"
+                  }, // Validates a 10-digit mobile number 
             },
         },
         secondaryContact:{
             type: dataTypes.STRING,
             validate: {
-              is: /^[0-9]{10}$/i, // Validates a 10-digit mobile number
+                is: {
+                    args:/^[0-9]{10}$/i,
+                    msg:"secondaryContact must be 10 digits"
+                  }, // Validates a 10-digit mobile number 
             },
         },
         fatherName: {
@@ -51,19 +59,25 @@ module.exports = (sequelize, dataTypes) => {
         fatherContact:{
             type: dataTypes.STRING,
             validate: {
-              is: /^[0-9]{10}$/i, // Validates a 10-digit mobile number
+                is: {
+                    args:/^[0-9]{10}$/i,
+                    msg:"fatherContact must be 10 digits"
+                  },
             },
         },
         fatherOccupation: {
             type: dataTypes.STRING,
         },
         motherName: {
-            type: dataTypes.INTEGER,
+            type: dataTypes.STRING,
         },
         motherContact:{
             type: dataTypes.STRING,
             validate: {
-              is: /^[0-9]{10}$/i, // Validates a 10-digit mobile number
+                is: {
+                    args:/^[0-9]{10}$/i,
+                    msg:"motherContact must be 10 digits"
+                  },
             },
         },
         motherOccupation: {
@@ -73,9 +87,12 @@ module.exports = (sequelize, dataTypes) => {
             type: dataTypes.DATEONLY,
         },
         addharNumber: {
-            type: dataTypes.BIGINT(12),
+            type: dataTypes.STRING,
             validate: {
-                is: /^[0-9]{12}$/i, // Validates a 10-digit mobile number
+                is: {
+                    args:/^[0-9]{12}$/i,
+                    msg:"addharNumber must be 12 digits"
+                  },
               },
         },
         photoLink: {
