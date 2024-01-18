@@ -9,7 +9,7 @@ import TableLoader from '../../../../Components/TableLoader/TableLoader';
 const AllotRooms = ()=>{
 
     return<>
-    <h1>Rooms Allotement</h1>
+    <h1 className='text-3xl'>Rooms Allotement</h1>
     <div className={styles.container}>
     <div className={styles.roomsBarGraph}>
         <Roomsbargraph />
@@ -20,11 +20,11 @@ const AllotRooms = ()=>{
         </div>
             <div className={styles.MultiSelect}>
                 <p>Status:</p>
-                <MultiSelect />
+                <MultiSelect list={[]} />
             </div>
             <div className={styles.MultiSelect}>
                 <p>Floor:</p>
-                <MultiSelect />
+                <MultiSelect list={[]}/>
             </div>
             <div className={styles.buttonArea}>
                 <Button text="Reset" />

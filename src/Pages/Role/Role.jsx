@@ -30,12 +30,12 @@ export default function(){
         {loadingPage?<Loadingpage/>:<main>
         <div className={styles.container} >
             <div className={styles.header}>
-            <h3>Welcome To</h3>
-            <h2 className={styles.logo}>NIT <span className={styles.wrapText}>Hostel Management System</span> </h2>
+            <h3 className='text-xl'>Welcome To</h3>
+            <h2 className={styles.logo+' text-3xl'}>NIT <span className={styles.wrapText}>Hostel Management System</span> </h2>
             </div>
             <div className={styles.rollSection}>
             <div className={styles.whoAreYou}>
-                <h3>Who are you?</h3>
+                <h3 className='text-xl'>Who are you?</h3>
             </div>
             <div className={styles.cardSection}>
                 <div className={styles.card}>

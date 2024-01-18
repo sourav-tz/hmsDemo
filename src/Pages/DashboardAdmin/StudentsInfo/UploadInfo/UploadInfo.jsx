@@ -9,7 +9,7 @@ import config from '../../../../config/config';
 import formdataConfig from '../../../../config/formdata';
 import axios from 'axios';
 import TableLoader from '../../../../Components/TableLoader/TableLoader';
-import StudentTable from '../../../../Components/StudentTable/StudentTable';
+import StudentTable from '../../../../Components/Tables/StudentsTable/StudentTable';
 import Accordion from '../../../../Components/Accordion/Accordion';
 
 const UploadInfo = ()=>{
@@ -18,7 +18,8 @@ const UploadInfo = ()=>{
     const [file,setFiles] = useState(0);
     const [dragging, setDragging] = useState(false);
     const [rows,setRows] = useState(null);
-
+    const [duplicate,setDuplicate] = useState([]);
+    const [loading,setLoading] = useState(false);
 
   const accordData = [
     {
@@ -71,6 +72,7 @@ const handleDragEnter = (e) => {
 
 
     const callFileUpload = () => {
+      setLoading(true);
         return new Promise((resolve, reject) => {
           const bodyForData = new FormData();
           bodyForData.append("file", file);
@@ -88,14 +90,19 @@ const handleDragEnter = (e) => {
               console.log(res);
               setRows(res.data[1]);
               if(res.data[1].length!=0){
+                  setLoading(false);
+                  setDuplicate(res.data[1]);;
                   reject("Duplicate Data");
                 }else if(res.data[0].length==0){
+                  setLoading(false);
                     reject("Invalid Format in CSV");
               }else{
+                setLoading(false);
                 resolve();
               }
             })
             .catch(err => {
+              setLoading(false);
               console.log(err);
               reject("Server Error Or Format is Not Proper"); // Reject the Promise in case of an error
             });
@@ -140,8 +147,8 @@ const handleDragEnter = (e) => {
 
     return<>
         <div className={styles.container}>
-            <div className={styles.Header}><h1>Upload Student Info</h1></div>
-            <div className={styles.uploadContainer}>
+            <div className={styles.Header}><h1 className='text-3xl'>Upload Student Info</h1></div>
+            {duplicate.length===0&&loading===false?<div className={styles.uploadContainer}>
 
                 <div  className={styles.uploadArea+' '+(dragging?styles.drag:null)}
                     onDragEnter={handleDragEnter}
@@ -156,17 +163,17 @@ const handleDragEnter = (e) => {
                 </div>
                 <div className={styles.uploadInfoAccord}>
                   <Accordion accordData={accordData}/>
-                </div>
-                {/* <TableLoader /> */}
-                {/* <div className={styles.duplicateTable}>
+                </div></div>:null}
+                {loading?<TableLoader />:null}
+                {duplicate.length!==0?<div className={styles.duplicateTable}>
                     <h3>Duplicate Data</h3>
-                    <StudentTable />
+                    <StudentTable data={duplicate}/>
                     <div className={styles.buttonArea}>
-                        <Button text="Discard" />
+                        <Button onClick={()=>{setDuplicate([])}} text="Discard" />
                         <Button style={{marginLeft:'25px'}} variant="contained" text="Upload" />
                     </div>
-                </div> */}
-            </div>
+                </div>:null}
+            
             <ToastContainer />
         </div>
     </>

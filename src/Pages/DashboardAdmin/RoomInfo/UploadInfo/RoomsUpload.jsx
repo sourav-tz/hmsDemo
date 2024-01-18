@@ -9,7 +9,7 @@ import config from '../../../../config/config';
 import formdataConfig from '../../../../config/formdata';
 import axios from 'axios';
 import TableLoader from '../../../../Components/TableLoader/TableLoader';
-import StudentTable from '../../../../Components/StudentTable/StudentTable';
+import StudentTable from '../../../../Components/Tables/StudentsTable/StudentTable';
 import Accordion from '../../../../Components/Accordion/Accordion';
 
 const RoomsUpload = ()=>{
@@ -140,7 +140,7 @@ const handleDragEnter = (e) => {
 
     return<>
         <div className={styles.container}>
-            <div className={styles.Header}><h1>Upload Rooms Info</h1></div>
+            <div className={styles.Header}><h1 className='text-3xl'>Upload Rooms Info</h1></div>
             <div className={styles.uploadContainer}>
 
                 <div  className={styles.uploadArea+' '+(dragging?styles.drag:null)}
