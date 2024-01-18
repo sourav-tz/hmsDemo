@@ -1,0 +1,56 @@
+@import '../../MainStyles/Colors.scss';
+
+.container{
+    min-height: 100vh;
+    width: 100%;
+    position: fixed;
+    top:0;
+    left:0;
+    z-index: 1000;
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    background-color: white;  
+}
+
+
+.invisible{
+    display: none;
+}
+
+.header{
+    height: 70px;
+    width: 100%;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding:0.2rem 0.7rem;
+    box-sizing: border-box;
+    background-color: $secondary;
+    z-index: 1000;
+}
+
+.closeIcon{
+    cursor: pointer;
+}
+
+.content{
+    flex:1;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.details{
+    padding:7rem 7rem;
+    width: 80%;
+    height: 600px;
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 25px;
+    row-gap: 35px;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
