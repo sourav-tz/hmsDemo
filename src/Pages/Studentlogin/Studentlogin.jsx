@@ -25,17 +25,17 @@ const Studentlogin = ()=>{
         <div className={styles.opacityCover}></div>
         <div onMouseOver={onMouse} onMouseLeave={onLeave} onClick={()=>{Navigator("/");localStorage.removeItem('role')}} className={styles.changeRole}>
         <IconContext.Provider value={{size:20}}>
-            <p><IoArrowBack className={styles.backicon}/><span id="role-content" className={styles.roleContent}></span></p>
+            <p className='flex'><IoArrowBack className={styles.backicon}/><span id="role-content" className={styles.roleContent}></span></p>
             </IconContext.Provider>
         </div>
         <div className={styles.logoContent}>
             <img className={styles.logo} src={logoImage} />
-            <h1>NIT Hostel Management <br/>System</h1>
+            <h1 className='text-4xl'>NIT Hostel Management <br/>System</h1>
         </div>
         </div>
         <div className={styles.contentSection}>
             <div className={styles.contentHeadings}>
-                <h3>Student Login</h3>
+                <h3 className='text-3xl'>Student Login</h3>
                 <p>Enter your email and Password to login to dashboard</p>
             </div>
             <div className={styles.inputSection}>
@@ -47,7 +47,7 @@ const Studentlogin = ()=>{
                 <div style={{display:'flex', flexDirection: 'row'}}>
                 <p style={{marginTop:'10px',marginRight:'10px',fontSize:'14px'}}>Don't Have an Account?</p>
                 <div>
-                    <Button style={{padding:'5px 20px'}} variant="contained" text="Sign Up" />
+                    <Button onClick={()=>{Navigator('/StudentSignUp')}} style={{padding:'5px 20px'}} variant="contained" text="Sign Up" />
                 </div>
                 </div>
             </div>

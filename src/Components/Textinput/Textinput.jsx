@@ -29,7 +29,7 @@ export default function({label,onClick,style,type,onChange,ref}){
     return <>
         <div className={styles.inputWrapper}>
         {Label?<label className={styles.label} >{label}</label>:null}
-        <input ref={ref} onChange={onChange} style={style} id='input-box' type={type} onClick={onClick} onFocus={()=>{setFocus(true)}} onBlur={()=>{setFocus(false)}} className={styles.input} />
+        <input ref={ref} onChange={onChange} style={style} id='input-box' type={type} onClick={onClick} onFocus={()=>{setFocus(true)}} onBlur={()=>{setFocus(false)}} className={styles.input+' text-black'} />
         </div>
     </>
 }

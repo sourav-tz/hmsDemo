@@ -1,0 +1,4 @@
+rollNo,firstName,lastName,year,email,bloodGroup,identificationMark,gender,pEmail,subAddress,city,state,pinCode,contactNumber,secondaryContact,fatherName,fatherContact,fatherOccupation,motherName,motherContact,motherOccupation,dob,addharNumber,accHolderName,bankName,accNumber,IFSC,hostelNo,courseId
+1,Deepak,Sharma,2,deepak@gmail.com,b+,no,male,deepak@gmail.com,saraswati colony,kkr,hry,136131,1234567891,8888888888,omparkash,1234567891,,,,,25-Mar-15,,Deepak,SBI,,,,,
+2,aditya,kumar,2,aditya@gmail.com,b+,no,male,aditya@gmail.com,bareli,bareli,up,12232,1212121212,1212121212,,,,,,,,,Aditya,PNB,,,,,
+3,maaz,ansari,2,maaz@gmail.com,b+,no,male,maaz@gmail.com,nit,kkr,hry,13131,2323232323,,,,,,,,,,Maaz,HDFC,,,,,

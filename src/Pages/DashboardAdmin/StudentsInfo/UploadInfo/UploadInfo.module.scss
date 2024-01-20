@@ -19,6 +19,7 @@
     justify-content: center;
     align-items: center;
     width: 100%;
+    flex-wrap: wrap;
 }
 
 .uploadArea{
@@ -58,4 +59,9 @@
 
 .drag{
     background-color: rgb(199, 230, 241);
+}
+
+.uploadInfoAccord{
+    flex-basis: 100%;
+    margin-top: 25px;
 }

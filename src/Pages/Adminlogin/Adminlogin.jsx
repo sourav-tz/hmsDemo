@@ -7,18 +7,20 @@ import { IconContext } from 'react-icons'
 import { useNavigate } from 'react-router-dom'
 import { changeLoginStatus } from '../../Store/Reducers/loginSlice'
 import { useDispatch } from 'react-redux'
+import { setUserData } from '../../Store/Reducers/userSlice'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import config from '../../config/config'
 import { GoogleAuthProvider, getAuth, signInWithPopup } from '@firebase/auth'
-import { app } from '../../Firebase/firebase'
-
+import { app } from '../../Firebase/firebase';
+import GoogleButton from '../../Components/Button/GoogleButton';
+import { setActiveOption,setActiveSubOption } from '../../Store/Reducers/sideBarSlice'
 export default function () {
   const [data, setData] = useState({ email: null, password: null })
   const [loading, setLoading] = useState(false)
-  const Dispatcher = useDispatch()
+  const Dispatcher = useDispatch();
 
   useEffect(() => {
     axios
@@ -77,6 +79,9 @@ export default function () {
         .post('http://localhost:3000/HA/adminGoogleLogin', data, config)
         .then((res) => {
           console.log(res)
+          Dispatcher(setUserData(res.data));
+          Dispatcher(setActiveOption('Home'));
+          Dispatcher(setActiveSubOption('Home'));
           Navigator('/adminDashboard')
           setLoading(false)
         })
@@ -104,6 +109,9 @@ export default function () {
       .post('http://localhost:3000/HA/adminLogin', data, config)
       .then((res) => {
         console.log(res)
+        Dispatcher(setUserData(res.data));
+        Dispatcher(setActiveOption('Home'));
+        Dispatcher(setActiveSubOption('Home'));
         Navigator('/adminDashboard')
         setLoading(false)
       })
@@ -131,7 +139,7 @@ export default function () {
             className={styles.changeRole}
           >
             <IconContext.Provider value={{ size: 20 }}>
-              <p>
+              <p className='flex'>
                 <IoArrowBack className={styles.backicon} />
                 <span id='role-content' className={styles.roleContent}></span>
               </p>
@@ -139,7 +147,7 @@ export default function () {
           </div>
           <div className={styles.logoContent}>
             <img className={styles.logo} src={logoImage} />
-            <h1>
+            <h1 className='text-4xl font-semibold'>
               NIT Hostel Management <br />
               System
             </h1>
@@ -147,7 +155,7 @@ export default function () {
         </div>
         <div className={styles.contentSection}>
           <div className={styles.contentHeadings}>
-            <h3>Admin Login</h3>
+            <h3 className='text-2xl font-semibold'>Admin Login</h3>
             <p>Enter your email and Password to login to dashboard</p>
           </div>
           <div className={styles.inputSection}>
@@ -171,15 +179,15 @@ export default function () {
                 text='login'
               />
 
-              <Button
+              <GoogleButton
                 onClick={handelGoogleClick}
                 loading={loading}
                 variant='contained'
-                style={{ marginTop: '25px', minWidth: '300px' }}
-                text='CONTINUE WITH GOOGLE'
+                style={{ marginTop: '25px' }}
+                text='Continue With Google'
               />
 
-              <p style={{ marginTop: '10px' }}>Forgot Password?</p>
+              <p onClick={()=>{Navigator('/forgetPass')}} className='cursor-pointer' style={{ marginTop: '10px' }}>Forgot Password?</p>
             </div>
           </div>
         </div>

@@ -1,0 +1,65 @@
+$accordShadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+
+.container{
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    box-shadow: $accordShadow;
+    border-radius: 0.5rem;
+}
+
+.accordTitle{
+    min-height: 50px;
+    border-bottom:2px solid rgb(170, 170, 170);
+    border-radius: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding:0.2rem 2rem;
+    cursor: pointer;
+
+
+}
+
+
+.accordBody{
+    padding: 1rem 2rem;
+    display: none;
+}
+
+.openAccord{
+    display: flex;
+    flex-direction: column;
+    row-gap: 15px;
+    transition: ease;
+    animation: 0.2s animate ease-out both;
+    transform-box: fill-box;
+    transform-origin: top;
+
+}
+
+@keyframes animate {
+
+    from{
+        transform: scaleY(0%);
+    }
+
+    to{
+        transform: scaleY(100%);
+    }
+
+}
+
+.points{
+    display: flex;
+    flex-direction: row;
+    column-gap: 15px;
+    
+}
+
+.pointDetail{
+    display: flex;
+    flex-wrap: wrap;
+    width: 600px;
+
+}
