@@ -25,7 +25,7 @@ const Studentlogin = ()=>{
         <div className={styles.opacityCover}></div>
         <div onMouseOver={onMouse} onMouseLeave={onLeave} onClick={()=>{Navigator("/");localStorage.removeItem('role')}} className={styles.changeRole}>
         <IconContext.Provider value={{size:20}}>
-            <p><IoArrowBack className={styles.backicon}/><span id="role-content" className={styles.roleContent}></span></p>
+            <p className='flex'><IoArrowBack className={styles.backicon}/><span id="role-content" className={styles.roleContent}></span></p>
             </IconContext.Provider>
         </div>
         <div className={styles.logoContent}>
@@ -47,7 +47,7 @@ const Studentlogin = ()=>{
                 <div style={{display:'flex', flexDirection: 'row'}}>
                 <p style={{marginTop:'10px',marginRight:'10px',fontSize:'14px'}}>Don't Have an Account?</p>
                 <div>
-                    <Button style={{padding:'5px 20px'}} variant="contained" text="Sign Up" />
+                    <Button onClick={()=>{Navigator('/StudentSignUp')}} style={{padding:'5px 20px'}} variant="contained" text="Sign Up" />
                 </div>
                 </div>
             </div>

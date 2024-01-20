@@ -187,7 +187,7 @@ export default function () {
                 text='Continue With Google'
               />
 
-              <p style={{ marginTop: '10px' }}>Forgot Password?</p>
+              <p onClick={()=>{Navigator('/forgetPass')}} className='cursor-pointer' style={{ marginTop: '10px' }}>Forgot Password?</p>
             </div>
           </div>
         </div>
