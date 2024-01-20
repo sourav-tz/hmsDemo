@@ -12,6 +12,8 @@ const AdminLogin = require('../../controllers/Login/AdminLogin')
 const AdminLogout = require('../../controllers/LoggingOut/AdminLogOut');
 const isCookie = require('../../controllers/isCookie');
 const AdminGoogleLogin = require('../../controllers/Login/AdminGoogleLogin');
+const bulkRoomAllotmentToStudent = require('../../controllers/hostelAuthority/RoomModule/bulkRoomAllotmentToStudents');
+const singleStudentAllot = require('../../controllers/hostelAuthority/RoomModule/singleStudentAllotment');
 
 
 var storage = multer.diskStorage({
@@ -39,5 +41,10 @@ router.post('/adminLogin', AdminLogin)
 router.post('/adminGoogleLogin', AdminGoogleLogin)
 router.get('/adminLogout', AdminLogout)
 router.get('/isCookie', isCookie)
+
+
+// Rooms route
+router.post('/bulkRoomAllot', upload.single('file'), csvToJsonConverter, bulkRoomAllotmentToStudent)
+router.post('/singleRoomAllot', singleStudentAllot);
 
 module.exports = router;
