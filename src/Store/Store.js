@@ -15,6 +15,7 @@ import userSlice from './Reducers/userSlice';
 import loginSlice from './Reducers/loginSlice';
 import sideBarSlice from './Reducers/sideBarSlice';
 import viewInfoSlice from './Reducers/viewInfoSlice';
+import superSidebarSlice from './Reducers/superSidebarSlice';
 
 
 
@@ -22,14 +23,16 @@ import viewInfoSlice from './Reducers/viewInfoSlice';
 const persistConfig = {
   key: 'root',
   storage, // storage can be localStorage or sessionStorage
-  whitelist: ['userStorage','sideBarStates'], // Add the slices you want to persist
+  whitelist: ['userStorage','sideBarStates','superSidebarSlice'], // Add the slices you want to persist
 };
 
 const rootReducer =combineReducers({ 
   'loginStatus':loginSlice,
     'sideBarStates':sideBarSlice,
     'viewInfoStates':viewInfoSlice,
-    'userStorage':userSlice
+    'userStorage':userSlice,
+    'superSideBarStates':superSidebarSlice
+
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

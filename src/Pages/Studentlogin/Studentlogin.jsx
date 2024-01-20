@@ -30,12 +30,12 @@ const Studentlogin = ()=>{
         </div>
         <div className={styles.logoContent}>
             <img className={styles.logo} src={logoImage} />
-            <h1>NIT Hostel Management <br/>System</h1>
+            <h1 className='text-4xl'>NIT Hostel Management <br/>System</h1>
         </div>
         </div>
         <div className={styles.contentSection}>
             <div className={styles.contentHeadings}>
-                <h3>Student Login</h3>
+                <h3 className='text-3xl'>Student Login</h3>
                 <p>Enter your email and Password to login to dashboard</p>
             </div>
             <div className={styles.inputSection}>

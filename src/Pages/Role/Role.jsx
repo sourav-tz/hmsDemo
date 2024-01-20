@@ -3,6 +3,7 @@ import Button from '../../Components/Button/Button';
 import adminImage from './assets/admin.png';
 import studentImage from './assets/student.png';
 import Footer from '../../Components/Footer/Footer';
+import officeImage from '../../Assets/officeImage.svg';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import Loadingpage from '../../Components/Loadingpage/Loadingpage';
@@ -56,6 +57,12 @@ export default function(){
                     <img src={adminImage} alt='Admin-Image' />
                     </div>
                     <Button onClick={()=>{Navigator('/adminLogin');localStorage.setItem('role','Admin');}} style={{width:'100%'}} variant='contained' text='Admin' />
+                </div>
+                <div className={styles.card}>
+                <div className={styles.cardImage}>
+                    <img src={officeImage} alt='Admin-Image' />
+                    </div>
+                    <Button onClick={()=>{Navigator('/superAdminLogin');localStorage.setItem('role','Admin');}} style={{width:'100%'}} variant='contained' text='Super Admin' />
                 </div>
                 </div>
             </div>
