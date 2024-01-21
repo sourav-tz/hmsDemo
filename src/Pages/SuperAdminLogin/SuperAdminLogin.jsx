@@ -1,4 +1,4 @@
-import styles from './Adminlogin.module.scss'
+import styles from './SuperAdminLogin.module.scss';
 import Textinput from '../../Components/Textinput/Textinput'
 import Button from '../../Components/Button/Button'
 import logoImage from '../../Assets/nit-logo.png'
@@ -13,21 +13,14 @@ import axios from 'axios'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import config from '../../config/config'
-import { GoogleAuthProvider, getAuth, signInWithPopup } from '@firebase/auth'
-import { app } from '../../Firebase/firebase';
+
 import GoogleButton from '../../Components/Button/GoogleButton';
-import { setActiveOption,setActiveSubOption } from '../../Store/Reducers/sideBarSlice'
-export default function () {
+
+export default function SuperAdminLogin () {
   const [data, setData] = useState({ email: null, password: null })
   const [loading, setLoading] = useState(false)
-  const Dispatcher = useDispatch();
 
-  useEffect(() => {
-    axios
-      .get('http://localhost:3000/HA/adminLogout', config)
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err))
-  }, [])
+
 
   const onMouse = () => {
     document.getElementById('role-content').innerText = 'Change Role'
@@ -55,73 +48,11 @@ export default function () {
 
   // GOOGLE OAuth
   const handelGoogleClick = async () => {
-    try {
-      const provider = new GoogleAuthProvider()
-      const auth = getAuth(app)
-
-      const result = await signInWithPopup(auth, provider)
-      // console.log(result)
-
-      const data = {
-        name: result.user.displayName,
-        email: result.user.email,
-        photo: result.user.photoURL,
-      }
-
-      const config = {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        withCredentials: true,
-      }
-
-      axios
-        .post('http://localhost:3000/HA/adminGoogleLogin', data, config)
-        .then((res) => {
-          console.log(res)
-          Dispatcher(setUserData(res.data));
-          Dispatcher(setActiveOption('Home'));
-          Dispatcher(setActiveSubOption('Home'));
-          Navigator('/adminDashboard')
-          setLoading(false)
-        })
-        .catch((err) => {
-          console.log(err)
-          setLoading(false)
-          toast.error('Invalid UserName or Password !', {
-            position: toast.POSITION.TOP_RIGHT,
-          })
-        })
-    } catch (error) {
-      console.log('Could not Login with Google' + error)
-    }
+   
   }
 
   const handleSubmit = () => {
-    setLoading(true)
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      withCredentials: true,
-    }
-    axios
-      .post('http://localhost:3000/HA/adminLogin', data, config)
-      .then((res) => {
-        console.log(res)
-        Dispatcher(setUserData(res.data));
-        Dispatcher(setActiveOption('Home'));
-        Dispatcher(setActiveSubOption('Home'));
-        Navigator('/adminDashboard')
-        setLoading(false)
-      })
-      .catch((err) => {
-        console.log(err)
-        setLoading(false)
-        toast.error('Invalid UserName or Password !', {
-          position: toast.POSITION.TOP_RIGHT,
-        })
-      })
+        Navigator('/superAdminDashboard')
   }
 
   return (
@@ -155,8 +86,8 @@ export default function () {
         </div>
         <div className={styles.contentSection}>
           <div className={styles.contentHeadings}>
-            <h3 className='text-2xl font-semibold'>Admin Login</h3>
-            <p>Enter your email and Password to login to dashboard</p>
+            <h3 className='text-2xl font-semibold'>Super Admin</h3>
+            <p>Enter your Email and Password to login to dashboard</p>
           </div>
           <div className={styles.inputSection}>
             <div className={styles.inputBoxes}>
@@ -187,7 +118,7 @@ export default function () {
                 text='Continue With Google'
               />
 
-              <p onClick={()=>{Navigator('/forgetPass')}} className='cursor-pointer' style={{ marginTop: '10px' }}>Forgot Password?</p>
+              <p style={{ marginTop: '10px' }}>Forgot Password?</p>
             </div>
           </div>
         </div>

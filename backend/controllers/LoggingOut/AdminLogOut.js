@@ -4,12 +4,12 @@ require("dotenv").config();
 const AdminLogOut = async (req, res) => {
     try {
         const cookies = req.headers.cookie;
-        // console.log('logout cookies = ' + cookies + "\n");
+
         if (!cookies) {
             return res.status(400).json('cookie expired you can log out');
         }
         const prevToken = cookies.split("=")[1];
-        console.log(String(prevToken));
+        // console.log(String(prevToken));
 
         if (!prevToken) {
             return res.status(400).json('could not find prevtoken ,please login again');
@@ -17,21 +17,17 @@ const AdminLogOut = async (req, res) => {
 
         jwt.verify(
             String(prevToken),
-            process.env.JWT_SECRET || 'SECRET_KEY', (err, user) => {
+            process.env.JWT_SECRET_KEY, (err, user) => {
                 if (err) {
                     console.log(err);
                     return res.status(400).json("auth failed in logout token");
                 }
+
                 res.clearCookie(`${user.email}`);
                 req.cookies[`${user.email}`] = "";
                 console.log("logged out successfully");
                 return res.status(200).json({ "message": "Sucessfully logged out" });
             })
-
-
-
-
-
 
     } catch (err) {
         console.log(err);
