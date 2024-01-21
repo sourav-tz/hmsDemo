@@ -24,13 +24,13 @@ router.get('/', (req, res) => {
     return res.send('success')
 })
 
-router.get('/getCourses/:paranoid', getCourses);
+router.get('/getCourses', getCourses);
 router.post('/addCourse', addCourse);
 router.delete('/removeCourse', removeCourse);
 router.post('/enableCourse', enableCourse);
 router.patch('/updateCourse', updateCourse);
 
-router.get('/getHostels/:paranoid', getHostels);
+router.get('/getHostels', getHostels);
 router.post('/addHostel', addHostel);
 router.delete('/removeHostel', removeHostel);
 router.post('/enableHostel', enableHostel);

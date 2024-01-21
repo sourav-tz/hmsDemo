@@ -31,6 +31,8 @@ export default function Sidebar(){
     const [subStudent, setSubStudent] = useState(false);
     const [subRoom, setSubRoom] = useState(false);
     const [subSettings, setSubSettings] = useState(false);
+    const [subHostel, setSubHostel] = useState(false);
+    const [subCourses, setSubCourses] = useState(false);
 
     const openMenu = ()=>{
         changeState(true);
@@ -47,21 +49,43 @@ export default function Sidebar(){
             setSubStudent(false);
             setSubRoom(false);
             setSubSettings(false);
+            setSubHostel(false);
+            setSubCourses(false);
         }else if(value ==='studentInfo'){
             setSubHome(false);
             setSubStudent(prev => !prev);
             setSubRoom(false);
             setSubSettings(false);
+            setSubHostel(false);
+            setSubCourses(false);
         }else if(value === 'roomInfo'){
             setSubHome(false);
             setSubStudent(false);
             setSubRoom(prev=>!prev);
             setSubSettings(false);
+            setSubHostel(false);
+            setSubCourses(false);
         }else if(value === 'settings'){
             setSubHome(false);
             setSubStudent(false);
             setSubRoom(false);
             setSubSettings(prev=>!prev);
+            setSubHostel(false);
+            setSubCourses(false);
+        }else if(value === 'Hostels'){
+            setSubHome(false);
+            setSubStudent(false);
+            setSubRoom(false);
+            setSubSettings(false);
+            setSubHostel(prev=>!prev);
+            setSubCourses(false);
+        }else if(value === 'Courses'){
+            setSubHome(false);
+            setSubStudent(false);
+            setSubRoom(false);
+            setSubSettings(false);
+            setSubHostel(false);
+            setSubCourses(prev=>!prev);
         }
 
     }
@@ -105,6 +129,18 @@ export default function Sidebar(){
                         <ul className={state&&subRoom?null:styles.hidden}>
                         <li onClick={()=>{changeActiveOption('roomInfo');changeActiveSubOption('riAllotRoom')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='riAllotRoom'?styles.activeSubOption:null)}>Allot Rooms</li>
                         <li onClick={()=>{changeActiveOption('roomInfo');changeActiveSubOption('riUploadInfo')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='riUploadInfo'?styles.activeSubOption:null)}>Upload Info</li>
+                        </ul>
+            </div>
+            <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
+                        <p onClick={()=>{changeSubMenu('Hostels')}} className={(activeOption==='Hostels'?styles.activeItem:null)+ ' flex items-center gap-2'}><MdOutlineBedroomChild /> <span className={(state?null:styles.hidden)+' mt-1'}>Hostels</span></p>
+                        <ul className={state&&subHostel?null:styles.hidden}>
+                        <li onClick={()=>{changeActiveOption('Hostels');changeActiveSubOption('saHostels')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='saHostels'?styles.activeSubOption:null)}>manage</li>
+                        </ul>
+            </div>
+            <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
+                        <p onClick={()=>{changeSubMenu('Courses')}} className={(activeOption==='Courses'?styles.activeItem:null)+ ' flex items-center gap-2'}><MdOutlineBedroomChild /> <span className={(state?null:styles.hidden)+' mt-1'}>Courses</span></p>
+                        <ul className={state&&subCourses?null:styles.hidden}>
+                        <li onClick={()=>{changeActiveOption('Courses');changeActiveSubOption('saCourses')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='saCourses'?styles.activeSubOption:null)}>manage</li>
                         </ul>
             </div>
             </div>

@@ -14,6 +14,8 @@ const StudentUploadInfo = lazy(()=>import('./StudentsInfo/UploadInfo/UploadInfo'
 const StudentViewInfo = lazy(()=>import('./StudentsInfo/ViewInfo/ViewInfo'));
 const RoomsAllotement = lazy(()=>import('./RoomInfo/AllotRooms/AllotRooms'));
 const RoomsUpload = lazy(()=>import('./RoomInfo/UploadInfo/RoomsUpload'));
+const Hostels = lazy(()=>import('./SuperAdmin/Hostels/Hostels'));
+const Courses = lazy(()=>import('./SuperAdmin/Courses/Courses'));
 import { driver } from "driver.js";
 import "driver.js/dist/driver.css";
 
@@ -118,6 +120,21 @@ return <>
         <div className={styles.contentSpace}>
             <Suspense fallback={<Loadingpage />}>
                 <RoomsUpload />
+            </Suspense>
+        </div>
+        :null}
+        
+        {activeOptions==='saHostels'?
+        <div className={styles.contentSpace}>
+            <Suspense fallback={<Loadingpage />}>
+                <Hostels />
+            </Suspense>
+        </div>
+        :null}
+        {activeOptions==='saCourses'?
+        <div className={styles.contentSpace}>
+            <Suspense fallback={<Loadingpage />}>
+                <Courses />
             </Suspense>
         </div>
         :null}
