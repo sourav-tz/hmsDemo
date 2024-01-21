@@ -16,6 +16,8 @@ const isCookie = require('../../controllers/isCookie');
 const AdminGoogleLogin = require('../../controllers/Login/AdminGoogleLogin');
 const bulkRoomAllotmentToStudent = require('../../controllers/hostelAuthority/RoomModule/bulkRoomAllotmentToStudents');
 const singleStudentAllot = require('../../controllers/hostelAuthority/RoomModule/singleStudentAllotment');
+const auth = require('../../middlewares/auth');
+const singleStudentRemove = require('../../controllers/hostelAuthority/RoomModule/singleStudentRemove');
 
 
 var storage = multer.diskStorage({
@@ -34,7 +36,7 @@ router.get('/', (req, res) => {
 })
 router.post('/bulkCreate', upload.single('file'), csvToJsonConverter, bulkCreateController);
 router.patch('/updateBulk', upload.single('file'), csvToJsonConverter, updateBulk);
-router.get('/studentsInfo', studentsInfo);
+router.get('/studentsInfo', auth, studentsInfo);
 router.post('/singleStudentUpload', singleStudentUpload);
 router.get('/student/:rollNo', singleStudentInfo);
 router.delete('/deleteStudent', deleteStudent);
@@ -50,5 +52,6 @@ router.get('/isCookie', isCookie)
 router.post('/bulkRoomAllot', upload.single('file'), csvToJsonConverter, bulkRoomAllotmentToStudent)
 router.post('/singleRoomAllot', singleStudentAllot);
 router.get('/downloadfile', downloadFile);
+router.post('/singleRoomRemove', singleStudentRemove)
 
 module.exports = router;
