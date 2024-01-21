@@ -9,10 +9,11 @@ const db = require('../../models/index')
 const getHostels=async (req, res) => {
   try {
     const para = req.params.paranoid =="true";
-    const data= await db.hostels.findAll({
+    let data= await db.hostels.findAll({
         paranoid:para
     });
-  return res.json({data:data});
+    const result=data.map((key)=>(key.dataValues.deletedAt)?{...key.dataValues,active:false}:{...key.dataValues,active:true});
+    return res.json({data:result});
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: error });
