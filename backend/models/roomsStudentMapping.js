@@ -1,6 +1,6 @@
 module.exports = (sequelize, dataTypes) => {
 
-    const roomshistory = sequelize.define('roomshistory', {
+    const roomsStudentMapping = sequelize.define('roomsStudentMapping', {
         roomId: {
             type: dataTypes.INTEGER,
         },
@@ -14,13 +14,16 @@ module.exports = (sequelize, dataTypes) => {
             type: dataTypes.STRING,
         },
         //?checkin date == created at date
-        lastUpdatedBy:{
-           type:dataTypes.STRING,
-           allowNull: false,
-           field:'last_updated_by'
+        lastUpdatedBy: {
+            type: dataTypes.STRING,
+            allowNull: false,
+            field: 'last_updated_by'
         },
-    },{
-        updatedAt: 'last_updated_at'
+
+    }, {
+        updatedAt: 'last_updated_at',
+        paranoid: true,
+        deletedAt: 'checkOutDate'
     })
-    return roomshistory;
+    return roomsStudentMapping;
 }
