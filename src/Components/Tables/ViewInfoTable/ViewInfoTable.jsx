@@ -10,7 +10,7 @@ import { changeModalState,setModalData } from '../../../Store/Reducers/viewInfoS
 
 
 const ViewInfoTable = ({data})=>{
-
+  console.log(data);
   // Row Data: The data to be displayed.
   const [rowData, setRowData] = useState([]);
   const Dispatcher = useDispatch();
@@ -21,15 +21,6 @@ const ViewInfoTable = ({data})=>{
       setRowData(data);
     }
   }, [data]);
-
-
-
-
-
-
-
-
-
   
   // Column Definitions: Defines & controls grid columns.
   const [colDefs, setColDefs] = useState([

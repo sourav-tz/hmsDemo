@@ -8,12 +8,12 @@ const db = require('../../models/index')
 
 const getHostels=async (req, res) => {
   try {
-    const para = req.params.paranoid =="true";
+    // const para = req.params.paranoid =="true";
     let data= await db.hostels.findAll({
-        paranoid:para
+        paranoid:false
     });
     const result=data.map((key)=>(key.dataValues.deletedAt)?{...key.dataValues,active:false}:{...key.dataValues,active:true});
-    return res.json({data:result});
+    return res.json(result);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: error });
@@ -39,7 +39,8 @@ const addHostel=async (req,res)=>{
 };
 const removeHostel = async (req,res)=>{
     try {
-        const {hostelNo,softdelete} = req.body;
+        const hostelNo = req.query.hostelNo;
+        const softdelete=req.query.softdelete=="true";
         const deleted=await db.hostels.destroy({
             where:{hostelNo},
             force:softdelete
