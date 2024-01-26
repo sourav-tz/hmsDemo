@@ -47,7 +47,7 @@ const AdminLogin = async (req, res) => {
         }
 
     } catch (error) {
-        res.status(400).json({ error: error })
+        res.status(400).json({ message: error.message })
     }
 
 }

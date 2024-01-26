@@ -8,11 +8,11 @@ const db = require('../../models/index')
 
 const getCourses=async (req, res) => {
   try {
-    const para = req.params.paranoid =="true";
     const data= await db.courses.findAll({
-        paranoid:para
+        paranoid:false
     });
-  return res.json({data:data});
+    const result=data.map((key)=>(key.dataValues.deletedAt)?{...key.dataValues,active:false}:{...key.dataValues,active:true});
+  return res.json(result);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: error });
@@ -38,7 +38,8 @@ const addCourse=async (req,res)=>{
 };
 const removeCourse = async (req,res)=>{
     try {
-        const {courseId,softdelete} = req.body;
+        const courseId = req.query.courseId;
+        const softdelete=req.query.softdelete=="true";
         const deleted=await db.courses.destroy({
             where:{courseId},
             force:softdelete
@@ -52,6 +53,8 @@ const removeCourse = async (req,res)=>{
 const enableCourse = async (req,res)=>{
     try {
         const {courseId} = req.body;
+        console.log("courseId");
+        console.log(courseId);
         const enabled=await db.courses.restore({
             where:{courseId}
         });
