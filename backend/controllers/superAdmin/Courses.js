@@ -1,5 +1,5 @@
 const db = require('../../models/index')
-//* read client should give if needs current courses or all
+//* read 
 //* add
 //* softdelete (disable)
 //* permanent delete (can only delete if mistakenly added) it will be resticted if course student exists
@@ -40,11 +40,11 @@ const removeCourse = async (req,res)=>{
     try {
         const courseId = req.query.courseId;
         const softdelete=req.query.softdelete=="true";
-        const deleted=await db.courses.destroy({
+        await db.courses.destroy({
             where:{courseId},
             force:softdelete
         });
-      return res.json({data:deleted});
+      return res.json({message:"successfully deleted",data:data});
       } catch (error) {
         console.error(error);
         return res.status(500).json({ error: error });
@@ -53,12 +53,10 @@ const removeCourse = async (req,res)=>{
 const enableCourse = async (req,res)=>{
     try {
         const {courseId} = req.body;
-        console.log("courseId");
-        console.log(courseId);
-        const enabled=await db.courses.restore({
+        await db.courses.restore({
             where:{courseId}
         });
-      return res.json({data:enabled});
+      return res.json({message:"successfully enabled",data:data});
       } catch (error) {
         console.error(error);
         return res.status(500).json({ error: error });
@@ -67,10 +65,10 @@ const enableCourse = async (req,res)=>{
 const updateCourse=async (req, res) => {
   try {
     const data = req.body;
-    const updated=await db.courses.update(data,{
+    await db.courses.update(data,{
         where:{courseId:data.courseId}
     });
-  return res.json({data:updated});
+  return res.json({message:"successfully updated",data:data});
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: error });
