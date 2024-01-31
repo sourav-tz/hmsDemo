@@ -7,20 +7,35 @@ import { Button } from "@/components/ui/button"
 import Modal from '../../Modals/Modal';
 import { useDispatch } from 'react-redux';
 import { changeModalState,setModalData } from '../../../Store/Reducers/viewInfoSlice';
+import PdfDownload from './PdfDownload';
+
+
 
 
 const ViewInfoTable = ({data})=>{
   console.log(data);
   // Row Data: The data to be displayed.
+
   const [rowData, setRowData] = useState([]);
   const Dispatcher = useDispatch();
   const [modalData,setModalData] = useState(null);
+ 
+
 
   useEffect(() => {
     if (data && data.length > 0) {
       setRowData(data);
     }
   }, [data]);
+
+
+
+
+
+
+
+
+
   
   // Column Definitions: Defines & controls grid columns.
   const [colDefs, setColDefs] = useState([
@@ -32,7 +47,7 @@ const ViewInfoTable = ({data})=>{
         {field:'email'},
         {field:'profile.contactNumber', headerName: 'Contact Number',width:150},
         {field:'viewInfo',width:110,cellRenderer:(params)=>{return <Button size="sm" onClick={()=>{Dispatcher(changeModalState(true));setModalData(params.data);console.log(params.data)}}>View</Button>}},
-        {field:'generatePDF',width:145,cellRenderer:()=>{return <Button size="sm">Download</Button>}}
+        {field:'generatePDF',width:145,cellRenderer:(params)=>{ return<><PdfDownload myData={params.data}/></>}  }
          
   ]);
 
@@ -54,3 +69,15 @@ const ViewInfoTable = ({data})=>{
 
 
 export default ViewInfoTable;
+
+
+
+
+
+
+    
+    
+  
+
+
+
