@@ -34,21 +34,31 @@ var upload = multer({ storage: storage });
 router.get('/', (req, res) => {
     return res.send('success')
 })
-router.post('/bulkCreate', upload.single('file'), csvToJsonConverter, bulkCreateController);
-router.patch('/updateBulk', upload.single('file'), csvToJsonConverter, updateBulk);
-router.get('/studentsInfo', auth, studentsInfo);
-router.post('/singleStudentUpload', singleStudentUpload);
-router.get('/student/:rollNo', singleStudentInfo);
-router.delete('/deleteStudent', deleteStudent);
 
-
+//// Authentication Hostel Authority
 router.post('/adminLogin', AdminLogin)
 router.post('/adminGoogleLogin', AdminGoogleLogin)
 router.get('/adminLogout', AdminLogout)
 router.get('/isCookie', isCookie)
 
+////viewInfo Module
+//* Apis for bulk
+router.post('/bulkCreate', upload.single('file'), csvToJsonConverter, bulkCreateController);
+router.patch('/updateBulk', upload.single('file'), csvToJsonConverter, updateBulk);
 
-// Rooms route
+//* Apis get student information for single or all
+router.get('/studentsInfo', auth, studentsInfo);
+router.get('/student/:rollNo', singleStudentInfo);
+
+//* Apis single student
+router.post('/singleStudentUpload', singleStudentUpload);
+//todo:update api
+router.delete('/deleteStudent', deleteStudent);
+
+
+
+////Rooms Module routes
+
 router.post('/bulkRoomAllot', upload.single('file'), csvToJsonConverter, bulkRoomAllotmentToStudent)
 router.post('/singleRoomAllot', singleStudentAllot);
 router.get('/downloadfile', downloadFile);
