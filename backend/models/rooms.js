@@ -37,6 +37,13 @@ module.exports = (sequelize, dataTypes) => {
                 name: 'roomId'
             }
         });
+        rooms.hasMany(models.roomsStudentMapping, {
+            onDelete: "RESTRICT",
+            onUpdate: "cascade",
+            foreignKey: {
+                name: 'roomId'
+            }
+        });
         rooms.belongsTo(models.hostels, {
             onDelete: "cascade",
             onUpdate: "cascade",
