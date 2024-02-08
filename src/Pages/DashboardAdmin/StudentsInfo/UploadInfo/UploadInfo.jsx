@@ -12,6 +12,7 @@ import TableLoader from '../../../../Components/TableLoader/TableLoader';
 import StudentTable from '../../../../Components/Tables/StudentsTable/StudentTable';
 import Accordion from '../../../../Components/Accordion/Accordion';
 
+
 const UploadInfo = ()=>{
 
     const inputElement = useRef();
@@ -67,7 +68,7 @@ const handleDragEnter = (e) => {
   };
 
 
-
+/// Make rollno and email are not editable everything else is editable
 
 
 
@@ -173,7 +174,7 @@ const handleDragEnter = (e) => {
                         <Button style={{marginLeft:'25px'}} variant="contained" text="Upload" />
                     </div>
                 </div>:null}
-            
+
             <ToastContainer />
         </div>
     </>

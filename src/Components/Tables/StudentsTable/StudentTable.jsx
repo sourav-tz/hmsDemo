@@ -23,6 +23,7 @@ const StudentTable = ({data})=>{
         checkboxSelection: true, },
         {field:'firstName', pinned:'left',width:120},
         {field:'lastName',pinned:'left',width:120},
+        {field:'Message',pinned:'left',width:120},
         {field:'year',width:80},
         {field:'courseId',width:120},
         {field:'email'},
