@@ -5,29 +5,34 @@ const auth = (req, res, next) => {
 
     try {
 
-        const cookies = req.headers.cookie;
 
-        if (!cookies) {
-            return res.status(401).send('cookie expired in auth');
-        }
-
-        const token = cookies.split("=")[1];
+        const token = req.cookies.hostelAccessToken;
 
         if (!token) {
-            return res.status(401).send('Token is missing');
+            return res.status(401).send('token expired in auth');
         }
+        // console.log(cookies);
+        // const token = cookies.split("=")[1];
+        // // console.log(token);
+        // if (!token) {
+        //     return res.status(401).send('Token is missing');
+        // }
 
         try {
             const verifyUser = jwt.verify(
                 token,
                 process.env.JWT_SECRET_KEY
             )
-            console.log("verify user in auth middleware = " + verifyUser);
+            // console.log(verifyUser);
+
+            // return res.status(200).send(verifyUser);
+            req.body.email = verifyUser.email;
+            req.body.hostelNo = verifyUser.hostelNo;
+            req.body.role = verifyUser.role;
+            next();
         } catch (error) {
             return res.status(401).send("invalid token")
         }
-
-        next();
     } catch (error) {
         return res.status(401).send("Unauthorized request");
     }

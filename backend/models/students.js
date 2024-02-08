@@ -3,7 +3,7 @@ module.exports = (sequelize, dataTypes) => {
     const students = sequelize.define('students', {
         rollNo: {
             type: dataTypes.INTEGER,
-            primaryKey:true,
+            primaryKey: true,
         },
         firstName: {
             type: dataTypes.STRING,
@@ -18,56 +18,63 @@ module.exports = (sequelize, dataTypes) => {
             type: dataTypes.STRING,
             required: true,
             unique: true,
-             validate:{
+            validate: {
                 isEmail: {
-                    msg:"Email is not a valid email address"
+                    msg: "Email is not a valid email address"
                 },
-             }
+            }
         },
-        lastUpdatedBy:{
-           type:dataTypes.STRING,
-           allowNull: false,
-           field:'last_updated_by'
+        lastUpdatedBy: {
+            type: dataTypes.STRING,
+            allowNull: false,
+            field: 'last_updated_by'
         },
-    },{
+    }, {
         updatedAt: 'last_updated_at'
     })
     students.associate = (models) => {
         students.hasOne(models.profiles, {
             onDelete: "cascade",
-            onUpdate:"cascade",
+            onUpdate: "cascade",
             foreignKey: {
                 name: 'rollNo'
-              }
-          });
-          students.hasOne(models.bankdetails, {
+            }
+        });
+        students.hasMany(models.roomsStudentMapping, {
+            onDelete: "RESTRICT",
+            onUpdate: "RESTRICT",
+            foreignKey: {
+                name: 'rollNo'
+            }
+        });
+        students.hasOne(models.bankdetails, {
             onDelete: "cascade",
-            onUpdate:"cascade",
+            onUpdate: "cascade",
             foreignKey: {
                 name: 'rollNo'
-              }
-          });
-          students.belongsTo(models.courses, {
+            }
+        });
+        students.belongsTo(models.courses, {
             onDelete: "NO ACTION",
-            onUpdate:"cascade",
+            onUpdate: "cascade",
             foreignKey: {
                 name: 'courseId'
-              }
-          });
-          students.belongsTo(models.hostels, {
+            }
+        });
+        students.belongsTo(models.hostels, {
             onDelete: "SET NULL",
-            onUpdate:"cascade",
+            onUpdate: "cascade",
             foreignKey: {
                 name: 'hostelNo'
-              }
-          });
-          students.belongsTo(models.rooms, {
+            }
+        });
+        students.belongsTo(models.rooms, {
             onDelete: "SET NULL",
-            onUpdate:"cascade",
+            onUpdate: "cascade",
             foreignKey: {
                 name: 'roomId'
-              }
-          });
-      };
+            }
+        });
+    };
     return students;
 }

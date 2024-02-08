@@ -30,7 +30,7 @@ app.use('/others', othersRouter);
 app.use('/SA', SARouter);
 
 const sync = (process.env.SYNC) ? JSON.parse(process.env.SYNC) : { alter: true };
-db.sequelize.sync(sync).then(() => {
+db.sequelize.sync().then(() => {
     app.listen(3000, () => {
         console.log('listening on post 3000');
     })
