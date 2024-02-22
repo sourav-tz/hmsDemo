@@ -4,7 +4,8 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import { useState,useCallback, useEffect } from 'react';
 import './studentsTable.css';
-
+import { setUpdateData } from '../../../Store/Reducers/uploadStudentSlice';
+import { useDispatch } from 'react-redux';
 
 const StudentTable = ({data})=>{
 
@@ -12,6 +13,8 @@ const StudentTable = ({data})=>{
   const [rowData, setRowData] = useState([
 
  ]);
+
+ const Dispatcher = useDispatch();
 
  useEffect(()=>{
   setRowData(data);
@@ -23,7 +26,7 @@ const StudentTable = ({data})=>{
         checkboxSelection: true, },
         {field:'firstName', pinned:'left',width:120},
         {field:'lastName',pinned:'left',width:120},
-        {field:'Message',pinned:'left',width:120},
+        {field:'message',pinned:'left',width:190},
         {field:'year',width:80},
         {field:'courseId',width:120},
         {field:'email'},
@@ -55,7 +58,20 @@ const StudentTable = ({data})=>{
   
   const onSelectionChanged = useCallback((event) => {
     var rowCount = event.api.getSelectedNodes();
-    console.log(rowCount);
+  
+    (async () => {
+      try {
+        const pushdata=[];
+        rowCount.forEach(element => {
+          delete element.data.message;
+          pushdata.push(element.data);
+        });
+        console.log(pushdata);
+       Dispatcher(setUpdateData(pushdata))
+      } catch (err) {
+        console.log(err);
+      }
+    })();
   }, []);
 
 

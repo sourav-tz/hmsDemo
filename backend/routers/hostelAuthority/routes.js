@@ -45,10 +45,10 @@ router.get('/isCookie', isCookie)
 ////viewInfo Module
 //* Apis for bulk
 router.post('/bulkCreate', upload.single('file'), csvToJsonConverter, bulkCreateController);
-router.patch('/updateBulk', upload.single('file'), csvToJsonConverter, updateBulk);
+router.patch('/updateBulk', updateBulk);
 
 //* Apis get student information for single or all
-router.get('/studentsInfo', auth, studentsInfo);
+router.get('/studentsInfo', studentsInfo);
 router.get('/student/:rollNo', singleStudentInfo);
 
 //* Apis single student

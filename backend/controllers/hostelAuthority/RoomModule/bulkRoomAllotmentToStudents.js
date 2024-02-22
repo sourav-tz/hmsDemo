@@ -18,4 +18,4 @@ const bulkRoomAllotmentToStudent = async (req, res) => {
 
 }
 
-module.exports = bulkRoomAllotmentToStudent
+module.exports = bulkRoomAllotmentToStudent;
