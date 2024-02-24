@@ -1,37 +1,36 @@
+const { log } = require('console');
 const jwt = require('jsonwebtoken');
 require("dotenv").config();
 
 const AdminLogOut = async (req, res) => {
     try {
-        const cookies = req.headers.cookie;
-        // console.log('logout cookies = ' + cookies + "\n");
-        if (!cookies) {
+        // console.log(req.body.email);
+        const token = req.cookies.hostelAccessToken;
+
+
+        if (!token) {
             return res.status(400).json('cookie expired you can log out');
         }
-        const prevToken = cookies.split("=")[1];
-        console.log(String(prevToken));
+        // const prevToken = cookies.split("=")[1];
+        // // console.log(String(prevToken));
 
-        if (!prevToken) {
-            return res.status(400).json('could not find prevtoken ,please login again');
-        }
+        // if (!prevToken) {
+        //     return res.status(400).json('could not find prevtoken ,please login again');
+        // }
 
         jwt.verify(
-            String(prevToken),
-            process.env.JWT_SECRET || 'SECRET_KEY', (err, user) => {
+            token,
+            process.env.JWT_SECRET_KEY, (err, user) => {
                 if (err) {
                     console.log(err);
                     return res.status(400).json("auth failed in logout token");
                 }
-                res.clearCookie(`${user.email}`);
-                req.cookies[`${user.email}`] = "";
+
+                res.clearCookie('hostelAccessToken');
+                // req.cookies[`${user.email}`] = "";
                 console.log("logged out successfully");
                 return res.status(200).json({ "message": "Sucessfully logged out" });
             })
-
-
-
-
-
 
     } catch (err) {
         console.log(err);

@@ -1,5 +1,5 @@
 const db = require('../../models/index')
-//* read client should give if needs current hostels or all
+//* read 
 //* add
 //* softdelete (disable)
 //* permanent delete (can only delete if mistakenly added) it will be resticted if hostels student exists
@@ -8,11 +8,16 @@ const db = require('../../models/index')
 
 const getHostels=async (req, res) => {
   try {
-    const para = req.params.paranoid =="true";
-    const data= await db.hostels.findAll({
-        paranoid:para
+    let data= await db.hostels.findAll({
+        paranoid:false,
+        include: [
+          {
+            model: db.hostelauthoritys,
+          },
+        ]
     });
-  return res.json({data:data});
+    const result=data.map((key)=>(key.dataValues.deletedAt)?{...key.dataValues,active:false}:{...key.dataValues,active:true});
+    return res.json(result);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: error });
@@ -38,7 +43,8 @@ const addHostel=async (req,res)=>{
 };
 const removeHostel = async (req,res)=>{
     try {
-        const {hostelNo,softdelete} = req.body;
+        const hostelNo = req.query.hostelNo;
+        const softdelete=req.query.softdelete=="true";
         const deleted=await db.hostels.destroy({
             where:{hostelNo},
             force:softdelete
