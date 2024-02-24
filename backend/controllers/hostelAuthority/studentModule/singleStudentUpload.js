@@ -19,9 +19,11 @@ exports.singleStudentUpload=async (req,res)=>{
           
             try {
               // Create users
+              const password= data.contactNumber !== undefined ? String(data.contactNumber) : String(data.rollNo);
+              const securePassword = await bcrypt.hash(password, salt)
               const usersData = {
                 email: data.email,
-                password: data.contactNumber !== undefined ? String(data.contactNumber) : data.rollNo,
+                password:securePassword,
                 role: 'student',
                 lastUpdatedBy: 'deepak@gmail.com',
               };

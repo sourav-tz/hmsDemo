@@ -1,74 +1,79 @@
 const db = require('../../../models/index')
 
-exports.studentsInfo=async (req,res)=>{
-    try {
-      let page=parseInt(req.query.page);
-      const limit=parseInt(req.query.limit);
-      let totalpages=parseInt(req.query.total);
-      // Define filters based on query parameters
-      const filters = {};
-      const filtersProfile = {};
-      if (req.query.rollNo) {
-        filters.rollNo = req.query.rollNo;
+exports.studentsInfo = async (req, res) => {
+  try {
+    // console.log(req.body.hostelNo);
+    let page = parseInt(req.query.page);
+    const limit = parseInt(req.query.limit);
+    let totalpages = parseInt(req.query.total);
+    // Define filters based on query parameters
+    const filters = {};
+    const filtersProfile = {};
+    if (req.query.rollNo) {
+      filters.rollNo = req.query.rollNo;
+    }
+    if (req.query.firstName) {
+      filters.firstName = req.query.firstName;
+    }
+    if (req.query.lastName) {
+      filters.lastName = req.query.lastName;
+    }
+    if (req.query.courseId) {
+      filters.courseId = req.query.courseId;
+    }
+    if (req.query.state) {
+      filtersProfile.state = req.query.state;
+    }
+    if (totalpages == 0) {
+      totalpages = Math.ceil((await db.students.count({
+        where: filters,
+        include: [
+          {
+            model: db.profiles,
+            where: filtersProfile
+          }
+        ]
+      })) / limit);
+      if (totalpages == 0) {
+        return res.json({ totalpages: 0, msg: "no pages to show" });
       }
-      if (req.query.firstName) {
-        filters.firstName = req.query.firstName;
+      if (page > totalpages || page < 1) {
+        return res.json({ msg: `page value out of range, total pages are ${totalpages}` });
       }
-      if (req.query.lastName) {
-        filters.lastName = req.query.lastName;
+    }
+    const startIndex = (page - 1) * limit;
+    // Fetch data from the student table based on filters
+    const students = await db.students.findAll({
+      where: filters,
+      offset: startIndex,
+      limit: limit,
+      include: [
+        {
+          model: db.profiles,
+          where: filtersProfile,
+        },
+      ]
+    });
+    // Return the result
+    nextPage = page >= totalpages ? totalpages : page + 1
+    students.unshift({
+      next: {
+        page: nextPage,
+        limit: limit,
+        totalpages: totalpages
       }
-      if (req.query.courseId) {
-        filters.courseId = req.query.courseId;
+    });
+    prevPage = page > 1 ? page - 1 : 1
+    students.unshift({
+      previous: {
+        page: prevPage,
+        limit: limit,
+        totalpages: totalpages
       }
-      if (req.query.state) {
-        filtersProfile.state = req.query.state;
-      }
-      if(totalpages==0){
-        totalpages=Math.ceil((await db.students.count({
-          where:filters,
-          include:[
-            {
-              model:db.profiles,
-              where:filtersProfile
-            }
-          ]
-        }))/limit);
-        if(totalpages==0){
-        return res.json({totalpages:0,msg:"no pages to show"});
-        }
-        if(page>totalpages || page<1){
-          return res.json({msg:`page value out of range, total pages are ${totalpages}`});
-        }
-     }
-      const startIndex=(page-1)*limit;
-        // Fetch data from the student table based on filters
-        const students = await db.students.findAll({
-          where: filters,
-          offset:startIndex,
-          limit:limit,
-          include: [
-            {
-              model: db.profiles,
-              where: filtersProfile,
-            },
-          ]
-        });
-        // Return the result
-        nextPage=page>=totalpages?totalpages:page+1
-        students.unshift({next:{
-          page:nextPage,
-          limit:limit,
-          totalpages:totalpages
-        }});
-        prevPage=page>1?page-1:1
-        students.unshift({previous:{
-          page:prevPage,
-          limit:limit,
-          totalpages:totalpages
-        }})
-        return res.json(students);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        return res.status(500).json({ error: 'Internal Server Error' });
-      }
+    })
+    return res.json(students);
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
 };

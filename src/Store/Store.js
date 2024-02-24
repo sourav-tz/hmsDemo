@@ -16,6 +16,7 @@ import loginSlice from './Reducers/loginSlice';
 import sideBarSlice from './Reducers/sideBarSlice';
 import viewInfoSlice from './Reducers/viewInfoSlice';
 import superSidebarSlice from './Reducers/superSidebarSlice';
+import uploadStudentSlice from './Reducers/uploadStudentSlice';
 
 
 
@@ -31,7 +32,8 @@ const rootReducer =combineReducers({
     'sideBarStates':sideBarSlice,
     'viewInfoStates':viewInfoSlice,
     'userStorage':userSlice,
-    'superSideBarStates':superSidebarSlice
+    'superSideBarStates':superSidebarSlice,
+    'uploadStudent':uploadStudentSlice
 
 })
 

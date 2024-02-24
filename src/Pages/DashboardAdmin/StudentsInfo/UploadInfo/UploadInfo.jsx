@@ -11,6 +11,8 @@ import axios from 'axios';
 import TableLoader from '../../../../Components/TableLoader/TableLoader';
 import StudentTable from '../../../../Components/Tables/StudentsTable/StudentTable';
 import Accordion from '../../../../Components/Accordion/Accordion';
+import { useSelector } from 'react-redux';
+
 
 const UploadInfo = ()=>{
 
@@ -20,6 +22,14 @@ const UploadInfo = ()=>{
     const [rows,setRows] = useState(null);
     const [duplicate,setDuplicate] = useState([]);
     const [loading,setLoading] = useState(false);
+    const updateData = useSelector(state=>state.uploadStudent.data);
+    const [afterUpdateSuccess,setAfterUpdateSuccess] = useState([]);
+    const [afterUpdateFailed, setAfterUpdateFailed] = useState([]);
+    const [updateProcess, setUpdateProcess] = useState(false);
+
+    useEffect(()=>{
+      console.log(updateData);
+    },[updateData])
 
   const accordData = [
     {
@@ -33,6 +43,7 @@ const UploadInfo = ()=>{
       link:'../../../../Assets/main.csv'
     }
   ]
+
 
 
 
@@ -67,7 +78,7 @@ const handleDragEnter = (e) => {
   };
 
 
-
+/// Make rollno and email are not editable everything else is editable
 
 
 
@@ -113,6 +124,24 @@ const handleDragEnter = (e) => {
         setFiles(inputElement.current.files[0]);
 
       };
+
+      const updateStudents =async ()=>{
+        setLoading(true);
+        setUpdateProcess(true);
+        try{
+          const res = await axios.patch('http://localhost:3000/HA/updateBulk',updateData);
+          setAfterUpdateSuccess(res.data[0])
+          setAfterUpdateFailed(res.data[1])
+          setLoading(false);
+
+        }catch(err){
+          setLoading(false);
+          console.log(err);
+        }
+
+      }
+
+      
       
       useEffect(() => {
         if (file) {
@@ -148,7 +177,7 @@ const handleDragEnter = (e) => {
     return<>
         <div className={styles.container}>
             <div className={styles.Header}><h1 className='text-3xl'>Upload Student Info</h1></div>
-            {duplicate.length===0&&loading===false?<div className={styles.uploadContainer}>
+            {updateProcess==false&&duplicate.length===0&&loading===false?<div className={styles.uploadContainer}>
 
                 <div  className={styles.uploadArea+' '+(dragging?styles.drag:null)}
                     onDragEnter={handleDragEnter}
@@ -170,10 +199,21 @@ const handleDragEnter = (e) => {
                     <StudentTable data={duplicate}/>
                     <div className={styles.buttonArea}>
                         <Button onClick={()=>{setDuplicate([])}} text="Discard" />
-                        <Button style={{marginLeft:'25px'}} variant="contained" text="Upload" />
+                        <Button onClick={()=>{updateStudents();setDuplicate([]);}} style={{marginLeft:'25px'}} variant="contained" text="Update" />
                     </div>
                 </div>:null}
-            
+
+                {updateProcess===true&&(afterUpdateFailed.length!==0 || afterUpdateSuccess.length!== 0 )?<div className={styles.duplicateTable}>
+                    <h3>Successfull Data</h3>
+                    <StudentTable data={afterUpdateSuccess}/>
+                    <h3 className='mt-4'>Failed Data</h3>
+                    <StudentTable data={afterUpdateFailed}/>
+                    <div className={styles.buttonArea}>
+                        <Button onClick={()=>{setDuplicate([])}} text="Discard" />
+                        <Button onClick={()=>{setUpdateProcess(false);setDuplicate([]);}} style={{marginLeft:'25px'}} variant="contained" text="Ok" />
+                    </div>
+                </div>:null}
+
             <ToastContainer />
         </div>
     </>

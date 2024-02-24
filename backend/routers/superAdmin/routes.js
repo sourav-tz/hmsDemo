@@ -40,7 +40,6 @@ router.patch('/updateHostel', updateHostel);
 
 // Admin registration
 router.post('/adminReg', AdminRegister)
-// router.post('/adminReg', validateUser, AdminRegAuth, AdminRegister)
 
 
 // Rooms Api's

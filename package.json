@@ -12,7 +12,9 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
+    "@radix-ui/react-select": "^2.0.0",
     "@radix-ui/react-slot": "^1.0.2",
+    "@react-pdf/renderer": "^3.3.4",
     "@react-spring/web": "^9.7.3",
     "@reduxjs/toolkit": "^2.0.1",
     "ag-charts-react": "^9.0.1",
