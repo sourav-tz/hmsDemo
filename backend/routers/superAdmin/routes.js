@@ -37,7 +37,8 @@ router.post('/enableHostel', enableHostel);
 router.patch('/updateHostel', updateHostel);
 
 // Admin registration
-router.post('/adminReg', validateUser, AdminRegAuth, AdminRegister)
+router.post('/adminReg', AdminRegister)
+// router.post('/adminReg', validateUser, AdminRegAuth, AdminRegister)
 
 
 
