@@ -8,7 +8,8 @@ import SuperAdminLogin from "../Pages/SuperAdminLogin/SuperAdminLogin";
 import DashboardSuperAdmin from "../Pages/DashboardSuperAdmin/DashboardSuperAdmin";
 import ForgetPassword from "../Pages/ForgetPassword/ForgetPassword";
 import StudentSignUp from "../Pages/StudentSignUp/StudentSignUp";
-
+import VerifyOtp from "../Pages/ForgetPassword/VerifyOtp";
+import ResetPassword from "../Pages/ForgetPassword/ResetPassword";
 
 export default function(){
 
@@ -23,6 +24,8 @@ export default function(){
             <Route path='/superAdminDashboard' element={<DashboardSuperAdmin />} />
             <Route path='/forgetPass' element={<ForgetPassword />} />
             <Route path='/StudentSignUp' element={<StudentSignUp />} />
+            <Route path='/VerifyOtp' element={<VerifyOtp/>} />
+            <Route path='/ResetPassword' element={<ResetPassword/>} />
         </Routes>
     </>
 }
