@@ -5,7 +5,9 @@ import { Button } from '../../../../Components/ui/button';
 import { AgGridReact } from 'ag-grid-react'; 
 import "ag-grid-community/styles/ag-grid.css"; 
 import "ag-grid-community/styles/ag-theme-quartz.css";
-import { ImBin, MdEdit, MdAccountCircle } from "react-icons/im";
+import { ImBin } from "react-icons/im";
+import { FaRegEdit } from "react-icons/fa";
+import { MdAccountCircle } from "react-icons/md";
 
 const ManageHostels = () => {
   const [sel,setSelect] = useState("");
@@ -62,7 +64,7 @@ const ManageHostels = () => {
         {field: "HostelName", headerClass: "font-bold border p-2 font-bold text-md"},
         {field: "HostelNo", headerClass:"font-bold border p-2 font-bold text-md"},
         {field: "HostelType", headerClass:"font-bold border p-2 font-bold text-md"},
-        {field: "Edit", headerClass:"font-bold border p-2 font-bold text-md", cellRenderer:()=> <Button className='p-3'><MdEdit /></Button>},
+        {field: "Edit", headerClass:"font-bold border p-2 font-bold text-md", cellRenderer:()=> <Button className='p-3'><FaRegEdit /></Button>},
         {field: "Active/Inactive", headerClass:"font-bold border p-2 font-bold text-md"},
         {field: "View Admins", headerClass:"font-bold border p-2 font-bold text-md", cellRenderer:()=> <Button className='p-3'><MdAccountCircle/></Button>},
         {field: "Delete", headerClass:"font-bold border p-2 font-bold text-md", cellRenderer:()=> <Button className='p-3'><ImBin /></Button>},
