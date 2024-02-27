@@ -130,7 +130,7 @@ return (
                 </div>
                 <div className='flex'>
                      <div className='flex-col'>
-                       <Input name="Name" className='w-60  h-16 m-2 text-lg p-3 placeholder:text-black bg-white  shadow-[0_3px_10px_rgb(0,0,0,0.2)]' type="text" value={admin.Name} onChange={handleChange} placeholder='Name'/>
+                       <Input name="Name" className='w-60  h-16 m-2 text-lg p-3 placeholder:text-black bg-white  shadow-[0_3px_10px_rgb(0,0,0,0.2)] '  type="text" value={admin.Name} onChange={handleChange} placeholder='Name'/>
                        {FormErrors.Name && <div className='px-4 text-red-600'>{FormErrors.Name}</div>} 
                      </div>
                       
