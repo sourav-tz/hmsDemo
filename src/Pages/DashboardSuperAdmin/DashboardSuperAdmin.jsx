@@ -9,11 +9,13 @@ import { useNavigate } from "react-router-dom";
 //lazy Imports
 const ManageHostels = lazy(()=>import('./Hostels/ManageHostels/ManageHostels'));
 const ManageAdmin = lazy(()=>import('./Hostels/ManageAdmin/ManageAdmin'));
+const Home = lazy(()=>import('./Home/Home'));
 
 const DashboardSuperAdmin =()=>{
 
     const activeOptions = useSelector(state=>state.superSideBarStates.activeSubOption);
     const Navigator = useNavigate();
+    const navState = useSelector(state=>state.superSideBarStates.state);
 
     const handleLogout = ()=>{
         Navigator('/superAdminLogin')
@@ -24,9 +26,17 @@ const DashboardSuperAdmin =()=>{
         <div className="flex-1">
             <SuperSidebar />
         </div>
+
+        {activeOptions==='Home'?
+        <div className={`${navState?'flex-[4]':'flex-[9]'}`}>
+            <Suspense fallback={<Loadingpage />}>
+                <Home />
+            </Suspense>
+        </div>
+        :null}
         
         {activeOptions==='hmManageHostel'?
-        <div className="flex-[4]">
+        <div className={`${navState?'flex-[4]':'flex-[9]'}`}>
             <Suspense fallback={<Loadingpage />}>
                 <ManageHostels />
             </Suspense>
@@ -34,7 +44,7 @@ const DashboardSuperAdmin =()=>{
         :null}
 
         {activeOptions==='hmManageAdmin'?
-        <div className="flex-[4]">
+        <div className={`${navState?'flex-[4]':'flex-[9]'}`}>
             <Suspense fallback={<Loadingpage />}>
                 <ManageAdmin />
             </Suspense>
@@ -45,8 +55,6 @@ const DashboardSuperAdmin =()=>{
         <div className=""><CiLogout  /></div>
             Logout
         </div>
-
-
         </div>
     </>
 }
