@@ -20,10 +20,12 @@ export default function(){
             Navigator('/Adminlogin');
           }else if(localStorage.getItem('role')!==undefined && localStorage.getItem('role') === 'Student'){
               Navigator('/studentLogin');
+          }else if(localStorage.getItem('role')!==undefined && localStorage.getItem('role') === 'SuperAdmin'){
+            Navigator('/superAdminLogin');
           }else{
               setLoadingPage(false);
           }
-       },2000) 
+       },1000) 
 
       },[])
 
@@ -62,7 +64,7 @@ export default function(){
                 <div className={styles.cardImage}>
                     <img src={officeImage} alt='Admin-Image' />
                     </div>
-                    <Button onClick={()=>{Navigator('/superAdminLogin');localStorage.setItem('role','Admin');}} style={{width:'100%'}} variant='contained' text='Super Admin' />
+                    <Button onClick={()=>{Navigator('/superAdminLogin');localStorage.setItem('role','SuperAdmin');}} style={{width:'100%'}} variant='contained' text='Super Admin' />
                 </div>
                 </div>
             </div>

@@ -12,77 +12,45 @@ import { update } from '@react-spring/web';
 const ManageAdmin = () => {
   
        const [Pass,setPass] = useState("");
-       const [sel,setSelect] = useState("");
+      
        const [rowData, setRowData] = useState([]);
-       const [FormErrors,setFormErrors] = useState({ Name:"",HostelNo:"",MobileNo:"",Email:"",Password:""})
+      
 
 
-      const [admin,setAdmin] = useState({
-        Name:"",HostelNo:"",MobileNo:"",Email:""
+      let [admin,setAdmin] = useState({
+        email:"",name:"",roleType:"Admin",mobile:"",password:"",hostelNo:""
       });
 
-      const  handleChange=(e)=>{
-      
-        setAdmin({...admin,[e.target.name]:e.target.value});
-    
-        setFormErrors({ ...FormErrors, [e.target.name]: '' });
-        
-
-        
-        }
-      //review
-      const handleSelectChange =(e)=>{
-
-        setSelect(e);
-  
+      const handleName = (e) =>{
+        setAdmin((prev) =>
+            {return {...prev,name:e.target.value}})
       }
-      //review
-      admin.HostelNo = sel;
-
-        
-
-      let {Name,HostelNo,Role,MobileNo,Email} = admin;
-
-      const handleRegister=(e)=>{
+      const handleMobile = (e) =>{
+        setAdmin((prev) => {
+           return {...prev,mobile:e.target.value}
+        })
+      }
+      const handleEmail = (e) => {
+        setAdmin((prev) =>{
+          return {...prev,email:e.target.value}
+        })
+      }
+      const handleSelectChange =(e)=>{
+        console.log(e);
+        setAdmin((prev) => {
+          return {...prev,hostelNo:e}
+        })
+      }
+      let {email,name,roleType,mobile,password,hostelNo} = admin;
+      const handleAdmin=(e)=>{
         e.preventDefault();
+        setRowData([...rowData,{name,hostelNo,mobile}])
+        
         console.log(admin);
-        let errors = {};
+        
+      }
            
-        //adding validation to input fields
-          if (admin.Name.trim() === '') {
-                errors.Name = "Username is required";
-              }
-         if(admin.Email.trim() == ''){
-                errors.Email = "Email is required";
-              }else if (!(/^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(admin.Email.trim()))) {
-                errors.Email = "Enter a valid Email";
-              }
-          if(admin.MobileNo.trim() == ''){
-                 errors.MobileNo = "Mobile no. is required"
-              }else if( !(/^\d{10}$/.test(admin.MobileNo.trim()))){
-                 errors.MobileNo = "Enter a valid number"
-              }
-              //review
-          if( Pass.trim() == ''){
-                 errors.Password = "Password is required"
-              }
-      
-          // Set formErrors state based on validation result
-                 setFormErrors(errors);
-      
-          // If no errors, submit the form
-          if (Object.keys(errors).length === 0) {
-            // Reset form after submission (optional)
-            setRowData([...rowData,{Name,HostelNo,Role,MobileNo}]);
-              setSelect("");
-              // admin.HostelNo="";
-              admin.MobileNo="";
-              admin.Name="";
-              admin.Email="";
-              setPass("");
-           
-             }
-       }
+        
       //code for deletion of a row 
       // const handleDelete = () => {
 
@@ -96,11 +64,10 @@ const ManageAdmin = () => {
     
       // Column Definitions: Defines & controls grid columns.
       const [colDefs, setColDefs] = useState([
-        { field: "Name",headerClass:"font-bold border p-2 font-bold  text-lg " },
-        { field: "HostelNo",headerClass:"font-bold border p-2 font-bold   text-lg"},
-        // { field: "Role",headerClass:"font-bold border p-2 font-bold  text-lg" },
-        { field: "MobileNo",headerClass:"font-bold border p-2 font-bold  text-lg" },
-        {field: "Delete",headerClass:"font-bold border p-2 font-bold  text-lg",
+        { field: "name",headerClass:"font-bold border p-2 font-bold  text-lg " },
+        { field: "hostelNo",headerClass:"font-bold border p-2 font-bold   text-lg"},
+        { field: "mobile",headerClass:"font-bold border p-2 font-bold  text-lg" },
+        {field: "delete",headerClass:"font-bold border p-2 font-bold  text-lg",
         cellRenderer:()=> <Button className=' p-3' > <ImBin /> </Button>},
       ]);
       
@@ -113,7 +80,11 @@ const ManageAdmin = () => {
           let char = Math.floor(Math.random()*str.length);
           passw += str.charAt(char);
          }
-         setPass(passw);
+        
+        setPass(passw)
+         setAdmin((prev)=>{
+          return {...prev,password:passw}
+         })
        } 
         
       
@@ -124,17 +95,14 @@ return (
     <>
         <div className=''>
          <div className=' m-6 p-5  max-w-max rounded-[30px] shadow-[0_3px_10px_rgb(0,0,0,0.2)] '>
-            <form  onSubmit={handleRegister} >
+            <form  >
                 <div>
                    <h1 className='text-2xl m-2 font-bold'>Register Admin</h1>
                 </div>
                 <div className='flex'>
-                     <div className='flex-col'>
-                       <Input name="Name" className='w-60  h-16 m-2 text-lg p-3 placeholder:text-black bg-white  shadow-[0_3px_10px_rgb(0,0,0,0.2)] '  type="text" value={admin.Name} onChange={handleChange} placeholder='Name'/>
-                       {FormErrors.Name && <div className='px-4 text-red-600'>{FormErrors.Name}</div>} 
-                     </div>
-                      
-                     <Select name="HostelNo" value={admin.HostelNo} onValueChange={handleSelectChange}  >
+                     
+                       <Input name="name"  onChange={handleName} className='w-60  h-16 m-2 text-lg p-3 placeholder:text-black bg-white  shadow-[0_3px_10px_rgb(0,0,0,0.2)] '  type="text"  placeholder='Name'/>
+                      <Select name="hostelNo" onValueChange={handleSelectChange}  >
                           <SelectTrigger  className="w-60 h-16 text-lg p-3 m-2  text-black bg-white  shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
                             <SelectValue  placeholder="Hostel No" />
                           </SelectTrigger>
@@ -157,26 +125,9 @@ return (
               
 
                 <div  className='flex'>
-                
-                {/* <Select name="Role" onChange={handleChange} value={admin.Role} >
-                          <SelectTrigger className="w-60 h-16 text-lg p-3 m-2  text-black bg-white  shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
-                            <SelectValue  placeholder="Role" />
-                          </SelectTrigger>
-                          <SelectContent >
-                            <SelectItem value="Admin">Admin</SelectItem>
-                            <SelectItem value="Chief Warden">Chief Warden</SelectItem>
-                            <SelectItem value="Warden">Warden</SelectItem>
-                            <SelectItem value="Supervisor">Supervisor</SelectItem>
-                          </SelectContent>
-                      </Select> */}
-                  <div className='flex-col'>
-                       <Input  name="MobileNo" onChange={handleChange} value={admin.MobileNo} className='w-60 h-16 m-2  text-lg p-3 placeholder:text-black bg-white  shadow-[0_3px_10px_rgb(0,0,0,0.2)]' type="text"  placeholder='Mobile No'/>
-                       {FormErrors.MobileNo && <div className='px-4 text-red-600'>{FormErrors.MobileNo}</div>}
-                  </div>
-                  <div className='flex-col'>
-                       <Input name="Email" onChange={handleChange} value={admin.Email} className='w-60 h-16 m-2  text-lg p-3 placeholder:text-black bg-white  shadow-[0_3px_10px_rgb(0,0,0,0.2)]' type="text"  placeholder='Email'/>
-                       {FormErrors.Email && <div className='px-4 text-red-600'>{FormErrors.Email}</div>}
-                  </div>
+                       <Input  name="mobile" onChange={handleMobile}  className='w-60 h-16 m-2  text-lg p-3 placeholder:text-black bg-white  shadow-[0_3px_10px_rgb(0,0,0,0.2)]' type="text"  placeholder='Mobile No'/>
+                       <Input name="email" onChange={handleEmail}  className='w-60 h-16 m-2  text-lg p-3 placeholder:text-black bg-white  shadow-[0_3px_10px_rgb(0,0,0,0.2)]' type="text"  placeholder='Email'/>
+                   
                 </div>
 
                 
@@ -184,8 +135,8 @@ return (
              
         
                     <Button className=' w-60 h-16  m-2 p-3 bg-[#5F57FF] text-white rounded-lg  text-lg  shadow-[0_3px_10px_rgb(0,0,0,0.2)]' onClick={passwordGenerator}  >Generate Password</Button>
-                    <Input name="Pass" onChange={handleChange} value={Pass}  className='w-60 h-16 m-2 text-lg p-3 placeholder:text-black bg-white   shadow-[0_3px_10px_rgb(0,0,0,0.2)]' type="text" readOnly placeholder='Password'/>
-                    <Button type='submit' className=' w-36 h-14  m-2 p-3 bg-[#5F57FF] text-white rounded-lg  text-lg shadow-[0_3px_10px_rgb(0,0,0,0.2)]' >Register</Button>
+                    <Input name="password" value={Pass} className='w-60 h-16 m-2 text-lg p-3 placeholder:text-black bg-white   shadow-[0_3px_10px_rgb(0,0,0,0.2)]' type="text" readOnly placeholder='Password'/>
+                    <Button  onClick ={handleAdmin} className=' w-36 h-14  m-2 p-3 bg-[#5F57FF] text-white rounded-lg  text-lg shadow-[0_3px_10px_rgb(0,0,0,0.2)]' >Register</Button>
               
                  </div>
              </form>

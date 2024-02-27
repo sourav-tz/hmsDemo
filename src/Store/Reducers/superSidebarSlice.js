@@ -2,7 +2,8 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
   activeOption:'Home',
-  activeSubOption:'Home'
+  activeSubOption:'Home',
+  state:false
 }
 
 export const superSideBarSlice = createSlice({
@@ -14,11 +15,17 @@ export const superSideBarSlice = createSlice({
     },
     setActiveSubOption:(state,action)=>{
         state.activeSubOption = action.payload;
+    },
+    openMenu:(state)=>{
+      state.state = true;
+    },
+    closeMenu:(state)=>{
+      state.state = false;
     }
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { setActiveOption,setActiveSubOption } = superSideBarSlice.actions;
+export const { setActiveOption,setActiveSubOption,openMenu,closeMenu } = superSideBarSlice.actions;
 
 export default superSideBarSlice.reducer;

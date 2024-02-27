@@ -9,7 +9,7 @@ import { MdOutlineBedroomChild } from "react-icons/md";
 import { FaGear } from "react-icons/fa6";
 import { useNavigate } from 'react-router-dom';
 import { useDispatch,useSelector } from 'react-redux';
-import { setActiveOption,setActiveSubOption } from '../../Store/Reducers/superSidebarSlice';
+import { setActiveOption,setActiveSubOption,openMenu,closeMenu } from '../../Store/Reducers/superSidebarSlice';
 import { BsHouses } from "react-icons/bs";
 
 export default function SuperSidebar(){
@@ -18,7 +18,7 @@ export default function SuperSidebar(){
     const Navigator = useNavigate();
     const Dispatcher = useDispatch();
 
-    const [state,changeState] = useState(false);
+    const state = useSelector(state=>state.superSideBarStates.state);
     const userData = useSelector(state=>state.userStorage.data);
     const activeOption = useSelector(state=>state.superSideBarStates.activeOption);
     const activeSubOption = useSelector(state=>state.superSideBarStates.activeSubOption);
@@ -34,13 +34,6 @@ export default function SuperSidebar(){
     const [subSettings, setSubSettings] = useState(false);
     const [subHostel,setSubHostel] = useState(false);
 
-    const openMenu = ()=>{
-        changeState(true);
-    }
-
-    const closeMenu = ()=>{
-        changeState(false);
-    }
 
     const changeSubMenu = (value)=>{
 
@@ -93,7 +86,7 @@ export default function SuperSidebar(){
 
     return<>
     <IconContext.Provider value={{size:"20px"}} >
-        <div id="Sidebar" onMouseOver={openMenu} onMouseLeave={closeMenu} className={(styles.sidebarContainer)+' '+(state?styles.active:styles.inActive)}>
+        <div id="Sidebar" onMouseOver={()=>Dispatcher(openMenu())} onMouseLeave={()=>Dispatcher(closeMenu())} className={(styles.sidebarContainer)+' '+(state?styles.active:styles.inActive)}>
            <div className={styles.itemsContainer}>
             <div className={styles.userItem}>
                 <div id="userIconSidebar" className={styles.userIcon}>
@@ -109,17 +102,16 @@ export default function SuperSidebar(){
                         </ul>
             </div>
             <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
-                        <p onClick={()=>{changeSubMenu('studentInfo')}} className={(activeOption==='studentInfo'?styles.activeItem:null)+ ' flex items-center gap-2'}><FaInfo /> <span className={(state?null:styles.hidden)+' mt-1'}>Student Info</span></p>
+                        <p onClick={()=>{changeSubMenu('studentInfo')}} className={(activeOption==='studentInfo'?styles.activeItem:null)+ ' flex items-center gap-2'}><FaInfo /> <span className={(state?null:styles.hidden)+' mt-1'}>Student Actions</span></p>
                         <ul className={state&&subStudent?null:styles.hidden}>
                         <li onClick={()=>{changeActiveOption('studentInfo'); changeActiveSubOption('siViewInfo')}} className={styles.subOptions+' ' + (activeSubOption==='siViewInfo'?styles.activeSubOption:null)}>View Info</li>
-                        <li onClick={()=>{changeActiveOption('studentInfo'); changeActiveSubOption('siUploadInfo')}} className={styles.subOptions+' ' + (activeSubOption==='siUploadInfo'?styles.activeSubOption:null)}>Upload Info</li>
+                        <li onClick={()=>{changeActiveOption('studentInfo'); changeActiveSubOption('siUploadInfo')}} className={styles.subOptions+' ' + (activeSubOption==='siUploadInfo'?styles.activeSubOption:null)}>Add Courses</li>
                         </ul>
             </div>
             <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
-                        <p onClick={()=>{changeSubMenu('roomInfo')}} className={(activeOption==='roomInfo'?styles.activeItem:null)+ ' flex items-center gap-2'}><MdOutlineBedroomChild /> <span className={(state?null:styles.hidden)+' mt-1'}>Room Info</span></p>
+                        <p onClick={()=>{changeSubMenu('roomInfo')}} className={(activeOption==='roomInfo'?styles.activeItem:null)+ ' flex items-center gap-2'}><MdOutlineBedroomChild /> <span className={(state?null:styles.hidden)+' mt-1'}>Room Actions</span></p>
                         <ul className={state&&subRoom?null:styles.hidden}>
-                        <li onClick={()=>{changeActiveOption('roomInfo');changeActiveSubOption('riAllotRoom')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='riAllotRoom'?styles.activeSubOption:null)}>Allot Rooms</li>
-                        <li onClick={()=>{changeActiveOption('roomInfo');changeActiveSubOption('riUploadInfo')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='riUploadInfo'?styles.activeSubOption:null)}>Upload Info</li>
+                        <li onClick={()=>{changeActiveOption('roomInfo');changeActiveSubOption('riAllotRoom')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='riAllotRoom'?styles.activeSubOption:null)}>Allocate</li>
                         </ul>
             </div>
             <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
