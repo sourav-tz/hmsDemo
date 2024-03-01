@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import styles from './sidebar.module.scss';
+import styles from './Sidebar.module.scss';
 import { FaUserLarge } from "react-icons/fa6";
 import { IconContext } from 'react-icons';
 import { IoHome } from "react-icons/io5";
@@ -104,7 +104,6 @@ export default function Sidebar(){
                         <p onClick={()=>{changeSubMenu('roomInfo')}} className={(activeOption==='roomInfo'?styles.activeItem:null)+ ' flex items-center gap-2'}><MdOutlineBedroomChild /> <span className={(state?null:styles.hidden)+' mt-1'}>Room Info</span></p>
                         <ul className={state&&subRoom?null:styles.hidden}>
                         <li onClick={()=>{changeActiveOption('roomInfo');changeActiveSubOption('riAllotRoom')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='riAllotRoom'?styles.activeSubOption:null)}>Allot Rooms</li>
-                        <li onClick={()=>{changeActiveOption('roomInfo');changeActiveSubOption('riUploadInfo')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='riUploadInfo'?styles.activeSubOption:null)}>Upload Info</li>
                         </ul>
             </div>
             </div>

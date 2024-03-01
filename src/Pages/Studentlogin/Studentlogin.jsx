@@ -9,13 +9,6 @@ import { useNavigate } from 'react-router-dom';
 const Studentlogin = ()=>{
 
     
-    const onMouse = ()=>{
-        document.getElementById('role-content').innerText = "Change Role"; 
-    }
-
-    const onLeave = ()=>{
-        document.getElementById('role-content').innerText = ""; 
-    }
 
     const Navigator = useNavigate();
 
@@ -23,9 +16,11 @@ const Studentlogin = ()=>{
     <div className={styles.container}>
         <div className={styles.logoSection}>
         <div className={styles.opacityCover}></div>
-        <div onMouseOver={onMouse} onMouseLeave={onLeave} onClick={()=>{Navigator("/");localStorage.removeItem('role')}} className={styles.changeRole}>
+        <div onClick={()=>{Navigator("/");localStorage.removeItem('role')}} 
+        className={`cursor-pointer h-12 absolute top-8 left-4 px-4 py-2 flex justify-center items-center rounded-full bg-blue-600 hover:bg-blue-500 text-white`}>
         <IconContext.Provider value={{size:20}}>
-            <p className='flex'><IoArrowBack className={styles.backicon}/><span id="role-content" className={styles.roleContent}></span></p>
+            <p className='flex justify-center items-center gap-1 text-white'>
+            <IoArrowBack className={styles.backicon}/><span id="role-content" >Change Role</span></p>
             </IconContext.Provider>
         </div>
         <div className={styles.logoContent}>
@@ -42,7 +37,7 @@ const Studentlogin = ()=>{
             <div className={styles.inputBoxes}>
                 <Textinput style={{minWidth:'300px'}} label="Email"/>
                 <Textinput type='password' style={{marginTop:'25px',minWidth:'300px'}} label="Password"/>
-                <Button variant="contained" style={{marginTop:'25px',minWidth:'300px'}} text="login"/>
+                <Button variant="contained" onClick={()=>{Navigator('/StudentDashboard')}} style={{marginTop:'25px',minWidth:'300px'}} text="login"/>
                 <p style={{marginTop:'10px',fontSize:'14px'}}>Forgot Password?</p>
                 <div style={{display:'flex', flexDirection: 'row'}}>
                 <p style={{marginTop:'10px',marginRight:'10px',fontSize:'14px'}}>Don't Have an Account?</p>

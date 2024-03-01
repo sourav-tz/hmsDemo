@@ -18,6 +18,7 @@ const bulkRoomAllotmentToStudent = require('../../controllers/hostelAuthority/Ro
 const singleStudentAllot = require('../../controllers/hostelAuthority/RoomModule/singleStudentAllotment');
 const auth = require('../../middlewares/auth');
 const singleStudentRemove = require('../../controllers/hostelAuthority/RoomModule/singleStudentRemove');
+const getRoomsData = require('../../controllers/hostelAuthority/RoomModule/getRoomsData');
 
 
 var storage = multer.diskStorage({
@@ -38,16 +39,16 @@ router.get('/', (req, res) => {
 //// Authentication Hostel Authority
 router.post('/adminLogin', AdminLogin)
 router.post('/adminGoogleLogin', AdminGoogleLogin)
-router.get('/adminLogout', AdminLogout)
+router.get('/adminLogout', auth, AdminLogout)
 router.get('/isCookie', isCookie)
 
 ////viewInfo Module
 //* Apis for bulk
 router.post('/bulkCreate', upload.single('file'), csvToJsonConverter, bulkCreateController);
-router.patch('/updateBulk', upload.single('file'), csvToJsonConverter, updateBulk);
+router.patch('/updateBulk', updateBulk);
 
 //* Apis get student information for single or all
-router.get('/studentsInfo', auth, studentsInfo);
+router.get('/studentsInfo', studentsInfo);
 router.get('/student/:rollNo', singleStudentInfo);
 
 //* Apis single student
@@ -63,5 +64,6 @@ router.post('/bulkRoomAllot', upload.single('file'), csvToJsonConverter, bulkRoo
 router.post('/singleRoomAllot', singleStudentAllot);
 router.get('/downloadfile', downloadFile);
 router.post('/singleRoomRemove', singleStudentRemove)
+router.get('/getRoomsData', getRoomsData)
 
 module.exports = router;

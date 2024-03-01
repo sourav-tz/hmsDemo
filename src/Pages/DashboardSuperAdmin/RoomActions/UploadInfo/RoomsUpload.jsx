@@ -1,4 +1,4 @@
-import styles from '../../StudentsInfo/UploadInfo/UploadInfo.module.scss';
+import styles from './RoomsUpload.module.scss';
 import { IoIosCloudUpload } from "react-icons/io";
 import Button from '../../../../Components/Button/Button';
 import { useEffect, useRef,useState } from 'react';
@@ -11,13 +11,16 @@ import axios from 'axios';
 import TableLoader from '../../../../Components/TableLoader/TableLoader';
 import StudentTable from '../../../../Components/Tables/StudentsTable/StudentTable';
 import Accordion from '../../../../Components/Accordion/Accordion';
+import { FaFileCsv } from "react-icons/fa6";
+import FileCheckLoading from '../../../../Components/Loadingpage/FileCheckLoading';
 
 const RoomsUpload = ()=>{
 
     const inputElement = useRef();
-    const [file,setFiles] = useState(0);
+    const [file,setFiles] = useState(null);
     const [dragging, setDragging] = useState(false);
     const [rows,setRows] = useState(null);
+    const [step,setStep] = useState(1);
 
 
   const accordData = [
@@ -76,7 +79,7 @@ const handleDragEnter = (e) => {
           bodyForData.append("file", file);
       
           axios
-            .post('http://localhost:3000/HA/bulkCreate', bodyForData, {
+            .post('http://localhost:3000/SA/bulkCreate', bodyForData, {
               headers: {
                 "Content-Type": "multipart/form-data; boundary=${formData.getBoundary()}",
                 "x-rapidapi-host": "file-upload8.p.rapidapi.com",
@@ -85,53 +88,65 @@ const handleDragEnter = (e) => {
               withCredentials: true,
             })
             .then(res => {
-              console.log(res);
-              setRows(res.data[1]);
-              if(res.data[1].length!=0){
-                  reject("Duplicate Data");
-                }else if(res.data[0].length==0){
-                    reject("Invalid Format in CSV");
-              }else{
-                resolve();
-              }
+             console.log(res);
+             setStep(1);
+             resolve(res.data);
             })
             .catch(err => {
-              console.log(err);
-              reject("Server Error Or Format is Not Proper"); // Reject the Promise in case of an error
+              rej(err);
+             console.log(err);
             });
         });
       };
       
-      const handleFile = () => {
-        setFiles(inputElement.current.files[0]);
+      const errorFile = () => {
+        toast.error("File is not in CSV !", {
+          position: "top-right"
+        });
+      }
 
-      };
-      
-      useEffect(() => {
-        if (file) {
-            toast.promise(
-                callFileUpload(), // Use the Promise returned by callFileUpload
-                {
-                  pending: 'Uploading Data',
-                  success: 'Data Uploaded Successfully 👌',
-                  error: {
-                    render({data}){
-                      // When the promise reject, data will contains the error
-                      return data;}
-                    },
-                },
-              )
-                .then(() => {
-                  // Additional code to execute after the promise is resolved
-                  inputElement.current.value = '';
-                })
-                .catch(error => {
-                  // Handle errors here if needed
-                  console.error(error);
-                  inputElement.current.value = '';
-                });
+      useEffect(()=>{
+        if(file!==null && file.name.split('.')[1]==='csv'){
+          setStep(2);
+        }else if(file!==null && file.name.split('.')[1]!=='csv'){
+          setFiles(null);
+          setStep(1);
+          errorFile();
+
         }
-      }, [file]);
+      },[file])
+      
+      const handleFile =  () => {
+        setStep(0);
+        setFiles(inputElement.current.files[0]);
+      };
+
+
+
+    const uploadFile = ()=>{
+      toast.promise(
+        callFileUpload(), // Use the Promise returned by callFileUpload
+        {
+          pending: 'Uploading Data',
+          success: 'Data Uploaded Successfully 👌',
+          error: {
+            render({data}){
+              // When the promise reject, data will contains the error
+              return data;}
+            },
+        },
+      )
+        .then(() => {
+          // Additional code to execute after the promise is resolved
+          inputElement.current.value = '';
+
+        })
+        .catch(error => {
+          // Handle errors here if needed
+          console.error(error);
+          inputElement.current.value = '';
+        });
+    } 
       
     const handleButtonClick = ()=>{
         inputElement.current.click();
@@ -139,8 +154,8 @@ const handleDragEnter = (e) => {
     }
 
     return<>
-        <div className={styles.container}>
-            <div className={styles.Header}><h1 className='text-3xl'>Upload Rooms Info</h1></div>
+        <div className={styles.container+' mt-8'}>
+            <div className={styles.Header}><h1 className='text-3xl'>Allocate Rooms</h1></div>
             <div className={styles.uploadContainer}>
 
                 <div  className={styles.uploadArea+' '+(dragging?styles.drag:null)}
@@ -149,14 +164,23 @@ const handleDragEnter = (e) => {
                     onDragOver={handleDragOver}
                     onDrop={handleDrop}
                 >
-                <input className={styles.myFile} type="file" ref={inputElement} onChange={handleFile}/>
+                {step===1?<><input className={styles.myFile} type="file" ref={inputElement} onChange={handleFile}/>
                     <IoIosCloudUpload size="60"/>
                     <p>Drag and Drop Files <br/>Or</p>
-                    <Button onClick={handleButtonClick} variant="contained" style={{marginTop:'10px'}} text="Browser Files" />
+                    <Button onClick={handleButtonClick} variant="contained" style={{marginTop:'10px'}} text="Browser Files" /></>:null}
+                    {step===0?<FileCheckLoading/>:null}
+                    {step===2?<><div className='flex items-center'>
+                      <FaFileCsv size="60"/><p className='ml-4'>{file.name}</p>
+                    </div>
+                    <div className='flex gap-4'>
+                      <Button className="mt-4" onClick={()=>{setStep(1);setFiles(null);}} text="Discard"/>
+                      <Button disable={false} onClick={uploadFile}  className="mt-4" variant="contained" text="Upload"/>
+                    </div></>:null}
                 </div>
                 <div className={styles.uploadInfoAccord}>
                   <Accordion accordData={accordData}/>
                 </div>
+
                 {/* <TableLoader /> */}
                 {/* <div className={styles.duplicateTable}>
                     <h3>Duplicate Data</h3>

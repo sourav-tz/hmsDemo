@@ -4,27 +4,82 @@ import ComplexSearchRooms from '../../../../Components/ComplesSearch/ComplexSear
 import MultiSelect from '../../../../Components/MultiSelect/MultiSelect';
 import Button from '../../../../Components/Button/Button';
 import TableLoader from '../../../../Components/TableLoader/TableLoader';
+import RoomTable from '../../../../Components/Tables/RoomTable/RoomTable';
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+  } from "@/components/ui/select"
+  import {Input} from "@/components/ui/Input"
 
+
+  import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { Doughnut } from "react-chartjs-2";
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 const AllotRooms = ()=>{
+
+    const data = {
+        labels: ["Total Rooms", "Vacant", "Partially Filled"],
+        datasets: [
+          {
+            data: [204, 50, 100],
+            backgroundColor: ["green", "skyblue", "orange"],
+          },
+        ],
+      };
+
+
 
     return<>
     <h1 className='text-3xl'>Rooms Allotement</h1>
     <div className={styles.container}>
-    <div className={styles.roomsBarGraph}>
-        <Roomsbargraph />
+    <div className={styles.roomsBarGraph+' p-8'}>
+    <Doughnut type="doughnut" data={data} />
         </div>
-        <div className={styles.queryArea}>
-        <div>
-            <ComplexSearchRooms />
+        <div className={styles.queryArea+' mb-4'}>
+        <div className='flex'>
+        <Select>
+            <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Room No" />
+            </SelectTrigger>
+            <SelectContent>
+                <SelectItem value="light">Floor No</SelectItem>
+                <SelectItem value="dark">Name</SelectItem>
+                <SelectItem value="system">Roll No</SelectItem>
+            </SelectContent>
+            </Select>
+            <Input/>
         </div>
             <div className={styles.MultiSelect}>
                 <p>Status:</p>
-                <MultiSelect list={[]} />
+                <Select>
+            <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select Option" />
+            </SelectTrigger>
+            <SelectContent>
+                <SelectItem value="light">Filled</SelectItem>
+                <SelectItem value="dark">Vacant</SelectItem>
+                <SelectItem value="system">Partially Filled</SelectItem>
+            </SelectContent>
+            </Select>
             </div>
             <div className={styles.MultiSelect}>
                 <p>Floor:</p>
-                <MultiSelect list={[]}/>
+                <Select>
+            <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select Option" />
+            </SelectTrigger>
+            <SelectContent>
+                <SelectItem value="light">G</SelectItem>
+                <SelectItem value="dark">1</SelectItem>
+                <SelectItem value="system">2</SelectItem>
+            </SelectContent>
+            </Select>
             </div>
             <div className={styles.buttonArea}>
                 <Button text="Reset" />
@@ -34,7 +89,8 @@ const AllotRooms = ()=>{
         </div>
 
         <div className={styles.tableArea}>
-                <TableLoader />
+                {/* <TableLoader /> */}
+                <RoomTable />
             </div>
     </div>
     </>

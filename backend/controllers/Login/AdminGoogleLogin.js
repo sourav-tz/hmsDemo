@@ -42,7 +42,7 @@ const AdminGoogleLogin = async (req, res) => {
             }
         })
 
-        res.cookie(String(user.email), accessToken, options).json(hostelUser);
+        res.cookie('hostelAccessToken', accessToken, options).json(hostelUser);
 
 
 

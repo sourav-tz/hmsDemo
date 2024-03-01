@@ -41,7 +41,7 @@ router.post('/enableHostel', enableHostel);
 router.patch('/updateHostel', updateHostel);
 
 // Admin registration
-router.post('/adminReg', validateUser, AdminRegAuth, AdminRegister)
+router.post('/adminReg', AdminRegister)
 
 
 // Rooms Api's

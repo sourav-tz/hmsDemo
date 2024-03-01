@@ -9,7 +9,7 @@ const AdminLogin = async (req, res) => {
         const { email, password } = req.body;
 
         const user = await db.users.findOne({ where: { email: email } });
-        console.log(user);
+        // console.log(user);
         if (!user) return res.status(404).json({ error: `User doesn't exists` })
 
         const isMatch = await bcrypt.compare(password, user.password);
@@ -21,7 +21,7 @@ const AdminLogin = async (req, res) => {
 
             try {
                 accessToken = jwt.sign({ email: email, hostelNo: hostelUser.hostelNo, role: user.role },
-                    process.env.JWT_SECRET_KEY || "SECRET_KEY"
+                    process.env.JWT_SECRET_KEY
                 );
 
             } catch (e) {
@@ -39,8 +39,7 @@ const AdminLogin = async (req, res) => {
             }
 
             // we are storing cookie in jwtoken and it will expires in 30days
-            res.cookie(String(user.email), accessToken, options).json(hostelUser);
-
+            res.cookie('hostelAccessToken', accessToken, options).json(hostelUser);
 
         } else {
             res.status(401).json("Invalid Username or Password");

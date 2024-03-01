@@ -29,13 +29,6 @@ export default function () {
       .catch((err) => console.log(err))
   }, [])
 
-  const onMouse = () => {
-    document.getElementById('role-content').innerText = 'Change Role'
-  }
-
-  const onLeave = () => {
-    document.getElementById('role-content').innerText = ''
-  }
 
   const Navigator = useNavigate()
 
@@ -130,18 +123,17 @@ export default function () {
         <div className={styles.logoSection}>
           <div className={styles.opacityCover}></div>
           <div
-            onMouseOver={onMouse}
-            onMouseLeave={onLeave}
+
             onClick={() => {
               Navigator('/')
               localStorage.removeItem('role')
             }}
-            className={styles.changeRole}
+            className={`cursor-pointer h-12 absolute top-8 left-4 px-4 py-2 flex justify-center items-center rounded-full bg-blue-600 hover:bg-blue-500 text-white`}
           >
             <IconContext.Provider value={{ size: 20 }}>
-              <p className='flex'>
-                <IoArrowBack className={styles.backicon} />
-                <span id='role-content' className={styles.roleContent}></span>
+              <p className='flex justify-center items-center gap-1'>
+                <IoArrowBack className={`cursor-pointer text-white`} />
+                <span id='role-content'>Change Role</span>
               </p>
             </IconContext.Provider>
           </div>
