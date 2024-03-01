@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
 
     return<>
         <a href={instance.url} download={`${myData.profile.rollNo}.pdf`}>
-        <Button size="sm">Download</Button>
+        <Button className="bg-blue-600 hover:bg-blue-500" size="sm">Download</Button>
     </a>
     </>
   

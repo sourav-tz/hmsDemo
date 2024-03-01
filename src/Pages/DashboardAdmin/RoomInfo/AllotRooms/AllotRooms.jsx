@@ -16,13 +16,30 @@ import {
   } from "@/components/ui/select"
   import {Input} from "@/components/ui/Input"
 
+
+  import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { Doughnut } from "react-chartjs-2";
+ChartJS.register(ArcElement, Tooltip, Legend);
+
 const AllotRooms = ()=>{
+
+    const data = {
+        labels: ["Total Rooms", "Vacant", "Partially Filled"],
+        datasets: [
+          {
+            data: [204, 50, 100],
+            backgroundColor: ["green", "skyblue", "orange"],
+          },
+        ],
+      };
+
+
 
     return<>
     <h1 className='text-3xl'>Rooms Allotement</h1>
     <div className={styles.container}>
-    <div className={styles.roomsBarGraph}>
-        <Roomsbargraph />
+    <div className={styles.roomsBarGraph+' p-8'}>
+    <Doughnut type="doughnut" data={data} />
         </div>
         <div className={styles.queryArea+' mb-4'}>
         <div className='flex'>

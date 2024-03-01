@@ -17,14 +17,14 @@ import sideBarSlice from './Reducers/sideBarSlice';
 import viewInfoSlice from './Reducers/viewInfoSlice';
 import superSidebarSlice from './Reducers/superSidebarSlice';
 import uploadStudentSlice from './Reducers/uploadStudentSlice';
-
+import studentSidebar from './Reducers/studentSidebar';
 
 
 
 const persistConfig = {
   key: 'root',
   storage, // storage can be localStorage or sessionStorage
-  whitelist: ['userStorage','sideBarStates','superSidebarSlice'], // Add the slices you want to persist
+  whitelist: ['userStorage','sideBarStates','superSidebarSlice', 'studentSidebar'], // Add the slices you want to persist
 };
 
 const rootReducer =combineReducers({ 
@@ -33,7 +33,8 @@ const rootReducer =combineReducers({
     'viewInfoStates':viewInfoSlice,
     'userStorage':userSlice,
     'superSideBarStates':superSidebarSlice,
-    'uploadStudent':uploadStudentSlice
+    'uploadStudent':uploadStudentSlice,
+    'StudentSidebar':studentSidebar,
 
 })
 

@@ -37,7 +37,7 @@ const Studentlogin = ()=>{
             <div className={styles.inputBoxes}>
                 <Textinput style={{minWidth:'300px'}} label="Email"/>
                 <Textinput type='password' style={{marginTop:'25px',minWidth:'300px'}} label="Password"/>
-                <Button variant="contained" style={{marginTop:'25px',minWidth:'300px'}} text="login"/>
+                <Button variant="contained" onClick={()=>{Navigator('/StudentDashboard')}} style={{marginTop:'25px',minWidth:'300px'}} text="login"/>
                 <p style={{marginTop:'10px',fontSize:'14px'}}>Forgot Password?</p>
                 <div style={{display:'flex', flexDirection: 'row'}}>
                 <p style={{marginTop:'10px',marginRight:'10px',fontSize:'14px'}}>Don't Have an Account?</p>
