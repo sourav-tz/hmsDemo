@@ -43,6 +43,13 @@ module.exports = (sequelize, dataTypes) => {
                 name: 'hostelNo'
             }
         });
+        hostelauthoritys.hasOne(models.users, {
+            onDelete: "SET NULL",
+            onUpdate: "cascade",
+            foreignKey: {
+                name: 'email'
+            }
+        });
     };
     return hostelauthoritys;
 }

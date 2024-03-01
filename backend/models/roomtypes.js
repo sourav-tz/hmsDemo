@@ -4,7 +4,9 @@ module.exports = (sequelize, dataTypes) => {
         roomTypeNo: {
             type: dataTypes.INTEGER,
             primaryKey: true,
+            autoIncrement: true,
         },
+        //*type means name of room type 
         type: {
             type: dataTypes.STRING,
         },
