@@ -6,7 +6,7 @@ const getRoomsData = async (req, res) => {
     try {
 
         const filters = {};
-        const hostelNo = req.body.hostelNo
+        const hostelNo = req.query.hostelNo
 
         // filters based on query parameters
         if (req.query.roomNo) {
