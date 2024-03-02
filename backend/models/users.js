@@ -23,8 +23,18 @@ module.exports = (sequelize, dataTypes) => {
             defaultValue: "adityaDon"
         },
     }, {
-        updatedAt: 'last_updated_at'
+        updatedAt: 'last_updated_at',
+        paranoid:true
     })
+    users.associate = (models) => {
+        users.hasOne(models.hostelauthoritys, {
+            onDelete: "SET NULL",
+            onUpdate: "cascade",
+            foreignKey: {
+                name: 'email'
+            }
+        });
+    };
 
     return users;
 } 

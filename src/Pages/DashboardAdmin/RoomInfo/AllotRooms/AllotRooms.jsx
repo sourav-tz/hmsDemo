@@ -30,13 +30,18 @@ import {
 
   import { IoIosCloseCircleOutline } from "react-icons/io";
 
-
-  import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+  import {Chart, ArcElement, Tooltip, Legend, Title} from 'chart.js';
 import { Doughnut } from "react-chartjs-2";
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setAllot,setView } from '../../../../Store/Reducers/roomSlice';
-ChartJS.register(ArcElement, Tooltip, Legend);
+
+Chart.register(ArcElement, Tooltip, Legend, Title);
+Chart.defaults.plugins.tooltip.backgroundColor = 'rgb(0, 0, 156)';
+Chart.defaults.plugins.legend.position = 'left';
+Chart.defaults.plugins.legend.title.display = true;
+Chart.defaults.plugins.legend.title.text = 'Out of 204';
+Chart.defaults.plugins.legend.title.font = 'Helvetica Neue';
 
 
 const items = [
@@ -79,13 +84,15 @@ const AllotRooms = ()=>{
 
 
     const data = {
-        labels: ["Total Rooms", "Vacant", "Partially Filled"],
+        labels: ["fully filled", "Vacant", "Partially Filled"],
         datasets: [
           {
-            data: [204, 50, 100],
+            data: [104, 50, 100],
             backgroundColor: ["green", "skyblue", "orange"],
           },
         ],
+        borderWidth: 2,
+        radius: '40%' 
       };
 
 
@@ -93,10 +100,23 @@ const AllotRooms = ()=>{
     return<>
     <h1 className='text-3xl'>Rooms Allotement</h1>
     <div className={styles.container}>
-    <div className={styles.roomsBarGraph+' p-8'}>
+    <Card>
+    <CardHeader>
+        <CardTitle>Rooms Status</CardTitle>
+        <CardDescription>Check the Rooms Status of whole hostel</CardDescription>
+    </CardHeader>
+    <CardContent>
     <Doughnut type="doughnut" data={data} />
-        </div>
-        <div className={styles.queryArea+' mb-4'}>
+        </CardContent>
+        </Card>
+
+        <Card>
+        <CardHeader>
+            <CardTitle>Search Queries</CardTitle>
+            <CardDescription>Search Rooms according to queries</CardDescription>
+        </CardHeader>
+        <div className={' mb-4'}>
+        <CardContent>
         <div className='flex'>
         <Select>
             <SelectTrigger className="w-[180px]">
@@ -136,14 +156,15 @@ const AllotRooms = ()=>{
             </SelectContent>
             </Select>
             </div>
-            <div className={styles.buttonArea}>
+            </CardContent>
+            <CardFooter className='flex justify-between'>
                 <Button text="Reset" />
                 <Button variant="contained" text="Search" />
+                </CardFooter>
             </div>
+        </Card>
 
-        </div>
-
-        <div className={styles.tableArea}>
+        <div className={styles.tableArea+' mt-4'}>
                 {/* <TableLoader /> */}
                 <RoomTable />
             </div>
