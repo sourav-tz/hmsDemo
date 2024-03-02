@@ -6,7 +6,7 @@ const getRoomsData = async (req, res) => {
     try {
 
         const filters = {};
-        const hostelNo = req.body.hostelNo
+        const hostelNo = 11
 
         // filters based on query parameters
         if (req.query.roomNo) {
@@ -33,17 +33,19 @@ const getRoomsData = async (req, res) => {
         const limit = parseInt(req.query.limit) || 10; // Default page size is 10 if not provided
 
         if (totalpages === 0) {
-            totalpages = Math.ceil((await db.roomsStudentMapping.count({
-                where: { hostelNo: hostelNo, checkOutDate: null },
-                include: [
-                    {
-                        model: db.students,
-                    },
-                    {
-                        model: db.rooms,
-                        where: filters
-                    }
-                ]
+            totalpages = Math.ceil((await db.rooms.count({
+                where: filters,
+                // include: [
+                //     {
+                //         model: db.roomsStudentMapping,
+                //         required:false,
+                //         where: { checkOutDate: null },
+                //         include: [{
+                //             model: db.students,
+    
+                //         }]
+                //     }
+                // ]
             })) / limit);
             console.log(totalpages);
             if (totalpages == 0) {
@@ -78,6 +80,7 @@ const getRoomsData = async (req, res) => {
             include: [
                 {
                     model: db.roomsStudentMapping,
+                    required:false,
                     where: { checkOutDate: null },
                     include: [{
                         model: db.students,
