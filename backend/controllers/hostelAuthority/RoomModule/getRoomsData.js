@@ -8,6 +8,12 @@ const getRoomsData = async (req, res) => {
         const filters = {};
         const hostelNo = 11
 
+        const totalRooms = await db.rooms.count({where:{hostelNo: hostelNo}})
+        const fullyFilledCount = await db.rooms.count({ where: { currentOccupancy: 'Fully-Filled' ,hostelNo:hostelNo} });
+        const partiallyFilledCount = await db.rooms.count({ where: { currentOccupancy: 'Partially-Filled' ,hostelNo:hostelNo} });
+        const vacantCount = await db.rooms.count({ where: { currentOccupancy: 'vacant',hostelNo:hostelNo } });
+
+
         // filters based on query parameters
         if (req.query.roomNo) {
             filters.roomNo = req.query.roomNo;
@@ -103,10 +109,11 @@ const getRoomsData = async (req, res) => {
             previous: {
                 page: prevPage,
                 limit: limit,
-                totalpages: totalpages
+                totalpages: totalpages 
             }
         })
-        return res.json(roomsData);
+        return res.json({roomsData: roomsData , totalRooms: totalRooms , vacantCount: vacantCount,
+        partiallyFilledCount:partiallyFilledCount , fullyFilledCount,fullyFilledCount});
 
 
 

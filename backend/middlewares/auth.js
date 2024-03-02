@@ -8,7 +8,7 @@ const auth = (req, res, next) => {
 
         const token = req.cookies.hostelAccessToken;
 
-        if (!token) {
+        if (!token) { 
             return res.status(401).send('token expired in auth');
         }
         // console.log(cookies);
