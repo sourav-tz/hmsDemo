@@ -56,15 +56,14 @@ router.delete('/removeRoomType', deleteRoomType);
 //Todo: timeline , single room add del
 //Todo manage admin [revoke login ,give login again , change hostel ]
 router.get('/getAdmins',getAdmins);
-router.get('/giveLoginAccess',giveLoginAccess);
-router.get('/revokeLoginAcess',revokeLoginAcess);
-router.get('/changeHostel',changeHostel);
+router.post('/giveLoginAccess',giveLoginAccess);
+router.post('/revokeLoginAcess',revokeLoginAcess);
+router.post('/changeHostel',changeHostel);
 //Todo admin timeline
 
 
 
 //todo forgot pass, change password
-
 
 
 

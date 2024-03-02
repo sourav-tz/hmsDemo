@@ -25,7 +25,7 @@ const revokeLoginAcess = async (req,res)=>{
     try {
         const {email} = req.body;
         const deleted=await db.users.destroy({
-            where:{email},
+            where:{email:email}
         });
       return res.json({data:deleted});
       } catch (error) {
@@ -36,8 +36,8 @@ const revokeLoginAcess = async (req,res)=>{
 const giveLoginAccess = async (req,res)=>{
     try {
         const {email} = req.body;
-        const enabled=await db.hostels.restore({
-            where:{email}
+        const enabled=await db.users.restore({
+            where:{email:email}
         });
       return res.json({data:enabled});
       } catch (error) {
@@ -48,7 +48,7 @@ const giveLoginAccess = async (req,res)=>{
 const changeHostel=async (req,res)=>{
     try {
         const {email,hostelNo} = req.body;
-        await db.hostels.update({hostelNo},{
+        await db.hostelauthoritys.update({hostelNo},{
             where:{email}
         });
         //Todo add transaction history feature for timeline

@@ -4,7 +4,7 @@ const fs=require('fs');
 exports.csvToJsonConverter = async (req,res,next)=>{
     
 try {
-  csv({checkType:true,ignoreEmpty:true})
+  csv({checkType:true, skipEmptyLines: false ,nullObject: true })
    .fromFile(req.file.path)
    .then(async (jsonObj)=>{
     try {
@@ -15,6 +15,14 @@ try {
         }
         console.log("file deleted successfully");
        })
+       // Iterate through each object in the array and convert empty strings to null
+       jsonObj.forEach(obj => {
+        Object.keys(obj).forEach(key => {
+            if (obj[key] === '') {
+                obj[key] = null;
+            }
+        });
+    });
       req.body=jsonObj;
       next();
      }catch (error){
