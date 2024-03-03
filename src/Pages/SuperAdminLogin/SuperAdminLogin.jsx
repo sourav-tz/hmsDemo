@@ -1,6 +1,6 @@
 import styles from './SuperAdminLogin.module.scss';
-import Textinput from '../../Components/Textinput/Textinput'
-import Button from '../../Components/Button/Button'
+import Textinput from '../../components/Textinput/Textinput'
+import Button from '../../components/Button/Button'
 import logoImage from '../../Assets/nit-logo.png'
 import { IoArrowBack } from 'react-icons/io5'
 import { IconContext } from 'react-icons'
@@ -14,7 +14,7 @@ import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import config from '../../config/config'
 
-import GoogleButton from '../../Components/Button/GoogleButton';
+import GoogleButton from '../../components/Button/GoogleButton';
 
 export default function SuperAdminLogin () {
   const [data, setData] = useState({ email: null, password: null })

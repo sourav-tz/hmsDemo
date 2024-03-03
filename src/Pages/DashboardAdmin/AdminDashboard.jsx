@@ -1,10 +1,10 @@
 import styles from './AdminDashboard.module.scss';
-import Sidebar from "../../Components/Sidebar/Sidebar";
-import Roomsbargraph from '../../Components/Roomsbargraph/Roomsbargraph';
-import ComplaintBox from '../../Components/ComplaintBox/ComplaintBox';
+import Sidebar from "../../components/Sidebar/Sidebar";
+import Roomsbargraph from '../../components/Roomsbargraph/Roomsbargraph';
+import ComplaintBox from '../../components/ComplaintBox/ComplaintBox';
 import {lazy, Suspense, useState, useEffect} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Loadingpage from '../../Components/Loadingpage/Loadingpage';
+import Loadingpage from '../../components/Loadingpage/Loadingpage';
 import { CiLogout } from "react-icons/ci";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';

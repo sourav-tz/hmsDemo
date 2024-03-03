@@ -1,6 +1,6 @@
 import styles from './Adminlogin.module.scss'
-import Textinput from '../../Components/Textinput/Textinput'
-import Button from '../../Components/Button/Button'
+import Textinput from '../../components/Textinput/Textinput'
+import Button from '../../components/Button/Button'
 import logoImage from '../../Assets/nit-logo.png'
 import { IoArrowBack } from 'react-icons/io5'
 import { IconContext } from 'react-icons'
@@ -15,7 +15,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import config from '../../config/config'
 import { GoogleAuthProvider, getAuth, signInWithPopup } from '@firebase/auth'
 import { app } from '../../Firebase/firebase';
-import GoogleButton from '../../Components/Button/GoogleButton';
+import GoogleButton from '../../components/Button/GoogleButton';
 import { setActiveOption,setActiveSubOption } from '../../Store/Reducers/sideBarSlice'
 export default function () {
   const [data, setData] = useState({ email: null, password: null })

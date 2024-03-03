@@ -1,5 +1,5 @@
-import Textinput from "../../Components/Textinput/Textinput"
-import Sidebar from "../../Components/Sidebar/Sidebar"
+import Textinput from "../../components/Textinput/Textinput"
+import Sidebar from "../../components/Sidebar/Sidebar"
 import Style from './Sandbox.module.scss'
 import { Button } from "@/components/ui/button"
 

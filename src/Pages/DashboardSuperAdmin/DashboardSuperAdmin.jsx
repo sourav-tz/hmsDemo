@@ -1,7 +1,7 @@
 import { lazy,Suspense } from "react";
-import SuperSidebar from "../../Components/SuperSidebar/SuperSidebar";
+import SuperSidebar from "../../components/SuperSidebar/SuperSidebar";
 import { useSelector } from "react-redux";
-import Loadingpage from "../../Components/Loadingpage/Loadingpage";
+import Loadingpage from "../../components/Loadingpage/Loadingpage";
 import { CiLogout } from "react-icons/ci";
 import { useNavigate } from "react-router-dom";
 
