@@ -6,7 +6,7 @@ const superAdmin = require('./routers/superAdmin/routes');
 const studentRouter = require('./routers/students/routes');
 const HARouter = require('./routers/hostelAuthority/routes');
 const othersRouter = require('./routers/others/routes');
-const SARouter = require('./routers/superAdmin/routes')
+const SARouter = require('./routers/superAdmin/routes') 
 const cookieParser = require('cookie-parser');
 require("dotenv").config();
 
