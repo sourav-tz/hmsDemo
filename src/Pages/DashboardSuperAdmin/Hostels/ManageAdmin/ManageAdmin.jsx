@@ -42,6 +42,7 @@ const ManageAdmin = () => {
         })
       }
       let {email,name,roleType,mobile,password,hostelNo} = admin;
+      
       const handleAdmin=(e)=>{
         e.preventDefault();
         setRowData([...rowData,{name,hostelNo,mobile}])
