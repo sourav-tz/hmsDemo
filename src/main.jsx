@@ -8,7 +8,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { store,persistor } from  './Store/Store.js'
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
-import Loadingpage from './Components/Loadingpage/Loadingpage.jsx';
+import Loadingpage from './components/Loadingpage/Loadingpage.jsx';
 import './index.css';
 
 

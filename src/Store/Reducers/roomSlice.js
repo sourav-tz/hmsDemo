@@ -3,6 +3,8 @@ import { createSlice } from '@reduxjs/toolkit'
 const initialState = {
   allot: false,
   view:false,
+  allotData:{roomNo:null,rollNo:null,hostelNo:null},
+  roomData:{},
 }
 
 export const roomSlice = createSlice({
@@ -14,11 +16,17 @@ export const roomSlice = createSlice({
     },
     setView:(state,action)=>{
         state.view = action.payload;
+    },
+    setAllotData:(state,action)=>{
+      state.allotData = action.payload;
+    },
+    setRoomData:(state,action)=>{
+      state.roomData = action.payload;
     }
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { setAllot,setView } = roomSlice.actions
+export const { setAllot,setView,setAllotData,setRoomData } = roomSlice.actions
 
 export default roomSlice.reducer

@@ -1,0 +1,38 @@
+
+services:
+  
+  db:
+    image: mysql:5.7
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: hostel
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - 3306
+
+
+  app:
+    build: .
+    depends_on:
+      - db
+    restart: unless-stopped
+    environment:
+      DB_USERNAME: "root"
+      DB_PASSWORD: "root"
+      DB_DATABASE: "hostel"
+      DB_HOST: "db"
+      DB_DIALECT: "mysql"
+      NODE_ENV: "development"
+      FRONTEND_URL: "http://localhost:5173"
+      JWT_SECRET_KEY: "kjsdklfjkljfd"
+      DB_LOGGING: "false"
+    ports:
+      - "3000:3000"
+
+volumes:
+  db_data:    
+
+
+

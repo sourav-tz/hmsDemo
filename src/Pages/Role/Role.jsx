@@ -1,12 +1,12 @@
 import styles from './Role.module.scss';
-import Button from '../../Components/Button/Button';
+import Button from '../../components/Button/Button';
 import adminImage from './assets/admin.png';
 import studentImage from './assets/student.png';
-import Footer from '../../Components/Footer/Footer';
+import Footer from '../../components/Footer/Footer';
 import officeImage from '../../Assets/officeImage.svg';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import Loadingpage from '../../Components/Loadingpage/Loadingpage';
+import Loadingpage from '../../components/Loadingpage/Loadingpage';
 
 export default function(){
 

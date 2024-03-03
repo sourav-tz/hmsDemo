@@ -1,0 +1,20 @@
+version: "3"
+
+## TODO add auth to mongo
+## TODO work out production architecture (add nginx proxy)
+## TODO work out testing?
+
+services:
+  frontEnd:
+    build: .
+    restart: unless-stopped
+    environment:
+      NODE_ENV: "development"
+      VITE_FIREBASE_API_KEY: "AIzaSyBBSmx8VLB55mLbVuSJZGw0V91L2v2IRCo"
+      VITE_FIREBASE_AUTH_DOMAIN: "nit-hmsv2.firebaseapp.com"
+      VITE_FIREBASE_PROJECT_ID: "nit-hmsv2"
+      VITE_FIREBASE_STORAGE_BUCKET: "nit-hmsv2.appspot.com"
+      VITE_FIREBASE_MESSAGING_SENDER_ID: "33933279172"
+      VITE_FIREBASE_APP_ID: "1:33933279172:web:19e788bdf2"
+    ports: 
+       - "5173:5173"
