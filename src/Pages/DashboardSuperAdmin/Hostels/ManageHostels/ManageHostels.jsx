@@ -1,7 +1,7 @@
-import React, { useState} from 'react'
-import { Input } from '../../../../Components/ui/input';
-import { Select,SelectTrigger,SelectContent,SelectValue,SelectItem } from '../../../../Components/ui/select';
-import { Button } from '../../../../Components/ui/button';
+import React, { useEffect, useState} from 'react'
+import { Input } from '../../../../components/ui/input';
+import { Select,SelectTrigger,SelectContent,SelectValue,SelectItem } from '../../../../components/ui/select';
+import { Button } from '../../../../components/ui/button';
 import { AgGridReact } from 'ag-grid-react'; 
 import "ag-grid-community/styles/ag-grid.css"; 
 import "ag-grid-community/styles/ag-theme-quartz.css";
@@ -9,56 +9,82 @@ import { ImBin } from "react-icons/im";
 import { FaRegEdit } from "react-icons/fa";
 import { MdAccountCircle } from "react-icons/md";
 
+import axios from "axios";
+
 const ManageHostels = () => {
   const [sel,setSelect] = useState("");
-       const [rowData, setRowData] = useState([]);
-       const [FormErrors,setFormErrors] = useState({ HostelName:"",HostelNo:"",HostelType: ""})
+       let [rowData, setRowData] = useState([]);
+      //  const [FormErrors,setFormErrors] = useState({ hostelName:null,hostelNo:"",type: ""})
 
-       const [hostel, setHostel] = useState ({
-        HostelName:"", HostelNo:"",HostelType:""
+       let [hostel, setHostel] = useState ({
+        hostelName:null, hostelNo:"",type:""
        });
 
-       const handleChange=(e)=>{
-        setHostel({...hostel,[e.target.name]:e.target.value});
-        setFormErrors({...FormErrors, [e.target.name]: ''});
+       useEffect(()=>{
+        console.log(hostel);
+       },[hostel])
+
+       const setName=(e)=>{
+        setHostel((prev)=>{return {...prev,hostelName:e.target.value}});
+        // setFormErrors({...FormErrors, [e.target.name]: ''});
+       }
+
+       
+       const setHostelNumber=(e)=>{
+        setHostel((prev)=>{return {...prev,hostelNo:e.target.value}});
+
+        // setFormErrors({...FormErrors, [e.target.name]: ''});
 
        }
 
        const handleSelectChange=(e)=>{
-        setSelect(e);
+        setHostel((prev)=>{return {...prev,type:e}});
        }
-       hostel.HostelType = sel;
+       
+      //  hostel.HostelType = sel;
 
-       let {HostelName, HostelNo, HostelType} = hostel;
+      //  let {HostelName, HostelNo, HostelType} = hostel;
 
-       const handleHostel = (e) => {
-        e.preventDefault();
-        console.log(hostel);
-        let errors = {};
+      //  const handleHostel = (e) => {
+      //   e.preventDefault();
+      //   console.log(hostel);
+      //   let errors = {};
 
-        //input validation
-        if (hostel.HostelName.trim() === '') {
-          errors.HostelName = "Hostel name is required"
-        }
+      //   //input validation
+      //   if (hostel.HostelName.trim() === '') {
+      //     errors.HostelName = "Hostel name is required"
+      //   }
 
-        if(hostel.HostelNo.trim() == '') {
-          errors.HostelNo = "Hostel no. is required"
-        }
+      //   if(hostel.HostelNo.trim() == '') {
+      //     errors.HostelNo = "Hostel no. is required"
+      //   }
 
-        setFormErrors(errors);
+      //   setFormErrors(errors);
 
-        if(Object.keys(errors).length === 0) {
-          setRowData([...rowData,{HostelName, HostelNo, HostelType}]);
-          setSelect("");
-          hostel.HostelName="";
-          hostel.HostelNo="";
-          hostel.actInact="";
-        }
-       }
+      //   if(Object.keys(errors).length === 0) {
+      //     // setRowData([...rowData,{HostelName, HostelNo, HostelType}]);
+      //     setSelect("");
+      //     // hostel.HostelName="";
+      //     // hostel.HostelNo="";
+      //   }
+      //  }
 
        //const handleDeleteRow = () => {
 
        // }
+
+
+       const handleHostel =(e)=>{
+          e.preventDefault();
+        axios.post('http://localhost:3000/SA/addHostel',hostel)
+        .then((res)=>{
+          console.log(res);
+        })
+        .catch((err)=>{
+          console.log(err);
+        })
+
+       }
 
        const [colDefs, setColDefs] = useState([
         {field: "HostelName", headerClass: "font-bold border p-2 font-bold text-md"},
@@ -71,22 +97,21 @@ const ManageHostels = () => {
        ])
 
   return (
-
     <>
     <div className=''>
       <div className= 'm-6 p-5  max-w-md rounded-[30px] shadow-[0_3px_10px_rgb(0,0,0,0.2)]'>
-        <form onSubmit={handleHostel} >
+        <form>
           <div>
             <h1 className='text-2xl m-2 font-bold'>Add Hostel</h1>
           </div> 
           <div className='flex'>
             <div className='fex-col'>
-              <Input name="HostelName" className='w-40 h-12 m-2 text-md p-3 placeholder:text-black bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)]' type="text" value= {hostel.HostelName} onChange={handleChange} placeholder='Hostel name' />
-              {FormErrors.HostelName && <div className='px-4 text-red-600'>{FormErrors.HostelName}</div>}
+              <Input name="HostelName" className='w-40 h-12 m-2 text-md p-3 placeholder:text-black bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)]' type="text" onChange={setName} placeholder='Hostel name' />
+              {/* {FormErrors.HostelName && <div className='px-4 text-red-600'>{FormErrors.HostelName}</div>} */}
             </div>
-            <Select name="HostelType" value={hostel.HostelName} onValueChange={handleSelectChange}>
+            <Select name="HostelType" onValueChange={handleSelectChange}>
               <SelectTrigger className="w-40 h-12 text-md p-3 m-2 text-black bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
-                <SelectValue  placeholder="Hostel No." />
+                <SelectValue  placeholder="Hostel Type" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="Girls">
@@ -105,13 +130,13 @@ const ManageHostels = () => {
 
           <div className='flex'>
             <div className='flex-col'>
-              <Input name="HostelNo" onChange={handleChange} value={hostel.HostelNo} className='w-40 h-12 m-2  text-md p-3 placeholder:text-black bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)]' type="text"  placeholder='Hostel No.'/>
-              {FormErrors.HostelNo && <div className='px-4 text-red-600'>{FormErrors.HostelNo}</div>}
+              <Input name="HostelNo" onChange={setHostelNumber} className='w-40 h-12 m-2  text-md p-3 placeholder:text-black bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)]' type="text"  placeholder='Hostel No.'/>
+              {/* {FormErrors.HostelNo && <div className='px-4 text-red-600'>{FormErrors.HostelNo}</div>} */}
             </div>
           </div>
 
           <div className='flex'>
-          <Button type='submit' className=' w-20 h-10  m-2 p-3 bg-[#5F57FF] text-white rounded-lg  text-md shadow-[0_3px_10px_rgb(0,0,0,0.2)]' >ADD</Button>
+          <Button onClick={handleHostel} className=' w-20 h-10  m-2 p-3 bg-[#5F57FF] text-white rounded-lg  text-md shadow-[0_3px_10px_rgb(0,0,0,0.2)]' >ADD</Button>
           </div>
         </form>
 

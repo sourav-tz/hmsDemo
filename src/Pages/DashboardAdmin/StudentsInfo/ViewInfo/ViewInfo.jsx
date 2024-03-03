@@ -13,6 +13,18 @@ import { setSearchQuery } from '../../../../Store/Reducers/viewInfoSlice';
 import { useDispatch } from 'react-redux';
 import './Pagination.css';
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+
+
+
+
+
 const ViewInfo = ()=>{
     const [data,setData] = useState([]);
     const searchQuery = useSelector(state=>state.viewInfoStates.searchQuery);
@@ -73,36 +85,42 @@ const ViewInfo = ()=>{
 
 
     const handleSearch = () => {
-        setTableLoading(true);
-             
-          axios({
-            url:'http://localhost:3000/HA/studentsInfo',
-            headers: {
-              "Content-Type": "application/json"
-              },
-              withCredentials: true,
-              params:{
-                page:1,
-                limit:10,
-                total:0,
-                ...((searchQuery.firstName !== '') && { firstName: searchQuery.firstName }),
-                  ...((searchQuery.lastName !== '') && { lastName: searchQuery.lastName}),
-                  ...((searchQuery.rollNo !== '') && { rollNo: searchQuery.rollNo}),
-                  ...((searchQuery.state !== '') && { state: searchQuery.state}),
+      setTableLoading(true);
+      const controller = new AbortController();
+      axios({
+        method: 'get',
+        url:'http://localhost:3000/HA/studentsInfo',
+        // signal: controller.signal,
+        headers: {
+          "Content-Type": "application/json"
+        },
+        withCredentials: true,
+        params:{
+          page:1,
+          limit:10,
+          total:0,
+          ...((searchQuery.firstName !== '') && { firstName: searchQuery.firstName }),
+          ...((searchQuery.lastName !== '') && { lastName: searchQuery.lastName}),
+          ...((searchQuery.rollNo !== '') && { rollNo: searchQuery.rollNo}),
+          ...((searchQuery.state !== '') && { state: searchQuery.state}),
+        },
+      })
+      .then((res) => {
+        const newData = res.data.length > 2 ? res.data.slice(2) : [];
+        setData(newData);
+        setTotalPages(res.data[0].previous.totalpages);
+        console.log(res.data);
+        setTableLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setTableLoading(false);
+      });
 
-              }
-          })
-            .then((res) => {
-              const newData = res.data.length > 2 ? res.data.slice(2) : [];
-              setData(newData);
-              setTotalPages(res.data[0].previous.totalpages);
-              console.log(res.data);
-              setTableLoading(false);
-            })
-            .catch((err) => {
-              console.log(err);
-              setTableLoading(false);
-            });
+      setTimeout(() => {
+        controller.abort()
+    }, 100)
+
       };
       
 
@@ -166,23 +184,54 @@ const ViewInfo = ()=>{
 
     return <>
 
-        <div className="w=[80%] flex-col justify-center">
+        <div className="w-[80%] flex-col justify-center">
         <h1 className='text-3xl mb-4'>Search Students Records</h1>
-        <div className="w-[400px] md:w-[700px] rounded-md p-12 flex gap-2 flex-wrap shadow-lg">
+        <div className="w-[400px] md:w-[700px] rounded-md p-12 flex gap-2 flex-wrap border-[1px] border-gray-200 shadow-sm">
             <ComplexSearch />
             <div>
             <p>State:</p>
-            <MultiSelect FOR="state" list={indianStates} onClick={handleMutivalueClick}/>
+            {/* <MultiSelect FOR="state" list={indianStates} onClick={handleMutivalueClick}/> */}
+            <Select>
+  <SelectTrigger className="w-[180px]">
+    <SelectValue placeholder="Select" />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectItem value="light">Light</SelectItem>
+    <SelectItem value="dark">Dark</SelectItem>
+    <SelectItem value="system">System</SelectItem>
+  </SelectContent>
+</Select>
             </div>
             <div>
             <p>Course:</p>
-            <MultiSelect FOR="course" list={academicQualifications} onClick={handleMutivalueClick}/>
+            {/* <MultiSelect FOR="course" list={academicQualifications} onClick={handleMutivalueClick}/> */}
+            <Select>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Select" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="light">MCA</SelectItem>
+              <SelectItem value="dark">MBA</SelectItem>
+              <SelectItem value="system">MTECH</SelectItem>
+              <SelectItem value="system">BTECH</SelectItem>
+            </SelectContent>
+          </Select>
             </div>
             <div>
             <p>Year:</p>
-            <MultiSelect FOR="year" list={repeatedArray} onClick={handleMutivalueClick}/>
+            {/* <MultiSelect FOR="year" list={repeatedArray} onClick={handleMutivalueClick}/> */}
+            <Select>
+  <SelectTrigger className="w-[180px]">
+    <SelectValue placeholder="Select" />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectItem value="light">Light</SelectItem>
+    <SelectItem value="dark">Dark</SelectItem>
+    <SelectItem value="system">System</SelectItem>
+  </SelectContent>
+</Select>
             </div>
-            <div className={styles.buttonArea}>
+            <div className={styles.buttonArea+' mt-4'}>
                 <div>
                     <Button onClick={handleReset} text="Reset" style={{marginRight:'15px'}}/>
                     <Button onClick={handleSearch} variant="contained" text="Search" />

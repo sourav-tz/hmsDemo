@@ -111,7 +111,7 @@ export default function SuperSidebar(){
             <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
                         <p onClick={()=>{changeSubMenu('roomInfo')}} className={(activeOption==='roomInfo'?styles.activeItem:null)+ ' flex items-center gap-2'}><MdOutlineBedroomChild /> <span className={(state?null:styles.hidden)+' mt-1'}>Room Actions</span></p>
                         <ul className={state&&subRoom?null:styles.hidden}>
-                        <li onClick={()=>{changeActiveOption('roomInfo');changeActiveSubOption('riAllotRoom')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='riAllotRoom'?styles.activeSubOption:null)}>Allocate</li>
+                        <li onClick={()=>{changeActiveOption('roomInfo');changeActiveSubOption('allocateRooms')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='allocateRooms'?styles.activeSubOption:null)}>Allocate</li>
                         </ul>
             </div>
             <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
@@ -125,7 +125,7 @@ export default function SuperSidebar(){
             </div>
             <div className={styles.Settings}>
             <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
-                        <p onClick={()=>{changeSubMenu('settings')}} className={' flex items-center gap-2'+(activeOption==='settings'?styles.activeItem:null)}><FaGear /> <span className={state?null:styles.hidden}>Settings</span></p>
+                        <p onClick={()=>{changeSubMenu('settings')}} className={' flex items-center gap-2 '+(activeOption==='settings'?styles.activeItem:null)}><FaGear /> <span className={(state?null:styles.hidden)+' ml-2'}>Settings</span></p>
                         <ul className={state&&subSettings?null:styles.hidden}>
                         <li onClick={()=>{changeActiveOption('settings');changeActiveSubOption('profileSettings');changeActiveSubOption('profileSettings')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='profileSettings'?styles.activeSubOption:null)}>Profile Settings</li>
                         <li onClick={()=>{changeActiveOption('settings');changeActiveSubOption('securitySettings');changeActiveSubOption('securitySettings')}} className={(state?null:styles.hidden)+' '+styles.subOptions +' ' + (activeSubOption==='securitySettings'?styles.activeSubOption:null)}>Security Settings</li>

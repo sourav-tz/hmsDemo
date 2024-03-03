@@ -1,23 +1,25 @@
 import styles from './AdminDashboard.module.scss';
-import Sidebar from "../../Components/Sidebar/Sidebar";
-import Roomsbargraph from '../../Components/Roomsbargraph/Roomsbargraph';
-import ComplaintBox from '../../Components/ComplaintBox/ComplaintBox';
+import Sidebar from "../../components/Sidebar/Sidebar";
+import Roomsbargraph from '../../components/Roomsbargraph/Roomsbargraph';
+import ComplaintBox from '../../components/ComplaintBox/ComplaintBox';
 import {lazy, Suspense, useState, useEffect} from 'react';
-import { useSelector } from 'react-redux';
-import Loadingpage from '../../Components/Loadingpage/Loadingpage';
+import { useDispatch, useSelector } from 'react-redux';
+import Loadingpage from '../../components/Loadingpage/Loadingpage';
 import { CiLogout } from "react-icons/ci";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import config from '../../config/config';
+import { removeUserData } from '../../Store/Reducers/userSlice';
 // Lazy Imports
 const StudentUploadInfo = lazy(()=>import('./StudentsInfo/UploadInfo/UploadInfo'));
 const StudentViewInfo = lazy(()=>import('./StudentsInfo/ViewInfo/ViewInfo'));
 const RoomsAllotement = lazy(()=>import('./RoomInfo/AllotRooms/AllotRooms'));
-const RoomsUpload = lazy(()=>import('./RoomInfo/UploadInfo/RoomsUpload'));
+
 import { driver } from "driver.js";
 import "driver.js/dist/driver.css";
 
 const AdminDashboard = ()=>{
+    const Dispatcher = useDispatch();
     const activeOptions = useSelector(state => state.sideBarStates.activeSubOption);
     const [loadingPage,setLoadingPage] = useState(false); 
     const [isLoggedIn,setisLoggedIn] = useState(false);
@@ -57,10 +59,13 @@ const handleLogout = ()=>{
     .then(res=>{
         console.log(res);
         setLoadingPage(false);
+        Dispatcher(removeUserData());
         Navigator('/adminLogin');
+
     })
     .catch(err=>{
         setLoadingPage(false);
+        Navigator('/adminLogin');
         console.log(err);
     })
 }   
@@ -114,20 +119,11 @@ return <>
         </div>
         :null}
 
-        {activeOptions==='riUploadInfo'?
-        <div className={styles.contentSpace}>
-            <Suspense fallback={<Loadingpage />}>
-                <RoomsUpload />
-            </Suspense>
+
+        <div id="logout" onClick={handleLogout} className="border-2 border-blue-500 text-blue-500 hover:text-white hover:bg-blue-500 px-4 py-2 cursor-pointer font-semibold rounded-md text-xl flex justify-center items-center gap-1 absolute top-8 right-8" >
+        <div className=""><CiLogout  /></div>
+            Logout
         </div>
-        :null}
-
-
-
-        <div id="logout" onClick={handleLogout} className={styles.logout}>
-        <div className={styles.logoutIcon}><CiLogout  /></div>
-        Logout
-    </div>
 
 
     </div>}

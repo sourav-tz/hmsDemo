@@ -1,7 +1,7 @@
 import { lazy,Suspense } from "react";
-import SuperSidebar from "../../Components/SuperSidebar/SuperSidebar";
+import SuperSidebar from "../../components/SuperSidebar/SuperSidebar";
 import { useSelector } from "react-redux";
-import Loadingpage from "../../Components/Loadingpage/Loadingpage";
+import Loadingpage from "../../components/Loadingpage/Loadingpage";
 import { CiLogout } from "react-icons/ci";
 import { useNavigate } from "react-router-dom";
 
@@ -10,6 +10,9 @@ import { useNavigate } from "react-router-dom";
 const ManageHostels = lazy(()=>import('./Hostels/ManageHostels/ManageHostels'));
 const ManageAdmin = lazy(()=>import('./Hostels/ManageAdmin/ManageAdmin'));
 const Home = lazy(()=>import('./Home/Home'));
+const Profilesettings = lazy(()=>import('./Settings/Profilesettings'));
+const Securitysettings = lazy(()=>import('./Settings/Securitysettings'));
+const RoomsAllocate  = lazy(()=>import('./RoomActions/UploadInfo/RoomsUpload'));
 
 const DashboardSuperAdmin =()=>{
 
@@ -47,6 +50,30 @@ const DashboardSuperAdmin =()=>{
         <div className={`${navState?'flex-[4]':'flex-[9]'}`}>
             <Suspense fallback={<Loadingpage />}>
                 <ManageAdmin />
+            </Suspense>
+        </div>
+        :null}
+
+        {activeOptions==='allocateRooms'?
+        <div className={`${navState?'flex-[4]':'flex-[9]'}`}>
+            <Suspense fallback={<Loadingpage />}>
+                <RoomsAllocate />
+            </Suspense>
+        </div>
+        :null}
+
+        {activeOptions==='profileSettings'?
+        <div className={`${navState?'flex-[4]':'flex-[9]'}`}>
+            <Suspense fallback={<Loadingpage />}>
+                <Profilesettings />
+            </Suspense>
+        </div>
+        :null}
+
+        {activeOptions==='securitySettings'?
+        <div className={`${navState?'flex-[4]':'flex-[9]'}`}>
+            <Suspense fallback={<Loadingpage />}>
+                <Securitysettings />
             </Suspense>
         </div>
         :null}

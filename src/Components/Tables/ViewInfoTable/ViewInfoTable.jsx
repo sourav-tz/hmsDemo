@@ -46,7 +46,7 @@ const ViewInfoTable = ({data})=>{
         {field:'courseId',width:120},
         {field:'email'},
         {field:'profile.contactNumber', headerName: 'Contact Number',width:150},
-        {field:'viewInfo',width:110,cellRenderer:(params)=>{return <Button size="sm" onClick={()=>{Dispatcher(changeModalState(true));setModalData(params.data);console.log(params.data)}}>View</Button>}},
+        {field:'viewInfo',width:110,cellRenderer:(params)=>{return <Button className="bg-blue-600 hover:bg-blue-500 transition-all" size="sm" onClick={()=>{Dispatcher(changeModalState(true));setModalData(params.data);console.log(params.data)}}>View</Button>}},
         {field:'generatePDF',width:145,cellRenderer:(params)=>{ return<><PdfDownload myData={params.data}/></>}  }
          
   ]);

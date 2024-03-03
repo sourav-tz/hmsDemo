@@ -10,6 +10,9 @@ import ForgetPassword from "../Pages/ForgetPassword/ForgetPassword";
 import StudentSignUp from "../Pages/StudentSignUp/StudentSignUp";
 import VerifyOtp from "../Pages/ForgetPassword/VerifyOtp";
 import ResetPassword from "../Pages/ForgetPassword/ResetPassword";
+import Dashboard from "../Pages/Dashboard/Dashboard";
+
+
 
 export default function(){
 
@@ -26,6 +29,7 @@ export default function(){
             <Route path='/StudentSignUp' element={<StudentSignUp />} />
             <Route path='/VerifyOtp' element={<VerifyOtp/>} />
             <Route path='/ResetPassword' element={<ResetPassword/>} />
+            <Route path='/StudentDashboard' element={<Dashboard />} />
         </Routes>
     </>
 }
