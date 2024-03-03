@@ -4,9 +4,11 @@ services:
   db:
     image: mysql:5.7
     restart: unless-stopped
+    env_file:
+      - .env
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: hostel
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
     volumes:
       - db_data:/var/lib/mysql
     ports:
@@ -18,16 +20,18 @@ services:
     depends_on:
       - db
     restart: unless-stopped
+    env_file:
+      - .env
     environment:
-      DB_USERNAME: "root"
-      DB_PASSWORD: "root"
-      DB_DATABASE: "hostel"
-      DB_HOST: "db"
-      DB_DIALECT: "mysql"
-      NODE_ENV: "development"
-      FRONTEND_URL: "http://localhost:5173"
-      JWT_SECRET_KEY: "kjsdklfjkljfd"
-      DB_LOGGING: "false"
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_DATABASE}
+      DB_HOST: db
+      DB_DIALECT: ${DB_DIALECT}
+      NODE_ENV: ${NODE_ENV}
+      FRONTEND_URL: ${FRONTEND_URL}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      DB_LOGGING: ${DB_LOGGING}
     ports:
       - "3000:3000"
 
