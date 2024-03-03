@@ -1,6 +1,6 @@
 import styles from './Studentlogin.module.scss';
-import Textinput from '../../Components/Textinput/Textinput';
-import Button from '../../Components/Button/Button';
+import Textinput from '../../components/Textinput/Textinput';
+import Button from '../../components/Button/Button';
 import logoImage from '../../Assets/nit-logo.png'
 import { IoArrowBack } from "react-icons/io5";
 import { IconContext } from "react-icons";

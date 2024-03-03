@@ -1,8 +1,8 @@
 import React from 'react'
-import StudentSidebar from '../../Components/StudentSidebar/StudentSidebar'
+import StudentSidebar from '../../components/StudentSidebar/StudentSidebar'
 import { lazy,Suspense } from "react";
 import { useSelector } from "react-redux";
-import Loadingpage from "../../Components/Loadingpage/Loadingpage";
+import Loadingpage from "../../components/Loadingpage/Loadingpage";
 import { CiLogout } from "react-icons/ci";
 import { useNavigate } from "react-router-dom";
 

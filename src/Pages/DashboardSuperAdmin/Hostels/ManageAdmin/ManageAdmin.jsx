@@ -1,7 +1,7 @@
 import React, { useState} from 'react'
-import { Input } from '../../../../Components/ui/input';
-import { Select,SelectTrigger,SelectContent,SelectValue,SelectItem } from '../../../../Components/ui/select';
-import {Button} from '../../../../Components/ui/button';
+import { Input } from '../../../../components/ui/input';
+import { Select,SelectTrigger,SelectContent,SelectValue,SelectItem } from '../../../../components/ui/select';
+import {Button} from '../../../../components/ui/button';
 import { AgGridReact } from 'ag-grid-react'; 
 import "ag-grid-community/styles/ag-grid.css"; 
 import "ag-grid-community/styles/ag-theme-quartz.css";

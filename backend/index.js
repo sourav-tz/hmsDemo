@@ -23,6 +23,7 @@ app.use(cors({
 }));
 
 // routers 
+
 app.use('/SA', superAdmin);
 app.use('/student', studentRouter);
 app.use('/HA', HARouter);

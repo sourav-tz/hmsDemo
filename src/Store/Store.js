@@ -18,7 +18,7 @@ import viewInfoSlice from './Reducers/viewInfoSlice';
 import superSidebarSlice from './Reducers/superSidebarSlice';
 import uploadStudentSlice from './Reducers/uploadStudentSlice';
 import studentSidebar from './Reducers/studentSidebar';
-
+import roomSlice from './Reducers/roomSlice';
 
 
 const persistConfig = {
@@ -35,6 +35,7 @@ const rootReducer =combineReducers({
     'superSideBarStates':superSidebarSlice,
     'uploadStudent':uploadStudentSlice,
     'StudentSidebar':studentSidebar,
+    'haRoom':roomSlice
 
 })
 
