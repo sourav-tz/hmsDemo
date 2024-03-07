@@ -10,6 +10,7 @@ import { ImBin } from "react-icons/im";
 import { update } from '@react-spring/web';
 
 const ManageAdmin = () => {
+
   
        const [Pass,setPass] = useState("");
       
