@@ -42,7 +42,7 @@ const handleView = (data)=>{
         
         useEffect(()=>{
             setRowData(data.slice(2,));
-        },[])
+        },[data])
         
   
         // Column Definitions: Defines & controls grid columns.

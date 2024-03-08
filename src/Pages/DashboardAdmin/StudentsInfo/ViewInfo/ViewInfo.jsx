@@ -1,6 +1,5 @@
 import styles from './ViewInfo.module.scss';
 import ComplexSearch from '../../../../Components/ComplesSearch/ComplesSearch';
-import MultiSelect from '../../../../Components/MultiSelect/MultiSelect';
 import Button from '../../../../Components/Button/Button';
 import TableLoader from '../../../../Components/TableLoader/TableLoader';
 import { useEffect, useState } from 'react';
