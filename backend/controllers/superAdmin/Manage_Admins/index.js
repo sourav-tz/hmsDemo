@@ -8,11 +8,9 @@ const db = require('../../../models/index')
 
 const getAdmins=async (req, res) => {
   try {
-    const data = await db.users.findAll({
+    const data = await db.hostelauthoritys.findAll({
       paranoid:false,
-      include: [{
-          model: db.hostelauthoritys,
-      }]
+      
   });
     const result=data.map((key)=>(key.dataValues.deletedAt)?{...key.dataValues,active:false}:{...key.dataValues,active:true});
     return res.json(result);
