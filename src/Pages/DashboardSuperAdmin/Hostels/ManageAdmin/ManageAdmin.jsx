@@ -1,4 +1,4 @@
-import React, { useState} from 'react'
+import React, { useEffect, useState} from 'react'
 import { Input } from '../../../../components/ui/input';
 import { Select,SelectTrigger,SelectContent,SelectValue,SelectItem } from '../../../../components/ui/select';
 import {Button} from '../../../../components/ui/button';
@@ -8,6 +8,7 @@ import "ag-grid-community/styles/ag-theme-quartz.css";
 import { Fullscreen } from 'lucide-react';
 import { ImBin } from "react-icons/im";
 import { update } from '@react-spring/web';
+import axios from "axios";
 
 const ManageAdmin = () => {
 
@@ -21,6 +22,24 @@ const ManageAdmin = () => {
       let [admin,setAdmin] = useState({
         email:"",name:"",roleType:"Admin",mobile:"",password:"",hostelNo:""
       });
+      useEffect(() => {
+         ;(async ()=>{
+             try{
+              const res = await axios({
+                url:'http://localhost:3000/SA/getAdmins',
+                method:'get'
+              })
+
+              console.log(res);
+              setRowData(res.data);
+
+             }catch(error){
+              console.log(error);
+             }
+         }
+
+         )()
+      },[])
 
       const handleName = (e) =>{
         setAdmin((prev) =>
@@ -36,17 +55,30 @@ const ManageAdmin = () => {
           return {...prev,email:e.target.value}
         })
       }
-      const handleSelectChange =(e)=>{
-        console.log(e);
+      const handleNoChange =(e)=>{
+        // console.log(e);
         setAdmin((prev) => {
-          return {...prev,hostelNo:e}
+          return {...prev,hostelNo:e.target.value}
         })
       }
       let {email,name,roleType,mobile,password,hostelNo} = admin;
       
       const handleAdmin=(e)=>{
         e.preventDefault();
-        setRowData([...rowData,{name,hostelNo,mobile}])
+        // setRowData([...rowData,{name,hostelNo,mobile}])
+        ;(async ()=>{
+          try{
+             const res = await axios({
+                url:'http://localhost:3000/SA/adminReg',
+                method:'post',
+                data:admin
+             })
+             console.log(res);
+
+          }catch(error){
+            console.log(error);
+          }
+        })()
         
         console.log(admin);
         
@@ -104,7 +136,7 @@ return (
                 <div className='flex'>
                      
                        <Input name="name"  onChange={handleName} className='w-60  h-16 m-2 text-lg p-3 placeholder:text-black bg-white  shadow-[0_3px_10px_rgb(0,0,0,0.2)] '  type="text"  placeholder='Name'/>
-                      <Select name="hostelNo" onValueChange={handleSelectChange}  >
+                      {/* <Select name="hostelNo" onValueChange={handleSelectChange}  >
                           <SelectTrigger  className="w-60 h-16 text-lg p-3 m-2  text-black bg-white  shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
                             <SelectValue  placeholder="Hostel No" />
                           </SelectTrigger>
@@ -121,13 +153,14 @@ return (
                             <SelectItem value="H10">H10</SelectItem>
                             <SelectItem value="H11">H11</SelectItem>
                           </SelectContent>
-                      </Select>
+                      </Select> */}
+                      <Input name="hostelNo" onChange={handleNoChange} className='w-60 h-16 m-2  text-lg p-3 placeholder:text-black bg-white  shadow-[0_3px_10px_rgb(0,0,0,0.2)]' type="number"  placeholder='Hostel No'/>
 
                 </div>
               
 
                 <div  className='flex'>
-                       <Input  name="mobile" onChange={handleMobile}  className='w-60 h-16 m-2  text-lg p-3 placeholder:text-black bg-white  shadow-[0_3px_10px_rgb(0,0,0,0.2)]' type="text"  placeholder='Mobile No'/>
+                       <Input  name="mobile" onChange={handleMobile}  className='w-60 h-16 m-2  text-lg p-3 placeholder:text-black bg-white  shadow-[0_3px_10px_rgb(0,0,0,0.2)]' type="number"  placeholder='Mobile No'/>
                        <Input name="email" onChange={handleEmail}  className='w-60 h-16 m-2  text-lg p-3 placeholder:text-black bg-white  shadow-[0_3px_10px_rgb(0,0,0,0.2)]' type="text"  placeholder='Email'/>
                    
                 </div>
