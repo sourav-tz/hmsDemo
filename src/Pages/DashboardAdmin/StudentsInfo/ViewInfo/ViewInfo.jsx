@@ -1,5 +1,5 @@
 import styles from './ViewInfo.module.scss';
-import ComplexSearch from '../../../../Components/ComplesSearch/ComplesSearch';
+import ComplexSearch from '../../../../components/ComplesSearch/ComplesSearch';
 import Button from '../../../../components/Button/Button';
 import TableLoader from '../../../../components/TableLoader/TableLoader';
 import { useEffect, useState } from 'react';
