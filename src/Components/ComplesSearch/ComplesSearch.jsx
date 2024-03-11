@@ -19,7 +19,7 @@ const ComplexSearch = ()=>{
 const previousQuery = useSelector(state => state.viewInfoStates.searchQuery);
 const Dispatcher = useDispatch();
 const [rotate,setRotate] = useState(false);
-const [queryItem, setQueryItem] = useState('First Name');
+const [queryItem, setQueryItem] = useState('firstName');
 
 
 const handleWindowClick = () => {
@@ -48,7 +48,7 @@ useEffect(() => {
 
 const handleChange = (e)=>{
   if(queryItem === 'firstName'){
-    Dispatcher(setSearchQuery({...previousQuery,firstName:e.target.value,lastName:'',rollNo:''}))
+    Dispatcher(setSearchQuery({...previousQuery,firstName:e.target.value}))
   }else if(queryItem === 'lastName'){
     Dispatcher(setSearchQuery({...previousQuery,firstName:'',lastName:e.target.value,rollNo:''}))
   }else if(queryItem ==='rollNo'){

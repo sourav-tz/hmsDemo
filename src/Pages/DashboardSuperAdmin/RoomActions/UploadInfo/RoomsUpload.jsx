@@ -70,9 +70,6 @@ const handleDragEnter = (e) => {
 
 
 
-
-
-
     const callFileUpload = () => {
         return new Promise((resolve, reject) => {
           const bodyForData = new FormData();

@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
   modalState: false,
-  searchQuery:{firstName:'',lastName:'',rollNo:'',courseId:'',state:''},
+  searchQuery:{firstName:'',lastName:'',rollNo:'',courseId:'',state:'',year:''},
   modalData:{
     "rollNo": 4,
     "firstName": "Emily",

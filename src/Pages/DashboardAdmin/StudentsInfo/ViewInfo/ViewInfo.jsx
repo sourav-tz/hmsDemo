@@ -6,10 +6,10 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import ViewInfoTable from '../../../../Components/Tables/ViewInfoTable/ViewInfoTable';
 import config from '../../../../config/config';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import ReactPaginate from 'react-paginate';
 import { setSearchQuery } from '../../../../Store/Reducers/viewInfoSlice';
-import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import './Pagination.css';
 
 import {
@@ -31,13 +31,53 @@ const ViewInfo = ()=>{
     const [totalPages , setTotalPages] = useState(null);
     const [tableLoading,setTableLoading] = useState(true);
     const Dispatcher = useDispatch();
+    const [mycourses,setMyCourses] = useState([]);
+    const [noOfYears,setNoOfYears] = useState(8);
+    const [years,setMyYears] = useState([1,2,3,4,5,6,7,8]);
+    const Navigator = useNavigate();
+
+
     useEffect(()=>{
-        axios.get('http://localhost:3000/HA/studentsInfo?page=1&limit=10&total=0',config)
+        axios.get(import.meta.env.VITE_BASE_URL + '/HA/studentsInfo?page=1&limit=10&total=0',config)
         .then(res=>{setTotalPages(res.data[0].previous.totalpages);  res.data.length>2?setData(res.data.slice(2)):setData([]);setTableLoading(false)})
         .catch(err=>{console.log(err);setTableLoading(false)});
 
+        ;(async ()=>{
+
+          try{
+
+            const res = await axios({
+              url:import.meta.env.VITE_BASE_URL + '/HA/getCourses',
+              method:'get'
+            })
+
+            console.log(res);
+            const courses = res.data.map(d => {return `${d.courseId}-${d.courseName}-${d.department}`})
+            setMyCourses(courses)
+
+          }catch(err){
+            console.log(err.response);
+            if(err.response.status===401){
+              Navigator('/adminLogin');
+            }
+          }
+
+        })()
 
     },[])
+
+    useEffect(()=>{
+      const myyears = [];
+      for(let i =1; i<=noOfYears; i++)
+        myyears.push(i);
+
+      setMyYears(myyears);
+    },[noOfYears])
+
+
+    useEffect(()=>{
+      console.log(searchQuery);
+    },[searchQuery]);
 
 
     const indianStates = [
@@ -88,7 +128,7 @@ const ViewInfo = ()=>{
       const controller = new AbortController();
       axios({
         method: 'get',
-        url:'http://localhost:3000/HA/studentsInfo',
+        url:import.meta.env.VITE_BASE_URL + '/HA/studentsInfo',
         // signal: controller.signal,
         headers: {
           "Content-Type": "application/json"
@@ -102,6 +142,8 @@ const ViewInfo = ()=>{
           ...((searchQuery.lastName !== '') && { lastName: searchQuery.lastName}),
           ...((searchQuery.rollNo !== '') && { rollNo: searchQuery.rollNo}),
           ...((searchQuery.state !== '') && { state: searchQuery.state}),
+          ...((searchQuery.cousreId !== '') && { courseId: searchQuery.courseId}),
+          ...((searchQuery.year !== '') && { year: searchQuery.year}),
         },
       })
       .then((res) => {
@@ -114,6 +156,10 @@ const ViewInfo = ()=>{
       .catch((err) => {
         console.log(err);
         setTableLoading(false);
+        if(err.response.status===401){
+          Navigator('/adminLogin');
+        }
+        
       });
 
       setTimeout(() => {
@@ -123,18 +169,40 @@ const ViewInfo = ()=>{
       };
       
 
-      const handleMutivalueClick = (e,FOR)=>{
-        console.log(e.target.innerText,FOR);
-        if(FOR==='state'){
-          Dispatcher(setSearchQuery({...searchQuery,state:e.target.innerText}));
-        }
-      }
+const handleCourse = (e)=>{
 
+  Dispatcher(setSearchQuery({...searchQuery,courseId:e}));
+
+  ;(async ()=>{
+    try{
+      const res =await axios({
+        url:import.meta.env.VITE_BASE_URL + '/HA/getSingleCourse',
+        method:'POST',
+        data:{courseId:e}
+      })
+      console.log(res.data.courseDuration);
+      setNoOfYears(res.data.courseDuration);
+    }catch(error){
+      console.log(error);
+      if(err.response.status===401){
+        Navigator('/adminLogin');
+      }
+    }
+  })()
+
+
+}
 
   const handleReset = ()=>{
-    axios.get('http://localhost:3000/HA/studentsInfo?page=1&limit=10&total=0',config)
+    axios.get(import.meta.env.VITE_BASE_URL + '/HA/studentsInfo?page=1&limit=10&total=0',config)
     .then(res=>{setTotalPages(res.data[0].previous.totalpages);  res.data.length>2?setData(res.data.slice(2)):setData([]);setTableLoading(false)})
-    .catch(err=>{console.log(err);setTableLoading(false)});
+    .catch(err=>{
+      console.log(err);
+      setTableLoading(false)
+      if(err.response.status===401){
+        Navigator('/adminLogin');
+      }
+    });
     Dispatcher(setSearchQuery({firstName:null,lastName:null,rollNo:null,year:null,courseId:null,department:null,state:null}));
 
   }
@@ -142,26 +210,21 @@ const ViewInfo = ()=>{
 
   const handlePageClick = (e)=>{
         const selectedPage = e.selected + 1; // ReactPaginate uses zero-based indexing, so add 1 to get the actual page number
-
+        console.log(selectedPage);
   setTableLoading(true);
 
-
     axios({
-      url:'http://localhost:3000/HA/studentsInfo',
+      url:import.meta.env.VITE_BASE_URL + '/HA/studentsInfo',
       params:{
         page:selectedPage,
         limit:10,
         total:0,
-        params: {
-          page: selectedPage,
-          limit: 10,
-          total: 0,
           ...((searchQuery.firstName !== '') && { firstName: searchQuery.firstName }),
           ...((searchQuery.lastName !== '') && { lastName: searchQuery.lastName}),
           ...((searchQuery.rollNo !== '') && { rollNo: searchQuery.rollNo}),
           ...((searchQuery.state !== '') && { state: searchQuery.state}),
-
-        },
+          ...((searchQuery.courseId !== '') && { courseId: searchQuery.courseId}),
+          ...((searchQuery.year !== '') && { year: searchQuery.year}),
       },
       headers: {
         "Content-Type": "application/json"
@@ -171,11 +234,15 @@ const ViewInfo = ()=>{
       .then((res) => {
         const newData = res.data.length > 2 ? res.data.slice(2) : [];
         setData(newData);
+        setTotalPages(res.data[0].previous.totalpages);
         setTableLoading(false);
       })
       .catch((err) => {
         console.log(err);
         setTableLoading(false);
+        if(err.response.status===401){
+          Navigator('/adminLogin');
+        }
       }); // Return the newLink to update the state
 
 
@@ -195,24 +262,19 @@ const ViewInfo = ()=>{
     <SelectValue placeholder="Select" />
   </SelectTrigger>
   <SelectContent>
-    <SelectItem value="light">Light</SelectItem>
-    <SelectItem value="dark">Dark</SelectItem>
-    <SelectItem value="system">System</SelectItem>
+    {indianStates.map(d=><SelectItem value={d}>{d}</SelectItem>)}
   </SelectContent>
 </Select>
             </div>
             <div>
             <p>Course:</p>
             {/* <MultiSelect FOR="course" list={academicQualifications} onClick={handleMutivalueClick}/> */}
-            <Select>
+            <Select onValueChange={handleCourse}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Select" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="light">MCA</SelectItem>
-              <SelectItem value="dark">MBA</SelectItem>
-              <SelectItem value="system">MTECH</SelectItem>
-              <SelectItem value="system">BTECH</SelectItem>
+              {mycourses.map((d,id)=><SelectItem value={id+1}>{d}</SelectItem>)}
             </SelectContent>
           </Select>
             </div>
@@ -220,13 +282,12 @@ const ViewInfo = ()=>{
             <p>Year:</p>
             {/* <MultiSelect FOR="year" list={repeatedArray} onClick={handleMutivalueClick}/> */}
             <Select>
+  
   <SelectTrigger className="w-[180px]">
     <SelectValue placeholder="Select" />
   </SelectTrigger>
   <SelectContent>
-    <SelectItem value="light">Light</SelectItem>
-    <SelectItem value="dark">Dark</SelectItem>
-    <SelectItem value="system">System</SelectItem>
+    {years.map(d=><SelectItem value={d}>{d}</SelectItem>)}
   </SelectContent>
 </Select>
             </div>

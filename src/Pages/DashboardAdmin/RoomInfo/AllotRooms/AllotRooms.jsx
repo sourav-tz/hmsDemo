@@ -5,6 +5,9 @@ import MultiSelect from '../../../../components/MultiSelect/MultiSelect';
 import Button from '../../../../components/Button/Button';
 import TableLoader from '../../../../components/TableLoader/TableLoader';
 import RoomTable from '../../../../components/Tables/RoomTable/RoomTable';
+import Modal from '../../../../components/Modals/Modal';
+import { changeModalState } from '../../../../Store/Reducers/viewInfoSlice';
+
 import {
     Select,
     SelectContent,
@@ -40,6 +43,7 @@ import { setAllot,setView,setAllotData } from '../../../../Store/Reducers/roomSl
 import axios from 'axios';
 import './Pagination.css';
 import ReactPaginate from 'react-paginate';
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -75,9 +79,9 @@ const items = [
 
 
 const AllotRooms = ()=>{
-
+    const navigator = useNavigate();
     const [rowData,setRowData] = useState(null);
-
+    const [loading,setLoading] = useState(false);
     const allotModal = useSelector(state=>state.haRoom.allot);
     const viewModal = useSelector(state=>state.haRoom.view);
     const Dispatcher = useDispatch();
@@ -88,8 +92,12 @@ const AllotRooms = ()=>{
     const roomData = useSelector(state=>state.haRoom.roomData);
     const allotData = useSelector(state=>state.haRoom.allotData);
     const [totalPages,setTotalPage] = useState(0);
-
-
+    const [rooms, setRooms] = useState();
+    const [status,setStatus] = useState('');
+    const [floorNo,setFloorNo] = useState('');
+    const viewStudent = useSelector(state=>state.viewInfoStates.modalState);
+    const [viewStudentInfoModalData,setViewInfoModal] = useState({});
+ 
     useEffect(()=>{
         console.log(allotData);
     },[allotData]);
@@ -99,9 +107,9 @@ const AllotRooms = ()=>{
         try{
             const res = await axios({
                 method: 'get',
-                url: 'http://localhost:3000/HA/getRoomsData',
+                url:import.meta.env.VITE_BASE_URL  + '/HA/getRoomsData',
                 params: {
-                    "hostelNo":"11"
+                    "hostelNo":"11",
                 }
               });
               setRowData(res.data.roomsData);
@@ -112,6 +120,9 @@ const AllotRooms = ()=>{
               setTotalPage(res.data.roomsData[0].previous.totalpages);
         }catch(err){
             console.log(err);
+            if(err.status === 401){
+                navigator('/adminLogin');
+            }
         }
     }
 
@@ -152,7 +163,7 @@ const roomAlloted = ()=>{
         try{
           const res = await axios({
                 method:'post',
-                url:'http://localhost:3000/HA/singleRoomAllot',
+                url:import.meta.env.VITE_BASE_URL + '/HA/singleRoomAllot',
                 data:allotData
             })
             roomSuccess();
@@ -165,6 +176,10 @@ const roomAlloted = ()=>{
             roomFailed(err);
             Dispatcher(setAllot(false));
             console.log(err);
+
+            if(err.status===401){
+                navigator('/')
+            }
         }
     })()
     document.body.style.overflowY='auto';
@@ -179,18 +194,102 @@ console.log(e)
         ;(async ()=>{
         try{
             const res = await axios({
-                url:'http://localhost:3000/HA/getRoomsData',
+                url:import.meta.env.VITE_BASE_URL + '/HA/getRoomsData',
                 method:'get',
                 params:{
-                    page:e.selected+1
+                    page:e.selected+1,
+                    roomNo:rooms,
+                    floorNo:floorNo
                 }
             })
-
-            setRowData(res.data.roomsData);
+            if(res.data.roomsData!==undefined){
+                setRowData(res.data.roomsData);
+                setTotalPage(res.data.roomsData[0].previous.totalpages)
+            }else{  
+                setRowData([]);
+            }
         }catch(err){
             console.log(err);
         }
     })()
+}
+
+const handleRooms = (e)=>{
+    setRooms(e.target.value);
+}
+
+const handleStatus = (e)=>{
+    console.log(e);
+    setStatus(e);
+}
+
+
+const handleFloor = (e) =>{
+    setFloorNo(e);
+}
+
+const handleSearch = ()=>{
+
+
+    ;(async ()=>{
+        try{
+            const res = await axios({
+                url:import.meta.env.VITE_BASE_URL + '/HA/getRoomsData',
+                method:'get',
+                params:{
+                    hostelNo:11,
+                    roomNo:rooms,
+                    // status:status,
+                    floorNo:floorNo                   
+                }
+            })
+
+            console.log(res.data)
+
+            if(res.data.roomsData!==undefined){
+                setRowData(res.data.roomsData);
+                setTotalPage(res.data.roomsData[0].previous.totalpages);
+
+            }else{
+                setRowData([]);
+                setTotalPage(0);
+            }
+
+        }catch(error){
+
+        }
+    })()
+
+
+
+}
+
+
+const removeStudentFromRoom = ()=>{
+
+
+}
+
+const handleStudentInfo =(rollNo)=>{
+
+    setLoading(true);
+    ;(async ()=>{
+        try{
+            const res = await axios({
+                url:`${import.meta.env.VITE_BASE_URL}/HA/student/${rollNo}`
+            })
+
+            console.log(res);
+            setLoading(false);
+            setViewInfoModal(res.data);
+            Dispatcher(changeModalState(true));
+
+        }catch(error){
+            console.log(error);
+        }
+    })()
+
+
 }
 
 
@@ -208,6 +307,8 @@ console.log(e)
         </CardContent>
         </Card>
 
+
+{/* //Search query */}
         <Card>
         <CardHeader>
             <CardTitle>Search Queries</CardTitle>
@@ -215,49 +316,46 @@ console.log(e)
         </CardHeader>
         <div className={' mb-4'}>
         <CardContent>
-        <div className='flex'>
-        <Select>
-            <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Room No" />
-            </SelectTrigger>
-            <SelectContent>
-                <SelectItem value="light">Floor No</SelectItem>
-                <SelectItem value="dark">Name</SelectItem>
-                <SelectItem value="system">Roll No</SelectItem>
-            </SelectContent>
-            </Select>
-            <Input/>
+        <div className='flex flex-col md:min-w-[400px]'>
+            <p>Room No:</p>
+            <Input onChange={handleRooms} className="md:w-[200px]"/>
         </div>
             <div className={styles.MultiSelect}>
                 <p>Status:</p>
-                <Select>
+                <Select onValueChange={handleStatus}>
             <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Select Option" />
             </SelectTrigger>
             <SelectContent>
-                <SelectItem value="light">Filled</SelectItem>
-                <SelectItem value="dark">Vacant</SelectItem>
-                <SelectItem value="system">Partially Filled</SelectItem>
+                <SelectItem value="Fully-Filled">Fully Filled</SelectItem>
+                <SelectItem value="Partially-Filled">Partially Filled</SelectItem>
+                <SelectItem value="vacant">Vacant</SelectItem>
             </SelectContent>
             </Select>
             </div>
             <div className={styles.MultiSelect}>
                 <p>Floor:</p>
-                <Select>
+                <Select onValueChange={handleFloor}>
             <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Select Option" />
             </SelectTrigger>
             <SelectContent>
-                <SelectItem value="light">G</SelectItem>
-                <SelectItem value="dark">1</SelectItem>
-                <SelectItem value="system">2</SelectItem>
+                <SelectItem value="0">G</SelectItem>
+                <SelectItem value="1">1</SelectItem>
+                <SelectItem value="2">2</SelectItem>
+                <SelectItem value="3">3</SelectItem>
+                <SelectItem value="4">4</SelectItem>
+                <SelectItem value="5">5</SelectItem>
+                <SelectItem value="6">6</SelectItem>
+                <SelectItem value="7">7</SelectItem>
+                <SelectItem value="8">8</SelectItem>
             </SelectContent>
             </Select>
             </div>
             </CardContent>
             <CardFooter className='flex justify-between'>
                 <Button text="Reset" />
-                <Button variant="contained" text="Search" />
+                <Button onClick={handleSearch} variant="contained" text="Search" />
                 </CardFooter>
             </div>
         </Card>
@@ -318,8 +416,8 @@ console.log(e)
                                     <p><span className='font-bold'>Name: </span>{d.student.firstName} {d.student.lastName}</p>
                                     <p><span className='font-bold'>Roll no: </span>{d.rollNo}</p>
                                     <p><span className='font-bold'>email: </span>{d.student.email}</p>
-                                    <div className='flex gap-2'><Button text="View Details" />
-                                    <Button className="bg-red-600 text-white border-0 hover:bg-red-500" text="Remove" /></div>
+                                    <div className='flex gap-2'><Button onClick={()=>handleStudentInfo(d.rollNo)} text="View Details" />
+                                    <Button onClick={()=>removeStudentFromRoom(d)} className="bg-red-600 text-white border-0 hover:bg-red-500" text="Remove" /></div>
                                 </div>
                             </div>)}
                             </div>
@@ -341,6 +439,9 @@ console.log(e)
         </Card>
         </div>
       </div>:null}
+
+
+      {viewStudent&&!loading?<Modal data={viewStudentInfoModalData}/>:null}
 
       <ReactPaginate
         breakLabel="..."
