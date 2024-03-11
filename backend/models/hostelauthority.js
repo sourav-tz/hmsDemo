@@ -37,15 +37,11 @@ module.exports = (sequelize, dataTypes) => {
     })
     hostelauthoritys.associate = (models) => {
         hostelauthoritys.belongsTo(models.hostels, {
-            onDelete: "SET NULL",
-            onUpdate: "cascade",
             foreignKey: {
                 name: 'hostelNo'
             }
         });
         hostelauthoritys.hasOne(models.users, {
-            onDelete: "SET NULL",
-            onUpdate: "cascade",
             foreignKey: {
                 name: 'email'
             }

@@ -110,7 +110,9 @@ exports.bulkCreateController = async (req, res) => {
         finalWithErrors=[...duplicates];
 
         //? get all students data from db
-        const alldb= await db.students.findAll();
+        const alldb= await db.students.findAll({
+          attributes: ['rollNo', 'email']
+        });
         
         let inputData = [];
 

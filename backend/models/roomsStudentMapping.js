@@ -27,15 +27,11 @@ module.exports = (sequelize, dataTypes) => {
     })
     roomsStudentMapping.associate = (models) => {
         roomsStudentMapping.belongsTo(models.rooms, {
-            onDelete: "RESTRICT",
-            onUpdate: "RESTRICT",
             foreignKey: {
                 name: 'roomId'
             }
         });
         roomsStudentMapping.belongsTo(models.students, {
-            onDelete: "RESTRICT",
-            onUpdate: "RESTRICT",
             foreignKey: {
                 name: 'rollNo'
             }
