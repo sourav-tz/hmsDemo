@@ -19,6 +19,7 @@ const singleStudentAllot = require('../../controllers/hostelAuthority/RoomModule
 const auth = require('../../middlewares/auth');
 const singleStudentRemove = require('../../controllers/hostelAuthority/RoomModule/singleStudentRemove');
 const getRoomsData = require('../../controllers/hostelAuthority/RoomModule/getRoomsData');
+const { getCourses, getSingleCourse } = require('../../controllers/hostelAuthority/studentModule/getCourses.controller.js');
 
 
 var storage = multer.diskStorage({
@@ -48,13 +49,15 @@ router.post('/bulkCreate', upload.single('file'), csvToJsonConverter, bulkCreate
 router.patch('/updateBulk', updateBulk);
 
 //* Apis get student information for single or all
-router.get('/studentsInfo', studentsInfo);
-router.get('/student/:rollNo', singleStudentInfo);
+router.get('/studentsInfo', auth,studentsInfo);
+router.get('/student/:rollNo', auth,singleStudentInfo);
+router.get('/getCourses',auth,getCourses)
+router.post('/getSingleCourse',auth,getSingleCourse);
 
 //* Apis single student
-router.post('/singleStudentUpload', singleStudentUpload);
+router.post('/singleStudentUpload', auth,singleStudentUpload);
 //todo:update api
-router.delete('/deleteStudent', deleteStudent);
+router.delete('/deleteStudent', auth,deleteStudent);
 
 
 

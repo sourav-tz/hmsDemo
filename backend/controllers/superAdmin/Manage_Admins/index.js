@@ -25,6 +25,8 @@ const getAdmins=async (req, res) => {
     return res.status(500).json({message:"Internal Server Error in getAdmins Controller"});
   }
 }
+
+
 const revokeLoginAcess = async (req,res)=>{
     try {
         const {email} = req.body;
@@ -36,6 +38,8 @@ const revokeLoginAcess = async (req,res)=>{
         return res.status(500).json({message:"Internal Server Error in RevokeLoginAccess Controller"});
       }
 }
+
+
 const giveLoginAccess = async (req,res)=>{
     try {
         const {email} = req.body;
@@ -47,6 +51,9 @@ const giveLoginAccess = async (req,res)=>{
         return res.status(500).json({message:"Internal Server Error in GiveLoginAccess Controller"});
       }
 }
+
+
+
 const changeHostel=async (req,res)=>{
     try {
         const {email,hostelNo} = req.body;
