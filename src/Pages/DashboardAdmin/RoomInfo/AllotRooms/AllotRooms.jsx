@@ -38,6 +38,10 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setAllot,setView,setAllotData } from '../../../../Store/Reducers/roomSlice';
 import axios from 'axios';
+import './Pagination.css';
+import ReactPaginate from 'react-paginate';
+
+
 
 Chart.register(ArcElement, Tooltip, Legend, Title);
 Chart.defaults.plugins.tooltip.backgroundColor = 'rgb(0, 0, 156)';
@@ -83,6 +87,8 @@ const AllotRooms = ()=>{
     const [fullyFilled,setFullyFilled] = useState(0);
     const roomData = useSelector(state=>state.haRoom.roomData);
     const allotData = useSelector(state=>state.haRoom.allotData);
+    const [totalPages,setTotalPage] = useState(0);
+
 
     useEffect(()=>{
         console.log(allotData);
@@ -103,6 +109,7 @@ const AllotRooms = ()=>{
               setPartiallyFilled(res.data.partiallyFilledCount);
               setVacant(res.data.vacantCount);
               setFullyFilled(res.data.fullyFilledCount);
+              setTotalPage(res.data.roomsData[0].previous.totalpages);
         }catch(err){
             console.log(err);
         }
@@ -161,6 +168,29 @@ const roomAlloted = ()=>{
         }
     })()
     document.body.style.overflowY='auto';
+}
+
+
+const handlePageClick = (e)=>{
+    
+console.log(e)
+
+
+        ;(async ()=>{
+        try{
+            const res = await axios({
+                url:'http://localhost:3000/HA/getRoomsData',
+                method:'get',
+                params:{
+                    page:e.selected+1
+                }
+            })
+
+            setRowData(res.data.roomsData);
+        }catch(err){
+            console.log(err);
+        }
+    })()
 }
 
 
@@ -311,6 +341,24 @@ const roomAlloted = ()=>{
         </Card>
         </div>
       </div>:null}
+
+      <ReactPaginate
+        breakLabel="..."
+        nextLabel="next >"
+        onPageChange={handlePageClick}
+        pageRangeDisplayed={3}
+        pageCount={totalPages}
+        previousLabel="< previous"
+        renderOnZeroPageCount={null}
+        containerClassName="pagination justify-content-center"
+            pageClassName="page-item"
+            pageLinkClassName="page-link"
+            previousClassName="page-item"
+            previousLinkClassName="page-link"
+            nextClassName="page-item"
+            nextLinkClassName="page-link"
+            activeLinkClassName="active-page"
+      />
       <ToastContainer />
     </div>
     </>
