@@ -19,6 +19,8 @@ const getAdmins=async (req, res) => {
     return res.status(500).json({ error: error });
   }
 }
+
+
 const revokeLoginAcess = async (req,res)=>{
     try {
         const {email} = req.body;
@@ -31,6 +33,8 @@ const revokeLoginAcess = async (req,res)=>{
         return res.status(500).json({ error: error });
       }
 }
+
+
 const giveLoginAccess = async (req,res)=>{
     try {
         const {email} = req.body;
@@ -43,6 +47,9 @@ const giveLoginAccess = async (req,res)=>{
         return res.status(500).json({ error: error });
       }
 }
+
+
+
 const changeHostel=async (req,res)=>{
     try {
         const {email,hostelNo} = req.body;
