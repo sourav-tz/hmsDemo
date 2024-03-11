@@ -1,18 +1,18 @@
 import styles from './RoomsUpload.module.scss';
 import { IoIosCloudUpload } from "react-icons/io";
-import Button from '../../../../Components/Button/Button';
+import Button from '../../../../components/Button/Button';
 import { useEffect, useRef,useState } from 'react';
-import Progress from '../../../../Components/Progress/Progress';
+import Progress from '../../../../components/Progress/Progress';
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import config from '../../../../config/config';
 import formdataConfig from '../../../../config/formdata';
 import axios from 'axios';
-import TableLoader from '../../../../Components/TableLoader/TableLoader';
-import StudentTable from '../../../../Components/Tables/StudentsTable/StudentTable';
-import Accordion from '../../../../Components/Accordion/Accordion';
+import TableLoader from '../../../../components/TableLoader/TableLoader';
+import StudentTable from '../../../../components/Tables/StudentsTable/StudentTable';
+import Accordion from '../../../../components/Accordion/Accordion';
 import { FaFileCsv } from "react-icons/fa6";
-import FileCheckLoading from '../../../../Components/Loadingpage/FileCheckLoading';
+import FileCheckLoading from '../../../../components/Loadingpage/FileCheckLoading';
 
 const RoomsUpload = ()=>{
 

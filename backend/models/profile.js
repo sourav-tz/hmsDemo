@@ -4,7 +4,6 @@ module.exports = (sequelize, dataTypes) => {
         rollNo: {
             type: dataTypes.INTEGER,
             primaryKey:true,
-            field:'rollno'
         },
         bloodGroup: {
             type: dataTypes.STRING,
@@ -108,8 +107,6 @@ module.exports = (sequelize, dataTypes) => {
     })
     profiles.associate = (models) => {
         profiles.belongsTo(models.students, {
-            onDelete:"cascade",
-            onUpdate:"cascade",
             foreignKey: {
                 name: 'rollNo'
               }

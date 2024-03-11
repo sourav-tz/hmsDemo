@@ -1,7 +1,7 @@
 import React from 'react'
-import { Button } from '../../../Components/ui/button'
+import { Button } from '../../../components/ui/button'
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { Input } from '../../../Components/ui/input';
+import { Input } from '../../../components/ui/input';
 import { FiEdit } from "react-icons/fi";
 import { Player } from '@lottiefiles/react-lottie-player';
 import profileAnimation from '../../../Assets/profilesettings.json';

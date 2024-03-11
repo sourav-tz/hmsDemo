@@ -10,15 +10,19 @@ const getAdmins=async (req, res) => {
   try {
     const data = await db.users.findAll({
       paranoid:false,
+      where:{
+        role:'Hostel-Authority'
+      },
       include: [{
           model: db.hostelauthoritys,
       }]
   });
-    const result=data.map((key)=>(key.dataValues.deletedAt)?{...key.dataValues,active:false}:{...key.dataValues,active:true});
+    const result=data.map((key)=>{
+      return ((key.dataValues.deletedAt)?{...(key.dataValues.hostelauthority.dataValues),active:false}:{...(key.dataValues.hostelauthority.dataValues),active:true})
+    });
     return res.json(result);
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: error });
+    return res.status(500).json({message:"Internal Server Error in getAdmins Controller"});
   }
 }
 
@@ -27,12 +31,11 @@ const revokeLoginAcess = async (req,res)=>{
     try {
         const {email} = req.body;
         const deleted=await db.users.destroy({
-            where:{email},
+            where:{email:email}
         });
       return res.json({data:deleted});
       } catch (error) {
-        console.error(error);
-        return res.status(500).json({ error: error });
+        return res.status(500).json({message:"Internal Server Error in RevokeLoginAccess Controller"});
       }
 }
 
@@ -40,13 +43,12 @@ const revokeLoginAcess = async (req,res)=>{
 const giveLoginAccess = async (req,res)=>{
     try {
         const {email} = req.body;
-        const enabled=await db.hostels.restore({
-            where:{email}
+        const enabled=await db.users.restore({
+            where:{email:email}
         });
       return res.json({data:enabled});
       } catch (error) {
-        console.error(error);
-        return res.status(500).json({ error: error });
+        return res.status(500).json({message:"Internal Server Error in GiveLoginAccess Controller"});
       }
 }
 
@@ -55,14 +57,13 @@ const giveLoginAccess = async (req,res)=>{
 const changeHostel=async (req,res)=>{
     try {
         const {email,hostelNo} = req.body;
-        await db.hostels.update({hostelNo},{
+        await db.hostelauthoritys.update({hostelNo},{
             where:{email}
         });
         //Todo add transaction history feature for timeline
       return res.json({message:`Hostel changed to ${hostelNo}`});
       } catch (error) {
-        console.error(error);
-        return res.status(500).json({ error: error ,message:"Internal Server Error"});
+        return res.status(500).json({message:"Internal Server Error in ChangeHostel Controller"});
       }
 }
 module.exports={

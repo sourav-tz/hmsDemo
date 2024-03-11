@@ -28,8 +28,6 @@ module.exports = (sequelize, dataTypes) => {
     })
     users.associate = (models) => {
         users.hasOne(models.hostelauthoritys, {
-            onDelete: "SET NULL",
-            onUpdate: "cascade",
             foreignKey: {
                 name: 'email'
             }
