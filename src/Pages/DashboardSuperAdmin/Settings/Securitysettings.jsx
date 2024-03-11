@@ -1,7 +1,7 @@
 import React from 'react'
 import { IoLockClosedOutline } from "react-icons/io5";
-import { Input } from '../../../Components/ui/input';
-import { Button } from '../../../Components/ui/button';
+import { Input } from '../../../components/ui/input';
+import { Button } from '../../../components/ui/button';
 
 import {
     Card,

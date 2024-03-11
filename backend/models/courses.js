@@ -29,8 +29,6 @@ module.exports = (sequelize, dataTypes) => {
     })
     courses.associate = (models) => {
         courses.hasMany(models.students, {
-            onDelete:"RESTRICT",
-            onUpdate:"cascade",
             foreignKey: {
                 name: 'courseId'
               }

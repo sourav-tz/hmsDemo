@@ -23,8 +23,6 @@ module.exports = (sequelize, dataTypes) => {
     })
     roomtypes.associate = (models) => {
         roomtypes.hasMany(models.rooms, {
-            onDelete: "cascade",
-            onUpdate: "cascade",
             foreignKey: {
                 name: 'roomTypeNo'
             }

@@ -34,43 +34,31 @@ module.exports = (sequelize, dataTypes) => {
     })
     students.associate = (models) => {
         students.hasOne(models.profiles, {
-            onDelete: "cascade",
-            onUpdate: "cascade",
-            foreignKey: {
+            foreignKey: {   
                 name: 'rollNo'
             }
         });
         students.hasMany(models.roomsStudentMapping, {
-            onDelete: "RESTRICT",
-            onUpdate: "RESTRICT",
             foreignKey: {
                 name: 'rollNo'
             }
         });
         students.hasOne(models.bankdetails, {
-            onDelete: "cascade",
-            onUpdate: "cascade",
             foreignKey: {
                 name: 'rollNo'
             }
         });
         students.belongsTo(models.courses, {
-            onDelete: "NO ACTION",
-            onUpdate: "cascade",
             foreignKey: {
                 name: 'courseId'
             }
         });
         students.belongsTo(models.hostels, {
-            onDelete: "SET NULL",
-            onUpdate: "cascade",
             foreignKey: {
                 name: 'hostelNo'
             }
         });
         students.belongsTo(models.rooms, {
-            onDelete: "SET NULL",
-            onUpdate: "cascade",
             foreignKey: {
                 name: 'roomId'
             }
