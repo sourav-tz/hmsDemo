@@ -16,7 +16,7 @@ exports.deleteStudent=async (req,res)=>{
       
         try {
           // delete from user
-          const userDelete=await db.users.destroy({where:{email}},{transaction});
+          const userDelete=await db.users.destroy({where:{email},force: true},{transaction});
           if(userDelete==0){
             throw "User email did exists or match";
           }

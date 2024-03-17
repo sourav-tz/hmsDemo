@@ -69,10 +69,37 @@ async function uploadStudents(data){
     return {message:err.message,...data};
    }
 }
+function validateJsonData(jsonData, requiredAttributes) {
+  const item = jsonData[0];
+  const jsonKeys = Object.keys(item);
+  const attributeSet = new Set(requiredAttributes);
+
+    // Check if the sizes of the sets are equal
+    if (jsonKeys.length !== attributeSet.size) {
+      throw new Error(`CSV did not match with given Template`);
+      
+    }
+    
+    // Check if all keys in jsonData are also in attributes
+    for (const key of jsonKeys) {
+      if (!attributeSet.has(key)) {
+        throw new Error(`CSV did not match with given Template. wrong attribute is ${key}`);
+        }
+    }
+}
+
 exports.bulkCreateController = async (req, res) => {
     try {
       //? get json data from body
         const jsonObj = req.body;
+        const requiredAttributes = ["rollNo","firstName","lastName","year","email",
+                                  "bloodGroup","identificationMark","gender","pEmail","subAddress",
+                                  "city","state","pinCode","contactNumber","secondaryContact","fatherName",
+                                  "fatherContact","fatherOccupation","motherName","motherContact","motherOccupation",
+                                   "dob","addharNumber","accHolderName","bankName","accNumber","IFSC"];
+
+        // Validate JSON data
+        validateJsonData(jsonObj, requiredAttributes);
         let finalWithErrors=[];
         let theseEnteredInDB=[];
 
@@ -83,7 +110,9 @@ exports.bulkCreateController = async (req, res) => {
         finalWithErrors=[...duplicates];
 
         //? get all students data from db
-        const alldb= await db.students.findAll();
+        const alldb= await db.students.findAll({
+          attributes: ['rollNo', 'email']
+        });
         
         let inputData = [];
 

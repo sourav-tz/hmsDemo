@@ -42,7 +42,7 @@ const handleView = (data)=>{
         
         useEffect(()=>{
             setRowData(data.slice(2,));
-        },[])
+        },[data])
         
   
         // Column Definitions: Defines & controls grid columns.
@@ -62,7 +62,7 @@ const handleView = (data)=>{
 
   return (
 // Container with theme & dimensions
-<div className="ag-theme-quartz" style={{ height: 300, width:800 }}>
+<div className="ag-theme-quartz" style={{ height: 480, width:800 }}>
   {/* The AG Grid component */}
   <AgGridReact rowData={rowData} columnDefs={colDefs} />
 </div>

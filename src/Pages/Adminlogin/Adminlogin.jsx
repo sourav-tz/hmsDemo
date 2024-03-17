@@ -22,13 +22,6 @@ export default function () {
   const [loading, setLoading] = useState(false)
   const Dispatcher = useDispatch();
 
-  useEffect(() => {
-    axios
-      .get('http://localhost:3000/HA/adminLogout', config)
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err))
-  }, [])
-
 
   const Navigator = useNavigate()
 
@@ -69,7 +62,7 @@ export default function () {
       }
 
       axios
-        .post('http://localhost:3000/HA/adminGoogleLogin', data, config)
+        .post(import.meta.env.VITE_BASE_URL  + '/HA/adminGoogleLogin', data, config)
         .then((res) => {
           console.log(res)
           Dispatcher(setUserData(res.data));
@@ -99,7 +92,7 @@ export default function () {
       withCredentials: true,
     }
     axios
-      .post('http://localhost:3000/HA/adminLogin', data, config)
+      .post(import.meta.env.VITE_BASE_URL  + '/HA/adminLogin', data, config)
       .then((res) => {
         console.log(res)
         Dispatcher(setUserData(res.data));

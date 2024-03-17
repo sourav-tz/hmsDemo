@@ -25,12 +25,7 @@ const AdminDashboard = ()=>{
     const [isLoggedIn,setisLoggedIn] = useState(false);
     const Navigator = useNavigate();
 
-    useEffect(()=>{
-        axios.get('http://localhost:3000/HA/isCookie',config)
-        .then(res=>{console.log(res);setisLoggedIn(true)})
-        .catch(err=>{console.log(err);Navigator('/adminLogin')});
 
-    },[])
 
 
     // const driverObj = driver({
@@ -55,7 +50,7 @@ const handleLogout = ()=>{
           },
           withCredentials: true
         }
-    axios.get('http://localhost:3000/HA/adminLogout',config)
+    axios.get(import.meta.env.VITE_BASE_URL + '/HA/adminLogout',config)
     .then(res=>{
         console.log(res);
         setLoadingPage(false);
@@ -67,11 +62,14 @@ const handleLogout = ()=>{
         setLoadingPage(false);
         Navigator('/adminLogin');
         console.log(err);
+        if(err.status===401){
+            Navigator('/adminLogin');
+        }
     })
 }   
 
 return <>
-    {!isLoggedIn||loadingPage?<Loadingpage />:<div className={styles.container}>
+    {loadingPage?<Loadingpage />:<div className={styles.container}>
 
     <div className={styles.sideBarSpace}>
         <Sidebar/>
