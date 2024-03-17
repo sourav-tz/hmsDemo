@@ -93,23 +93,24 @@ const ManageHostels = () => {
 
        }
 
-       const handleEnableHostel = (hostelNo, isActive) => {
-        ;(async () => {
-          try {
-            const updatedRowData = rowData.map(row => {
-              if (row.hostelNo === hostelNo) {
-                return { ...row, isActive: !isActive };
-              }
-              return row;
-            });
-            setRowData(updatedRowData);
-            const res = await axios.post('http://localhost:3000/SA/enableHostel', { hostelNo, isActive: !isActive });
-            console.log(res.data); 
-          } catch(error) {
-            console.log(error);
-          }
-        })();
-      };
+      // NEED TO CHECK
+      //  const handleEnableHostel = (hostelNo, isActive) => {
+      //   ;(async () => {
+      //     try {
+      //       const updatedRowData = rowData.map(row => {
+      //         if (row.hostelNo === hostelNo) {
+      //           return { ...row, isActive: !isActive };
+      //         }
+      //         return row;
+      //       });
+      //       setRowData(updatedRowData);
+      //       const res = await axios.post('http://localhost:3000/SA/enableHostel', { hostelNo, isActive: !isActive });
+      //       console.log(res.data); 
+      //     } catch(error) {
+      //       console.log(error);
+      //     }
+      //   })();
+      // };
       
  
       // const handleHostelEdit = (data, updatedData) => {
@@ -137,7 +138,6 @@ const ManageHostels = () => {
       
 
       const [colDefs, setColDefs] = useState([
-
       {
         field: "hostelName", 
         headerClass: "font-bold border p-2 font-bold text-md", 
@@ -182,10 +182,6 @@ const ManageHostels = () => {
         ),
         cellStyle: {textAlign: 'center'}
       },
-      
-      
-
-
       {
         field: "View Admins", 
         headerClass:"font-bold border p-2 font-bold text-md", 

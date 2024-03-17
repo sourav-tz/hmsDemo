@@ -22,22 +22,16 @@ module.exports = (sequelize, dataTypes) => {
     })
     hostels.associate = (models) => {
         hostels.hasMany(models.students, {
-            onDelete:"SET NULL",
-            onUpdate:"cascade",
             foreignKey: {
                 name: 'hostelNo'
               }
           });
         hostels.hasMany(models.rooms, {
-            onDelete:"cascade",
-            onUpdate:"cascade",
             foreignKey: {
                 name: 'hostelNo'
               }
           });
         hostels.hasMany(models.hostelauthoritys, {
-            onDelete:"SET NULL",
-            onUpdate:"cascade",
             foreignKey: {
                 name: 'hostelNo'
               }

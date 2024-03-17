@@ -19,6 +19,6 @@ services:
        - "5173:5173"
 
 #volume mounting can be used by backend team for testing purpose
-    # volumes:
-    #   - .:/app
-    #   - /app/node_modules
+    volumes:
+      - .:/app
+      - /app/node_modules

@@ -21,6 +21,9 @@ exports.studentsInfo = async (req, res) => {
     if (req.query.courseId) {
       filters.courseId = req.query.courseId;
     }
+    if (req.query.year) {
+      filters.year = req.query.year;
+    }
     if (req.query.state) {
       filtersProfile.state = req.query.state;
     }

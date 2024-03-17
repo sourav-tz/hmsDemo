@@ -32,7 +32,7 @@ const AdminRegistration = async (req, res) => {
 
 
     } catch (error) {
-        res.status(400).json({ error: error.parent.sqlMessage })
+        res.status(400).json({ error: error }) 
 
     }
 }
