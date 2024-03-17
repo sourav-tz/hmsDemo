@@ -8,21 +8,36 @@ import "ag-grid-community/styles/ag-theme-quartz.css";
 import { ImBin } from "react-icons/im";
 import { FaRegEdit } from "react-icons/fa";
 import { MdAccountCircle } from "react-icons/md";
+import { Switch } from "@/components/ui/switch"
+import config from '../../../../config/config';
+
 
 import axios from "axios";
 
 const ManageHostels = () => {
-  const [sel,setSelect] = useState("");
-       let [rowData, setRowData] = useState([]);
-      //  const [FormErrors,setFormErrors] = useState({ hostelName:null,hostelNo:"",type: ""})
+  //const [sel,setSelect] = useState("");
+  const [editMode, setEditMode] = useState(false);
 
+       let [rowData, setRowData] = useState([]);
        let [hostel, setHostel] = useState ({
-        hostelName:null, hostelNo:"",type:""
+        hostelName:null, hostelNo:null,type:""
        });
 
        useEffect(()=>{
-        console.log(hostel);
-       },[hostel])
+        ;(async () => {
+          try {
+            const res = await axios({
+              url:"http://localhost:3000/SA/getHostels",
+              method: "GET"
+            }) 
+            setRowData(res.data);
+            console.log(res);
+          
+          } catch(error) {
+            console.log(error);
+          }
+        })()
+       },[]) 
 
        const setName=(e)=>{
         setHostel((prev)=>{return {...prev,hostelName:e.target.value}});
@@ -40,61 +55,152 @@ const ManageHostels = () => {
        const handleSelectChange=(e)=>{
         setHostel((prev)=>{return {...prev,type:e}});
        }
-       
-      //  hostel.HostelType = sel;
 
-      //  let {HostelName, HostelNo, HostelType} = hostel;
-
-      //  const handleHostel = (e) => {
-      //   e.preventDefault();
-      //   console.log(hostel);
-      //   let errors = {};
-
-      //   //input validation
-      //   if (hostel.HostelName.trim() === '') {
-      //     errors.HostelName = "Hostel name is required"
-      //   }
-
-      //   if(hostel.HostelNo.trim() == '') {
-      //     errors.HostelNo = "Hostel no. is required"
-      //   }
-
-      //   setFormErrors(errors);
-
-      //   if(Object.keys(errors).length === 0) {
-      //     // setRowData([...rowData,{HostelName, HostelNo, HostelType}]);
-      //     setSelect("");
-      //     // hostel.HostelName="";
-      //     // hostel.HostelNo="";
-      //   }
-      //  }
-
-       //const handleDeleteRow = () => {
-
-       // }
-
-
-       const handleHostel =(e)=>{
-          e.preventDefault();
-        axios.post('http://localhost:3000/SA/addHostel',hostel)
-        .then((res)=>{
-          console.log(res);
-        })
-        .catch((err)=>{
-          console.log(err);
-        })
+      const handleDeleteRow = (hostelNo) => {
+        ;(async () => {
+          try {
+            const confirmation = window.confirm("Do you really want to delete this hostel?");
+            if (!confirmation) return;
+            await axios.delete(`http://localhost:3000/SA/removeHostel?hostelNo=${hostelNo}&softdelete=true`);
+            // Remove the deleted row from rowData
+            setRowData(prevData => prevData.filter(row => row.hostelNo !== hostelNo));
+          } catch (error) {
+            console.log(error);
+          }
+        })()
+      };
+      
+      const handleHostel =(e)=>{
+        e.preventDefault();
+        ;(async () => { 
+          try {
+            const res = await axios({
+              url: 'http://localhost:3000/SA/addHostel',
+              method: 'POST',
+              data: hostel
+            });
+            // console.log(res);
+            setRowData((prev) => {
+              return [                
+                ...prev, res.data.data
+              ]
+              
+            });
+          } catch(error) {
+            console.log(error);
+          }
+        })()
 
        }
 
-       const [colDefs, setColDefs] = useState([
-        {field: "HostelName", headerClass: "font-bold border p-2 font-bold text-md"},
-        {field: "HostelNo", headerClass:"font-bold border p-2 font-bold text-md"},
-        {field: "HostelType", headerClass:"font-bold border p-2 font-bold text-md"},
-        {field: "Edit", headerClass:"font-bold border p-2 font-bold text-md", cellRenderer:()=> <Button className='p-3'><FaRegEdit /></Button>},
-        {field: "Active/Inactive", headerClass:"font-bold border p-2 font-bold text-md"},
-        {field: "View Admins", headerClass:"font-bold border p-2 font-bold text-md", cellRenderer:()=> <Button className='p-3'><MdAccountCircle/></Button>},
-        {field: "Delete", headerClass:"font-bold border p-2 font-bold text-md", cellRenderer:()=> <Button className='p-3'><ImBin /></Button>},
-       ])
+       const handleEnableHostel = (hostelNo, isActive) => {
+        ;(async () => {
+          try {
+            const updatedRowData = rowData.map(row => {
+              if (row.hostelNo === hostelNo) {
+                return { ...row, isActive: !isActive };
+              }
+              return row;
+            });
+            setRowData(updatedRowData);
+            const res = await axios.post('http://localhost:3000/SA/enableHostel', { hostelNo, isActive: !isActive });
+            console.log(res.data); 
+          } catch(error) {
+            console.log(error);
+          }
+        })();
+      };
+      
+ 
+      // const handleHostelEdit = (data, updatedData) => {
+      //   ;(async (data) => {
+      //     try {
+      //       const res = await axios ({
+      //         url:'http://localhost:3000/SA/updateHostel/hostelNo=${data.hostelNo}', updatedData,
+      //         method:'PATCH'
+      //       }) 
+      //       console.log(res.data);
+      //     } catch (error) {
+      //       console.log(error);
+      //     }
+      //   })(data)
+      // }
+
+      const handleEditClick = () => {
+        setEditMode(true);
+      };
+    
+      const handleCellValueChanged = (event) => {
+        console.log("Cell value changed: ", event.data);
+      };
+
+      
+
+      const [colDefs, setColDefs] = useState([
+
+      {
+        field: "hostelName", 
+        headerClass: "font-bold border p-2 font-bold text-md", 
+        editable: editMode, 
+        cellStyle: {textAlign: 'center'}
+      },
+      {
+        field: "hostelNo", 
+        headerClass:"font-bold border p-2 font-bold text-md", 
+        editable: editMode, 
+        cellStyle: {textAlign: 'center'}
+      },
+      {
+        field: "type", 
+        headerClass:"font-bold border p-2 font-bold text-md", 
+        editable: editMode, 
+        cellStyle: {textAlign: 'center'}
+      },
+      {
+        field: "Edit",
+        headerClass: "font-bold border p-2 font-bold text-md",
+        cellRenderer:()=> <Button className='p-3' onClick={handleEditClick}><FaRegEdit/></Button>,
+        cellStyle: {textAlign: 'center'}
+      },
+        
+
+        // {field: "Edit", headerClass:"font-bold border p-2 font-bold text-md", cellRenderer:()=> <Button className='p-3' onClick={()=> handleHostelEdit}><FaRegEdit /></Button>},
+
+      // {
+      //   field: "Active/Inactive", 
+      //   headerClass:"font-bold border p-2 font-bold text-md", 
+      //   cellRenderer:({ data }) => <Button onClick={() => handleEnableHostel(data.hostelNo)}><Switch/></Button>,
+      //   cellStyle: {textAlign: 'center'}
+      // },
+      {
+        field: "Active/Inactive", 
+        headerClass:"font-bold border p-2 font-bold text-md", 
+        cellRenderer:({ data }) => (
+          <Button onClick={() => handleEnableHostel(data.hostelNo, !data.isActive)}>
+            <Switch isChecked={data.isActive} />
+          </Button>
+        ),
+        cellStyle: {textAlign: 'center'}
+      },
+      
+      
+
+
+      {
+        field: "View Admins", 
+        headerClass:"font-bold border p-2 font-bold text-md", 
+        cellRenderer:()=> <Button className='p-3'><MdAccountCircle/></Button>, 
+        cellStyle: {textAlign: 'center'}
+      },
+      {
+        field: "Delete", 
+        headerClass:"font-bold border p-2 font-bold text-md", 
+        cellRenderer:({ data }) => <Button className='p-3' onClick={() => handleDeleteRow(data.hostelNo)}><ImBin/></Button>, 
+        cellStyle: {textAlign: 'center'}
+      },
+
+    
+   ])
 
   return (
     <>
@@ -130,7 +236,7 @@ const ManageHostels = () => {
 
           <div className='flex'>
             <div className='flex-col'>
-              <Input name="HostelNo" onChange={setHostelNumber} className='w-40 h-12 m-2  text-md p-3 placeholder:text-black bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)]' type="text"  placeholder='Hostel No.'/>
+              <Input name="HostelNo" onChange={setHostelNumber} className='w-40 h-12 m-2  text-md p-3 placeholder:text-black bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)]' type="number"  placeholder='Hostel No.'/>
               {/* {FormErrors.HostelNo && <div className='px-4 text-red-600'>{FormErrors.HostelNo}</div>} */}
             </div>
           </div>
@@ -145,7 +251,12 @@ const ManageHostels = () => {
       <div className='mt-4 mb-2 p-1 w-5/6 h-[380px] rounded-xl shadow-[0_3px_10px_rgb(0,0,0,0.2)] '>
 
         <div className="ag-theme-quartz" style={{ height: '100%' , width: '100%'}}>
-            <AgGridReact rowData={rowData} columnDefs={colDefs}  />
+            <AgGridReact 
+              rowData={rowData} 
+              columnDefs={colDefs}  
+              defaultColDef={{ resizable: true }}
+              onCellValueChanged={handleCellValueChanged}
+            />
         </div>       
 
       </div>
