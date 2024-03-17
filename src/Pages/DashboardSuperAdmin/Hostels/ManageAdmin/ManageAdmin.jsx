@@ -31,7 +31,7 @@ const ManageAdmin = () => {
               })
 
               console.log(res);
-              setRowData(res.data);
+              //  setRowData(res.data);
 
              }catch(error){
               console.log(error);
@@ -61,7 +61,7 @@ const ManageAdmin = () => {
           return {...prev,hostelNo:e.target.value}
         })
       }
-      let {email,name,roleType,mobile,password,hostelNo} = admin;
+      // let {email,name,roleType,mobile,password,hostelNo} = admin;
       
       const handleAdmin=(e)=>{
         e.preventDefault();
@@ -81,6 +81,7 @@ const ManageAdmin = () => {
         })()
         
         console.log(admin);
+        setPass("");
         
       }
            
