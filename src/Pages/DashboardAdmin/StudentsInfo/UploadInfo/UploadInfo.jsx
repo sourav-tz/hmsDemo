@@ -10,7 +10,6 @@ import formdataConfig from '../../../../config/formdata';
 import axios from 'axios';
 import TableLoader from '../../../../components/TableLoader/TableLoader';
 import StudentTable from '../../../../components/Tables/StudentsTable/StudentTable';
-import Accordion from '../../../../components/Accordion/Accordion';
 import { useSelector } from 'react-redux';
 import FileCheckLoading from '../../../../components/Loadingpage/FileCheckLoading';
 import { FaFileCsv } from "react-icons/fa6";
