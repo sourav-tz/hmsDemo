@@ -29,7 +29,7 @@ import {
 
   import { Chrono } from "react-chrono";
   
-  import {Input} from "@/components/ui/Input"
+  import {Input} from "@/components/ui/input"
 
   import { IoIosCloseCircleOutline } from "react-icons/io";
   import { toast, ToastContainer } from 'react-toastify';
