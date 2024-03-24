@@ -41,7 +41,9 @@ const handleView = (data)=>{
         const [rowData, setRowData] = useState();
         
         useEffect(()=>{
+          if(data){
             setRowData(data.slice(2,));
+          }
         },[data])
         
   

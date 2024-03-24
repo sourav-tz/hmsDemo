@@ -31,7 +31,7 @@ const ManageAdmin = () => {
               })
 
               console.log(res);
-              //  setRowData(res.data);
+               setRowData(res.data);
 
              }catch(error){
               console.log(error);
