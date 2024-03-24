@@ -48,7 +48,8 @@ const ViewInfo = ()=>{
 
             const res = await axios({
               url:import.meta.env.VITE_BASE_URL + '/HA/getCourses',
-              method:'get'
+              method:'get',
+              withCredentials:true
             })
 
             console.log(res);
@@ -178,6 +179,7 @@ const handleCourse = (e)=>{
       const res =await axios({
         url:import.meta.env.VITE_BASE_URL + '/HA/getSingleCourse',
         method:'POST',
+        withCredentials:true,
         data:{courseId:e}
       })
       console.log(res.data.courseDuration);
