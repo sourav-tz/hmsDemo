@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button } from '../../../components/ui/button'
+import { Button } from '../../../components/ui/button.jsx'
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { Input } from '../../../components/ui/input';
 import { FiEdit } from "react-icons/fi";

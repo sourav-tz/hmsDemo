@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import students from "../../Assets/students.svg"
 const StudentSignUp = () => {
   const [name, setName] = useState("");
   const [Roll, setRoll] = useState("");
@@ -15,22 +15,20 @@ const StudentSignUp = () => {
     console.log("Password entered:", password);
   };
 
+
   return (
     <section
-      className="bg-blue-200 min-h-screen h-full
+      className="bg-blue-900 min-h-screen h-full
       flex items-center justify-center"
+
     >
       {/* login  container */}
-      <div className="bg-gray-200 flex rounded-2xl shadow-lg max-w-3xl p-5">
-        <div className="w-1/2 p-0  ">
-          <img
-            src="https://images.unsplash.com/photo-1619279302118-43033660826a?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-            className="rounded-2xl"
-            alt="Educational image"
-          />
+      <div className="bg-white flex flex-col md:flex-row rounded-2xl shadow-lg w-[80%] md:w-[900px] p-5">
+        <div className="flex-1 p-0  justify-center items-center">
+          <img src={students} alt="students" className="w-full h-full"></img>
         </div>
 
-        <div className="w-1/2 px-8">
+        <div className="flex-1 px-8">
           <h2 className="font-bold text-2xl mt-6 mx-2">Request Your Account</h2>
           <form
             className="flex flex-col gap-1"

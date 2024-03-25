@@ -27,7 +27,7 @@ const ManageHostels = () => {
         ;(async () => {
           try {
             const res = await axios({
-              url:"http://localhost:3000/SA/getHostels",
+              url:import.meta.env.VITE_BASE_URL + "/SA/getHostels",
               method: "GET"
             }) 
             setRowData(res.data);
@@ -61,7 +61,7 @@ const ManageHostels = () => {
           try {
             const confirmation = window.confirm("Do you really want to delete this hostel?");
             if (!confirmation) return;
-            await axios.delete(`http://localhost:3000/SA/removeHostel?hostelNo=${hostelNo}&softdelete=true`);
+            await axios.delete(import.meta.env.VITE_BASE_URL + `/SA/removeHostel?hostelNo=${hostelNo}&softdelete=true`);
             // Remove the deleted row from rowData
             setRowData(prevData => prevData.filter(row => row.hostelNo !== hostelNo));
           } catch (error) {
@@ -75,7 +75,7 @@ const ManageHostels = () => {
         ;(async () => { 
           try {
             const res = await axios({
-              url: 'http://localhost:3000/SA/addHostel',
+              url: import.meta.env.VITE_BASE_URL + '/SA/addHostel',
               method: 'POST',
               data: hostel
             });

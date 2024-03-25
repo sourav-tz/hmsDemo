@@ -1,7 +1,4 @@
 import styles from './AllotRooms.module.scss';
-import Roomsbargraph from '../../../../components/Roomsbargraph/Roomsbargraph';
-import ComplexSearchRooms from '../../../../components/ComplesSearch/ComplexSearchRooms';
-import MultiSelect from '../../../../components/MultiSelect/MultiSelect';
 import Button from '../../../../components/Button/Button';
 import TableLoader from '../../../../components/TableLoader/TableLoader';
 import RoomTable from '../../../../components/Tables/RoomTable/RoomTable';

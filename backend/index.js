@@ -16,9 +16,11 @@ app.use(express.urlencoded());
 app.use(express.static('public'));  //*to access public folder
 app.disable('x-powered-by'); //*less hackers know about our stack
 
-console.log(process.env.FRONTEND_URL);
+
+
+
 app.use(cors({
-    origin: process.env.FRONTEND_URL,
+	origin:process.env.FRONTEND_URL,
     credentials: true,
 }));
 
