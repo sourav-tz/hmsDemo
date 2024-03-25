@@ -1,0 +1,39 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Create env file
+      run: |
+        touch backend/.env
+        echo DB_USERNAME="root">>backend/.env
+        echo DB_PASSWORD="root">>backend/.env
+        echo DB_DATABASE="hostel">>backend/.env
+        echo DB_HOST="localhost">>backend/.env
+        echo DB_DIALECT="mysql">>backend/.env
+        echo NODE_ENV="development">>backend/.env
+        echo SYNC={"alter":true}>>backend/.env
+        echo DB_LOGGING="false">>backend/.env
+        echo MYSQL_ROOT_PASSWORD=root
+        echo MYSQL_DATABASE=hostel
+
+    - name: Build Docker image
+      run: |
+        cd backend
+        docker-compose build
+
+    - name: Run Docker Compose
+      run: |
+        cd backend
+        docker-compose up -d
