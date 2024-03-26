@@ -292,8 +292,10 @@ const handleStudentInfo =(rollNo)=>{
 
 
     return<>
-    <h1 className='text-3xl'>Rooms Allotement</h1>
+    <h1 className='text-3xl mt-16 md:mt-0 p-4 md:p-0'>Rooms Allotement</h1>
     <div className={styles.container}>
+
+     <div className='min-w-[350px] p-4'>  
     <Card>
     <CardHeader>
         <CardTitle>Rooms Status</CardTitle>
@@ -303,9 +305,11 @@ const handleStudentInfo =(rollNo)=>{
     <Doughnut type="doughnut" data={data} />
         </CardContent>
         </Card>
+        </div> 
 
 
 {/* //Search query */}
+    <div className='mt-4 md:mt-0 md:p-0 p-4 min-w-[350px]'>
         <Card>
         <CardHeader>
             <CardTitle>Search Queries</CardTitle>
@@ -356,8 +360,9 @@ const handleStudentInfo =(rollNo)=>{
                 </CardFooter>
             </div>
         </Card>
+        </div>
 
-        <div className={styles.tableArea+' mt-4'}>
+        <div className={styles.tableArea+' mt-4 p-4 md:max-w-[800px]'}>
                 {rowData===null?<TableLoader />
                 :<RoomTable data={rowData}/>}
             </div>

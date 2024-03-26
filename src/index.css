@@ -1,3 +1,36 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+/* index.css */
+
+/* Base font size */
+html {
+    font-size: 12px; /* Base font size for all HTML elements */
+  }
+  
+  /* Responsive font sizes */
+  @media (min-width: 640px) {
+    html {
+      font-size: 16px; /* Adjust font size for small screens */
+    }
+  }
+  
+  @media (min-width: 768px) {
+    html {
+      font-size: 18px; /* Adjust font size for medium screens */
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    html {
+      font-size: 18px; /* Adjust font size for large screens */
+    }
+  }
+  
+  @media (min-width: 1280px) {
+    html {
+      font-size: 18px; /* Adjust font size for extra large screens */
+    }
+  }

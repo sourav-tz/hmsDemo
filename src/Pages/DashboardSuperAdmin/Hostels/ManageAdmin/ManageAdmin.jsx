@@ -26,7 +26,7 @@ const ManageAdmin = () => {
          ;(async ()=>{
              try{
               const res = await axios({
-                url:'http://localhost:3000/SA/getAdmins',
+                url:import.meta.env.VITE_BASE_URL + '/SA/getAdmins',
                 method:'get'
               })
 
@@ -69,7 +69,7 @@ const ManageAdmin = () => {
         ;(async ()=>{
           try{
              const res = await axios({
-                url:'http://localhost:3000/SA/adminReg',
+                url:import.meta.env.VITE_BASE_URL + '/SA/adminReg',
                 method:'post',
                 data:admin
              })

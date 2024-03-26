@@ -11,6 +11,7 @@ const AdminRegister = require('../../controllers/superAdmin/Manage_Admins/AdminR
 const { validateUser, AdminRegAuth } = require('../../middlewares/AdminRegAuth');
 const { csvToJsonConverter } = require('../../middlewares/csvToJsonConverter');
 const addRoomsToHostels = require('../../controllers/superAdmin/Manage_Hostels/addRoomsToHostels');
+const auth = require('../../middlewares/auth');
 
 
 var storage = multer.diskStorage({

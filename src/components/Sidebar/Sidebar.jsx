@@ -74,11 +74,26 @@ export default function Sidebar(){
         Dispatcher(setActiveSubOption(value));
     }
 
+    const toggleMenue = ()=>{
+        changeState(prev=>!prev);
+    }
 
+    const handleHamBurger = ()=>{
+        toggleMenue();
+        const ham1 = document.getElementById('ham1');
+        const ham2 = document.getElementById('ham2');
+        const ham3 = document.getElementById('ham3');
+        ham1.classList.toggle('rotate-45');
+        ham2.classList.toggle('hidden');
+        ham3.classList.toggle('mt-1');
+        ham3.classList.toggle('relative');
+        ham3.classList.toggle('-top-[0.25rem]');
+        ham3.classList.toggle('rotate-[-45deg]');
+    }
 
     return<>
     <IconContext.Provider value={{size:"20px"}} >
-        <div id="Sidebar" onMouseOver={openMenu} onMouseLeave={closeMenu} className={(styles.sidebarContainer)+' '+(state?styles.active:styles.inActive)}>
+        <div id="Sidebar" onMouseOver={openMenu} onMouseLeave={closeMenu} className={(styles.sidebarContainer)+' '+(state?styles.active:styles.inActive) + ' hidden md:block'}>
            <div className={styles.itemsContainer}>
             <div className={styles.userItem}>
                 <div id="userIconSidebar" className={styles.userIcon}>
@@ -117,6 +132,36 @@ export default function Sidebar(){
                         </ul>
             </div>
             </div>
+        </div>
+
+        <div className={`w-full ${state?'h-full':'h-[60px]'} fixed transition-all top-0 left-0 backdrop-blur-md z-50 md:hidden`}>
+            <div className='h-full w-full bg-[#131133] absolute top-0 left-0 opacity-85 -z-1'></div>
+            <div className='w-full h-[60px] absolute top-0 left-0 items-center p-4 flex z-50'>
+                <div className='flex-1'>
+                    <h2 className='text-white'>NIT Hms</h2>
+                </div>
+                <div onClick={handleHamBurger} className='cursor-pointer'>
+                    <div id='ham1' className='w-[25px] h-[4px] bg-white rounded-sm origin-center transition-all'></div>
+                    <div id='ham2' className='w-[25px] h-[4px] bg-white rounded-sm mt-1 transition-all'></div>
+                    <div id='ham3' className='w-[25px] h-[4px] bg-white rounded-sm mt-1 origin-center transition-all'></div>
+                </div>
+            </div>
+            <div className={`${state?'':'hidden'} absolute w-full h-full top-0 left-[0] flex justify-center items-center text-white`}>
+                <ul>
+                    <li className='cursor-pointer flex flex-col text-orange-500 text-xl font-semibold'><div onClick={()=>{changeSubMenu('Home')}} className='flex items-center gap-2 hover:'><IoHome size='20px'/> Main </div>
+                        <ul style={{display:setTimeout(()=>{return 'hidden'},1000)} } className={`${subHome?'translate-x-0':'-translate-x-[1000px]'} text-sm text-white  font-thin ml-8 transition-all`}>
+                            <li onClick={()=>{changeActiveOption('Home');changeActiveSubOption('Home')}} className={`hover:scale-110 transition-all rounded-md px-2 py-[2px] ${activeSubOption==='Home'?'bg-blue-900 font-normal':''}`}> Home</li>
+                        </ul>
+                    </li>
+
+                    <li className='cursor-pointer flex flex-col text-orange-500 text-xl font-semibold'><div onClick={()=>{changeSubMenu('Home')}} className='flex items-center gap-2 hover:'><FaInfo size='20px' />  Student Info</div>
+                        <ul className={`${subHome?'translate-x-0':'-translate-x-[1000px]'} text-sm text-white  font-thin ml-8 transition-all`}>
+                            <li onClick={()=>{changeActiveOption('Home');changeActiveSubOption('Home')}} className={`hover:scale-110 transition-all rounded-md px-2 py-[2px] ${activeSubOption==='Home'?'bg-blue-900 font-normal':''}`}> Home</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
         </div>
     </IconContext.Provider>
     </>

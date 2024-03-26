@@ -132,7 +132,7 @@ export default function () {
           </div>
           <div className={styles.logoContent}>
             <img className={styles.logo} src={logoImage} />
-            <h1 className='text-4xl font-semibold'>
+            <h1 className='text-4xl font-normal'>
               NIT Hostel Management <br />
               System
             </h1>
