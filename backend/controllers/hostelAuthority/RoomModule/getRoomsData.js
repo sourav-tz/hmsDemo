@@ -6,7 +6,7 @@ const getRoomsData = async (req, res) => {
     try {
 
         const filters = {};
-        const hostelNo = 11
+        const hostelNo = req.body.tokenHostelNo;
 
         const totalRooms = await db.rooms.count({where:{hostelNo: hostelNo}})
         const fullyFilledCount = await db.rooms.count({ where: { currentOccupancy: 'Fully-Filled' ,hostelNo:hostelNo} });
@@ -20,7 +20,8 @@ const getRoomsData = async (req, res) => {
         }
 
         if (req.query.status) {
-            filters.status = req.query.status;
+
+            filters.currentOccupancy = req.query.status; 
         }
 
         if (req.query.floorNo) {
@@ -78,14 +79,15 @@ const getRoomsData = async (req, res) => {
         //         }
         //     ]
         // });
-
+        // console.log("before fetching roomsdata");
+        // console.log(db);
         const roomsData = await db.rooms.findAll({
             where: filters,
             offset: startIndex,
             limit: limit,
             include: [
                 {
-                    model: db.roomsStudentMapping,
+                    model: db.roomsStudentMappings,
                     required:false,
                     where: { checkOutDate: null },
                     include: [{
@@ -95,6 +97,8 @@ const getRoomsData = async (req, res) => {
                 }
             ]
         });
+
+        // console.log("After fetching roomsdata");
         // Return the result
         nextPage = page >= totalpages ? totalpages : page + 1
         roomsData.unshift({
@@ -118,6 +122,7 @@ const getRoomsData = async (req, res) => {
 
 
     } catch (error) {
+        console.log(error);
         return res.status(500).json({ error: error.message });
     }
 }

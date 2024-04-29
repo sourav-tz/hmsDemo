@@ -2,25 +2,30 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const path = require('path');
+
 const { csvToJsonConverter } = require('../../middlewares/csvToJsonConverter');
 const { bulkCreateController } = require('../../controllers/hostelAuthority/studentModule/bulkCreateController');
 const { studentsInfo } = require('../../controllers/hostelAuthority/studentModule/studentsInfo');
 const { deleteStudent } = require('../../controllers/hostelAuthority/studentModule/deleteStudent');
 const { singleStudentInfo } = require('../../controllers/hostelAuthority/studentModule/singleStudentInfo');
-const { singleStudentUpload } = require('../../controllers/hostelAuthority/studentModule/singleStudentUpload');
+const { singleStudentUpload,updateSingleStudent } = require('../../controllers/hostelAuthority/studentModule/singleStudentUpload');
 const { downloadFile } = require('../../controllers/hostelAuthority/studentModule/downloadFile');
 const { updateBulk } = require('../../controllers/hostelAuthority/studentModule/updateBulk');
-const AdminLogin = require('../../controllers/Login/AdminLogin')
-const AdminLogout = require('../../controllers/LoggingOut/AdminLogOut');
+const Login = require('../../controllers/Login/Login')
+const Logout = require('../../controllers/LoggingOut/LogOut');
 const isCookie = require('../../controllers/isCookie');
 const AdminGoogleLogin = require('../../controllers/Login/AdminGoogleLogin');
 const bulkRoomAllotmentToStudent = require('../../controllers/hostelAuthority/RoomModule/bulkRoomAllotmentToStudents');
 const singleStudentAllot = require('../../controllers/hostelAuthority/RoomModule/singleStudentAllotment');
-const auth = require('../../middlewares/auth');
+const auth = require('../../middlewares/auth.js');
 const singleStudentRemove = require('../../controllers/hostelAuthority/RoomModule/singleStudentRemove');
 const getRoomsData = require('../../controllers/hostelAuthority/RoomModule/getRoomsData');
 const { getCourses, getSingleCourse } = require('../../controllers/hostelAuthority/studentModule/getCourses.controller.js');
-
+const {getComplaintsAdmin,rejectComplaint,resoleComplaint}=require('../../controllers/student/complaints');
+const  updatePassword  = require('../../controllers/hostelAuthority/user/user.controller.js');
+const {addnotice,getNotices,deleteNotices} =require("../../controllers/hostelAuthority/notices/notices.js")
+const singleUpload =  require("../../middlewares/multer.js");
+const getRoomTimeline = require('../../controllers/hostelAuthority/RoomModule/getRoomTimeline.js');
 
 var storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -31,22 +36,21 @@ var storage = multer.diskStorage({
     }
 });
 var upload = multer({ storage: storage });
-// console.log(path.join(__dirname, '../../public/uploads'));
 
 router.get('/', (req, res) => {
     return res.send('success')
 })
 
 //// Authentication Hostel Authority
-router.post('/adminLogin', AdminLogin)
+router.post('/adminLogin', Login)
 router.post('/adminGoogleLogin', AdminGoogleLogin)
-router.get('/adminLogout', auth, AdminLogout)
+router.get('/adminLogout', auth, Logout)
 router.get('/isCookie', isCookie)
 
 ////viewInfo Module
 //* Apis for bulk
-router.post('/bulkCreate', upload.single('file'), csvToJsonConverter, bulkCreateController);
-router.patch('/updateBulk', updateBulk);
+router.post('/bulkCreate',auth, upload.single('file'), csvToJsonConverter, bulkCreateController);
+router.patch('/updateBulk',auth, updateBulk);
 
 //* Apis get student information for single or all
 router.get('/studentsInfo', auth,studentsInfo);
@@ -56,17 +60,35 @@ router.post('/getSingleCourse',auth,getSingleCourse);
 
 //* Apis single student
 router.post('/singleStudentUpload', auth,singleStudentUpload);
+router.patch('/updateSingleStudent', auth,updateSingleStudent);
 //todo:update api
 router.delete('/deleteStudent', auth,deleteStudent);
 
 
 
+
 ////Rooms Module routes
 
-router.post('/bulkRoomAllot', upload.single('file'), csvToJsonConverter, bulkRoomAllotmentToStudent)
-router.post('/singleRoomAllot', singleStudentAllot);
-router.get('/downloadfile', downloadFile);
-router.post('/singleRoomRemove', singleStudentRemove)
-router.get('/getRoomsData', getRoomsData)
+router.post('/bulkRoomAllot',auth, upload.single('file'), csvToJsonConverter, bulkRoomAllotmentToStudent)
+router.post('/singleRoomAllot',auth, singleStudentAllot);
+router.get('/downloadfile',auth, downloadFile);
+router.post('/singleRoomRemove',auth, singleStudentRemove)
+router.get('/getRoomsData',auth, getRoomsData)
+router.get('/getRoomTimeLine',auth,getRoomTimeline)
+
+//// Complaints module
+router.get('/getComplaints',auth,getComplaintsAdmin);
+router.patch('/resolveComplaint',auth,resoleComplaint);
+router.patch('/rejectComplaint',auth,rejectComplaint);
+
+//user update
+router.patch('/updatePassword', updatePassword);
+//// hostel notices
+router.post('/addnotice',auth,singleUpload,addnotice);
+router.get('/getNotices',auth,getNotices);
+router.delete('/deleteNotice',auth,deleteNotices);
+
+
+
 
 module.exports = router;

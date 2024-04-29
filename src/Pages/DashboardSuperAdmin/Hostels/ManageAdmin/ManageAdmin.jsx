@@ -1,4 +1,4 @@
-import React, { useEffect, useState} from 'react'
+import React, { useEffect, useState, useRef} from 'react'
 import { Input } from '../../../../components/ui/input';
 import { Select,SelectTrigger,SelectContent,SelectValue,SelectItem } from '../../../../components/ui/select';
 import {Button} from '../../../../components/ui/button';
@@ -9,6 +9,19 @@ import { Fullscreen } from 'lucide-react';
 import { ImBin } from "react-icons/im";
 import { update } from '@react-spring/web';
 import axios from "axios";
+import { CiEdit } from "react-icons/ci";
+import { ToastContainer,toast } from 'react-toastify';
+import { useForm,Controller, set } from 'react-hook-form';
+import { DevTool } from '@hookform/devtools';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+
 
 const ManageAdmin = () => {
 
@@ -16,29 +29,48 @@ const ManageAdmin = () => {
        const [Pass,setPass] = useState("");
       
        const [rowData, setRowData] = useState([]);
+
+       const yesRef = useRef();
+       const noRef = useRef();
+      const [confirmModal,setConfirmModal] = useState(false);
+      const [editMode,setEditMode] = useState(false);
+
+      const { register, handleSubmit, control } = useForm(
+        {
+          mode:"all"
+        }
+      );
+
       
 
-
       let [admin,setAdmin] = useState({
-        email:"",name:"",roleType:"Admin",mobile:"",password:"",hostelNo:""
+        email:"",name:"",roleType:"Hostel-Authority",mobile:"",password:"",hostelNo:""
       });
+      const [editValues,setEditValues] = useState({
+        email:"",name:"",mobile:"",hostelNo:""
+      });
+
+      const getAdmins =async ()=>{
+        try{
+         const res = await axios({
+           url:import.meta.env.VITE_BASE_URL + '/SA/getAdmins',
+           method:'get',
+           headers:{
+             'Content-Type':'application/json',
+           },
+           withCredentials:true
+         })
+
+         console.log(res);
+          setRowData(res.data);
+
+        }catch(error){
+         console.log(error);
+        }
+    }
+
       useEffect(() => {
-         ;(async ()=>{
-             try{
-              const res = await axios({
-                url:import.meta.env.VITE_BASE_URL + '/SA/getAdmins',
-                method:'get'
-              })
-
-              console.log(res);
-               setRowData(res.data);
-
-             }catch(error){
-              console.log(error);
-             }
-         }
-
-         )()
+        getAdmins();
       },[])
 
       const handleName = (e) =>{
@@ -71,12 +103,23 @@ const ManageAdmin = () => {
              const res = await axios({
                 url:import.meta.env.VITE_BASE_URL + '/SA/adminReg',
                 method:'post',
-                data:admin
+                data:admin,
+                headers:{
+                  'Content-Type':'application/json'
+                },
+                withCredentials:true
              })
              console.log(res);
+             toast.success("Hostel Admin Created Email Sent !", {
+              position: "top-center"
+            });
+            getAdmins();
 
           }catch(error){
             console.log(error);
+            toast.error("Error in Transaction !", {
+              position: "top-center"
+            });
           }
         })()
         
@@ -93,8 +136,54 @@ const ManageAdmin = () => {
       // }
      
 
+    const deleteConfirmation = () => {
+      return new Promise((resolve,reject)=>{
+        setConfirmModal(true);
+        yesRef.current.onclick = ()=>{
+          resolve(true);
+          setConfirmModal(false);
+        }
+        noRef.current.onclick = ()=>{
+          resolve(false);
+          setConfirmModal(false);
+        }
+      })
+    }
+
      
+    const deleteAdmin = async(e) => {
+      console.log(e.data.email);
+      const deleteRes = await deleteConfirmation();
+
+      try{
+        const res = await axios({
+          url:import.meta.env.VITE_BASE_URL + '/SA/deleteAdmin',
+          method:'post',
+          data:{email:e.data.email},
+          headers:{
+            "Content-Type":"application/json"
+          },
+          withCredentials:true
+        })
+        console.log(res);
+        toast.success("Admin Deleted Successfully", {
+          position: "top-center"
+        });
+        getAdmins();
+      }catch(error){
+        console.log(error);
+        toast.error("Error in Transaction !", {
+          position: "top-center"
+        });
+      }
+    }
       
+      const handleEdit = (e) => {
+        console.log(e);
+        setEditMode(true);
+        setEditValues(e);
+
+      }
       
     
       // Column Definitions: Defines & controls grid columns.
@@ -103,7 +192,9 @@ const ManageAdmin = () => {
         { field: "hostelNo",headerClass:"font-bold border p-2 font-bold   text-lg"},
         { field: "mobile",headerClass:"font-bold border p-2 font-bold  text-lg" },
         {field: "delete",headerClass:"font-bold border p-2 font-bold  text-lg",
-        cellRenderer:()=> <Button className=' p-3' > <ImBin /> </Button>},
+        cellRenderer:(e)=> <div className='flex w-full justify-center'><Button onClick={()=>deleteAdmin(e)} className='bg-red-700 h-8 p-[10px] hover:bg-red-500' > <ImBin size={10}/> </Button></div>},
+        {field: "edit",headerClass:"font-bold border p-2 font-bold  text-lg",
+        cellRenderer:({data})=> <div className='flex w-full justify-center'><Button onClick={()=>handleEdit(data)} className='bg-blue-700 h-8 p-[10px] hover:bg-blue-500' > <CiEdit size={10}/> </Button></div>},
       ]);
       
 
@@ -122,13 +213,45 @@ const ManageAdmin = () => {
          })
        } 
         
+  const onSubmitEdit = async (data) => {
+    console.log(data);
+    setEditMode(false);
+    if(data.hostelNo!==''){
+      try{
+        const res = await axios({
+          url:import.meta.env.VITE_BASE_URL + '/SA/changeHostel',
+          method:'post',
+          data:{emailOfHA:editValues.email,newHostelNo:data.hostelNo},
+          headers:{
+            'Content-Type':'application/json'
+          },
+          withCredentials:true
+        })
+        console.log(res);
+        toast.success("Admin Edited Successfully", {
+          position: "top-center"
+        });
+        getAdmins();
+      }catch(error){
+        console.log(error);
+        toast.error("Error in Transaction !", {
+          position: "top-center"
+        });
+    }
+
+  }
+  }
+
+
+
+
       
       
 
 return (
 
     <>
-        <div className=''>
+        <div className='flex flex-col items-center justify-center'>
          <div className=' m-6 p-5  max-w-max rounded-[30px] shadow-[0_3px_10px_rgb(0,0,0,0.2)] '>
             <form  >
                 <div>
@@ -136,33 +259,15 @@ return (
                 </div>
                 <div className='flex'>
                      
-                       <Input name="name"  onChange={handleName} className='w-60  h-16 m-2 text-lg p-3 placeholder:text-black bg-white  shadow-[0_3px_10px_rgb(0,0,0,0.2)] '  type="text"  placeholder='Name'/>
-                      {/* <Select name="hostelNo" onValueChange={handleSelectChange}  >
-                          <SelectTrigger  className="w-60 h-16 text-lg p-3 m-2  text-black bg-white  shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
-                            <SelectValue  placeholder="Hostel No" />
-                          </SelectTrigger>
-                          <SelectContent   >
-                            <SelectItem value="H1">H1</SelectItem>
-                            <SelectItem value="H2">H2</SelectItem>
-                            <SelectItem value="H3">H3</SelectItem>
-                            <SelectItem value="H4">H4</SelectItem>
-                            <SelectItem value="H5">H5</SelectItem>
-                            <SelectItem value="H6">H6</SelectItem>
-                            <SelectItem value="H7">H7</SelectItem>
-                            <SelectItem value="H8">H8</SelectItem>
-                            <SelectItem value="H9">H9</SelectItem>
-                            <SelectItem value="H10">H10</SelectItem>
-                            <SelectItem value="H11">H11</SelectItem>
-                          </SelectContent>
-                      </Select> */}
-                      <Input name="hostelNo" onChange={handleNoChange} className='w-60 h-16 m-2  text-lg p-3 placeholder:text-black bg-white  shadow-[0_3px_10px_rgb(0,0,0,0.2)]' type="number"  placeholder='Hostel No'/>
+                       <Input name="name"  onChange={handleName} className='w-60 m-2 text-lg p-3 placeholder:text-black bg-white  shadow-[0_3px_10px_rgb(0,0,0,0.2)] '  type="text"  placeholder='Name'/>
+                      <Input name="hostelNo" onChange={handleNoChange} className='w-60 m-2  text-lg p-3 placeholder:text-black bg-white  shadow-[0_3px_10px_rgb(0,0,0,0.2)]' type="number"  placeholder='Hostel No'/>
 
                 </div>
               
 
                 <div  className='flex'>
-                       <Input  name="mobile" onChange={handleMobile}  className='w-60 h-16 m-2  text-lg p-3 placeholder:text-black bg-white  shadow-[0_3px_10px_rgb(0,0,0,0.2)]' type="number"  placeholder='Mobile No'/>
-                       <Input name="email" onChange={handleEmail}  className='w-60 h-16 m-2  text-lg p-3 placeholder:text-black bg-white  shadow-[0_3px_10px_rgb(0,0,0,0.2)]' type="text"  placeholder='Email'/>
+                       <Input  name="mobile" onChange={handleMobile}  className='w-60 m-2  text-lg p-3 placeholder:text-black bg-white  shadow-[0_3px_10px_rgb(0,0,0,0.2)]' type="number"  placeholder='Mobile No'/>
+                       <Input name="email" onChange={handleEmail}  className='w-60 m-2  text-lg p-3 placeholder:text-black bg-white  shadow-[0_3px_10px_rgb(0,0,0,0.2)]' type="text"  placeholder='Email'/>
                    
                 </div>
 
@@ -170,9 +275,9 @@ return (
                  <div className='flex' >
              
         
-                    <Button className=' w-60 h-16  m-2 p-3 bg-[#5F57FF] text-white rounded-lg  text-lg  shadow-[0_3px_10px_rgb(0,0,0,0.2)]' onClick={passwordGenerator}  >Generate Password</Button>
-                    <Input name="password" value={Pass} className='w-60 h-16 m-2 text-lg p-3 placeholder:text-black bg-white   shadow-[0_3px_10px_rgb(0,0,0,0.2)]' type="text" readOnly placeholder='Password'/>
-                    <Button  onClick ={handleAdmin} className=' w-36 h-14  m-2 p-3 bg-[#5F57FF] text-white rounded-lg  text-lg shadow-[0_3px_10px_rgb(0,0,0,0.2)]' >Register</Button>
+                    <Button className=' w-60 m-2 p-3 bg-[#5F57FF] hover:bg-[#7870ff] text-white rounded-lg  text-lg  shadow-[0_3px_10px_rgb(0,0,0,0.2)]' onClick={passwordGenerator}  >Generate Password</Button>
+                    <Input name="password" value={Pass} onChange={(e)=> setPass(e.target.value)} className='w-60 m-2 text-lg p-3 placeholder:text-black bg-white   shadow-[0_3px_10px_rgb(0,0,0,0.2)]' type="text" placeholder='Password'/>
+                    <Button  onClick ={handleAdmin} className=' w-36  m-2 p-3 bg-[#5F57FF] hover:bg-[#7870ff] text-white rounded-lg  text-lg shadow-[0_3px_10px_rgb(0,0,0,0.2)]' >Register</Button>
               
                  </div>
              </form>
@@ -183,12 +288,74 @@ return (
         
               <div className='mt-4 mb-2 p-1 w-2/3 h-[380px] rounded-xl shadow-[0_3px_10px_rgb(0,0,0,0.2)] '>
 
-                   <div className="ag-theme-quartz  " style={{ height: '100%' , width: '100%'}}>
+                   <div className="ag-theme-quartz  " style={{ height: '100%' , width: '800'}}>
                         <AgGridReact rowData={rowData} columnDefs={colDefs}  />
                    </div>       
                       
               </div>
           </div>
+          <ToastContainer />
+
+
+          <div className={`flex justify-center items-center -translate-y-full ${confirmModal?'translate-y-0':null} top-0 left-0 transition-all fixed w-full min-h-screen`}> 
+    <div className='fixed top-0 left-0 bg-black opacity-70 w-full h-screen'></div>
+        <div className='min-w-[300px] z-50'>
+          <Card>
+            <CardHeader>
+              <CardTitle>Confirmation</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CardDescription>Do you really want to delete this hostel?</CardDescription>
+            </CardContent>
+            <CardFooter className='flex justify-between'>
+              <Button ref={noRef} onClick={()=>{setConfirmModal(false)}} className="bg-green-700">No</Button>
+              <Button ref={yesRef} onClick={()=>{}} className="bg-red-700">Yes</Button>
+            </CardFooter>
+          </Card>
+        </div>
+    </div>
+
+
+
+  <div className={`-translate-y-full ${editMode?'translate-y-0':null} flex justify-center items-center fixed top-0 left-0 transition-all w-full min-h-screen z-50`}>
+    <div className='fixed top-0 left-0 bg-black opacity-70 w-full h-screen'></div>
+    <div className='min-w-[300px] z-[1000]'>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Edit Hostel</CardTitle>
+              <CardDescription>Change Hostel Information</CardDescription>
+            </CardHeader>
+
+            <CardContent>
+            <form onSubmit={handleSubmit(onSubmitEdit)}>
+
+  
+              <div className='w-full min-h-[150px] md:w-[600px]'>
+              <Input defaultValue={editValues.name} {...register("name")} name="name"  onChange={handleName} className='w-full m-2 text-lg p-3 placeholder:text-black bg-white  shadow-[0_3px_10px_rgb(0,0,0,0.2)] '  type="text"  placeholder='Name'/>
+              <Input defaultValue={editValues.hostelNo} {...register("hostelNo")} name="hostelNo" onChange={handleNoChange} className='w-full m-2  text-lg p-3 placeholder:text-black bg-white  shadow-[0_3px_10px_rgb(0,0,0,0.2)]' type="number"  placeholder='Hostel No'/>
+              <Input defaultValue={editValues.mobile} {...register("mobile")} name="mobile" onChange={handleMobile}  className='w-full m-2  text-lg p-3 placeholder:text-black bg-white  shadow-[0_3px_10px_rgb(0,0,0,0.2)]' type="number"  placeholder='Mobile No'/>
+              <Input defaultValue={editValues.email} {...register("email")} name="email" onChange={handleEmail}  className='w-full m-2  text-lg p-3 placeholder:text-black bg-white  shadow-[0_3px_10px_rgb(0,0,0,0.2)]' type="text"  placeholder='Email'/>              
+            </div>
+            
+
+            <div className='p-4 flex justify-between'>
+
+            <Button type="button" onClick={()=>{setEditMode(false);setErrorMessage('')}} className="bg-red-700">Close</Button>
+            <Button type="submit" className="bg-green-700">Submit</Button>
+
+            </div>
+
+            </form>
+            </CardContent>
+          </Card>
+
+        </div>  
+
+    </div>
+<DevTool control={control} />
+
+
      </>
   
 

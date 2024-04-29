@@ -1,12 +1,11 @@
 const db = require('../../../models/index')
 
-exports.singleStudentUpload=async (req,res)=>{
+const singleStudentUpload=async (req,res)=>{
     try {
           //? get json data from body
-          const data = req.body;
-    
+          const data = req.body;   
         const studentData = await db.students.findOne({
-          where: { rollNo:data.rollNo ,email:data.email}
+          where: { rollNo:data.rollNo}
         });
     
         //if student Already exists
@@ -24,11 +23,10 @@ exports.singleStudentUpload=async (req,res)=>{
               const usersData = {
                 email: data.email,
                 password:securePassword,
-                role: 'student',
-                lastUpdatedBy: 'deepak@gmail.com',
+                role: 'Student',
               };
           
-              const insertedUsers = await db.users.create(usersData, { transaction, validate: true });
+              const insertedUser = await db.users.create(usersData, { transaction, validate: true });
           
               // Insert students
               const insertedStudents = await db.students.create({
@@ -36,17 +34,14 @@ exports.singleStudentUpload=async (req,res)=>{
                 firstName: data.firstName,
                 lastName: data.lastName,
                 year: data.year,
-                email: insertedUsers.email,
-                lastUpdatedBy: 'deepak@gmail.com',
+                email: insertedUser.email,
                 courseId: data.courseId, // given using dropdown
-                // hostelNo:data.hostelNo, it will be at the time of room allotment
               }, { transaction, validate: true });
           
               // Insert profiles
               const profilesData = {
                 ...data,
                 rollNo: insertedStudents.rollNo,
-                lastUpdatedBy: 'deepak@gmail.com',
               };
           
               await db.profiles.create(profilesData, { transaction, validate: true });
@@ -58,7 +53,6 @@ exports.singleStudentUpload=async (req,res)=>{
                 bankName: data.bankName,
                 accNumber: data.accNumber,
                 IFSC: data.IFSC,
-                lastUpdatedBy: 'deepak@gmail.com',
               };
           
               await db.bankdetails.create(bankdetailsData, { transaction, validate: true });
@@ -82,3 +76,124 @@ exports.singleStudentUpload=async (req,res)=>{
         return res.status(500).json({ error:error });
       }
 };
+
+const updateSingleStudent = async (req, res) =>{
+
+  try{
+    const {rollNo,
+      firstName,
+      lastName,
+      year,
+      password,
+      department,
+      email,
+      pEmail,
+      gender,
+      courseName,
+      dob,
+      contactNumber,
+      sNumber,
+      fatherName,
+      fatherOccupation,
+      fatherContactNumber,
+      motherName,
+      motherOccupation,
+      motherContactNumber,
+      bloodGroup,
+      identificationMark,
+      address,
+      state,
+      accHolderName,
+      accNumber,
+      bankName,
+      IFSC} = req.body;
+
+    const studentData = await db.students.findOne({
+      where: { rollNo: rollNo }
+    });
+
+    if (!studentData) {
+      return res.status(404).json({ error: 'Student not found' });
+    }
+
+    try {
+      // Start the transaction
+      const transaction = await db.sequelize.transaction();
+      const filter = {};
+      const profileFilter = {};
+      const bankDetailsFilter = {};
+      if(rollNo)filter.rollNo=rollNo;
+      if(firstName)filter.firstName=firstName;
+      if(lastName)filter.lastName=lastName;
+      if(year)filter.year=year;
+      if(department)filter.department=department;
+      if(email)filter.email=email;
+     if(pEmail)profileFilter.pEmail=pEmail;
+     if(gender)profileFilter.gender=gender;
+      if(courseName)profileFilter.courseName=courseName;
+      if(dob)profileFilter.dob=dob;
+      if(contactNumber)profileFilter.contactNumber=contactNumber;
+      if(sNumber)profileFilter.sNumber=sNumber;
+      if(fatherName)profileFilter.fatherName=fatherName;
+      if(fatherOccupation)profileFilter.fatherOccupation=fatherOccupation;
+      if(fatherContactNumber)profileFilter.fatherContactNumber=fatherContactNumber;
+      if(motherName)profileFilter.motherName=motherName;
+      if(motherOccupation)profileFilter.motherOccupation=motherOccupation;
+      if(motherContactNumber)profileFilter.motherContactNumber=motherContactNumber;
+      if(bloodGroup)profileFilter.bloodGroup=bloodGroup;
+      if(identificationMark)profileFilter.identificationMark=identificationMark;
+      if(address)profileFilter.address=address;
+      if(state)profileFilter.state=state;
+      if(accHolderName)bankDetailsFilter.accHolderName=accHolderName;
+      if(accNumber)bankDetailsFilter.accNumber=accNumber;
+      if(bankName)bankDetailsFilter.bankName=bankName;
+      if(IFSC)bankDetailsFilter.IFSC=IFSC;
+
+      try {
+        // Update students
+        const updatedStudents = await db.students.update(filter, {
+          where: { rollNo: rollNo },
+          transaction
+        });
+
+        // Update profiles
+        const updatedProfiles = await db.profiles.update(profileFilter, {
+          where: { rollNo: rollNo },
+          transaction
+        });
+
+        // Update bankdetails
+        const updatedBankDetails = await db.bankdetails.update(bankDetailsFilter, {
+          where: { rollNo: rollNo },
+          transaction
+        });
+
+        // Commit the transaction
+        await transaction.commit();
+
+        return res.json({ message: 'Student updated successfully' });
+      }
+      catch (error) {
+        // Rollback the transaction on error
+        await transaction.rollback();
+        console.error("Error in transaction:", error);
+        throw error; // Rethrow the error to handle it in the outer catch block
+      }
+
+
+    
+  }catch(err){
+    console.log("Outer catch block:", err);
+    return res
+  }
+
+}
+catch (error) {
+  console.error(error);
+  return res.status(500).json({ error:error });
+}
+};
+
+
+
+module.exports = {singleStudentUpload,updateSingleStudent};

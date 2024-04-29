@@ -9,13 +9,14 @@
 .container{
     display: flex;
     flex-wrap: wrap;
-    width: 80%;
+    width: 100%;
 }
 
 
 
 .uploadContainer{
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     width: 100%;
@@ -62,6 +63,5 @@
 }
 
 .uploadInfoAccord{
-    flex-basis: 100%;
     margin-top: 25px;
 }

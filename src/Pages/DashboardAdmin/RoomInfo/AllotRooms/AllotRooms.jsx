@@ -4,6 +4,18 @@ import TableLoader from '../../../../components/TableLoader/TableLoader';
 import RoomTable from '../../../../components/Tables/RoomTable/RoomTable';
 import Modal from '../../../../components/Modals/Modal';
 import { changeModalState } from '../../../../Store/Reducers/viewInfoSlice';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+    DialogFooter
+  } from "@/components/ui/dialog"
+
+import {Textarea} from "@/components/ui/textarea"
+
 
 import {
     Select,
@@ -41,6 +53,7 @@ import axios from 'axios';
 import './Pagination.css';
 import ReactPaginate from 'react-paginate';
 import { useNavigate } from 'react-router-dom';
+import { set } from 'date-fns';
 
 
 
@@ -51,26 +64,26 @@ Chart.defaults.plugins.legend.title.display = true;
 Chart.defaults.plugins.legend.title.font = 'Helvetica Neue';
 
 
-const items = [
-    {
-      title: "24 March 2022",
-      cardTitle: "Room Entry",
-      cardSubtitle: "Rollno:52211123, 522145323",
-      cardDetailedText: "Akshat Jain, Ritik Occupied this Room",
-    },
-    {
-        title: "2 February 2022",
-        cardTitle: "Room Leave",
-        cardSubtitle: "Rollno:52211211",
-        cardDetailedText: "Maaz Ansari Leaved the Room",
-    },
-    {
-      title: "1 January 2022",
-      cardTitle: "Room Entry",
-      cardSubtitle: "RollNo:52211211",
-      cardDetailedText: "Maaz Ansari Occupied this Room",
-    },
-  ];
+// const items = [
+//     {
+//       title: "24 March 2022",
+//       cardTitle: "Room Entry",
+//       cardSubtitle: "Rollno:52211123, 522145323",
+//       cardDetailedText: "Akshat Jain, Ritik Occupied this Room",
+//     },
+//     {
+//         title: "2 February 2022",
+//         cardTitle: "Room Leave",
+//         cardSubtitle: "Rollno:52211211",
+//         cardDetailedText: "Maaz Ansari Leaved the Room",
+//     },
+//     {
+//       title: "1 January 2022",
+//       cardTitle: "Room Entry",
+//       cardSubtitle: "RollNo:52211211",
+//       cardDetailedText: "Maaz Ansari Occupied this Room",
+//     },
+//   ];
 
 
 
@@ -94,20 +107,126 @@ const AllotRooms = ()=>{
     const [floorNo,setFloorNo] = useState('');
     const viewStudent = useSelector(state=>state.viewInfoStates.modalState);
     const [viewStudentInfoModalData,setViewInfoModal] = useState({});
- 
+    const [comment,setComment] = useState('');
+    const [loadHistory,setLoadHistory] = useState(false);
     useEffect(()=>{
         console.log(allotData);
     },[allotData]);
+
+    const [myItems,setMyItems] = useState([]);
+
+    useEffect(()=>{
+        console.log(myItems);
+    },[myItems])
+
+
+    const loadRoomHistory = async()=>{
+        setLoadHistory(false);
+        try{
+
+            const res = axios({
+                method:'GET',
+                url:`${import.meta.env.VITE_BASE_URL}/HA/getRoomTimeLine`,
+                params:{
+                    roomId:roomData.roomId
+                },
+                withCredentials:true                        
+            })
+            
+            res.then((data)=>{
+                    let makeMydata=[];
+
+                    console.log(data.data.roomData);
+                    data.data.roomData.forEach(d=>{
+
+                        if(d.checkOutDate){
+                            let checkout = new Date(d.checkOutDate);
+                            checkout = checkout.toLocaleDateString(
+                                'en-GB',
+                                {
+                                    year:'numeric',
+                                    month:'long',
+                                    day:'numeric'
+                                }
+                            );
+
+                            let checkin = new Date(d.createdAt);
+                            checkin = checkin.toLocaleDateString(
+                                'en-GB',
+                                {
+                                    year:'numeric',
+                                    month:'long',
+                                    day:'numeric'
+                                }
+                            );
+
+                            makeMydata.unshift({
+                                title:checkin,
+                                cardTitle:'Room Entry',
+                                cardSubtitle:`Rollno:${d.rollNo}`,
+                                cardDetailedText:`${d.student.firstName} ${d.student.lastName} Occupied this Room`
+                        }
+                        )
+                            makeMydata.unshift({
+                                title:checkout,
+                                cardTitle:'Room Leave',
+                                cardSubtitle:`Rollno:${d.rollNo}`,
+                                cardDetailedText:`${d.student.firstName} ${d.student.lastName} --  comment: ${d.comment}`
+                            })
+
+                        }else{
+                            let checkin = new Date(d.createdAt);
+                            checkin = checkin.toLocaleDateString(
+                                'en-GB',
+                                {
+                                    year:'numeric',
+                                    month:'long',
+                                    day:'numeric'
+                                }
+                            );
+                            makeMydata.unshift({
+                                title:checkin,
+                                cardTitle:'Room Entry',
+                                cardSubtitle:`Rollno:${d.rollNo}`,
+                                cardDetailedText:`${d.student.firstName} ${d.student.lastName} Occupied this Room`
+                        }
+                        )
+                    }
+                
+                })
+
+
+                setMyItems(makeMydata);
+                setLoadHistory(true);
+
+                })
+    
+    }catch(err){
+            console.log(err);
+        }   
+    }
+
+    useEffect(()=>{
+
+        if(viewModal){
+              loadRoomHistory();
+        }else{
+            setMyItems([]);
+        }
+
+    },[viewModal])
+
 
 
     const initialLoad = async ()=>{
         try{
             const res = await axios({
-                method: 'get',
+                method: 'GET',
                 url:import.meta.env.VITE_BASE_URL  + '/HA/getRoomsData',
                 params: {
-                    "hostelNo":"11",
-                }
+                    "hostelNo":"1",
+                },
+                withCredentials:true
               });
               setRowData(res.data.roomsData);
               setTotalRooms(res.data.totalRooms);
@@ -159,9 +278,10 @@ const roomAlloted = ()=>{
     ;(async ()=>{
         try{
           const res = await axios({
-                method:'post',
+                method:'POST',
                 url:import.meta.env.VITE_BASE_URL + '/HA/singleRoomAllot',
-                data:allotData
+                data:allotData,
+                withCredentials:true
             })
             roomSuccess();
             Dispatcher(setAllot(false));
@@ -192,12 +312,13 @@ console.log(e)
         try{
             const res = await axios({
                 url:import.meta.env.VITE_BASE_URL + '/HA/getRoomsData',
-                method:'get',
+                method:'GET',
                 params:{
                     page:e.selected+1,
                     roomNo:rooms,
                     floorNo:floorNo
-                }
+                },
+                withCredentials:true
             })
             if(res.data.roomsData!==undefined){
                 setRowData(res.data.roomsData);
@@ -234,11 +355,12 @@ const handleSearch = ()=>{
                 url:import.meta.env.VITE_BASE_URL + '/HA/getRoomsData',
                 method:'get',
                 params:{
-                    hostelNo:11,
+                    hostelNo:1,
                     roomNo:rooms,
-                    // status:status,
+                    status:status,
                     floorNo:floorNo                   
-                }
+                },
+                withCredentials:true
             })
 
             console.log(res.data)
@@ -262,10 +384,34 @@ const handleSearch = ()=>{
 }
 
 
-const removeStudentFromRoom = ()=>{
+const removeStudentFromRoom = async(d,roomData)=>{
+    console.log(d);
+    try{
+    
+        const res = await axios({
+            method:'POST',
+            url:`${import.meta.env.VITE_BASE_URL}/HA/singleRoomRemove`,
+            data:{
+                roomNo:roomData.roomNo,
+                rollNo:d.rollNo,
+                comment:comment
+            },
+            withCredentials:true
+        })
+        console.log(res);
+        initialLoad();
+        toast.success("Student Removed Successfully!", {
+            position: "top-center"
+            });
 
+    }catch(err){
+        console.log(err);
+
+    }
 
 }
+
+
 
 const handleStudentInfo =(rollNo)=>{
 
@@ -292,10 +438,11 @@ const handleStudentInfo =(rollNo)=>{
 
 
     return<>
-    <h1 className='text-3xl mt-16 md:mt-0 p-4 md:p-0'>Rooms Allotement</h1>
-    <div className={styles.container}>
+    <h1 className='text-3xl mt-16 md:mt-4 text-blue-600 p-8 md:p-8 text-center'>Rooms Allotement</h1>
+    <div className={styles.container + ' flex flex-col items-center'}>
 
-     <div className='min-w-[350px] p-4'>  
+<div className='flex flex-col md:flex-row'>
+     <div className='md:min-w-[350px] p-4'>  
     <Card>
     <CardHeader>
         <CardTitle>Rooms Status</CardTitle>
@@ -309,7 +456,7 @@ const handleStudentInfo =(rollNo)=>{
 
 
 {/* //Search query */}
-    <div className='mt-4 md:mt-0 md:p-0 p-4 min-w-[350px]'>
+    <div className='mt-4 md:mt-0 md:p-4 p-4 min-w-[350px]'>
         <Card>
         <CardHeader>
             <CardTitle>Search Queries</CardTitle>
@@ -331,6 +478,7 @@ const handleStudentInfo =(rollNo)=>{
                 <SelectItem value="Fully-Filled">Fully Filled</SelectItem>
                 <SelectItem value="Partially-Filled">Partially Filled</SelectItem>
                 <SelectItem value="vacant">Vacant</SelectItem>
+                <SelectItem value={null}>None</SelectItem>
             </SelectContent>
             </Select>
             </div>
@@ -350,6 +498,7 @@ const handleStudentInfo =(rollNo)=>{
                 <SelectItem value="6">6</SelectItem>
                 <SelectItem value="7">7</SelectItem>
                 <SelectItem value="8">8</SelectItem>
+                <SelectItem value={null}>None</SelectItem>
             </SelectContent>
             </Select>
             </div>
@@ -361,8 +510,9 @@ const handleStudentInfo =(rollNo)=>{
             </div>
         </Card>
         </div>
+        </div>
 
-        <div className={styles.tableArea+' mt-4 p-4 md:max-w-[800px]'}>
+        <div className={styles.tableArea+' mt-4 p-4 min-w-[300px] w-full md:min-w-[600px] md:max-w-[900px]'}>
                 {rowData===null?<TableLoader />
                 :<RoomTable data={rowData}/>}
             </div>
@@ -419,18 +569,45 @@ const handleStudentInfo =(rollNo)=>{
                                     <p><span className='font-bold'>Roll no: </span>{d.rollNo}</p>
                                     <p><span className='font-bold'>email: </span>{d.student.email}</p>
                                     <div className='flex gap-2'><Button onClick={()=>handleStudentInfo(d.rollNo)} text="View Details" />
-                                    <Button onClick={()=>removeStudentFromRoom(d)} className="bg-red-600 text-white border-0 hover:bg-red-500" text="Remove" /></div>
+                                    <Dialog>
+                                        <DialogTrigger>
+                                    <Button className="bg-red-600 text-white border-0 hover:bg-red-500" text="Remove" />
+                                    </DialogTrigger>
+                                    <DialogContent>
+                                        <DialogHeader>
+                                            <DialogTitle>Remove Student</DialogTitle>
+                                            <DialogDescription>Are you sure you want to remove this student from room?</DialogDescription>
+                                            <DialogDescription>Comment For this Transaction</DialogDescription>
+                                            </DialogHeader>
+                                            <div>
+                                                <Textarea onChange={(e)=>{setComment(e.currentTarget.value);}}/>
+                                            </div>
+                                            <DialogFooter>
+                                                <DialogTrigger>
+                                                <Button onClick={()=>{removeStudentFromRoom(d,roomData);Dispatcher(setView(false));document.body.style.overflowY='auto';}} className="bg-red-600 text-white border-0 hover:bg-red-500" text="Remove" />
+                                                <Button text="Cancel" />
+                                                </DialogTrigger>
+                                            </DialogFooter>                                         
+                                    </DialogContent>
+                                    </Dialog>
+                                    </div>
                                 </div>
                             </div>)}
                             </div>
                     <div className='mt-8 h-[400px] w-[600px]'>
                     <h1>Room's History</h1>
-                    <Chrono
-                        items={items}
+                    {loadHistory&&myItems.length!==0?<Chrono
+                        items={myItems}
                         mode="VERTICAL"
                         cardHeight={100}
                         mediaHeight={50}
-                        />
+                        fontSizes={{
+                            cardSubtitle: '0.85rem',
+                            cardText: '0.8rem',
+                            cardTitle: '1rem',
+                            title: '1rem',
+                          }}
+                        />:<p>No Rooms History</p>}
                     </div>
                         </div>                   
                     </div>
@@ -463,6 +640,7 @@ const handleStudentInfo =(rollNo)=>{
             activeLinkClassName="active-page"
       />
       <ToastContainer />
+      <div className='mt-4'></div>
     </div>
     </>
 }

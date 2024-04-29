@@ -5,12 +5,59 @@ import logoImage from '../../Assets/nit-logo.png'
 import { IoArrowBack } from "react-icons/io5";
 import { IconContext } from "react-icons";
 import { useNavigate } from 'react-router-dom';
+import {useState} from 'react';
+import axios from 'axios';
+import { ToastContainer,toast } from 'react-toastify';
 
 const Studentlogin = ()=>{
 
+    const [data, setData] = useState({ email: null, password: null })
+    
+    const Navigator = useNavigate();
+    const onSetMyData = (key, value) => {
+        setData((prev) => {
+            return { ...prev, [key]: value }
+        }
+        )
+
+        console.log(data);
+    }
     
 
-    const Navigator = useNavigate();
+    const onSubmit = async (e) => {
+        
+        e.preventDefault();
+        try {
+            const res = await axios({
+                method: 'post',
+                url: import.meta.env.VITE_BASE_URL + '/student/login',
+                data: data,
+                withCredentials: true
+            })
+            console.log(res);
+            if (res.data.role === 'Student') {
+                localStorage.setItem('role', 'student');
+                Navigator('/studentDashboard/main/home');
+            }
+        } catch (err) {
+            console.log(err);
+            toast.error('Invalid Credentials',{
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            
+            });
+        }
+    }
+
+
+
+
+
 
     return <>
     <div className={styles.container}>
@@ -35,9 +82,19 @@ const Studentlogin = ()=>{
             </div>
             <div className={styles.inputSection}>
             <div className={styles.inputBoxes}>
-                <Textinput style={{minWidth:'300px'}} label="Email"/>
-                <Textinput type='password' style={{marginTop:'25px',minWidth:'300px'}} label="Password"/>
-                <Button variant="contained" onClick={()=>{Navigator('/StudentDashboard')}} style={{marginTop:'25px',minWidth:'300px'}} text="login"/>
+                <form onSubmit={onSubmit}>
+                <Textinput onChange={(e)=>{
+                    onSetMyData('email',e.target.value);
+                }} style={{minWidth:'300px'}} label="Email"/>
+                <Textinput 
+                onChange={
+                    (e)=>{
+                        onSetMyData('password',e.target.value);
+                    }
+                }
+                type='password' style={{marginTop:'25px',minWidth:'300px'}} label="Password"/>
+                <Button variant="contained" type="submit" className={`bg-indigo-500`} style={{marginTop:'25px',minWidth:'300px'}} text="login"/>
+                </form>
                 <p style={{marginTop:'10px',fontSize:'14px'}}>Forgot Password?</p>
                 <div style={{display:'flex', flexDirection: 'row'}}>
                 <p style={{marginTop:'10px',marginRight:'10px',fontSize:'14px'}}>Don't Have an Account?</p>
@@ -49,6 +106,7 @@ const Studentlogin = ()=>{
             </div>
         </div>
     </div>
+    <ToastContainer />
 </>
     
 

@@ -7,6 +7,9 @@ Font.register({
       { src: 'http://fonts.gstatic.com/s/roboto/v30/KFOlCnqEu92Fr1MmWUlvAx05IsDqlA.ttf', fontWeight: 700 },
     ]
   });
+
+  import { PiFilePdfDuotone } from "react-icons/pi";
+
   
 
   const PdfDownload = ({myData})=>{
@@ -96,7 +99,7 @@ const styles = StyleSheet.create({
 
     return<>
         <a href={instance.url} download={`${myData.profile.rollNo}.pdf`}>
-        <Button className="bg-blue-600 hover:bg-blue-500" size="sm">Download</Button>
+        <Button className="bg-purple-600 hover:bg-purple-500" size="sm"><PiFilePdfDuotone /></Button>
     </a>
     </>
   

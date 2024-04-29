@@ -1,24 +1,72 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import students from "../../Assets/students.svg"
+import { useNavigate } from "react-router-dom";
+import {useForm, Controller} from 'react-hook-form'
+import { DevTool } from "@hookform/devtools";
+import axios from 'axios';
+import { Button } from "@/components/ui/button";
+import { ToastContainer,toast } from "react-toastify";
 const StudentSignUp = () => {
   const [name, setName] = useState("");
   const [Roll, setRoll] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const Navigator = useNavigate();
+  const [step, setStep] = useState(1);
+  
+  const {register,handleSubmit,reset, watch,formState:{errors},control} = useForm({
+    mode: 'onBlur',
+    defaultValues:{
+      firstName: '',
+      lastName: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+      rollNo: ''
+    }
+  });
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
 
-    console.log("Name entered:", name);
-    console.log("Mail entered:", email);
-    console.log("Roll entered:", Roll);
-    console.log("Password entered:", password);
+
+
+  const onSubmit = async (data) => {
+
+    try{
+      const res = await axios({
+        method: 'post',
+        url: import.meta.env.VITE_BASE_URL + '/student/studentReg',
+        data: 
+        {
+          rollNo: data.rollNo,
+          email: data.email,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          password: data.password
+        },
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        withCredentials: true
+      })
+      console.log(res);
+      if(res.data.success === 'Student Register into db Successfully'){
+        setStep(2);
+      }
+    }
+    catch(err){
+      console.log(err);
+      if(err.response.status === 400){
+        toast.error('User Already Existed');
+      }
+    }
+
   };
 
 
   return (
-    <section
-      className="bg-blue-900 min-h-screen h-full
+    <>
+    {step===1?<section
+      className="bg-indigo-600 min-h-screen h-full
       flex items-center justify-center"
 
     >
@@ -29,52 +77,91 @@ const StudentSignUp = () => {
         </div>
 
         <div className="flex-1 px-8">
-          <h2 className="font-bold text-2xl mt-6 mx-2">Request Your Account</h2>
+          <h2 className="font-bold text-2xl mt-2 mx-2">Request Your Account</h2>
           <form
             className="flex flex-col gap-1"
             action="#"
-            onSubmit={handleSubmit}
+            onSubmit={handleSubmit(onSubmit)}
             method="POST"
           >
-            <p className="mt-6 text-xs font-semibold">Full name*</p>
+            <p className="mt-6 text-xs font-semibold">First Name*</p>
             <input
               className="p-2 rounded-lg border mt-0 shadow-sm"
-              placeholder="Enter full name"
+              placeholder="Enter First name"
               type="text"
-              onChange={(e) => setName(e.target.value)}
+              name="firstName"
+              {...register("firstName",
+              {required:{value:true,message:'First Name Required'}})}
             ></input>
+            <p className="text-red-600 text-xs">{errors.firstName?.message}</p>
+            <p className="mt-2 text-xs font-semibold">Last Name*</p>
+            <input
+              className="p-2 rounded-lg border mt-0 shadow-sm"
+              placeholder="Enter Last name"
+              type="text"
+              name="lastName"
+              {...register("lastName",
+              {required:{value:true,message:'Last Name Required'}})}
+            ></input>
+            <p className="text-red-600 text-xs">{errors.lastName?.message}</p>
             <p className="mt-2 text-xs font-semibold ">Email*</p>
             <input
               className="shadow-sm p-2 rounded-lg border mt-0 "
               placeholder="Enter your E-Mail"
               type="text"
-              onChange={(e) => setEmail(e.target.value)}
+              name="email"
+              {...register("email",
+              {required:{value:true,message:'Email Required'},
+              pattern:{value:/^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/i,message:'Invalid Email'}})}
             ></input>
-
+            <p className="text-red-600 text-xs">{errors.email?.message}</p>
+          {/* only numerical value for roll no */}
             <p className="mt-2 text-xs font-semibold ">Roll Number*</p>
             <input
               className="shadow-sm p-2 rounded-lg border mt-0 "
               placeholder="Enter your Roll No."
               type="text"
-              onChange={(e) => setRoll(e.target.value)}
+              name="rollNo"
+              {...register("rollNo",{required:{value:true,
+                message:'Roll No Required'},pattern:{value:/^[0-9]+$/i,
+                message:'Only Numbers Allowed',},minLength:{value:4,message:'Enter a valid Roll No'},
+                maxLength:{value:12,message:'Enter a valid Roll No'}})}
             ></input>
-
+            <p className="text-red-600 text-xs">{errors.rollNo?.message}</p>
             <p className="mt-2 text-xs font-semibold">Password*</p>
             <div class="Relative">
               <input
                 className="shadow-sm p-2 rounded-lg border mt-0 w-full"
                 placeholder="Enter password"
                 type="password"
-                onChange={(e) => setPassword(e.target.value)}
+                name="password"
+                {...register("password",
+                {required:{value:true,message:'Password Required'},
+                minLength:{value:6,message:'Password length must be greater than 6'}})}
               ></input>
             </div>
-
+            <p className="text-red-600 text-xs">{errors.password?.message}</p>
+            <p className="mt-2 text-xs font-semibold">Confirm Password*</p>
+            <div class="Relative">
+              <input
+                className="shadow-sm p-2 rounded-lg border mt-0 w-full"
+                placeholder="Enter password"
+                type="password"
+                name="confirmPassword"
+                {...register("confirmPassword",
+                {required:{value:true,message:'Password Required'},
+                minLength:{value:6,message:'Password length must be greater than 6'},
+                validate: value => value === watch('password') || "Passwords do not match"
+              })}
+              ></input>
+            </div>
+            <p className="text-red-600 text-xs">{errors.confirmPassword?.message}</p>
             <button
               type="submit"
-              className="p-2 my-4 bg-purple-600 rounded-lg text-white hover:bg-purple-500 focus:outline-none focus:ring focus:border-blue-300 active:transform active:scale-95 transition-all duration-150 shadow-2xl "
+              className="p-2 my-4 bg-indigo-600 rounded-lg text-white hover:bg-indigo-500 focus:outline-none focus:ring focus:border-blue-300 active:transform active:scale-95 transition-all duration-150 shadow-2xl "
             >
               {" "}
-              Request Account{" "}
+              Sign Up{" "}
             </button>
           </form>
 
@@ -114,22 +201,61 @@ const StudentSignUp = () => {
                 d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"
               ></path>
             </svg>
-            Sign in with Google
+            Sign Up with Google
           </button>
           <p className="items-centere flex justify-center text-sm mt-2">
-            Already have an account?{" "}
-            <a
-              className="active:transform text-blue-800 font-semibold mx-1 hover:underline"
-              href=""
-            >
-              {" "}
-              Login
-            </a>{" "}
+            Already have an account?
+            <span onClick={()=>{Navigator('/studentLogin')}} className="text-indigo-950 font-semibold underline hover:text-indigo-600 cursor-pointer">  Login</span>
           </p>
         </div>
       </div>
-    </section>
+      <DevTool control={control} />
+      <ToastContainer />
+    </section>:null}
+
+
+    {step===2?<div className="flex min-h-[100dvh] w-full items-center justify-center bg-gray-100 px-4 dark:bg-gray-950">
+      <div className="mx-auto w-full max-w-md space-y-6 rounded-lg bg-white p-6 shadow-lg dark:bg-gray-900">
+        <div className="flex flex-col items-center space-y-4 text-center">
+          <CheckCircleIcon className="h-12 w-12 text-green-500" />
+          <div className="space-y-2">
+            <h2 className="text-2xl font-bold">Account Created!</h2>
+            <p className="text-gray-500 dark:text-gray-400">
+              Congratulations, your account has been successfully created.
+            </p>
+          </div>
+          <Button onClick={()=>{Navigator('/studentLogin')}} className="bg-indigo-700 hover:bg-indigo-500">
+            Go to Login
+            </Button>
+        </div>
+      </div>
+    </div>:null}
+
+
+    </>
   );
 };
+
+function CheckCircleIcon(props) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+      <polyline points="22 4 12 14.01 9 11.01" />
+    </svg>
+  )
+}
+
+
 
 export default StudentSignUp;

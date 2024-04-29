@@ -48,11 +48,15 @@ useEffect(() => {
 
 const handleChange = (e)=>{
   if(queryItem === 'firstName'){
-    Dispatcher(setSearchQuery({...previousQuery,firstName:e.target.value}))
+    Dispatcher(setSearchQuery({...previousQuery,firstName:e.target.value,lastName:'',rollNo:''}))
   }else if(queryItem === 'lastName'){
     Dispatcher(setSearchQuery({...previousQuery,firstName:'',lastName:e.target.value,rollNo:''}))
   }else if(queryItem ==='rollNo'){
     Dispatcher(setSearchQuery({...previousQuery,firstName:'',lastName:'',rollNo:e.target.value}))
+  }else if(queryItem ==='fullname'){
+    const myFirstName = e.target.value.split(' ')[0];
+    const myLastName = e.target.value.split(' ').slice(1).join(' ');
+    Dispatcher(setSearchQuery({...previousQuery,firstName:myFirstName,lastName:myLastName,rollNo:''}))
   }
 
   console.log(previousQuery);
@@ -69,6 +73,7 @@ const handleChange = (e)=>{
   <SelectContent>
     <SelectItem value="firstName">first name</SelectItem>
     <SelectItem value="lastName">last Name</SelectItem>
+    <SelectItem value="fullname">full name</SelectItem>
     <SelectItem value="rollNo">Roll No</SelectItem>
   </SelectContent>
 </Select>

@@ -9,11 +9,32 @@ module.exports = {
      * Example:
      */
       await queryInterface.bulkInsert('users', [{
-        email:"superadmin@nitkkr.ac.in",
-        password:"asdfghjkl",
+        email:"52212203@nitkkr.ac.in",
+        // password:"hmssecurelogin-100",
+        password:"$2a$10$drpkO2ZJrf2klH9AaLWa3OwCtvbehIwwRBnEfqG3bEasNYugn3Zlu",
         role:"SuperAdmin",
-        last_updated_by:'superadmin@nitkkr.ac.in',createdAt: new Date(),last_updated_at:new Date()
-      }], {});
+        createdAt: new Date(),
+        last_updated_at:new Date(),
+        deletedAt:null
+      },{
+        email:"52212206@nitkkr.ac.in",
+        // password:"asdfghjkl",
+        password:"$2a$10$9JulqYDSuPv8qzb8mAEB6eBLYRjKzX/3uA4zzTi/Pzw8v0S69eJ96",
+        role:"SuperAdmin",
+        createdAt: new Date(),
+        last_updated_at:new Date(),
+        deletedAt:null
+      },
+      {
+        email:"52211211@nitkkr.ac.in",
+        // password:"asdfghjkl",
+        password:"$2a$10$M08E9R.fmulB5.2FR5FIy.8AKKLqPj9zaOIKSHdz3LzaIavqfalDy",
+        role:"SuperAdmin",
+        createdAt: new Date(),
+        last_updated_at:new Date(),
+        deletedAt:null
+      }
+    ], {});
   },
 
   async down (queryInterface, Sequelize) {

@@ -10,9 +10,14 @@ import formdataConfig from '../../../../config/formdata';
 import axios from 'axios';
 import TableLoader from '../../../../components/TableLoader/TableLoader';
 import StudentTable from '../../../../components/Tables/StudentsTable/StudentTable';
-import Accordion from '../../../../components/Accordion/Accordion';
 import { FaFileCsv } from "react-icons/fa6";
 import FileCheckLoading from '../../../../components/Loadingpage/FileCheckLoading';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 
 const RoomsUpload = ()=>{
 
@@ -151,7 +156,7 @@ const handleDragEnter = (e) => {
     }
 
     return<>
-        <div className={styles.container+' mt-8'}>
+        <div className={styles.container+' mt-8 flex flex-col justify-center items-center'}>
             <div className={styles.Header}><h1 className='text-3xl'>Allocate Rooms</h1></div>
             <div className={styles.uploadContainer}>
 
@@ -174,8 +179,27 @@ const handleDragEnter = (e) => {
                       <Button disable={false} onClick={uploadFile}  className="mt-4" variant="contained" text="Upload"/>
                     </div></>:null}
                 </div>
-                <div className={styles.uploadInfoAccord}>
-                  <Accordion accordData={accordData}/>
+                <div className={styles.uploadInfoAccord+' w-[700px]'}>
+                  {/* <Accordion accordData={accordData}/> */}
+                  <Accordion type="single" collapsible>
+                  <AccordionItem value="item-1">
+                    <AccordionTrigger>File Upload Instructions</AccordionTrigger>
+                    <AccordionContent>
+                      <ul>
+                        <li>Data Must be Uploaded in CSV Format.</li>
+                        <li>Must Match The Fields in Demo File</li>
+                        <li>Unique Data can only be uploaded once, But it can be modified after reuploading.</li>
+                        <li>Required Attributes are roomNo,block,floorNo,maxOccupancy,hostelNo</li>
+                      </ul>
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem value="item-2">
+                    <AccordionTrigger>Demo CSV File</AccordionTrigger>
+                    <AccordionContent>
+                      <Button text="Download" />
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
                 </div>
 
                 {/* <TableLoader /> */}

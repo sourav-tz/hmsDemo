@@ -11,7 +11,15 @@ const AdminRegister = require('../../controllers/superAdmin/Manage_Admins/AdminR
 const { validateUser, AdminRegAuth } = require('../../middlewares/AdminRegAuth');
 const { csvToJsonConverter } = require('../../middlewares/csvToJsonConverter');
 const addRoomsToHostels = require('../../controllers/superAdmin/Manage_Hostels/addRoomsToHostels');
+const {deleteAdmin} = require('../../controllers/superAdmin/Manage_Admins/index.js');
 const auth = require('../../middlewares/auth');
+const Login = require('../../controllers/Login/Login');
+const {verifyOldPassword} = require('../../controllers/superAdmin/Settings');
+const {updatePassword} = require('../../controllers/superAdmin/Settings');
+const {getAdminsAgainstHostel} = require('../../controllers/superAdmin/Manage_Hostels/Hostels.js');
+const superAdminLogin = require('../../controllers/Login/superAdminLogin.js');
+
+const superAdminLoginToken = require('../../controllers/Login/superAdminLoginToken.js');
 
 
 var storage = multer.diskStorage({
@@ -29,42 +37,51 @@ router.get('/', (req, res) => {
     return res.send('success')
 })
 
-router.get('/getCourses', getCourses);
-router.post('/addCourse', addCourse);
-router.delete('/removeCourse', removeCourse);
-router.post('/enableCourse', enableCourse);
-router.patch('/updateCourse', updateCourse);
+router.post('/superlogin', superAdminLogin);
+router.post('/superAdminLoginToken',superAdminLoginToken)
 
-router.get('/getHostels', getHostels);
-router.post('/addHostel', addHostel);
-router.delete('/removeHostel', removeHostel);
-router.post('/enableHostel', enableHostel);
-router.patch('/updateHostel', updateHostel);
+
+
+router.get('/getCourses',auth, getCourses);
+router.post('/addCourse',auth, addCourse);
+router.delete('/removeCourse',auth, removeCourse);
+router.post('/enableCourse',auth, enableCourse);
+router.patch('/updateCourse',auth, updateCourse);
+
+router.get('/getHostels',auth, getHostels);
+router.post('/addHostel',auth, addHostel);
+router.delete('/removeHostel',auth, removeHostel);
+router.post('/enableHostel',auth, enableHostel);
+router.patch('/updateHostel',auth, updateHostel);
 
 // Admin registration
-router.post('/adminReg', AdminRegister)
+router.post('/adminReg',auth, AdminRegister)
 
 
-// Rooms Api's
-router.post('/bulkCreate', upload.single('file'), csvToJsonConverter, addRoomsToHostels)  //all hostels 
-//TODO  in roomtype table add,update,remove
-router.get('/getRoomTypes', getRoomTypes);
-router.post('/addRoomType', addRoomType);
-router.delete('/removeRoomType', deleteRoomType);
+// RoomsTypes Api's
+router.post('/bulkCreate',auth, upload.single('file'), csvToJsonConverter, addRoomsToHostels)  //add rooms to hostels 
+router.get('/getRoomTypes',auth, getRoomTypes);
+router.post('/addRoomType',auth, addRoomType);
+router.delete('/removeRoomType',auth, deleteRoomType);
 
 //TODO new single room add in rooms table add,remove                    admin will do update(occupancy,roomtype)
 //*bulk,addremove single student ,get room data 
 //Todo: timeline , single room add del
-//Todo manage admin [revoke login ,give login again , change hostel ]
-router.get('/getAdmins',getAdmins);
-router.post('/giveLoginAccess',giveLoginAccess);
-router.post('/revokeLoginAcess',revokeLoginAcess);
-router.post('/changeHostel',changeHostel);
+router.get('/getAdmins',auth,getAdmins);
+router.post('/giveLoginAccess',auth,giveLoginAccess);
+
+router.post('/revokeLoginAccess',auth,revokeLoginAcess);
+router.post('/changeHostel',auth,changeHostel);
+router.post('/deleteAdmin',auth,deleteAdmin);
+router.post('/getAdminsAgainstHostel',auth,getAdminsAgainstHostel);
+
 //Todo admin timeline
 
 
 
 //todo forgot pass, change password
+router.post('/verifyOldPassword',auth,verifyOldPassword);
+router.post('/updatePassword',auth,updatePassword);
 
 
 

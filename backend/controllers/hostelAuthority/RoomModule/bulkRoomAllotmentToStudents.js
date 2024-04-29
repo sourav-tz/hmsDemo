@@ -4,7 +4,10 @@ const db = require("../../../models/index")
 const bulkRoomAllotmentToStudent = async (req, res) => {
 
     try {
-        const studentsData = req.body; // Array of student data
+
+        const studentsData = req.body.data; // Array of student data
+        const emailAdmin=req.body.email;
+
         const allotments = [];
 
         for (const student of studentsData) {
@@ -54,7 +57,10 @@ const bulkRoomAllotmentToStudent = async (req, res) => {
                         rollNo: rollNo,
                         hostelNo: hostelNo,
                         comment: "Room Alloted Successfully",
-                        lastUpdatedBy: 'Adii'
+
+
+                        lastUpdatedBy: emailAdmin,
+
                     }, { transaction: transaction, validate: true });
 
                     await db.students.update({ roomId: roomId, hostelNo: hostelNo }, {

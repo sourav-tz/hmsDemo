@@ -1,5 +1,7 @@
 const db = require('../../../models/index')
 const bcrypt = require('bcrypt')
+const nodeMailer = require('nodemailer')
+const mailSender = require('../../../utils/mailSender')
 
 const AdminRegistration = async (req, res) => {
 
@@ -22,6 +24,17 @@ const AdminRegistration = async (req, res) => {
 
             await transaction.commit();
 
+
+            let title = 'Hostel Authority Registration || NIT KURUKSHETRA'
+
+           
+
+            let body = `Dear ${name},\n\nYour password is: ${password} \n\nYou Have been registered as Hostel-Authority of Hostel No:
+             ${hostelNo}.\nPlease change your password after login.
+            \nThank you for registering with us.\n\nRegards,\nNIT Hostel Management System`
+
+            await mailSender(email,title,body)
+
             res.status(200).json({ success: 'Hostel-Authority(Member) Register into db Successfully' })
         } catch (error) {
             // Rollback the transaction on error
@@ -32,8 +45,14 @@ const AdminRegistration = async (req, res) => {
 
 
     } catch (error) {
-        res.status(400).json({ error: error }) 
+        console.log(error);
+        res.status(500).json({ error: error }) 
 
     }
 }
+
+
+
+
+
 module.exports = AdminRegistration; 

@@ -2,21 +2,16 @@ const { log } = require('console');
 const jwt = require('jsonwebtoken');
 require("dotenv").config();
 
-const AdminLogOut = async (req, res) => {
+const LogOut = async (req, res) => {
     try {
-        // console.log(req.body.email);
+        
         const token = req.cookies.hostelAccessToken;
 
 
         if (!token) {
             return res.status(400).json('cookie expired you can log out');
         }
-        // const prevToken = cookies.split("=")[1];
-        // // console.log(String(prevToken));
-
-        // if (!prevToken) {
-        //     return res.status(400).json('could not find prevtoken ,please login again');
-        // }
+       
 
         jwt.verify(
             token,
@@ -27,7 +22,7 @@ const AdminLogOut = async (req, res) => {
                 }
 
                 res.clearCookie('hostelAccessToken');
-                // req.cookies[`${user.email}`] = "";
+                
                 console.log("logged out successfully");
                 return res.status(200).json({ "message": "Sucessfully logged out" });
             })
@@ -38,4 +33,4 @@ const AdminLogOut = async (req, res) => {
     }
 };
 
-module.exports = AdminLogOut;
+module.exports = LogOut;

@@ -11,6 +11,7 @@ import ReactPaginate from 'react-paginate';
 import { setSearchQuery } from '../../../../Store/Reducers/viewInfoSlice';
 import { useNavigate } from 'react-router-dom';
 import './Pagination.css';
+import Sidebar from '../../../../components/Sidebar/Sidebar';
 
 import {
   Select,
@@ -251,10 +252,9 @@ const handleCourse = (e)=>{
       }
 
     return <>
-
-        <div className="w-[80%] flex-col justify-center">
-        <h1 className='text-3xl mb-4'>Search Students Records</h1>
-        <div className="w-[400px] md:w-[700px] rounded-md p-12 flex gap-2 flex-wrap border-[1px] border-gray-200 shadow-sm">
+        <div className="w-full flex flex-col items-center justify-center mt-16 md:mt-0 p-4">
+        <h1 className='text-3xl p-4 mb-4 text-blue-600'>Search Students Records</h1>
+        <div className="w-full md:w-[700px] rounded-md p-12 flex gap-2 flex-1 flex-wrap border-[1px] border-gray-200 shadow-sm">
             <ComplexSearch />
             <div>
             <p>State:</p>
@@ -301,9 +301,9 @@ const handleCourse = (e)=>{
             </div>
         </div>
         </div>
-        <div className={styles.tableArea}>
+        <div className={' w-full flex justify-center items-center flex-col md:p-4 '}>
         {tableLoading?<TableLoader />:null}
-        {tableLoading===false?<ViewInfoTable data={data} />:null}
+        {tableLoading===false?<div className='w-full md:min-w-[800px] md:max-w-[900px]'><ViewInfoTable data={data} /></div>:null}
         <ReactPaginate
         breakLabel="..."
         nextLabel="next >"

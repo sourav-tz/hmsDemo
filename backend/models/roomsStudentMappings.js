@@ -1,8 +1,13 @@
 module.exports = (sequelize, dataTypes) => {
 
-    const roomsStudentMapping = sequelize.define('roomsStudentMapping', {
-        roomId: {
+    const roomsStudentMappings = sequelize.define('roomsStudentMappings', {
+       id:{
             type: dataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true,
+       },
+        roomId: {
+            type: dataTypes.INTEGER
         },
         rollNo: {
             type: dataTypes.INTEGER,
@@ -14,24 +19,19 @@ module.exports = (sequelize, dataTypes) => {
             type: dataTypes.STRING,
         },
         //?checkin date == created at date
-        lastUpdatedBy: {
-            type: dataTypes.STRING,
-            allowNull: false,
-            field: 'last_updated_by'
-        },
 
     }, {
         updatedAt: 'last_updated_at',
         paranoid: true,
         deletedAt: 'checkOutDate'
     })
-    roomsStudentMapping.associate = (models) => {
-        roomsStudentMapping.belongsTo(models.rooms, {
+    roomsStudentMappings.associate = (models) => {
+        roomsStudentMappings.belongsTo(models.rooms, {
             foreignKey: {
                 name: 'roomId'
             }
         });
-        roomsStudentMapping.belongsTo(models.students, {
+        roomsStudentMappings.belongsTo(models.students, {
             foreignKey: {
                 name: 'rollNo'
             }
@@ -39,5 +39,5 @@ module.exports = (sequelize, dataTypes) => {
     }
 
 
-    return roomsStudentMapping;
+    return roomsStudentMappings;
 }

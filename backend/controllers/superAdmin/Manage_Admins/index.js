@@ -1,6 +1,6 @@
 const db = require('../../../models/index')
 
-//Todo manage admin [revoke login , give login again ,change hostel]
+//* manage admin [revoke login , give login again ,change hostel]
 //* provide all admins (get request for table)
 //*  login acess ke lie enable disable 
 //* change hostel (for now just update in HA table but we need to store transaction history)
@@ -20,7 +20,7 @@ const getAdmins=async (req, res) => {
     const result=data.map((key)=>{
       return ((key.dataValues.deletedAt)?{...(key.dataValues.hostelauthority.dataValues),active:false}:{...(key.dataValues.hostelauthority.dataValues),active:true})
     });
-    return res.json(result);
+    return res.status(200).json(result);
   } catch (error) {
     return res.status(500).json({message:"Internal Server Error in getAdmins Controller"});
   }
@@ -29,11 +29,14 @@ const getAdmins=async (req, res) => {
 
 const revokeLoginAcess = async (req,res)=>{
     try {
-        const {email} = req.body;
+        const {emailOfHA} = req.body;
         const deleted=await db.users.destroy({
-            where:{email:email}
+            where:{email:emailOfHA}
         });
-      return res.json({data:deleted});
+        if(!deleted){
+          return res.status(400).json({message:"Email not found or allready revoked access"});
+        }
+      return res.status(200).json({message:"Successfull revoked access"});
       } catch (error) {
         return res.status(500).json({message:"Internal Server Error in RevokeLoginAccess Controller"});
       }
@@ -42,11 +45,14 @@ const revokeLoginAcess = async (req,res)=>{
 
 const giveLoginAccess = async (req,res)=>{
     try {
-        const {email} = req.body;
+        const {emailOfHA} = req.body;
         const enabled=await db.users.restore({
-            where:{email:email}
+            where:{email:emailOfHA}
         });
-      return res.json({data:enabled});
+      if(!enabled){
+        return res.status(400).json({message:"Email not found or allread granted access"});
+      }
+      return res.status(200).json({message:"successfully granted login access"});
       } catch (error) {
         return res.status(500).json({message:"Internal Server Error in GiveLoginAccess Controller"});
       }
@@ -56,16 +62,45 @@ const giveLoginAccess = async (req,res)=>{
 
 const changeHostel=async (req,res)=>{
     try {
-        const {email,hostelNo} = req.body;
-        await db.hostelauthoritys.update({hostelNo},{
-            where:{email}
+        const {emailOfHA,newHostelNo} = req.body;
+        const isHostelPresent=await db.hostels.findOne({
+          where:{
+            hostelNo:newHostelNo
+          }
         });
-        //Todo add transaction history feature for timeline
-      return res.json({message:`Hostel changed to ${hostelNo}`});
+        if(!isHostelPresent) {
+          return res.status(400).json({message:"Given Hostel Not Found"});
+        }
+        await db.hostelauthoritys.update({hostelNo:newHostelNo},{
+            where:{email:emailOfHA}
+        });
+      return res.status(200).json({message:`Hostel changed to ${newHostelNo}`});
       } catch (error) {
+        console.log(error);
         return res.status(500).json({message:"Internal Server Error in ChangeHostel Controller"});
       }
 }
+
+const deleteAdmin=async (req,res)=>{
+  const transaction=await db.sequelize.transaction();
+  try{
+    const {email}=req.body;
+    const deleted=await db.users.destroy({
+      where:{email:email},
+      force:true,
+    });
+
+    if(!deleted){
+      return res.status(400).json({message:"Email not found or allready deleted"});
+    }
+    return res.status(200).json({message:"Successfully deleted"});
+  }
+  catch(error){
+    return res.status(500).json({message:"Internal Server Error in DeleteAdmin Controller"});
+  }
+}
+
+
 module.exports={
-  getAdmins,revokeLoginAcess,giveLoginAccess,changeHostel
+  getAdmins,revokeLoginAcess,giveLoginAccess,changeHostel,deleteAdmin
 }

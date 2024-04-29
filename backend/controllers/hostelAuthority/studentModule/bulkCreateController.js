@@ -27,8 +27,7 @@ async function uploadStudents(data){
       await db.users.create({
         email: data.email,
         password: securePassword,
-        role: 'student',
-        lastUpdatedBy: 'your_last_updated_by_value',
+        role: 'Student',
       },{transaction,validate:true});
 
       await db.students.create({
@@ -37,7 +36,6 @@ async function uploadStudents(data){
               lastName: data.lastName,
               year: data.year,
               email: data.email,
-              lastUpdatedBy: 'your_last_updated_by_value',
               courseId: data.courseId,
               hostelNo:data.hostelNo,
        }, { transaction, validate: true });
@@ -45,7 +43,6 @@ async function uploadStudents(data){
        await db.profiles.create({
         ...data,
         rollNo: data.rollNo,
-        lastUpdatedBy: 'your_last_updated_by_value',
        },{transaction,validate: true});
 
        await db.bankdetails.create({
@@ -54,7 +51,6 @@ async function uploadStudents(data){
               bankName: data.bankName,
               accNumber: data.accNumber,
               IFSC: data.IFSC,
-              lastUpdatedBy: 'your_last_updated_by_value',
        },{transaction,validate: true});
 
       await transaction.commit();
@@ -71,7 +67,12 @@ async function uploadStudents(data){
 }
 function validateJsonData(jsonData, requiredAttributes) {
   const item = jsonData[0];
-  const jsonKeys = Object.keys(item);
+  let jsonKeys = Object.keys(item);
+  jsonKeys = jsonKeys.slice(0, requiredAttributes.length);
+  console.log(jsonKeys);
+  console.log(jsonKeys.length);
+  console.log(' '+requiredAttributes.length);
+    // Convert the requiredAttributes array to a set
   const attributeSet = new Set(requiredAttributes);
 
     // Check if the sizes of the sets are equal
@@ -91,12 +92,12 @@ function validateJsonData(jsonData, requiredAttributes) {
 exports.bulkCreateController = async (req, res) => {
     try {
       //? get json data from body
-        const jsonObj = req.body;
+        const jsonObj = req.body.data;
         const requiredAttributes = ["rollNo","firstName","lastName","year","email",
                                   "bloodGroup","identificationMark","gender","pEmail","subAddress",
                                   "city","state","pinCode","contactNumber","secondaryContact","fatherName",
                                   "fatherContact","fatherOccupation","motherName","motherContact","motherOccupation",
-                                   "dob","addharNumber","accHolderName","bankName","accNumber","IFSC"];
+                                   "dob","addharNumber","accHolderName","bankName","accNumber","IFSC","courseId","hostelNo","roomId"];
 
         // Validate JSON data
         validateJsonData(jsonObj, requiredAttributes);
@@ -110,6 +111,8 @@ exports.bulkCreateController = async (req, res) => {
         finalWithErrors=[...duplicates];
 
         //? get all students data from db
+        //?here we will no do hostel wize for case if students reg. by other hostel 
+        //?he will be req. again so check for whole db
         const alldb= await db.students.findAll({
           attributes: ['rollNo', 'email']
         });
@@ -130,17 +133,6 @@ exports.bulkCreateController = async (req, res) => {
 
          //*transaction
          try {
-          // for (const entry of inputData) {
-          //   const result = await uploadStudents(
-          //     entry);
-      
-          //   // Collect the result of each transaction
-          //   if(result.message =="success"){
-          //     theseEnteredInDB.push(result);
-          //   }else{
-          //     finalWithErrors.push(result);
-          //   }
-          // }
           const results = await Promise.all(
             inputData.map((entry) => uploadStudents(entry))
           );
@@ -156,8 +148,8 @@ exports.bulkCreateController = async (req, res) => {
         } catch (error) {
           console.error('Error during bulk upload:', error.message);
         }
-        return res.json([theseEnteredInDB,finalWithErrors]);
+        return res.status(200).json([theseEnteredInDB,finalWithErrors]);
     } catch (err) {
-        res.json(err + "");
+        res.status(500).json(err + "");
     }
   }

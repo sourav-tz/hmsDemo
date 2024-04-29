@@ -3,13 +3,14 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
 
-const AdminLogin = async (req, res) => {
+
+const Login = async (req, res) => {
 
     try {
         const { email, password } = req.body;
-
+ 
         const user = await db.users.findOne({ where: { email: email } });
-        // console.log(user);
+        console.log(user);
         if (!user) return res.status(404).json({ error: `User doesn't exists` })
 
         const isMatch = await bcrypt.compare(password, user.password);
@@ -17,14 +18,23 @@ const AdminLogin = async (req, res) => {
         if (isMatch) {
 
             let accessToken;
-            const hostelUser = await db.hostelauthoritys.findOne({ where: { email: email } });
+            let UserData ;
+
+            if(user.role === 'Student'){
+                UserData  = await db.students.findOne({ where: {email: email}})
+            }else if(user.role === 'Hostel-Authority'){
+
+                UserData= await db.hostelauthoritys.findOne({ where: { email: email } });
+            }
+          
+            console.log("UserData in login controller", UserData);
 
             try {
-                accessToken = jwt.sign({ email: email, hostelNo: hostelUser.hostelNo, role: user.role },
+                accessToken = jwt.sign({ email: email, hostelNo: UserData.hostelNo, role: user.role },
                     process.env.JWT_SECRET_KEY
                 );
 
-            } catch (e) {
+            } catch (error) {
                 console.log("the error occurred generate auth token function" + error);
                 return res.status(400).json("the error occurred in generate auth token function" + error);
             }
@@ -37,18 +47,19 @@ const AdminLogin = async (req, res) => {
                 sameSite: 'lax',
                 secure: true
             }
-
+            console.log(accessToken);
             // we are storing cookie in jwtoken and it will expires in 30days
-            res.cookie('hostelAccessToken', accessToken, options).json(hostelUser);
+            res.cookie('hostelAccessToken', accessToken, options).json({...UserData,role:user.role});
 
         } else {
-            res.status(401).json("Invalid Username or Password");
+            res.status(401).json({message:"Invalid Username or Password"});
         }
 
-    } catch (error) {
-        res.status(400).json({ message: error.message })
+    } catch(error){
+        console.log(error);
+        res.status(500).json({ message: error.message })
     }
 
 }
 
-module.exports = AdminLogin
+module.exports = Login

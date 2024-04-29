@@ -28,7 +28,6 @@ services:
       - app
     restart: unless-stopped
 
-
   app:
     build: .
     depends_on:

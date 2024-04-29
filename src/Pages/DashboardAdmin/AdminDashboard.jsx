@@ -2,7 +2,7 @@ import styles from './AdminDashboard.module.scss';
 import Sidebar from "../../components/Sidebar/Sidebar";
 import Roomsbargraph from '../../components/Roomsbargraph/Roomsbargraph';
 import ComplaintBox from '../../components/ComplaintBox/ComplaintBox';
-import {lazy, Suspense, useState, useEffect} from 'react';
+import { useState, useEffect} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Loadingpage from '../../components/Loadingpage/Loadingpage';
 import { CiLogout } from "react-icons/ci";
@@ -26,10 +26,6 @@ import {
 
 
 
-// Lazy Imports
-const StudentUploadInfo = lazy(()=>import('./StudentsInfo/UploadInfo/UploadInfo'));
-const StudentViewInfo = lazy(()=>import('./StudentsInfo/ViewInfo/ViewInfo'));
-const RoomsAllotement = lazy(()=>import('./RoomInfo/AllotRooms/AllotRooms'));
 
 import { driver } from "driver.js";
 import "driver.js/dist/driver.css";
@@ -41,10 +37,7 @@ Chart.defaults.plugins.legend.title.display = true;
 Chart.defaults.plugins.legend.title.font = 'Helvetica Neue';
 
 const AdminDashboard = ()=>{
-    const Dispatcher = useDispatch();
-    const activeOptions = useSelector(state => state.sideBarStates.activeSubOption);
     const [loadingPage,setLoadingPage] = useState(false); 
-    const [isLoggedIn,setisLoggedIn] = useState(false);
     const Navigator = useNavigate();
     const [totalRooms,setTotalRooms] = useState(0);
     const [partiallyFilled,setPartiallyFilled] = useState(0);
@@ -58,7 +51,8 @@ const AdminDashboard = ()=>{
                 url:import.meta.env.VITE_BASE_URL  + '/HA/getRoomsData',
                 params: {
                     "hostelNo":"11",
-                }
+                },
+                withCredentials:true
               });
               setTotalRooms(res.data.totalRooms);
               setPartiallyFilled(res.data.partiallyFilledCount);
@@ -106,44 +100,16 @@ const AdminDashboard = ()=>{
 //my changes
 
 
-const handleLogout = ()=>{
-    console.log('called');
-    setLoadingPage(true);
-    const config = {
-        headers: {
-          "Content-Type": "application/json"
-          },
-          withCredentials: true
-        }
-    axios.get(import.meta.env.VITE_BASE_URL + '/HA/adminLogout',config)
-    .then(res=>{
-        console.log(res);
-        setLoadingPage(false);
-        Dispatcher(removeUserData());
-        Navigator('/adminLogin');
-
-    })
-    .catch(err=>{
-        setLoadingPage(false);
-        Navigator('/adminLogin');
-        console.log(err);
-        if(err.status===401){
-            Navigator('/adminLogin');
-        }
-    })
-}   
+ 
 
 return <>
     {loadingPage?<Loadingpage />:<div className={styles.container}>
 
-    <div className={styles.sideBarSpace + 'flex-[0] md:flex-[1]'}>
-        <Sidebar/>
-        </div>
+
 
         {/* Home */}
-        {activeOptions==='Home'?
-        <div className={styles.contentSpace}>
-        <div className={styles.Header+ ' text-3xl mt-16 md:mt-0'}><h1>Welcome To Vivekanand Hostel</h1></div>
+        <div className={styles.contentSpace + ' flex justify-center'}>
+        <div className={styles.Header+ ' text-blue-600 text-center text-3xl mt-16 md:mt-0'}><h1>Welcome To Vivekanand Hostel</h1></div>
         <div className="">
             <Card>
             <CardHeader>
@@ -167,42 +133,10 @@ return <>
             </Card>
         </div>
         </div>
-        :null}
 
 
-        {/* Student Info Module*/}
-        {activeOptions==='siUploadInfo'?
-        <div className={styles.contentSpace }>
-            <Suspense fallback={<Loadingpage />}>
-                <StudentUploadInfo />
-            </Suspense>
-        </div>
-        :null}
-
-        {activeOptions==='siViewInfo'?
-        <div className={styles.contentSpace}>
-            <Suspense fallback={<Loadingpage />}>
-                <StudentViewInfo />
-            </Suspense>
-        </div>
-        :null}
 
 
-        {/* Room Allotement Module */}
-
-        {activeOptions==='riAllotRoom'?
-        <div className={styles.contentSpace}>
-            <Suspense fallback={<Loadingpage />}>
-                <RoomsAllotement />
-            </Suspense>
-        </div>
-        :null}
-
-
-        <div id="logout" onClick={handleLogout} className="hidden  border-2 border-blue-500 text-blue-500 hover:text-white hover:bg-blue-500 px-4 py-2 cursor-pointer font-semibold rounded-md text-xl md:flex justify-center items-center gap-1 absolute top-8 right-8" >
-        <div className=""><CiLogout  /></div>
-            Logout
-        </div>
 
 
     </div>}

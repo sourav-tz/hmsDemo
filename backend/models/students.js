@@ -14,7 +14,7 @@ module.exports = (sequelize, dataTypes) => {
         year: {
             type: dataTypes.INTEGER,
         },
-        email: {
+        email: { 
             type: dataTypes.STRING,
             required: true,
             unique: true,
@@ -24,13 +24,11 @@ module.exports = (sequelize, dataTypes) => {
                 },
             }
         },
-        lastUpdatedBy: {
-            type: dataTypes.STRING,
-            allowNull: false,
-            field: 'last_updated_by'
-        },
     }, {
-        updatedAt: 'last_updated_at'
+
+        updatedAt: 'last_updated_at',
+        
+
     })
     students.associate = (models) => {
         students.hasOne(models.profiles, {
@@ -38,7 +36,7 @@ module.exports = (sequelize, dataTypes) => {
                 name: 'rollNo'
             }
         });
-        students.hasMany(models.roomsStudentMapping, {
+        students.hasMany(models.roomsStudentMappings, {
             foreignKey: {
                 name: 'rollNo'
             }

@@ -1,4 +1,5 @@
-const db = require('../../../models/index')
+const db = require('../../../models/index');
+const {Op} = require('sequelize');
 
 exports.studentsInfo = async (req, res) => {
   try {
@@ -9,20 +10,28 @@ exports.studentsInfo = async (req, res) => {
     // Define filters based on query parameters
     const filters = {};
     const filtersProfile = {};
+    let myQuery={};
+    console.log(req.query);
     if (req.query.rollNo) {
       filters.rollNo = req.query.rollNo;
+      myQuery.rollNo={ [Op.startsWith]: `${req.query.rollNo}` };
+
     }
     if (req.query.firstName) {
       filters.firstName = req.query.firstName;
+      myQuery.firstName={ [Op.startsWith]: `${req.query.firstName}` };
     }
     if (req.query.lastName) {
       filters.lastName = req.query.lastName;
+      myQuery.lastName={ [Op.startsWith]: `${req.query.lastName}` };
     }
     if (req.query.courseId) {
       filters.courseId = req.query.courseId;
+      myQuery.courseId={ [Op.startsWith]: `${req.query.courseId}` };
     }
     if (req.query.year) {
       filters.year = req.query.year;
+      myQuery.year=req.query.year;
     }
     if (req.query.state) {
       filtersProfile.state = req.query.state;
@@ -44,17 +53,20 @@ exports.studentsInfo = async (req, res) => {
         return res.json({ msg: `page value out of range, total pages are ${totalpages}` });
       }
     }
+    
     const startIndex = (page - 1) * limit;
     // Fetch data from the student table based on filters
     const students = await db.students.findAll({
-      where: filters,
+      where: myQuery,
       offset: startIndex,
       limit: limit,
       include: [
         {
           model: db.profiles,
           where: filtersProfile,
+
         },
+      
       ]
     });
     // Return the result
@@ -74,7 +86,7 @@ exports.studentsInfo = async (req, res) => {
         totalpages: totalpages
       }
     })
-    return res.json(students);
+    return res.status(200).json(students);
   } catch (error) {
     console.error('Error fetching data:', error);
     return res.status(500).json({ error: 'Internal Server Error' });

@@ -53,10 +53,10 @@ const Home = () => {
       });
 
   return (
-    <div className='mt-4'>
-        <h1>Welcome, Super Admin</h1>
-        <div className='flex'>
-        <div className='p-4 w-full md:w-[500px] h-full'>
+    <div className='mt-4 flex flex-col items-center'>
+        <h1 className='text-3xl p-4'>Welcome, Super Admin</h1>
+        <div className='flex flex-col md:flex-row'>
+        <div className='p-4 w-full md:min-w-[400px] h-full'>
         <Card>
             <CardHeader>
             <CardTitle>Actions</CardTitle>
@@ -74,9 +74,9 @@ const Home = () => {
             </CardHeader>
         </Card>
         </div>
-        <div className='p-4 h-full'>
+        <div className='p-4 w-full h-full'>
         <Card>
-        <CardContent  className='w-[600px]'>
+        <CardContent  className='p-2 w-full md:w-[500px]'>
             <Line
             data={chartData}
             options={{

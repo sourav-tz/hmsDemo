@@ -16,14 +16,13 @@ import config from '../../config/config'
 import { GoogleAuthProvider, getAuth, signInWithPopup } from '@firebase/auth'
 import { app } from '../../Firebase/firebase';
 import GoogleButton from '../../components/Button/GoogleButton';
-import { setActiveOption,setActiveSubOption } from '../../Store/Reducers/sideBarSlice'
 export default function () {
   const [data, setData] = useState({ email: null, password: null })
   const [loading, setLoading] = useState(false)
-  const Dispatcher = useDispatch();
 
 
   const Navigator = useNavigate()
+  const Dispatcher = useDispatch()
 
   const handleEmail = (e) => {
     setData((prev) => {
@@ -46,7 +45,7 @@ export default function () {
       const auth = getAuth(app)
 
       const result = await signInWithPopup(auth, provider)
-      // console.log(result)
+      console.log(result)
 
       const data = {
         name: result.user.displayName,
@@ -66,9 +65,7 @@ export default function () {
         .then((res) => {
           console.log(res)
           Dispatcher(setUserData(res.data));
-          Dispatcher(setActiveOption('Home'));
-          Dispatcher(setActiveSubOption('Home'));
-          Navigator('/adminDashboard')
+          Navigator('/adminDashboard/main/home')
           setLoading(false)
         })
         .catch((err) => {
@@ -96,9 +93,7 @@ export default function () {
       .then((res) => {
         console.log(res)
         Dispatcher(setUserData(res.data));
-        Dispatcher(setActiveOption('Home'));
-        Dispatcher(setActiveSubOption('Home'));
-        Navigator('/adminDashboard')
+        Navigator('/adminDashboard/main/home')
         setLoading(false)
       })
       .catch((err) => {

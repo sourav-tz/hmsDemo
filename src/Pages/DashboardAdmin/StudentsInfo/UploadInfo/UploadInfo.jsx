@@ -20,6 +20,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+import {Table,TableBody,TableCell,TableHead,TableRow} from '@/components/ui/table';
+import {Card , CardHeader} from '@/components/ui/card';
 
 const UploadInfo = ()=>{
 
@@ -42,6 +44,43 @@ const UploadInfo = ()=>{
       console.log(updateData);
     },[updateData])
 
+    const indianStates = [
+      {name:'Andhra Pradesh',value:'ap'},
+      {name:'Arunachal Pradesh',value:'ar'},
+      {name:'Assam',value:'as'},
+      {name:'Bihar',value:'br'},
+      {name:'Chhattisgarh',value:'cg'},
+      {name:'Goa',value:'ga'},
+      {name:'Gujarat',value:'gj'},
+      {name:'Haryana',value:'hr'},
+      {name:'Himachal Pradesh',value:'hp'},
+      {name:'Jharkhand',value:'jh'},
+      {name:'Karnataka',value:'ka'},
+      {name:'Kerala',value:'kl'},
+      {name:'Madhya Pradesh',value:'mp'},
+      {name:'Maharashtra',value:'mh'},
+      {name:'Manipur',value:'mn'},
+      {name:'Meghalaya',value:'ml'},
+      {name:'Mizoram',value:'mz'},
+      {name:'Nagaland',value:'nl'},
+      {name:'Odisha',value:'or'},
+      {name:'Punjab',value:'pb'},
+      {name:'Rajasthan',value:'rj'},
+      {name:'Sikkim',value:'sk'},
+      {name:'Tamil Nadu',value:'tn'},
+      {name:'Telangana',value:'tg'},
+      {name:'Tripura',value:'tr'},
+      {name:'Uttar Pradesh',value:'up'},
+      {name:'Uttarakhand',value:'ut'},
+      {name:'West Bengal',value:'wb'},
+      {name:'Andaman and Nicobar Islands',value:'an'},
+      {name:'Chandigarh',value:'ch'},
+      {name:'Dadra and Nagar Haveli and Daman and Diu',value:'dd'},
+      {name:'Lakshadweep',value:'ld'},
+      {name:'Delhi',value:'dl'},
+      {name:'Puducherry',value:'py'},
+      {name:'None',value:'none'}
+    ]
 
 
 
@@ -138,7 +177,7 @@ const handleDragEnter = (e) => {
               if(err.response.status===401){
                 Navigator('/adminLogin');
               }
-              reject("Server Error Or Format is Not Proper"); // Reject the Promise in case of an error
+              reject(err.response.data); // Reject the Promise in case of an error
             });
         });
       };
@@ -194,7 +233,9 @@ const handleDragEnter = (e) => {
             const res = await axios({
               url:import.meta.env.VITE_BASE_URL + '/HA/downloadfile?path=public/downloads/main.csv&filename=main.csv',
               method:'get',
-              responseType: 'blob' // Important
+              responseType: 'blob', // Important
+              withCredentials: true
+
             })
 
             const url = window.URL.createObjectURL(new Blob([res.data]));
@@ -251,11 +292,11 @@ const handleDragEnter = (e) => {
     }
 
     return<>
-        <div className={styles.container}>
-            <div className={styles.Header}><h1 className='text-3xl'>Upload Student Info</h1></div>
-            {updateProcess==false&&mainSteps===0&&loading===false?<div className={styles.uploadContainer}>
+        <div className={styles.container + ' flex flex-col items-center w-full'}>
+            <div className={styles.Header}><h1 className=' text-3xl mt-28 md:mt-4 text-blue-600'>Upload Student Info</h1></div>
+            {updateProcess==false&&mainSteps===0&&loading===false?<div className={styles.uploadContainer + ' p-4 flex flex-col items-center w-full'}>
 
-                <div  className={styles.uploadArea+' '+(dragging?styles.drag:null)}
+                <div  className={styles.uploadArea + ' p-4 min-h-[300px] w-full md:w-[600px]' +' '+(dragging?styles.drag:null)}
                     onDragEnter={handleDragEnter}
                     onDragLeave={handleDragLeave}
                     onDragOver={handleDragOver}
@@ -277,7 +318,7 @@ const handleDragEnter = (e) => {
 
                 </div>
                 <div className={styles.uploadInfoAccord}>
-                <Accordion type="single" collapsible className="w-full">
+                <Accordion type="single" collapsible className="w-full md:w-[600px]">
       <AccordionItem value="item-1">
         <AccordionTrigger>File Upload Instructions</AccordionTrigger>
         <AccordionContent>
@@ -306,50 +347,28 @@ const handleDragEnter = (e) => {
       <AccordionItem value="item-4">
         <AccordionTrigger>States Must be From</AccordionTrigger>
         <AccordionContent>
-        <ul>
-  <li>Andhra Pradesh</li>
-  <li>Arunachal Pradesh</li>
-  <li>Assam</li>
-  <li>Bihar</li>
-  <li>Chhattisgarh</li>
-  <li>Goa</li>
-  <li>Gujarat</li>
-  <li>Haryana</li>
-  <li>Himachal Pradesh</li>
-  <li>Jharkhand</li>
-  <li>Karnataka</li>
-  <li>Kerala</li>
-  <li>Madhya Pradesh</li>
-  <li>Maharashtra</li>
-  <li>Manipur</li>
-  <li>Meghalaya</li>
-  <li>Mizoram</li>
-  <li>Nagaland</li>
-  <li>Odisha</li>
-  <li>Punjab</li>
-  <li>Rajasthan</li>
-  <li>Sikkim</li>
-  <li>Tamil Nadu</li>
-  <li>Telangana</li>
-  <li>Tripura</li>
-  <li>Uttar Pradesh</li>
-  <li>Uttarakhand</li>
-  <li>West Bengal</li>
-  <li>Andaman and Nicobar Islands</li>
-  <li>Chandigarh</li>
-  <li>Dadra and Nagar Haveli and Daman and Diu</li>
-  <li>Lakshadweep</li>
-  <li>Delhi</li>
-  <li>Puducherry</li>
-  <li>None</li>
-</ul>
-
+          <Card>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>State Name</TableCell>
+                <TableCell>Value</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {indianStates.map(d=><TableRow>
+                <TableCell>{d.name}</TableCell>
+                <TableCell>{d.value}</TableCell>
+              </TableRow>)}
+            </TableBody>
+          </Table>
+          </Card>
         </AccordionContent>
       </AccordionItem>
     </Accordion>
                 </div></div>:null}
                 {loading?<TableLoader />:null}
-                {mainSteps==1?<div className={styles.duplicateTable}>
+                {mainSteps==1?<div className={styles.duplicateTable + ' p-4 min-w-[300px] w-full md:w-[800px]'}>
                   <h3>Successfull Data</h3>
                     <StudentTable data={successData}/>
                     <h3 className='mt-4'>Failed Data</h3>

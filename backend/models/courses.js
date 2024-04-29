@@ -18,11 +18,6 @@ module.exports = (sequelize, dataTypes) => {
         courseDuration: {
             type: dataTypes.INTEGER,
         },
-        lastUpdatedBy:{
-           type:dataTypes.STRING,
-           allowNull: false,
-           field:'last_updated_by'
-        },
     },{
         updatedAt: 'last_updated_at',
         paranoid: true,

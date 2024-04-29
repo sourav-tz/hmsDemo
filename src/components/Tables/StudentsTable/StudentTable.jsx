@@ -82,7 +82,7 @@ const StudentTable = ({data})=>{
 
 
     return<>
-        <div className="ag-theme-quartz" style={{ height: 450, width:1000 }}>
+        <div className="ag-theme-quartz" style={{ height: 450 }}>
         {/* The AG Grid component */}
         <AgGridReact 
         rowData={rowData} 

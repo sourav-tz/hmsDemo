@@ -85,9 +85,10 @@ exports.updateBulk = async (req, res) => {
           console.log('Bulk update successful');
         } catch (error) {
           console.error('Error during bulk update:', error.message);
+          return res.status(400).json(err + "");
         }
-     return res.json([theseEnteredInDB,finalWithErrors]);      
+     return res.status(200).json([theseEnteredInDB,finalWithErrors]);      
     } catch (err) {
-        return res.json(err + "");
+        return res.status(500).json(err + "");
     }
   }

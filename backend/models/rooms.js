@@ -20,12 +20,7 @@ module.exports = (sequelize, dataTypes) => {
         },
         maxOccupancy: {
             type: dataTypes.STRING,
-        },
-        lastUpdatedBy: {
-            type: dataTypes.STRING,
-
-            field: 'last_updated_by'
-        },
+        }
     }, {
         updatedAt: 'last_updated_at'
     })
@@ -35,7 +30,7 @@ module.exports = (sequelize, dataTypes) => {
                 name: 'roomId'
             }
         });
-        rooms.hasMany(models.roomsStudentMapping, {
+        rooms.hasMany(models.roomsStudentMappings, {
             foreignKey: {
                 name: 'roomId'
             }

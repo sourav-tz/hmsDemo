@@ -16,7 +16,7 @@ export default function({type,variant,onClick,text,style,loading=false,className
                 type={type}
                 onClick={onClick} 
                 style={style}
-                className={(svariant==='contained'?styles.contained:styles.outlined)+' '+styles.outlined+' '+(loading?styles.loadingState:null)+' '+className+` ${disable?' hover:bg-slate-400 hover:text-white bg-slate-400':null}`}>
+                className={ 'px-[15px] py-[5px] md:px[20px] md:py-[10px] text-md '+ (svariant==='contained'?styles.contained:styles.outlined)+' '+styles.outlined+' '+(loading?styles.loadingState:null)+' '+className+` ${disable?' hover:bg-slate-400 hover:text-white bg-slate-400':null}`}>
                 {text} 
                 {loading?svariant==='contained'?<img width="25px" src={loadingImage}/>:<img width="25px" src={loadingOutlined}/>:null}
             </button>

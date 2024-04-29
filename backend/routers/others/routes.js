@@ -4,6 +4,7 @@ const  sendotp  = require('../../controllers/others/sendotp');
 const  verifyotp  = require('../../controllers/others/verifyotp');
 const  forgotPassword  = require('../../controllers/others/forgotPassword');
 const  changePassword   = require('../../controllers/others/changePassword');
+const auth = require('../../middlewares/auth');
 router.get('/', (req, res) => {
     res.send('successs')
 })

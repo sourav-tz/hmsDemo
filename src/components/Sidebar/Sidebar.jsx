@@ -8,24 +8,28 @@ import { FaInfo } from "react-icons/fa";
 import { MdOutlineBedroomChild } from "react-icons/md";
 import { FaGear } from "react-icons/fa6";
 import { useNavigate } from 'react-router-dom';
-import { useDispatch,useSelector } from 'react-redux';
-import { setActiveOption,setActiveSubOption } from '../../Store/Reducers/sideBarSlice';
+import axios from 'axios';
+import { useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+
 
 export default function Sidebar(){
 
+    const param = useLocation();
+    const navigator = useNavigate();
+    const [activeOption,setActiveOption] = useState('main');
+    const [activeSubOption,setActiveSubOption] = useState('home');
+
+    useEffect(()=>{
+        setActiveOption(param.pathname.split('/')[2]);
+        setActiveSubOption(param.pathname.split('/')[3]);
+    },[param]);
 
     const Navigator = useNavigate();
-    const Dispatcher = useDispatch();
 
     const [state,changeState] = useState(false);
     const userData = useSelector(state=>state.userStorage.data);
-    const activeOption = useSelector(state=>state.sideBarStates.activeOption);
-    const activeSubOption = useSelector(state=>state.sideBarStates.activeSubOption);
 
-    useEffect(()=>{
-        console.log(activeOption);
-        console.log(activeSubOption);
-    },[activeOption])
 
     const [subHome,setSubHome] = useState(false);
     const [subStudent, setSubStudent] = useState(false);
@@ -66,17 +70,37 @@ export default function Sidebar(){
 
     }
 
-    const changeActiveOption = (value)=>{
-            Dispatcher(setActiveOption(value));
-    }
-
-    const changeActiveSubOption = (value)=>{
-        Dispatcher(setActiveSubOption(value));
-    }
 
     const toggleMenue = ()=>{
         changeState(prev=>!prev);
     }
+
+
+    const handleLogout = ()=>{
+        console.log('called');
+        const config = {
+            headers: {
+              "Content-Type": "application/json"
+              },
+              withCredentials: true
+            }
+        axios.get(import.meta.env.VITE_BASE_URL + '/HA/adminLogout',config)
+        .then(res=>{
+            console.log(res);
+            Dispatcher(removeUserData());
+            Navigator('/adminLogin');
+    
+        })
+        .catch(err=>{
+            Navigator('/adminLogin');
+            console.log(err);
+            if(err.status===401){
+                Navigator('/adminLogin');
+            }
+        })
+    }   
+
+
 
     const handleHamBurger = ()=>{
         toggleMenue();
@@ -103,38 +127,32 @@ export default function Sidebar(){
             </div>
             <div className={styles.listContainer}>
             <div  className={(styles.item) +' '+' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
-                        <p onClick={()=>{changeSubMenu('Home')}} className={(activeOption==='Home'?styles.activeItem:null) + ' flex items-center gap-2'}><i><IoHome  size="20px"/></i> <span className={(state?null:styles.hidden)+' mt-1'}>Main</span></p>
+                        <p onClick={()=>{changeSubMenu('Home')}} className={(activeOption==='main'?styles.activeItem:null) + ' flex items-center gap-2'}><i><IoHome  size="20px"/></i> <span className={(state?null:styles.hidden)+' mt-1'}>Main</span></p>
                         <ul className={state&&subHome?null:styles.hidden} >
-                        <li onClick={()=>{changeActiveOption('Home');changeActiveSubOption('Home')}} className={styles.subOptions+' ' + (activeSubOption==='Home'?styles.activeSubOption:null)}>Home</li>
+                        <li onClick={()=>{Navigator('/adminDashboard/main/home')}} className={styles.subOptions+' ' + (activeSubOption==='home'?styles.activeSubOption:null)}>Home</li>
                         </ul>
             </div>
             <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
                         <p onClick={()=>{changeSubMenu('studentInfo')}} className={(activeOption==='studentInfo'?styles.activeItem:null)+ ' flex items-center gap-2'}><FaInfo /> <span className={(state?null:styles.hidden)+' mt-1'}>Student Info</span></p>
                         <ul className={state&&subStudent?null:styles.hidden}>
-                        <li onClick={()=>{changeActiveOption('studentInfo'); changeActiveSubOption('siViewInfo')}} className={styles.subOptions+' ' + (activeSubOption==='siViewInfo'?styles.activeSubOption:null)}>View Info</li>
-                        <li onClick={()=>{changeActiveOption('studentInfo'); changeActiveSubOption('siUploadInfo')}} className={styles.subOptions+' ' + (activeSubOption==='siUploadInfo'?styles.activeSubOption:null)}>Upload Info</li>
+                        <li onClick={()=>{navigator('/adminDashboard/studentInfo/viewInfo')}} className={styles.subOptions+' ' + (activeSubOption==='viewInfo'?styles.activeSubOption:null)}>View Info</li>
+                        <li onClick={()=>{navigator('/adminDashboard/studentInfo/uploadInfo')}} className={styles.subOptions+' ' + (activeSubOption==='uploadInfo'?styles.activeSubOption:null)}>Upload Info</li>
+                        <li onClick={()=>{navigator('/adminDashboard/studentInfo/register')}} className={styles.subOptions+' ' + (activeSubOption==='register'?styles.activeSubOption:null)}>Register Student</li>
                         </ul>
             </div>
             <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
                         <p onClick={()=>{changeSubMenu('roomInfo')}} className={(activeOption==='roomInfo'?styles.activeItem:null)+ ' flex items-center gap-2'}><MdOutlineBedroomChild /> <span className={(state?null:styles.hidden)+' mt-1'}>Room Info</span></p>
                         <ul className={state&&subRoom?null:styles.hidden}>
-                        <li onClick={()=>{changeActiveOption('roomInfo');changeActiveSubOption('riAllotRoom')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='riAllotRoom'?styles.activeSubOption:null)}>Allot Rooms</li>
+                        <li onClick={()=>{navigator('/adminDashboard/roomInfo/allotRooms')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='allotRooms'?styles.activeSubOption:null)}>Allot Rooms</li>
                         </ul>
             </div>
-            </div>
-            </div>
-            <div className={styles.Settings}>
-            <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
-                        <p onClick={()=>{changeSubMenu('settings')}} className={' flex items-center gap-2'+(activeOption==='settings'?styles.activeItem:null)}><FaGear /> <span className={state?null:styles.hidden}>Settings</span></p>
-                        <ul className={state&&subSettings?null:styles.hidden}>
-                        <li onClick={()=>{changeActiveOption('settings');changeActiveSubOption('profileSettings');changeActiveSubOption('profileSettings')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='profileSettings'?styles.activeSubOption:null)}>Profile Settings</li>
-                        <li onClick={()=>{changeActiveOption('settings');changeActiveSubOption('securitySettings');changeActiveSubOption('securitySettings')}} className={(state?null:styles.hidden)+' '+styles.subOptions +' ' + (activeSubOption==='securitySettings'?styles.activeSubOption:null)}>Security Settings</li>
-                        </ul>
             </div>
             </div>
         </div>
 
-        <div className={`w-full ${state?'h-full':'h-[60px]'} fixed transition-all top-0 left-0 backdrop-blur-md z-50 md:hidden`}>
+ 
+    </IconContext.Provider>
+    <div className={`block w-full ${state?'h-full':'h-[60px]'} fixed transition-all top-0 left-0 backdrop-blur-md z-50 md:hidden`}>
             <div className='h-full w-full bg-[#131133] absolute top-0 left-0 opacity-85 -z-1'></div>
             <div className='w-full h-[60px] absolute top-0 left-0 items-center p-4 flex z-50'>
                 <div className='flex-1'>
@@ -148,21 +166,30 @@ export default function Sidebar(){
             </div>
             <div className={`${state?'':'hidden'} absolute w-full h-full top-0 left-[0] flex justify-center items-center text-white`}>
                 <ul>
-                    <li className='cursor-pointer flex flex-col text-orange-500 text-xl font-semibold'><div onClick={()=>{changeSubMenu('Home')}} className='flex items-center gap-2 hover:'><IoHome size='20px'/> Main </div>
-                        <ul style={{display:setTimeout(()=>{return 'hidden'},1000)} } className={`${subHome?'translate-x-0':'-translate-x-[1000px]'} text-sm text-white  font-thin ml-8 transition-all`}>
-                            <li onClick={()=>{changeActiveOption('Home');changeActiveSubOption('Home')}} className={`hover:scale-110 transition-all rounded-md px-2 py-[2px] ${activeSubOption==='Home'?'bg-blue-900 font-normal':''}`}> Home</li>
+                    <li className='cursor-pointer flex flex-col text-xl font-semibold'><div onClick={()=>{changeSubMenu('Home')}} className={`flex items-center gap-2 ${activeOption==='main'?'text-orange-400':'text-white'}`}><IoHome size='15px'/> Main </div>
+                        <ul className={`${subHome?'':'hidden'} text-sm text-white  font-thin ml-8 transition-all`}>
+                            <li onClick={()=>{Navigator('/adminDashboard/main/home');handleHamBurger()}} className={`text-xl hover:scale-110 transition-all rounded-md px-2 py-[2px] ${activeSubOption==='home'?'bg-blue-900 font-normal':''}`}> Home</li>
                         </ul>
                     </li>
 
-                    <li className='cursor-pointer flex flex-col text-orange-500 text-xl font-semibold'><div onClick={()=>{changeSubMenu('Home')}} className='flex items-center gap-2 hover:'><FaInfo size='20px' />  Student Info</div>
-                        <ul className={`${subHome?'translate-x-0':'-translate-x-[1000px]'} text-sm text-white  font-thin ml-8 transition-all`}>
-                            <li onClick={()=>{changeActiveOption('Home');changeActiveSubOption('Home')}} className={`hover:scale-110 transition-all rounded-md px-2 py-[2px] ${activeSubOption==='Home'?'bg-blue-900 font-normal':''}`}> Home</li>
+                    <li className='mt-4 cursor-pointer flex flex-col text-xl font-semibold'><div onClick={()=>{changeSubMenu('studentInfo')}} className={`flex items-center gap-2 ${activeOption==='studentInfo'?'text-orange-400':'text-white'}`}><FaInfo size='15px' />  Student Info</div>
+                        <ul className={`${subStudent?'':'hidden'} text-sm text-white  font-thin ml-8 transition-all`}>
+                            <li onClick={()=>{Navigator('/adminDashboard/studentInfo/viewInfo');handleHamBurger()}} className={`text-xl hover:scale-110 transition-all rounded-md px-2 py-[2px] ${activeSubOption==='viewInfo'?'bg-blue-900 font-normal':''}`}> View Info</li>
+                            <li onClick={()=>{Navigator('/adminDashboard/studentInfo/uploadInfo');handleHamBurger()}} className={`text-xl hover:scale-110 transition-all rounded-md px-2 py-[2px] ${activeSubOption==='uploadInfo'?'bg-blue-900 font-normal':''}`}> Upload Info</li>
+                        </ul>
+                    </li>
+
+                    <li className='mt-4 cursor-pointer flex flex-col text-xl font-semibold'><div onClick={()=>{changeSubMenu('roomInfo')}} className={`flex items-center gap-2 ${activeOption==='roomInfo'?'text-orange-400':'text-white'}`}><MdOutlineBedroomChild size="15px" /> Rooms</div>
+                        <ul className={`${subRoom?'':'hidden'} text-sm text-white  font-thin ml-8 transition-all`}>
+                            <li onClick={()=>{Navigator('/adminDashboard/roomInfo/allotRooms');handleHamBurger()}} className={`text-xl hover:scale-110 transition-all rounded-md px-2 py-[2px] ${activeSubOption==='allotRooms'?'bg-blue-900 font-normal':''}`}> Allot Rooms</li>
                         </ul>
                     </li>
                 </ul>
+                <div onClick={handleLogout} className='absolute bottom-16 cursor-pointer left-[40%] text-white'>
+                Logout
+            </div>
             </div>
 
         </div>
-    </IconContext.Provider>
     </>
 }

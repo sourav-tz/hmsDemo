@@ -1,24 +1,27 @@
 const db = require('../../../models/index')
 
 const singleStudentRemove = async (req, res) => {
-    const { roomNo, rollNo, hostelNo, comment } = req.body
+    const { roomNo, rollNo, tokenHostelNo, comment } = req.body
 
-    const studentData = await db.students.findOne({
-        where: { rollNo: rollNo }
-    })
+    // const studentData = await db.students.findOne({
+    //     where: { rollNo: rollNo }
+    // })
 
     const roomData = await db.rooms.findOne({
-        where: { roomNo: roomNo, hostelNo: hostelNo }
+        where: { roomNo: roomNo, hostelNo: tokenHostelNo }
     })
     const roomId = roomData.roomId;
 
-    const mappedRoom = await db.roomsStudentMapping.count({
-        where: { roomId: roomId }
+    const mappedRoom = await db.roomsStudentMappings.count({
+
+        where: { roomId: roomId , checkOutDate:null }
     })
 
-    const isExistMapping = await db.roomsStudentMapping.findOne({
-        where: { roomId: roomId, rollNo: rollNo }
+    const isExistMapping = await db.roomsStudentMappings.findOne({
+        where: { roomId: roomId, rollNo: rollNo , checkOutDate:null}
     })
+
+    // console.log(isExistMapping);
 
     // this never be executed
     if (!isExistMapping) return res.status(401).json({ message: 'No Allocation is Found!' })
@@ -47,14 +50,16 @@ const singleStudentRemove = async (req, res) => {
                 })
             }
 
-            await db.roomsStudentMapping.update({ comment: comment }, {
-                where: { roomId: roomId }
+            await db.roomsStudentMappings.update({ comment: comment,checkOutDate: new Date() }, {
+
+                where: { roomId: roomId ,rollNo:rollNo,checkOutDate:null}
+
                 , transaction: transaction, validate: true
             })
 
-            await db.roomsStudentMapping.destroy({
-                where: { roomId: roomId }
-            })
+            // await db.roomsStudentMappings.destroy({
+            //     where: { roomId: roomId }
+            // })
 
             await transaction.commit();
 
@@ -67,6 +72,7 @@ const singleStudentRemove = async (req, res) => {
         }
 
     } catch (error) {
+        console.log(error);
         return res.status(400).json({ error: error });
     }
 

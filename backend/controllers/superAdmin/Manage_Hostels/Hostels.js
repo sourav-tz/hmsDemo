@@ -17,7 +17,7 @@ const getHostels=async (req, res) => {
         ]
     });
     const result=data.map((key)=>(key.dataValues.deletedAt)?{...key.dataValues,active:false}:{...key.dataValues,active:true});
-    return res.json(result);
+    return res.status(200).json(result);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: error });
@@ -25,17 +25,17 @@ const getHostels=async (req, res) => {
 }
 const addHostel=async (req,res)=>{
     try {
-        const hostel=req.body;
+        const {newHostelNo,hostelName,type,email}=req.body;
         const alreadyExists= await db.hostels.findOne({
-            where:{hostelNo:hostel.hostelNo},paranoid:false
+            where:{hostelNo:newHostelNo},paranoid:false
         });
         if(alreadyExists){
-            return res.json({msg:"hostel already exists"});
+            return res.status(400).json({message:"hostel already exists"});
         }
-        const hostelCreated= await db.hostels.create({...hostel,
-            lastUpdatedBy:"deepak@gmail.com"
+        const hostelCreated= await db.hostels.create({hostelNo:newHostelNo,hostelName,type,
+            lastUpdatedBy:email
         })
-      return res.json({data:hostelCreated});
+      return res.status(200).json({messgae:"Hostel Added Successfully",data:hostelCreated});
       } catch (error) {
         console.error(error);
         return res.status(500).json({ error: error });
@@ -49,7 +49,10 @@ const removeHostel = async (req,res)=>{
             where:{hostelNo},
             force:softdelete
         });
-      return res.json({data:deleted});
+        if(!deleted){
+          return res.status(400).json({message:"Hostel not found"});
+        }
+      return res.status(200).json({message:"Hostel Successfully deleted"});
       } catch (error) {
         console.error(error);
         return res.status(500).json({ error: error });
@@ -57,11 +60,15 @@ const removeHostel = async (req,res)=>{
 }
 const enableHostel = async (req,res)=>{
     try {
-        const {hostelNo} = req.body;
+        const {bodyHostelNo} = req.body;
         const enabled=await db.hostels.restore({
-            where:{hostelNo}
+            where:{hostelNo:bodyHostelNo}
         });
-      return res.json({data:enabled});
+        if(!enabled){
+
+          return res.status(400).json({messgae:"Not Found or already enabled"});
+        }
+      return res.status(200).json({messgae:"Successfully Enabled"});
       } catch (error) {
         console.error(error);
         return res.status(500).json({ error: error });
@@ -69,16 +76,43 @@ const enableHostel = async (req,res)=>{
 }
 const updateHostel=async (req, res) => {
   try {
-    const data = req.body;
-    const updated=await db.hostels.update(data,{
-        where:{hostelNo:data.hostelNo}
+    const {bodyHostelNo,hostelName,type} = req.body;
+    const isHostelPresent=await db.hostels.findOne({
+      where:{
+        hostelNo:bodyHostelNo
+      }
     });
-  return res.json({data:updated});
+    if(!isHostelPresent) {
+      return res.status(400).json({message:"Given Hostel Not Found"});
+    }
+    const data={};
+    if(hostelName)data.hostelName=hostelName;
+    if(type)data.type=type;
+    await db.hostels.update(data,{
+        where:{hostelNo:bodyHostelNo}
+    });
+  return res.status(200).json({message:"successfully Updated"});
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: error });
   }
 };
+
+const getAdminsAgainstHostel = async (req, res) => {
+
+  const {hostelNo} = req.body;
+  console.log('called')
+  try {
+    let data= await db.hostelauthoritys.findAll({
+        where:{hostelNo}});
+    return res.status(200).json(data);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: error });
+  }
+}
+
+
 module.exports={
-  getHostels,addHostel,removeHostel,enableHostel,updateHostel
+  getHostels,addHostel,removeHostel,enableHostel,updateHostel,getAdminsAgainstHostel
 }

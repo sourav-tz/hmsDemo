@@ -85,8 +85,11 @@ const addRoomsToHostels = async (req, res) => {
 
     try {
 
-        const jsonObj = req.body;
-        // console.log(req.body);
+
+
+        const jsonObj = req.body.data;
+        // console.log(jsonRooms);
+
         const requiredAttributes = ["roomNo","block","floorNo","maxOccupancy","hostelNo"];
         validateJsonData(jsonObj, requiredAttributes);
         const allRoomsData = await db.rooms.findAll();
@@ -130,10 +133,10 @@ const addRoomsToHostels = async (req, res) => {
         } catch (error) {
             console.log('Error during upload:' , error.message);
         }
-        return res.json([theseEnteredInDB,finalWithErrors]);
+        return res.status(200).json([theseEnteredInDB,finalWithErrors]);
 
     } catch (error) {
-        res.status(402).json(error.message)
+        res.status(500).json(error.message)
     }
 
 }

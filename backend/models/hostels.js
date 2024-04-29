@@ -11,11 +11,6 @@ module.exports = (sequelize, dataTypes) => {
         type: {
             type: dataTypes.STRING,
         },
-        lastUpdatedBy:{
-           type:dataTypes.STRING,
-           allowNull: false,
-           field:'last_updated_by'
-        }
     },{
         updatedAt: 'last_updated_at',
         paranoid:true

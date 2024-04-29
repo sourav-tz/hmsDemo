@@ -33,7 +33,7 @@ const singleStudentAllot = async (req, res) => {
 
         const roomId = roomData.roomId;
 
-        const mappedRoom = await db.roomsStudentMapping.count({
+        const mappedRoom = await db.roomsStudentMappings.count({
             where: { roomId: roomId }
         })
 
@@ -46,7 +46,7 @@ const singleStudentAllot = async (req, res) => {
 
             try {
 
-                const roomAlloted = await db.roomsStudentMapping.create({
+                const roomAlloted = await db.roomsStudentMappings.create({
                     roomId: roomId,
                     rollNo: rollNo,
                     hostelNo: hostelNo,
@@ -90,6 +90,7 @@ const singleStudentAllot = async (req, res) => {
         }
 
     } catch (error) {
+        console.log(error)
         res.status(500).json({ message: 'Internal Server Error' });
     }
 }

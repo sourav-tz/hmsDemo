@@ -12,12 +12,7 @@ module.exports = (sequelize, dataTypes) => {
         },
         facilities: {
             type: dataTypes.STRING,
-        },
-        lastUpdatedBy: {
-            type: dataTypes.STRING,
-            allowNull: false,
-            field: 'last_updated_by'
-        },
+        }
     }, {
         updatedAt: 'last_updated_at'
     })
