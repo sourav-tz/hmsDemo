@@ -487,8 +487,6 @@ const onSubmitEdit =async (data) => {
 
 <DevTool control={control} />
 <ToastContainer />
-<DevTool control={control} />
-
   </>
   
   )
