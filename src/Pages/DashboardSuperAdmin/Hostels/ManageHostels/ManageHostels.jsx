@@ -144,7 +144,11 @@ const ManageHostels = () => {
             const res = await axios({
               url: import.meta.env.VITE_BASE_URL + '/SA/addHostel',
               method: 'POST',
-              data: hostel
+              data: hostel,
+              headers: {
+                "Content-Type":"application/json"
+              },
+              withCredentials:true
             });
             // console.log(res);
             setRowData((prev) => {
