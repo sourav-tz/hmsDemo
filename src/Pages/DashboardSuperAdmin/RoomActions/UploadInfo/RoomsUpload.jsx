@@ -95,7 +95,7 @@ const handleDragEnter = (e) => {
              resolve(res.data);
             })
             .catch(err => {
-              rej(err);
+              reject(err);
              console.log(err);
             });
         });
