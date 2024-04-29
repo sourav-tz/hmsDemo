@@ -9,7 +9,6 @@ import { ImBin } from "react-icons/im";
 import { FaRegEdit } from "react-icons/fa";
 import { MdAccountCircle } from "react-icons/md";
 import {useForm,Controller, set} from 'react-hook-form';
-import { DevTool } from "@hookform/devtools";
 import {
   Card,
   CardContent,
@@ -484,8 +483,6 @@ const onSubmitEdit =async (data) => {
         </div>  
 
     </div>
-
-<DevTool control={control} />
 <ToastContainer />
   </>
   
