@@ -8,8 +8,6 @@ import "ag-grid-community/styles/ag-theme-quartz.css";
 import { ImBin } from "react-icons/im";
 import { FaRegEdit } from "react-icons/fa";
 import { MdAccountCircle } from "react-icons/md";
-import { Switch } from "@/components/ui/switch"
-import config from '../../../../config/config';
 import {useForm,Controller, set} from 'react-hook-form';
 import { DevTool } from "@hookform/devtools";
 import {
@@ -48,7 +46,7 @@ const ManageHostels = () => {
 
        let [rowData, setRowData] = useState([]);
        let [hostel, setHostel] = useState ({
-        hostelName:null, hostelNo:null,type:""
+        hostelName:null, newHostelNo:null,type:""
        });
   const [showAdmins, setShowAdmins] = useState(false);
   const [adminsData, setAdminsData] = useState([]);
@@ -58,24 +56,31 @@ const ManageHostels = () => {
     type:""
   })
 
+
+
+
+
+  const getHostels = async () => {
+    try {
+      const res = await axios({
+        url:import.meta.env.VITE_BASE_URL + "/SA/getHostels",
+        method: "GET",
+        headers: {
+          "Content-Type":"application/json"
+        },
+        withCredentials:true
+      }) 
+      setRowData(res.data);
+      console.log(res);
+    
+    } catch(error) {
+      console.log(error);
+    }
+  }
+
+
        useEffect(()=>{
-        ;(async () => {
-          try {
-            const res = await axios({
-              url:import.meta.env.VITE_BASE_URL + "/SA/getHostels",
-              method: "GET",
-              headers: {
-                "Content-Type":"application/json"
-              },
-              withCredentials:true
-            }) 
-            setRowData(res.data);
-            console.log(res);
-          
-          } catch(error) {
-            console.log(error);
-          }
-        })()
+        getHostels();
        },[]) 
 
        const setName=(e)=>{
@@ -85,7 +90,8 @@ const ManageHostels = () => {
 
        
        const setHostelNumber=(e)=>{
-        setHostel((prev)=>{return {...prev,bodyHostelNo:e.target.value}});
+
+        setHostel((prev)=>{return {...prev,newHostelNo:e.target.value}});
 
         // setFormErrors({...FormErrors, [e.target.name]: ''});
 
@@ -151,52 +157,17 @@ const ManageHostels = () => {
               withCredentials:true
             });
             // console.log(res);
-            setRowData((prev) => {
-              return [                
-                ...prev, res.data.data
-              ]
-              
-            });
-          } catch(error) {
-            console.log(error);
-          }
-        })()
+            toast.success("Hostel Added Successfully !!",{
+              position:'top-right'
+            })
+            getHostels();
+        }catch(error){
+          console.log(error);
+        }
+      })()
 
-       }
+      }
 
-      // NEED TO CHECK
-      //  const handleEnableHostel = (hostelNo, isActive) => {
-      //   ;(async () => {
-      //     try {
-      //       const updatedRowData = rowData.map(row => {
-      //         if (row.hostelNo === hostelNo) {
-      //           return { ...row, isActive: !isActive };
-      //         }
-      //         return row;
-      //       });
-      //       setRowData(updatedRowData);
-      //       const res = await axios.post('http://localhost:3000/SA/enableHostel', { hostelNo, isActive: !isActive });
-      //       console.log(res.data); 
-      //     } catch(error) {
-      //       console.log(error);
-      //     }
-      //   })();
-      // };
-      
- 
-      // const handleHostelEdit = (data, updatedData) => {
-      //   ;(async (data) => {
-      //     try {
-      //       const res = await axios ({
-      //         url:'http://localhost:3000/SA/updateHostel/hostelNo=${data.hostelNo}', updatedData,
-      //         method:'PATCH'
-      //       }) 
-      //       console.log(res.data);
-      //     } catch (error) {
-      //       console.log(error);
-      //     }
-      //   })(data)
-      // }
 
       const handleEditClick = (e) => {
         setHostelValues(e);
@@ -416,7 +387,6 @@ const onSubmitEdit =async (data) => {
       </div>
     </div>
 
-
     <div className={`flex justify-center items-center -translate-y-full ${confirmModal?'translate-y-0':null} top-0 left-0 transition-all fixed w-full min-h-screen`}> 
     <div className='fixed top-0 left-0 bg-black opacity-70 w-full h-screen'></div>
         <div className='min-w-[300px] z-50'>
@@ -460,8 +430,6 @@ const onSubmitEdit =async (data) => {
             </CardFooter>
           </Card>
         </div>  
-
-    </div>
 
     <div className={`-translate-y-full ${editMode?'translate-y-0':null} flex justify-center items-center fixed top-0 left-0 transition-all w-full min-h-screen z-50`}>
     <div className='fixed top-0 left-0 bg-black opacity-70 w-full h-screen'></div>
