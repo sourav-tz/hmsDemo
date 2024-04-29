@@ -81,7 +81,7 @@ const handleDragEnter = (e) => {
           bodyForData.append("file", file);
       
           axios
-            .post('http://localhost:3000/SA/bulkCreate', bodyForData, {
+            .post(import.meta.env.VITE_BASE_URL+'/SA/bulkCreate', bodyForData, {
               headers: {
                 "Content-Type": "multipart/form-data; boundary=${formData.getBoundary()}",
                 "x-rapidapi-host": "file-upload8.p.rapidapi.com",

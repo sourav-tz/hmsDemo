@@ -327,7 +327,7 @@ const onSubmitEdit =async (data) => {
 
 
   return (
-    <>
+  <>
     <div className='mt-20 p-4 md:mt-0 flex flex-col justify-center items-center'>
       <div className= 'm-6 p-5 w-full md:min-w-[300px] md:max-w-[600px] rounded-[30px] shadow-[0_3px_10px_rgb(0,0,0,0.2)]'>
         <form>
@@ -485,7 +485,8 @@ const onSubmitEdit =async (data) => {
     </div>
 </div>
 <ToastContainer />
-  </>  
+  </>
+
   )
 };
 
