@@ -155,6 +155,35 @@ const handleDragEnter = (e) => {
 
     }
 
+
+    const handleDownloadClick =()=>{
+      ;(async ()=>{
+        try{
+          const res = await axios({
+            url:import.meta.env.VITE_BASE_URL + '/SA/downloadfile?path=public/downloads/rooms.csv&filename=rooms.csv',
+            method:'get',
+            responseType: 'blob', // Important
+            withCredentials: true
+
+          })
+
+          const url = window.URL.createObjectURL(new Blob([res.data]));
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', 'rooms.csv'); //or any other extension
+          document.body.appendChild(link);
+          link.click();
+
+        }catch(err){  
+          console.log(err);
+          if(err.response.status===401){
+            Navigator('/adminLogin');
+          }
+        }
+      })()
+    }
+
+
     return<>
         <div className={styles.container+' mt-8 flex flex-col justify-center items-center'}>
             <div className={styles.Header}><h1 className='text-3xl'>Allocate Rooms</h1></div>
@@ -196,7 +225,7 @@ const handleDragEnter = (e) => {
                   <AccordionItem value="item-2">
                     <AccordionTrigger>Demo CSV File</AccordionTrigger>
                     <AccordionContent>
-                      <Button text="Download" />
+                      <Button onClick={handleDownloadClick} text="Download" />
                     </AccordionContent>
                   </AccordionItem>
                 </Accordion>

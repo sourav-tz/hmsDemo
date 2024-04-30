@@ -18,6 +18,8 @@ const {verifyOldPassword} = require('../../controllers/superAdmin/Settings');
 const {updatePassword} = require('../../controllers/superAdmin/Settings');
 const {getAdminsAgainstHostel} = require('../../controllers/superAdmin/Manage_Hostels/Hostels.js');
 const superAdminLogin = require('../../controllers/Login/superAdminLogin.js');
+const { downloadFile } = require('../../controllers/hostelAuthority/studentModule/downloadFile');
+
 
 const superAdminLoginToken = require('../../controllers/Login/superAdminLoginToken.js');
 
@@ -63,6 +65,8 @@ router.post('/bulkCreate',auth, upload.single('file'), csvToJsonConverter, addRo
 router.get('/getRoomTypes',auth, getRoomTypes);
 router.post('/addRoomType',auth, addRoomType);
 router.delete('/removeRoomType',auth, deleteRoomType);
+router.get('/downloadfile',auth, downloadFile);
+
 
 //TODO new single room add in rooms table add,remove                    admin will do update(occupancy,roomtype)
 //*bulk,addremove single student ,get room data 
@@ -82,6 +86,8 @@ router.post('/getAdminsAgainstHostel',auth,getAdminsAgainstHostel);
 //todo forgot pass, change password
 router.post('/verifyOldPassword',auth,verifyOldPassword);
 router.post('/updatePassword',auth,updatePassword);
+
+
 
 
 

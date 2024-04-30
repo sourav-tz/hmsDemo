@@ -8,8 +8,12 @@ import { useNavigate } from 'react-router-dom';
 import {useState} from 'react';
 import axios from 'axios';
 import { ToastContainer,toast } from 'react-toastify';
+import { useDispatch } from 'react-redux';
+import { setUserData } from '../../Store/Reducers/userSlice';
 
 const Studentlogin = ()=>{
+
+    const Dispatcher = useDispatch();
 
     const [data, setData] = useState({ email: null, password: null })
     
@@ -36,7 +40,7 @@ const Studentlogin = ()=>{
             })
             console.log(res);
             if (res.data.role === 'Student') {
-                localStorage.setItem('role', 'student');
+                Dispatcher(setUserData({...res.data.dataValues,roleType:'Student'}))
                 Navigator('/studentDashboard/main/home');
             }
         } catch (err) {

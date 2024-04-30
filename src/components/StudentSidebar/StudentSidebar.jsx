@@ -13,8 +13,6 @@ import { useLocation,useNavigate } from 'react-router-dom';
 import { SlSupport } from "react-icons/sl";
 import { MdFoodBank } from "react-icons/md";
 
-
-
 export default function StudentSidebar(){
 
 
@@ -22,9 +20,12 @@ export default function StudentSidebar(){
     const param = useLocation();
     const [activeOption,setActiveOption] = useState('main');
     const [activeSubOption,setActiveSubOption] = useState('home');
-
+    const userData = useSelector(state=>state.userStorage.data);
     const [state,changeState] = useState(false);   
-    const [userData,setUserData] = useState({});
+
+    useEffect(()=>{
+        console.log(userData);
+    },[userData])
 
     useEffect(()=>{
         setActiveOption(param.pathname.split('/')[2]);
@@ -117,7 +118,7 @@ const handleLogout = ()=>{}
                 <div id="userIconSidebar" className={styles.userIcon}>
                 {userData.avatar!=undefined?<img className={styles.avatarImage} src={userData.avatar} />:<FaUserLarge size="1.5em" color="white"/>}
                 </div>
-                <div className={state?null:styles.hidden} style={{marginLeft:'8px',marginTop:'0px'}}><p>{userData.name!==undefined?userData.name:'Null'}<br/><span className={styles.userRole} style={{fontSize:'12px'}}>{userData.roleType!==undefined?`Role: ${userData.roleType}`:'Role: Null'}</span></p></div>
+                <div className={state?null:styles.hidden} style={{marginLeft:'8px',marginTop:'0px'}}><p>{userData.firstName!==undefined?userData.firstName+' '+userData.lastName:'Null'}<br/><span className={styles.userRole} style={{fontSize:'12px'}}>{userData.roleType!==undefined?`Role: ${userData.roleType}`:'Role: Null'}</span></p></div>
             </div>
             <div className={styles.listContainer}>
             <div  className={(styles.item) +' '+' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
