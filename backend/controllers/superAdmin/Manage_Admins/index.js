@@ -82,22 +82,22 @@ const changeHostel=async (req,res)=>{
 }
 
 const deleteAdmin=async (req,res)=>{
-  const transaction=await db.sequelize.transaction();
   try{
     const {email}=req.body;
     const deleted=await db.users.destroy({
       where:{email:email},
-      force:true,
     });
-
-    if(!deleted){
+    const deletedHA=await db.users.destroy({
+      where:{email:email},
+    });
+    if(!deleted && !deletedHA){
       return res.status(400).json({message:"Email not found or allready deleted"});
     }
     return res.status(200).json({message:"Successfully deleted"});
   }
   catch(error){
     return res.status(500).json({message:"Internal Server Error in DeleteAdmin Controller"});
-  }
+  }
 }
 
 
