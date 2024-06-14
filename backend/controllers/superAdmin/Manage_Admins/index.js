@@ -87,7 +87,7 @@ const deleteAdmin=async (req,res)=>{
     const deleted=await db.users.destroy({
       where:{email:email},
     });
-    const deletedHA=await db.users.destroy({
+    const deletedHA=await db.hostelauthoritys.destroy({
       where:{email:email},
     });
     if(!deleted && !deletedHA){
