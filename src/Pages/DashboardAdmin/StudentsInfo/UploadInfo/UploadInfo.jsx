@@ -39,6 +39,7 @@ const UploadInfo = ()=>{
     const [step,setStep] = useState(1);
     const [mainSteps,setMainSteps] = useState(0);
     const [courseId,setCourseId] = useState([]);
+    const userData = useSelector(state=>state.userStorage.data);
 
     useEffect(()=>{
       console.log(updateData);
@@ -89,7 +90,8 @@ useEffect(()=>{
     try{
         const res = await axios({
           url:import.meta.env.VITE_BASE_URL + '/HA/getCourses',
-          method:'get'
+          method:'get',
+          withCredentials:true
         })
 
         const temp = res.data.map(d=>{return `${d.courseId}-${d.courseName}-${d.department}`})
@@ -142,6 +144,9 @@ const handleDragEnter = (e) => {
         return new Promise((resolve, reject) => {
           const bodyForData = new FormData();
           bodyForData.append("file", file);
+          bodyForData.append("hostelNo",userData.dataValues.hostelNo);
+          console.log(userData.dataValues.hostelNo);
+          console.log(file);
       
           axios
             .post(import.meta.env.VITE_BASE_URL + '/HA/bulkCreate', bodyForData, {

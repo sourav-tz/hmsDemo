@@ -11,6 +11,8 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { FaNoteSticky } from "react-icons/fa6";
+
 
 
 export default function Sidebar(){
@@ -35,6 +37,7 @@ export default function Sidebar(){
     const [subStudent, setSubStudent] = useState(false);
     const [subRoom, setSubRoom] = useState(false);
     const [subSettings, setSubSettings] = useState(false);
+    const [subNotice, setSubNotice] = useState(false);
 
     const openMenu = ()=>{
         changeState(true);
@@ -51,21 +54,31 @@ export default function Sidebar(){
             setSubStudent(false);
             setSubRoom(false);
             setSubSettings(false);
+            setSubNotice(false);
         }else if(value ==='studentInfo'){
             setSubHome(false);
             setSubStudent(prev => !prev);
             setSubRoom(false);
             setSubSettings(false);
+            setSubNotice(false);
         }else if(value === 'roomInfo'){
             setSubHome(false);
             setSubStudent(false);
             setSubRoom(prev=>!prev);
             setSubSettings(false);
+            setSubNotice(false);
         }else if(value === 'settings'){
             setSubHome(false);
             setSubStudent(false);
             setSubRoom(false);
             setSubSettings(prev=>!prev);
+            setSubNotice(false);
+        }else if(value === 'notice'){
+            setSubHome(false);
+            setSubStudent(false);
+            setSubRoom(false);
+            setSubSettings(false);
+            setSubNotice(prev=>!prev);
         }
 
     }
@@ -144,6 +157,13 @@ export default function Sidebar(){
                         <p onClick={()=>{changeSubMenu('roomInfo')}} className={(activeOption==='roomInfo'?styles.activeItem:null)+ ' flex items-center gap-2'}><MdOutlineBedroomChild /> <span className={(state?null:styles.hidden)+' mt-1'}>Room Info</span></p>
                         <ul className={state&&subRoom?null:styles.hidden}>
                         <li onClick={()=>{navigator('/adminDashboard/roomInfo/allotRooms')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='allotRooms'?styles.activeSubOption:null)}>Allot Rooms</li>
+                        </ul>
+            </div>
+            <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
+                        <p onClick={()=>{changeSubMenu('notice')}} className={(activeOption==='notice'?styles.activeItem:null)+ ' flex items-center gap-2'}><FaNoteSticky /> <span className={(state?null:styles.hidden)+' mt-1'}>Notice</span></p>
+                        <ul className={state&&subNotice?null:styles.hidden}>
+                        <li onClick={()=>{navigator('/adminDashboard/notice/uploadNotice')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='uploadNotice'?styles.activeSubOption:null)}>Upload Notice</li>
+                        <li onClick={()=>{navigator('/adminDashboard/notice/viewNotice')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='viewNotice'?styles.activeSubOption:null)}>View Notice</li>
                         </ul>
             </div>
             </div>

@@ -169,9 +169,9 @@ const ManageHostels = () => {
 
 
       const handleEditClick = (e) => {
+        setEditMode(true);
         setHostelValues(e);
         console.log(e);
-        setEditMode(true);
       };
     
       const handleCellValueChanged = (event) => {

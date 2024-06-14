@@ -10,6 +10,12 @@ import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 
 export default function RegisterStudent() {
+
+  
+
+
+
+
   return (
     <div className="w-full bg-gray-100">
     <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8">

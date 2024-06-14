@@ -15,7 +15,7 @@ function filterDuplicates(array) {
 
   return { duplicates, unique };
 }
-async function uploadStudents(data){
+async function uploadStudents(data,hostelNo){
   try {
     const transaction = await db.sequelize.transaction();
     try {
@@ -37,7 +37,7 @@ async function uploadStudents(data){
               year: data.year,
               email: data.email,
               courseId: data.courseId,
-              hostelNo:data.hostelNo,
+              hostelNo:hostelNo,
        }, { transaction, validate: true });
        
        await db.profiles.create({
@@ -93,11 +93,12 @@ exports.bulkCreateController = async (req, res) => {
     try {
       //? get json data from body
         const jsonObj = req.body.data;
+        const hostelNo = req.body.hostelNo;
         const requiredAttributes = ["rollNo","firstName","lastName","year","email",
                                   "bloodGroup","identificationMark","gender","pEmail","subAddress",
                                   "city","state","pinCode","contactNumber","secondaryContact","fatherName",
                                   "fatherContact","fatherOccupation","motherName","motherContact","motherOccupation",
-                                   "dob","addharNumber","accHolderName","bankName","accNumber","IFSC","courseId","hostelNo","roomId"];
+                                   "dob","addharNumber","accHolderName","bankName","accNumber","IFSC","courseId"];
 
         // Validate JSON data
         validateJsonData(jsonObj, requiredAttributes);
@@ -134,7 +135,7 @@ exports.bulkCreateController = async (req, res) => {
          //*transaction
          try {
           const results = await Promise.all(
-            inputData.map((entry) => uploadStudents(entry))
+            inputData.map((entry) => uploadStudents(entry,hostelNo))
           );
 
           results.forEach((result) => {

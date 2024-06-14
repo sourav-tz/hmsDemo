@@ -134,7 +134,7 @@ const handleDragEnter = (e) => {
           error: {
             render({data}){
               // When the promise reject, data will contains the error
-              return data;}
+              return data.response.data;}
             },
         },
       )

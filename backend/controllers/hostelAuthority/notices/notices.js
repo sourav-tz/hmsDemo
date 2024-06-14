@@ -4,9 +4,11 @@ const getDataUri=require("../../../utils/datauri");
 const addnotice=async (req, res) => {
     try {
         const {title}=req.body;
-        const hostelNo=req.body.tokenHostelNo;
+        const hostelNo=req.body.hostelNo;
         const file=req.file;
         const fileUri=getDataUri(file);
+
+        console.log(req.body);  
       
         // const mycloud = await cloudinary.v2.uploader.upload(fileUri.content);
          // Upload file to Cloudinary
@@ -23,7 +25,7 @@ const addnotice=async (req, res) => {
             title:title,
             url:mycloud.secure_url,
             public_id:mycloud.public_id,
-            hostelNo
+            hostelNo:hostelNo
         });
         return res.status(200).json({
             success: true,
@@ -43,6 +45,9 @@ const getNotices=async (req, res) => {
     try {
       let hostelNo=req.body.tokenHostelNo;
       if(hostelNo==undefined)hostelNo=null;
+
+        console.log(hostelNo);
+
       const result = await db.notices.findAll({
         where: { hostelNo },
         attributes: ["noticeId",'title', 'url','public_id','createdAt']

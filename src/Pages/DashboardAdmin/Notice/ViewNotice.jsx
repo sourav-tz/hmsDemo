@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect,useState } from 'react';
 import { Button } from "@/components/ui/button"
 import {Card} from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -13,14 +13,52 @@ import 'react-toastify/dist/ReactToastify.css'
 import { DevTool } from "@hookform/devtools"
 import ReactPaginate from 'react-paginate';
 import '../../../MainStyles/Pagination.css';
+import axios from 'axios';
+import { set } from 'date-fns';
 
 const ViewNotice = () => {
 
     const totalPages = 10;
+    const [notices,setNotices] = useState([]);
+
+    const getNotices = async () => {
+        try {
+            const res = await axios({
+                method: 'get',
+                url: import.meta.env.VITE_BASE_URL + '/HA/getNotices',
+                withCredentials: true
+            })
+            console.log(res);
+            setNotices(res.data.result);   
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+
+    useEffect(() => {
+        getNotices();
+    }, [])
 
     const handlePageClick = (data) => { 
         console.log(data.selected);
     }
+
+    const deleteNotice = async (noticeId) => { 
+        try {
+            const res = await axios({
+                method: 'delete',
+                url: import.meta.env.VITE_BASE_URL + '/HA/deleteNotice',
+                data: {noticeId},
+                withCredentials: true
+            })
+            console.log(res);
+            getNotices();
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
 
     return (
         <>
@@ -33,46 +71,44 @@ const ViewNotice = () => {
                 <TableRow>
                 <TableHead className="w-[100px]">Notice ID</TableHead>
                 <TableHead>Title</TableHead>
-                <TableHead>Description</TableHead>
                 <TableHead>Date</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
-                <TableRow>
-                <TableCell className="font-medium">1</TableCell>
-                <TableCell>Notice 1</TableCell>
-                <TableCell>Notice Description 1</TableCell>
-                <TableCell className="text-left">12-05-2024</TableCell>
+                {/* {notices.length!==0?{notices.map(d=><TableRow>
+                <TableCell className="font-medium">{d.noticeId}</TableCell>
+                <TableCell>{d.title}</TableCell>
+                <TableCell className="text-left">{d.createdAt}</TableCell>
                 <TableCell className="text-right">
                     <Button className="bg-blue-700 hover:bg-blue-500">View</Button>
                     <Button className="bg-red-700 hover:bg-red-500">Delete</Button>
                 </TableCell>
-                </TableRow>
-                <TableRow>
-                <TableCell className="font-medium">2</TableCell>
-                <TableCell>Notice 2</TableCell>
-                <TableCell>Notice Description 2</TableCell>
-                <TableCell className="text-left">12-05-2024</TableCell>
+                </TableRow>)}:null} */}
+
+                {notices.length!==0?notices.map(d=><TableRow>
+                <TableCell className="font-medium">{d.noticeId}</TableCell>
+                <TableCell>{d.title}</TableCell>
+                <TableCell className="text-left">{d.createdAt}</TableCell>
                 <TableCell className="text-right">
-                    <Button className="bg-blue-700 hover:bg-blue-500">View</Button>
-                    <Button className="bg-red-700 hover:bg-red-500">Delete</Button>
+                    <Dialog>
+                    <DialogTrigger>
+                    <Button className="bg-blue-700 hover:bg-blue-500">Download</Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                    <DialogHeader>
+                    <DialogTitle>{d.title}</DialogTitle>
+                    </DialogHeader>
+                    <a href={d.url} target="_blank">Open PDF</a>
+                    </DialogContent>
+                    </Dialog>
+                    <Button onClick={()=>deleteNotice(d.noticeId)} className="bg-red-700 hover:bg-red-500">Delete</Button>
                 </TableCell>
-                </TableRow>
-                <TableRow>
-                <TableCell className="font-medium">3</TableCell>
-                <TableCell>Notice 3</TableCell>
-                <TableCell>Notice Description 3</TableCell>
-                <TableCell className="text-left">12-05-2024</TableCell>
-                <TableCell className="text-right">
-                    <Button className="bg-blue-700 hover:bg-blue-500">View</Button>
-                    <Button className="bg-red-700 hover:bg-red-500">Delete</Button>
-                </TableCell>
-                </TableRow>
+                </TableRow>):null}
             </TableBody>
         </Table>
         </Card>
-        <ReactPaginate
+        {/* <ReactPaginate
         breakLabel="..."
         nextLabel="next >"
         onPageChange={handlePageClick}
@@ -88,7 +124,7 @@ const ViewNotice = () => {
             nextClassName="page-item"
             nextLinkClassName="page-link"
             activeLinkClassName="active-page"
-      />
+      /> */}
         </div>
         </>
     )

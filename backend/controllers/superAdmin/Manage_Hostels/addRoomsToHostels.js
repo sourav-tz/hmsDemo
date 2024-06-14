@@ -24,7 +24,7 @@ function validateJsonData(jsonData, requiredAttributes) {
     const unique = array.filter((room) => {
       const isDuplicate = array.filter(
         (existingRoom) =>
-          existingRoom.roomNo === room.roomNo && existingRoom.hostelNo === room.hostelNo
+          existingRoom.roomNo === room.roomNo && existingRoom.hostelNo === room.hostelNo && existingRoom.block === room.block
       ).length;
       if (isDuplicate>1) {
         duplicates.push({message:"Some Rooms are common with other entry in CSV",...room});
@@ -106,7 +106,7 @@ const addRoomsToHostels = async (req, res) => {
         // remove duplicates from db
         unique.forEach((item, index) => {
             const roomExists = allRoomsData.some((room) => {
-                return room.hostelNo === item.hostelNo && room.roomNo === item.roomNo
+                return room.hostelNo === item.hostelNo && room.roomNo === item.roomNo && room.block === item.block
             })
             if (roomExists) {
                 finalWithErrors.push({message:"already Exists in database",...item})

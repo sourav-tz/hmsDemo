@@ -7,6 +7,14 @@ const raiseComplaint=async (req, res) => {
         const {subject, tag,rollNo,description} = req.body;
         const hostelNo=req.body.tokenHostelNo
 
+        if(hostelNo==null){
+            return res.status(400).json({
+                success: false,
+                message: 'Hostel No is required',
+            });
+        }
+
+
         // Create a new complaint
         const newComplaint = await db.complaints.create({
             subject,

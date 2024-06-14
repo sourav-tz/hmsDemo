@@ -125,7 +125,7 @@ const handleLogout = ()=>{}
             <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
                         <p onClick={()=>{changeSubMenu('studentInfo')}} className={(activeOption==='studentActions'?styles.activeItem:null)+ ' flex items-center gap-2'}><FaInfo /> <span className={(state?null:styles.hidden)+' mt-1'}>Student Actions</span></p>
                         <ul className={state&&subStudent?null:styles.hidden}>
-                        <li onClick={()=>{Navigator('/superAdminDashboard/studentActions/viewInfo')}} className={styles.subOptions+' ' + (activeSubOption==='viewInfo'?styles.activeSubOption:null)}>View Info</li>
+                        {/* <li onClick={()=>{Navigator('/superAdminDashboard/studentActions/viewInfo')}} className={styles.subOptions+' ' + (activeSubOption==='viewInfo'?styles.activeSubOption:null)}>View Info</li> */}
                         <li onClick={()=>{Navigator('/superAdminDashboard/studentActions/addCourses')}} className={styles.subOptions+' ' + (activeSubOption==='addCourses'?styles.activeSubOption:null)}>Add Courses</li>
                         </ul>
             </div>
@@ -133,6 +133,7 @@ const handleLogout = ()=>{}
                         <p onClick={()=>{changeSubMenu('roomActions')}} className={(activeOption==='roomActions'?styles.activeItem:null)+ ' flex items-center gap-2'}><MdOutlineBedroomChild /> <span className={(state?null:styles.hidden)+' mt-1'}>Room Actions</span></p>
                         <ul className={state&&subRoom?null:styles.hidden}>
                         <li onClick={()=>{Navigator('/superAdminDashboard/roomActions/allocateRooms')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='allocateRooms'?styles.activeSubOption:null)}>Allocate</li>
+                        <li onClick={()=>{Navigator('/superAdminDashboard/roomActions/manageRooms')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='manageRooms'?styles.activeSubOption:null)}>Manage Rooms</li>
                         </ul>
             </div>
             <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>

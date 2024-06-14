@@ -5,12 +5,14 @@ const {raiseComplaint,getComplaints}=require('../../controllers/student/complain
 const Login = require('../../controllers/Login/Login');
 const auth = require('../../middlewares/auth');
 const { getNotices } = require('../../controllers/student/notices');
+const LogOut = require('../../controllers/LoggingOut/LogOut');
 router.get('/', (req, res) => {
     res.send('success')
 })
 
 
 router.post('/login', Login);
+router.get('/studentLogout',auth,LogOut);
 
 router.post('/studentReg' , studentRegistration)
 //// Complaints module

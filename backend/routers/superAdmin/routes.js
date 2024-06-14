@@ -20,8 +20,8 @@ const {getAdminsAgainstHostel} = require('../../controllers/superAdmin/Manage_Ho
 const superAdminLogin = require('../../controllers/Login/superAdminLogin.js');
 const { downloadFile } = require('../../controllers/hostelAuthority/studentModule/downloadFile');
 
-
 const superAdminLoginToken = require('../../controllers/Login/superAdminLoginToken.js');
+const LogOut = require('../../controllers/LoggingOut/LogOut.js');
 
 
 var storage = multer.diskStorage({
@@ -40,7 +40,8 @@ router.get('/', (req, res) => {
 })
 
 router.post('/superlogin', superAdminLogin);
-router.post('/superAdminLoginToken',superAdminLoginToken)
+router.post('/superAdminLoginToken',superAdminLoginToken);
+router.get('/superAdminLogout', auth, LogOut);
 
 
 

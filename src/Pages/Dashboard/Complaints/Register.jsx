@@ -10,10 +10,27 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
+
+import {useForm,Controller} from 'react-hook-form'
+
+import { DevTool } from '@hookform/devtools';
 
 
 const Register = () => {
+
+  const {register, handleSubmit,formState:{errors},control} = useForm(
+    {
+      mode:'onBlur',
+      defaultValues:{
+        tags:'',
+        subject:'',
+      }
+    }
+  );
+
+
+
   return (
 <>
 
@@ -27,20 +44,33 @@ const Register = () => {
       <div className='flex flex-col w-[600px] gap-4 mt-6'>
         <div className='flex flex-col gap-2'>
           <label className='text-sm font-semibold'>Subject</label>
-          <Input placeholder='Enter Subject' />
+          <Input {...register} placeholder='Enter Subject' />
         </div>
         <div className='flex flex-col gap-2'>
           <label className='text-sm font-semibold'>Tags</label>
-          <Select>
-            <SelectTrigger>
-              <SelectValue>Select Tags</SelectValue>
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem>Tag 1</SelectItem>
-              <SelectItem>Tag 2</SelectItem>
-              <SelectItem>Tag 3</SelectItem>
-            </SelectContent>
-          </Select>
+          <Controller 
+            name='tags'
+            control={control}
+            render={({field})=>(
+              <Select {...field} 
+                onValueChange={(e)=>field.onChange(e)}
+                value={field.value}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a Tag"/>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="electricity">electricity</SelectItem>
+                  <SelectItem value="water">water</SelectItem>
+                  <SelectItem value="internet">internet</SelectItem>
+                  <SelectItem value="carpenter">carpenter</SelectItem>
+                  <SelectItem value="plumber">plumber</SelectItem>
+                  <SelectItem value="cleaning">cleaning</SelectItem>
+                  <SelectItem value="other">other</SelectItem>
+                </SelectContent>
+              </Select>
+            )}
+          />
         </div>
         <div className='flex flex-col gap-2'>
           <label className='text-sm font-semibold'>Complaint</label>
@@ -50,7 +80,7 @@ const Register = () => {
       </div>
       </form>
     </div>
-    
+    <DevTool control={control} placement='top-right' />
 </div>
 
 </>

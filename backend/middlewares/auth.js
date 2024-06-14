@@ -19,6 +19,9 @@ const auth = (req, res, next) => {
             req.body.tokenEmail = verifyUser.email;
             req.body.tokenHostelNo = verifyUser.hostelNo;
             req.body.TokenRole = verifyUser.role;
+            
+            console.log(req.body.tokenHostelNo);
+
             next();
         } catch (error) {
             return res.status(401).send("Invalid token")

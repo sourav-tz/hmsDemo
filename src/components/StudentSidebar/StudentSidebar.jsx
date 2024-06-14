@@ -140,13 +140,13 @@ const handleLogout = ()=>{}
                         <li onClick={()=>{Navigator('/studentDashboard/mess/menu')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='menu'?styles.activeSubOption:null)}>New Mess Menu</li>
                         </ul>
             </div>
-            <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
+            {/* <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
                         <p onClick={()=>{changeSubMenu('hostels')}} className={(activeOption==='hostels'?styles.activeItem:null)+ ' flex items-center gap-2'}><BsHouses /> <span className={(state?null:styles.hidden)+' mt-1'}>Hostels</span></p>
                         <ul className={state&&subHostel?null:styles.hidden}>
                         <li onClick={()=>{Navigator('/superAdminDashboard/hostels/manageHostels')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='manageHostels'?styles.activeSubOption:null)}>Manage Hostels</li>
                         <li onClick={()=>{Navigator('/superAdminDashboard/hostels/manageAdmins')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='manageAdmins'?styles.activeSubOption:null)}>Manage Admins</li>
                         </ul>
-            </div>
+            </div> */}
             </div>
             </div>
         </div>

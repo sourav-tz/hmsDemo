@@ -40,6 +40,7 @@ import ViewNotice from './Pages/DashboardAdmin/Notice/ViewNotice.jsx';
 import RegisterStudent from './Pages/DashboardAdmin/StudentsInfo/RegisterStudent/RegisterStudent.jsx';
 import UpdateStudent from './Pages/DashboardAdmin/StudentsInfo/RegisterStudent/UpdateStudent.jsx';
 import AdminSecuritysettings from './Pages/DashboardAdmin/Settings/AdminSecuritysettings.jsx';
+import ManageRooms from './Pages/DashboardSuperAdmin/RoomActions/ManageRooms/ManageRooms.jsx';
 import axios from 'axios';
 import {
   DropdownMenu,
@@ -119,11 +120,55 @@ const handleLogoutAdmin = ()=>{
 }  
 
 const handleSuperAdminLogout = ()=>{
-  Navigator('/superAdminLogin');
+  setLoadingPage(true);
+  const config = {
+      headers: {
+        "Content-Type": "application/json"
+        },
+        withCredentials: true
+      }
+  axios.get(import.meta.env.VITE_BASE_URL + '/SA/superAdminLogout',config)
+  .then(res=>{
+      console.log(res);
+      setLoadingPage(false);
+      Dispatcher(removeUserData());
+      Navigator('/superAdminLogin');
+
+  })
+  .catch(err=>{
+      setLoadingPage(false);
+      Navigator('/superAdminLogin');
+      console.log(err);
+      if(err.status===401){
+          Navigator('/superAdminLogin');
+      }
+  })
 }
 
 const handleStudentLogout = ()=>{
-  Navigator('/studentLogin');
+  setLoadingPage(true);
+  const config = {
+      headers: {
+        "Content-Type": "application/json"
+        },
+        withCredentials: true
+      }
+  axios.get(import.meta.env.VITE_BASE_URL + '/student/studentLogout',config)
+  .then(res=>{
+      console.log(res);
+      setLoadingPage(false);
+      Dispatcher(removeUserData());
+      Navigator('/studentLogin');
+
+  })
+  .catch(err=>{
+      setLoadingPage(false);
+      Navigator('/studentLogin');
+      console.log(err);
+      if(err.status===401){
+          Navigator('/studentLogin');
+      }
+  })
 }
 
 
@@ -195,6 +240,7 @@ const handleStudentLogout = ()=>{
             <Route path='/superAdminDashboard/hostels/manageAdmins' element={<ManageAdmin />} />
             <Route path='/superAdminDashboard/hostels/manageHostels' element={<ManageHostels />} />
             <Route path='/superAdminDashboard/roomActions/allocateRooms' element={<RoomsUpload />} />
+            <Route path='/superAdminDashboard/roomActions/manageRooms' element={<ManageRooms />} />
             <Route path='/superAdminDashboard/settings/security' element={<Securitysettings />} />
             <Route path='/superAdminDashboard/studentActions/addCourses' element={<AddCourses />} />
             

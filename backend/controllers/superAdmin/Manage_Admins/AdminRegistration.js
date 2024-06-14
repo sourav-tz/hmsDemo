@@ -12,7 +12,10 @@ const AdminRegistration = async (req, res) => {
 
         try {
             const { email, name, roleType, mobile, password, hostelNo } = req.body;
+            const isExist = await db.user.findOne({where: {email: email}})
+            if(isExist) return res.status(400).json({message:"User already exists"});
 
+            
             const salt = await bcrypt.genSalt(10)
             const securePassword = await bcrypt.hash(password, salt)
 

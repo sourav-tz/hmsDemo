@@ -8,13 +8,24 @@ const getRoomsData = async (req, res) => {
         const filters = {};
         const hostelNo = req.body.tokenHostelNo;
 
-        const totalRooms = await db.rooms.count({where:{hostelNo: hostelNo}})
-        const fullyFilledCount = await db.rooms.count({ where: { currentOccupancy: 'Fully-Filled' ,hostelNo:hostelNo} });
-        const partiallyFilledCount = await db.rooms.count({ where: { currentOccupancy: 'Partially-Filled' ,hostelNo:hostelNo} });
-        const vacantCount = await db.rooms.count({ where: { currentOccupancy: 'vacant',hostelNo:hostelNo } });
+        const allRoomsData = await db.rooms.findAll({where:{hostelNo: hostelNo}})
+        // console.log('allRoomsData', allRoomsData);
+        const totalRooms = allRoomsData.length;
+        
+        let fullyFilledCount = 0;
+        let partiallyFilledCount = 0;
+        let vacantCount = 0;
+        
+        allRoomsData.forEach(element => {
+            if(element.dataValues.currentOccupancy === 'vacant') vacantCount++;
+            else if(element.dataValues.currentOccupancy === 'Partially-Filled') partiallyFilledCount++;
+            else if(element.dataValues.currentOccupancy === 'Fully-Filled')fullyFilledCount++;
+        });
 
+      
 
-        // filters based on query parameters
+        // filters based on query parametersroomNo,block,floorNo,maxOccupancy,hostelNo
+
         if (req.query.roomNo) {
             filters.roomNo = req.query.roomNo;
         }
@@ -42,17 +53,7 @@ const getRoomsData = async (req, res) => {
         if (totalpages === 0) {
             totalpages = Math.ceil((await db.rooms.count({
                 where: filters,
-                // include: [
-                //     {
-                //         model: db.roomsStudentMapping,
-                //         required:false,
-                //         where: { checkOutDate: null },
-                //         include: [{
-                //             model: db.students,
-    
-                //         }]
-                //     }
-                // ]
+             
             })) / limit);
             console.log(totalpages);
             if (totalpages == 0) {
@@ -64,23 +65,7 @@ const getRoomsData = async (req, res) => {
         }
 
         const startIndex = (page - 1) * limit;
-        // Fetch data from the student table based on filters
-        // const roomsData = await db.roomsStudentMapping.findAll({
-        //     where: { ...filters, checkOutDate: null },
-        //     offset: startIndex,
-        //     limit: limit,
-        //     include: [
-        //         {
-        //             model: db.rooms,
-        //             where: filters,
-        //         }, {
-        //             model: db.students
-        //             , where: filters
-        //         }
-        //     ]
-        // });
-        // console.log("before fetching roomsdata");
-        // console.log(db);
+        
         const roomsData = await db.rooms.findAll({
             where: filters,
             offset: startIndex,

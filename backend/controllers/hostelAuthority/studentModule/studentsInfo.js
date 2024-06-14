@@ -8,29 +8,31 @@ exports.studentsInfo = async (req, res) => {
     const limit = parseInt(req.query.limit);
     let totalpages = parseInt(req.query.total);
     // Define filters based on query parameters
-    const filters = {};
+    
     const filtersProfile = {};
-    let myQuery={};
-    console.log(req.query);
+    let myQuery = {};
+    // we are going to fetch only those students who are resident into that hostel
+    myQuery.hostelNo = req.body.tokenHostelNo;
+
     if (req.query.rollNo) {
-      filters.rollNo = req.query.rollNo;
+      
       myQuery.rollNo={ [Op.startsWith]: `${req.query.rollNo}` };
 
     }
     if (req.query.firstName) {
-      filters.firstName = req.query.firstName;
+      
       myQuery.firstName={ [Op.startsWith]: `${req.query.firstName}` };
     }
     if (req.query.lastName) {
-      filters.lastName = req.query.lastName;
+     
       myQuery.lastName={ [Op.startsWith]: `${req.query.lastName}` };
     }
     if (req.query.courseId) {
-      filters.courseId = req.query.courseId;
+      
       myQuery.courseId={ [Op.startsWith]: `${req.query.courseId}` };
     }
     if (req.query.year) {
-      filters.year = req.query.year;
+      console.log(req.query.year);
       myQuery.year=req.query.year;
     }
     if (req.query.state) {
@@ -38,7 +40,7 @@ exports.studentsInfo = async (req, res) => {
     }
     if (totalpages == 0) {
       totalpages = Math.ceil((await db.students.count({
-        where: filters,
+        where: myQuery,
         include: [
           {
             model: db.profiles,
