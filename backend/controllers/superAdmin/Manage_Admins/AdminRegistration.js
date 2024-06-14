@@ -12,7 +12,9 @@ const AdminRegistration = async (req, res) => {
 
         try {
             const { email, name, roleType, mobile, password, hostelNo } = req.body;
-            const isExist = await db.user.findOne({where: {email: email}})
+
+            const isExist = await db.users.findOne({where: {email: email}})
+
             if(isExist) return res.status(400).json({message:"User already exists"});
 
             
