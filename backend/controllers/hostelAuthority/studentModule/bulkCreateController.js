@@ -15,7 +15,7 @@ function filterDuplicates(array) {
 
   return { duplicates, unique };
 }
-async function uploadStudents(data){
+async function uploadStudents(data,emailAdmin){
   try {
     const transaction = await db.sequelize.transaction();
     try {
@@ -136,7 +136,7 @@ exports.bulkCreateController = async (req, res) => {
          //*transaction
          try {
           const results = await Promise.all(
-            inputData.map((entry) => uploadStudents(entry))
+            inputData.map((entry) => uploadStudents(entry,emailAdmin))
           );
 
           results.forEach((result) => {
