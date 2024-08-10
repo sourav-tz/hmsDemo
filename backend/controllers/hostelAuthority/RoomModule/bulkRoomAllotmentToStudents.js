@@ -4,7 +4,6 @@ const db = require("../../../models/index")
 const bulkRoomAllotmentToStudent = async (req, res) => {
 
     try {
-
         const studentsData = req.body.data; // Array of student data
         const emailAdmin=req.body.email;
 
@@ -26,7 +25,6 @@ const bulkRoomAllotmentToStudent = async (req, res) => {
                 allotments.push({ rollNo, message: `Student is already in some room` });
                 continue;
             }
-
             const roomData = await db.rooms.findOne({
                 where: { roomNo: roomNo, hostelNo: hostelNo },
             });
@@ -57,10 +55,7 @@ const bulkRoomAllotmentToStudent = async (req, res) => {
                         rollNo: rollNo,
                         hostelNo: hostelNo,
                         comment: "Room Alloted Successfully",
-
-
                         lastUpdatedBy: emailAdmin,
-
                     }, { transaction: transaction, validate: true });
 
                     await db.students.update({ roomId: roomId, hostelNo: hostelNo }, {
