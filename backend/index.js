@@ -57,3 +57,6 @@ db.sequelize.authenticate()
 //         console.log('listening on post 3000');
 //     })
 // })
+
+
+//test
