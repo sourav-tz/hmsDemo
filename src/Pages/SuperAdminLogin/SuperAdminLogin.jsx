@@ -5,14 +5,13 @@ import logoImage from '../../Assets/nit-logo.png'
 import { IoArrowBack } from 'react-icons/io5'
 import { IconContext } from 'react-icons'
 import { useNavigate } from 'react-router-dom'
-import { changeLoginStatus } from '../../Store/Reducers/loginSlice'
 import { useDispatch } from 'react-redux'
 import { setUserData } from '../../Store/Reducers/userSlice'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import config from '../../config/config'
+
 
 import GoogleButton from '../../components/Button/GoogleButton'
 
@@ -31,7 +30,8 @@ export default function SuperAdminLogin() {
   const [loading, setLoading] = useState(false)
   const [step, setStep] = useState(false)
   const [OTP,setOTP] = useState(null);
-  const Navigator = useNavigate()
+  const Navigator = useNavigate();
+  const Dispatcher = useDispatch();
   const [expire, setExpire] = useState('5:00');
 
 
@@ -112,7 +112,7 @@ export default function SuperAdminLogin() {
       // Navigator('/superAdminDashboard/main/home');
       setLoading(false)
     } catch (err) {
-      toast.error('Invalid Credentials')
+      toast.error('FE:Error in SA Login')
       setLoading(false)
     }
   }
@@ -131,7 +131,10 @@ export default function SuperAdminLogin() {
       })
       console.log(res)
       if (res.data.message === 'OTP verified Successfully') {
-        Navigator('/superAdminDashboard/main/home')
+        console.log("added user data to redux");
+        console.log(res.data);
+        Dispatcher(setUserData(res.data));
+        Navigator('/superAdminDashboard/main/home');
       }
     } catch (err) {
       toast.error('Invalid OTP')
@@ -151,6 +154,8 @@ export default function SuperAdminLogin() {
       })
       console.log(res)
       if (res.data.message === 'Otp sent successfully') {
+        
+        Dispatcher(setUserData(res.data));
         toast.success('OTP sent');
         setExpire('5:00');
       }

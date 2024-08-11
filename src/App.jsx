@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux'
 import React from 'react';
 import { Route,Routes, useLocation } from "react-router-dom";
 import Role from "./Pages/Role/Role";
@@ -8,7 +8,6 @@ import Adminlogin from "./Pages/Adminlogin/Adminlogin";
 import Studentlogin from "./Pages/Studentlogin/Studentlogin";
 import AdminDashboard from "./Pages/DashboardAdmin/AdminDashboard";
 import SuperAdminLogin from "./Pages/SuperAdminLogin/SuperAdminLogin";
-import DashboardSuperAdmin from "./Pages/DashboardSuperAdmin/DashboardSuperAdmin";
 import ForgetPassword from "./Pages/ForgetPassword/ForgetPassword";
 import StudentSignUp from "./Pages/StudentSignUp/StudentSignUp";
 import VerifyOtp from "./Pages/ForgetPassword/VerifyOtp";
@@ -42,6 +41,8 @@ import UpdateStudent from './Pages/DashboardAdmin/StudentsInfo/RegisterStudent/U
 import AdminSecuritysettings from './Pages/DashboardAdmin/Settings/AdminSecuritysettings.jsx';
 import ManageRooms from './Pages/DashboardSuperAdmin/RoomActions/ManageRooms/ManageRooms.jsx';
 import axios from 'axios';
+import CloseRoute from "./Auth/CloseRoute.jsx";
+import { removeUserData } from './Store/Reducers/userSlice.js'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -65,7 +66,7 @@ const [loading,setLoadingPage] = useState(false);
 
 const location = useLocation();
 const Navigator = useNavigate();
-
+const Dispatcher = useDispatch();
 useEffect(()=>{
   if(location.pathname.split('/')[1]==='adminDashboard'){
     console.log(location.pathname.split('/')[1]);
@@ -93,7 +94,6 @@ useEffect(()=>{
 
 
 const handleLogoutAdmin = ()=>{
-  console.log('called');
   setLoadingPage(true);
   const config = {
       headers: {
@@ -103,7 +103,6 @@ const handleLogoutAdmin = ()=>{
       }
   axios.get(import.meta.env.VITE_BASE_URL + '/HA/adminLogout',config)
   .then(res=>{
-      console.log(res);
       setLoadingPage(false);
       Dispatcher(removeUserData());
       Navigator('/adminLogin');
@@ -111,7 +110,9 @@ const handleLogoutAdmin = ()=>{
   })
   .catch(err=>{
       setLoadingPage(false);
+      Dispatcher(removeUserData());
       Navigator('/adminLogin');
+      console.log("error in admin logout");
       console.log(err);
       if(err.status===401){
           Navigator('/adminLogin');
@@ -129,7 +130,6 @@ const handleSuperAdminLogout = ()=>{
       }
   axios.get(import.meta.env.VITE_BASE_URL + '/SA/superAdminLogout',config)
   .then(res=>{
-      console.log(res);
       setLoadingPage(false);
       Dispatcher(removeUserData());
       Navigator('/superAdminLogin');
@@ -137,6 +137,7 @@ const handleSuperAdminLogout = ()=>{
   })
   .catch(err=>{
       setLoadingPage(false);
+      Dispatcher(removeUserData());
       Navigator('/superAdminLogin');
       console.log(err);
       if(err.status===401){
@@ -145,7 +146,7 @@ const handleSuperAdminLogout = ()=>{
   })
 }
 
-const handleStudentLogout = ()=>{
+const handleStudentLogout = ()=>{  
   setLoadingPage(true);
   const config = {
       headers: {
@@ -155,7 +156,6 @@ const handleStudentLogout = ()=>{
       }
   axios.get(import.meta.env.VITE_BASE_URL + '/student/studentLogout',config)
   .then(res=>{
-      console.log(res);
       setLoadingPage(false);
       Dispatcher(removeUserData());
       Navigator('/studentLogin');
@@ -209,40 +209,39 @@ const handleStudentLogout = ()=>{
             <Route path='/forgetPass' element={<ForgetPassword />} />
             <Route path='/StudentSignUp' element={<StudentSignUp />} />
             <Route path='/VerifyOtp' element={<VerifyOtp/>} />
-
             {/* Students */}
-            <Route path='/studentDashboard/main/home' element={<Dashboard />} />
-            <Route path='/studentDashboard/settings/profile' element={<StudentProfileSettings />} />
-            <Route path='/studentDashboard/complaints/register' element={<Register />} />
-            <Route path='/studentDashboard/complaints/status' element={<ComplaintStatus />} />
-            <Route path='/studentDashboard/mess/menu' element={<NewMenu />} />
+            <Route path='/studentDashboard/main/home' element={<CloseRoute><Dashboard /></CloseRoute>} />
+            <Route path='/studentDashboard/settings/profile' element={<CloseRoute><StudentProfileSettings /></CloseRoute>} />
+            <Route path='/studentDashboard/complaints/register' element={<CloseRoute><Register /></CloseRoute>} />
+            <Route path='/studentDashboard/complaints/status' element={<CloseRoute><ComplaintStatus /></CloseRoute>} />
+            <Route path='/studentDashboard/mess/menu' element={<CloseRoute><NewMenu /></CloseRoute>} />
 
             
             {/* Admin Routes */}
             <Route path='/adminLogin' element={<Adminlogin />} />
             <Route path='/sandbox' element={<Sandbox />} />
-            <Route path='/adminDashboard/main/home' element={<AdminDashboard />} />
+            <Route path='/adminDashboard/main/home' element={<CloseRoute><AdminDashboard /></CloseRoute>} />
             <Route path='/ResetPassword' element={<ResetPassword/>} />
-            <Route path='/adminDashboard/studentInfo/register' element={<RegisterStudent/>} />
-            <Route path='/adminDashboard/studentInfo/update' element={<UpdateStudent/>} />
-            <Route path='/adminDashboard/studentInfo/viewInfo' element={<ViewInfo />} />
-            <Route path='/adminDashboard/studentInfo/uploadInfo' element={<UploadInfo />} />
-            <Route path='/adminDashboard/roomInfo/allotRooms' element={<AllotRooms />} />
-            <Route path='/adminDashboard/complaints/complaints' element={<Complaints />} />
-            <Route path='/adminDashboard/notice/uploadNotice' element={<UploadNotice />} />
-            <Route path='/adminDashboard/notice/viewNotice' element={<ViewNotice />} />
-            <Route path='/adminDashboard/settings/security' element={<AdminSecuritysettings />} />
+            <Route path='/adminDashboard/studentInfo/register' element={<CloseRoute><RegisterStudent/></CloseRoute>} />
+            <Route path='/adminDashboard/studentInfo/update' element={<CloseRoute><UpdateStudent/></CloseRoute>} />
+            <Route path='/adminDashboard/studentInfo/viewInfo' element={<CloseRoute><ViewInfo /></CloseRoute>} />
+            <Route path='/adminDashboard/studentInfo/uploadInfo' element={<CloseRoute><UploadInfo /></CloseRoute>} />
+            <Route path='/adminDashboard/roomInfo/allotRooms' element={<CloseRoute><AllotRooms /></CloseRoute>} />
+            <Route path='/adminDashboard/complaints/complaints' element={<CloseRoute><Complaints /></CloseRoute>} />
+            <Route path='/adminDashboard/notice/uploadNotice' element={<CloseRoute><UploadNotice /></CloseRoute>} />
+            <Route path='/adminDashboard/notice/viewNotice' element={<CloseRoute><ViewNotice /></CloseRoute>} />
+            <Route path='/adminDashboard/settings/security' element={<CloseRoute><AdminSecuritysettings /></CloseRoute>} />
 
             {/*super Admin Routes  */}
             <Route path='/superAdminLogin' element={<SuperAdminLogin />} />
             <Route path='/superAdminLogin/superAdminOtp' element={<SuperAdminOtp/>} />
-            <Route path='/superAdminDashboard/main/home' element={<Home />} />
-            <Route path='/superAdminDashboard/hostels/manageAdmins' element={<ManageAdmin />} />
-            <Route path='/superAdminDashboard/hostels/manageHostels' element={<ManageHostels />} />
-            <Route path='/superAdminDashboard/roomActions/allocateRooms' element={<RoomsUpload />} />
-            <Route path='/superAdminDashboard/roomActions/manageRooms' element={<ManageRooms />} />
-            <Route path='/superAdminDashboard/settings/security' element={<Securitysettings />} />
-            <Route path='/superAdminDashboard/studentActions/addCourses' element={<AddCourses />} />
+            <Route path='/superAdminDashboard/main/home' element={<CloseRoute><Home /></CloseRoute>} />
+            <Route path='/superAdminDashboard/hostels/manageAdmins' element={<CloseRoute><ManageAdmin /></CloseRoute>} />
+            <Route path='/superAdminDashboard/hostels/manageHostels' element={<CloseRoute><ManageHostels /></CloseRoute>} />
+            <Route path='/superAdminDashboard/roomActions/allocateRooms' element={<CloseRoute><RoomsUpload /></CloseRoute>} />
+            <Route path='/superAdminDashboard/roomActions/manageRooms' element={<CloseRoute><ManageRooms /></CloseRoute>} />
+            <Route path='/superAdminDashboard/settings/security' element={<CloseRoute><Securitysettings /></CloseRoute>} />
+            <Route path='/superAdminDashboard/studentActions/addCourses' element={<CloseRoute><AddCourses /></CloseRoute>} />
             
         </Routes>    
     </>

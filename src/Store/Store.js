@@ -12,7 +12,6 @@ import {
   REGISTER,
 } from 'redux-persist'
 import userSlice from './Reducers/userSlice';
-import loginSlice from './Reducers/loginSlice';
 import viewInfoSlice from './Reducers/viewInfoSlice';
 import uploadStudentSlice from './Reducers/uploadStudentSlice';
 import roomSlice from './Reducers/roomSlice';
@@ -25,7 +24,6 @@ const persistConfig = {
 };
 
 const rootReducer =combineReducers({ 
-  'loginStatus':loginSlice,
     'viewInfoStates':viewInfoSlice,
     'userStorage':userSlice,
     'uploadStudent':uploadStudentSlice,
