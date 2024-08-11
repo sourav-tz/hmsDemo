@@ -105,6 +105,78 @@ module.exports = {
         createdAt: new Date(),
         last_updated_at:new Date(),
         deletedAt:null
+      },
+      {
+        email:"523110021@nitkkr.ac.in",
+        // password:"asdfghjkl",
+        password:"$2a$10$9JulqYDSuPv8qzb8mAEB6eBLYRjKzX/3uA4zzTi/Pzw8v0S69eJ96",
+        role:"SuperAdmin",
+        createdAt: new Date(),
+        last_updated_at:new Date(),
+        deletedAt:null
+      },
+      {
+        email:"523110035@nitkkr.ac.in",
+        // password:"asdfghjkl",
+        password:"$2a$10$9JulqYDSuPv8qzb8mAEB6eBLYRjKzX/3uA4zzTi/Pzw8v0S69eJ96",
+        role:"SuperAdmin",
+        createdAt: new Date(),
+        last_updated_at:new Date(),
+        deletedAt:null
+      },
+      {
+        email:"523110019@nitkkr.ac.in",
+        // password:"asdfghjkl",
+        password:"$2a$10$9JulqYDSuPv8qzb8mAEB6eBLYRjKzX/3uA4zzTi/Pzw8v0S69eJ96",
+        role:"SuperAdmin",
+        createdAt: new Date(),
+        last_updated_at:new Date(),
+        deletedAt:null
+      },
+      {
+        email:"523110020@nitkkr.ac.in",
+        // password:"asdfghjkl",
+        password:"$2a$10$9JulqYDSuPv8qzb8mAEB6eBLYRjKzX/3uA4zzTi/Pzw8v0S69eJ96",
+        role:"SuperAdmin",
+        createdAt: new Date(),
+        last_updated_at:new Date(),
+        deletedAt:null
+      },
+      {
+        email:"523110024@nitkkr.ac.in",
+        // password:"asdfghjkl",
+        password:"$2a$10$9JulqYDSuPv8qzb8mAEB6eBLYRjKzX/3uA4zzTi/Pzw8v0S69eJ96",
+        role:"SuperAdmin",
+        createdAt: new Date(),
+        last_updated_at:new Date(),
+        deletedAt:null
+      },
+      {
+        email:"523110026@nitkkr.ac.in",
+        // password:"asdfghjkl",
+        password:"$2a$10$9JulqYDSuPv8qzb8mAEB6eBLYRjKzX/3uA4zzTi/Pzw8v0S69eJ96",
+        role:"SuperAdmin",
+        createdAt: new Date(),
+        last_updated_at:new Date(),
+        deletedAt:null
+      },
+      {
+        email:"523110028@nitkkr.ac.in",
+        // password:"asdfghjkl",
+        password:"$2a$10$9JulqYDSuPv8qzb8mAEB6eBLYRjKzX/3uA4zzTi/Pzw8v0S69eJ96",
+        role:"SuperAdmin",
+        createdAt: new Date(),
+        last_updated_at:new Date(),
+        deletedAt:null
+      },
+      {
+        email:"523110018@nitkkr.ac.in",
+        // password:"asdfghjkl",
+        password:"$2a$10$9JulqYDSuPv8qzb8mAEB6eBLYRjKzX/3uA4zzTi/Pzw8v0S69eJ96",
+        role:"SuperAdmin",
+        createdAt: new Date(),
+        last_updated_at:new Date(),
+        deletedAt:null
       }
     ], {});
   },

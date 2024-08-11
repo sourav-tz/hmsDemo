@@ -74,21 +74,5 @@ router.post('/singleRoomAllot',auth, singleStudentAllot);
 router.get('/downloadfile',auth, downloadFile);
 router.post('/singleRoomRemove',auth, singleStudentRemove)
 router.get('/getRoomsData',auth, getRoomsData)
-router.get('/getRoomTimeLine',auth,getRoomTimeline)
-
-//// Complaints module
-router.get('/getComplaints',auth,getComplaintsAdmin);
-router.patch('/resolveComplaint',auth,resoleComplaint);
-router.patch('/rejectComplaint',auth,rejectComplaint);
-
-//user update
-router.patch('/updatePassword', updatePassword);
-//// hostel notices
-router.post('/addnotice',auth,singleUpload,addnotice);
-router.get('/getNotices',auth,getNotices);
-router.delete('/deleteNotice',auth,deleteNotices);
-
-
-
 
 module.exports = router;

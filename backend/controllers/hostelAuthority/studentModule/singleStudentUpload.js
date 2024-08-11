@@ -3,7 +3,8 @@ const db = require('../../../models/index')
 const singleStudentUpload=async (req,res)=>{
     try {
           //? get json data from body
-          const data = req.body;   
+          const data = req.body;
+          const emailAdmin=req.body.email;    
         const studentData = await db.students.findOne({
           where: { rollNo:data.rollNo}
         });
@@ -23,7 +24,8 @@ const singleStudentUpload=async (req,res)=>{
               const usersData = {
                 email: data.email,
                 password:securePassword,
-                role: 'Student',
+                role: 'student',
+                lastUpdatedBy: emailAdmin,
               };
           
               const insertedUser = await db.users.create(usersData, { transaction, validate: true });
@@ -34,7 +36,8 @@ const singleStudentUpload=async (req,res)=>{
                 firstName: data.firstName,
                 lastName: data.lastName,
                 year: data.year,
-                email: insertedUser.email,
+                email: insertedUsers.email,
+                lastUpdatedBy: emailAdmin,
                 courseId: data.courseId, // given using dropdown
               }, { transaction, validate: true });
           
@@ -42,6 +45,7 @@ const singleStudentUpload=async (req,res)=>{
               const profilesData = {
                 ...data,
                 rollNo: insertedStudents.rollNo,
+                lastUpdatedBy: emailAdmin,
               };
           
               await db.profiles.create(profilesData, { transaction, validate: true });
@@ -53,6 +57,7 @@ const singleStudentUpload=async (req,res)=>{
                 bankName: data.bankName,
                 accNumber: data.accNumber,
                 IFSC: data.IFSC,
+                lastUpdatedBy: emailAdmin,
               };
           
               await db.bankdetails.create(bankdetailsData, { transaction, validate: true });

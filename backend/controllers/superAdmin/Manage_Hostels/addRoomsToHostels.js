@@ -85,9 +85,7 @@ const addRoomsToHostels = async (req, res) => {
 
     try {
 
-
-
-        const jsonObj = req.body.data;
+        const jsonRooms = req.body.data;
         // console.log(jsonRooms);
 
         const requiredAttributes = ["roomNo","block","floorNo","maxOccupancy","hostelNo"];

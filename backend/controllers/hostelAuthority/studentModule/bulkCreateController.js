@@ -27,7 +27,8 @@ async function uploadStudents(data,emailAdmin){
       await db.users.create({
         email: data.email,
         password: securePassword,
-        role: 'Student',
+        role: 'student',
+        lastUpdatedBy: emailAdmin,
       },{transaction,validate:true});
 
       await db.students.create({
@@ -36,6 +37,7 @@ async function uploadStudents(data,emailAdmin){
               lastName: data.lastName,
               year: data.year,
               email: data.email,
+              lastUpdatedBy: emailAdmin,
               courseId: data.courseId,
               hostelNo:data.hostelNo,
               roomId:data.roomId,
@@ -44,6 +46,7 @@ async function uploadStudents(data,emailAdmin){
        await db.profiles.create({
         ...data,
         rollNo: data.rollNo,
+        lastUpdatedBy: emailAdmin,
        },{transaction,validate: true});
 
        await db.bankdetails.create({
@@ -52,6 +55,7 @@ async function uploadStudents(data,emailAdmin){
               bankName: data.bankName,
               accNumber: data.accNumber,
               IFSC: data.IFSC,
+              lastUpdatedBy: emailAdmin,
        },{transaction,validate: true});
 
       await transaction.commit();
@@ -94,7 +98,7 @@ exports.bulkCreateController = async (req, res) => {
     try {
       //? get json data from body
         const jsonObj = req.body.data;
-        // const hostelNo = req.body.hostelNo;
+        const emailAdmin=req.body.email;
         const requiredAttributes = ["rollNo","firstName","lastName","year","email",
                                   "bloodGroup","identificationMark","gender","pEmail","subAddress",
                                   "city","state","pinCode","contactNumber","secondaryContact","fatherName",
