@@ -178,7 +178,7 @@ const handleStudentLogout = ()=>{
     {superAdmin?<SuperSidebar />:null}
     {student?<StudentSidebar />:null}
 
-    {admin||superAdmin||student?<div className='fixed top-4 right-20'>
+    {admin||superAdmin||student?<div className='absolute top-4 right-20'>
       <DropdownMenu>
       <DropdownMenuTrigger><div className='text-gray-700 p-2 rounded-md border-2 hover:border-gray-700'><RxHamburgerMenu size={30}/></div></DropdownMenuTrigger>
       <DropdownMenuContent>
