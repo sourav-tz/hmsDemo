@@ -86,7 +86,7 @@ const Studentlogin = ()=>{
             </div>
             <div className={styles.inputSection}>
             <div className={styles.inputBoxes}>
-                <form onSubmit={onSubmit}>
+                <form onSubmit={onSubmit} className='flex flex-col gap-5'>
                 <Textinput onChange={(e)=>{
                     onSetMyData('email',e.target.value);
                 }} style={{minWidth:'300px'}} label="Email"/>
@@ -96,8 +96,8 @@ const Studentlogin = ()=>{
                         onSetMyData('password',e.target.value);
                     }
                 }
-                type='password' style={{marginTop:'25px',minWidth:'300px'}} label="Password"/>
-                <Button variant="contained" type="submit" className={`bg-indigo-500`} style={{marginTop:'25px',minWidth:'300px'}} text="login"/>
+                type='password' style={{marginTop:'0px',minWidth:'300px'}} label="Password"/>
+                <Button variant="contained" type="submit" className={`bg-indigo-500`} style={{marginTop:'0px',minWidth:'300px'}} text="login"/>
                 </form>
                 <p style={{marginTop:'10px',fontSize:'14px'}}>Forgot Password?</p>
                 <div style={{display:'flex', flexDirection: 'row'}}>
