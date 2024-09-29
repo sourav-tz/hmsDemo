@@ -10,6 +10,7 @@ import { FaGear } from "react-icons/fa6";
 import { useSelector } from 'react-redux';
 import { BsHouses } from "react-icons/bs";
 import { useLocation,useNavigate } from 'react-router-dom';
+import storage from 'redux-persist/lib/storage';
 
 export default function SuperSidebar(){
 
@@ -20,7 +21,7 @@ export default function SuperSidebar(){
     const [activeSubOption,setActiveSubOption] = useState('home');
 
     const [state,changeState] = useState(false);   
-    const [userData,setUserData] = useState({});
+    const userData = useSelector(state=>state.userStorage.data);
 
     useEffect(()=>{
         setActiveOption(param.pathname.split('/')[2]);
@@ -113,7 +114,7 @@ const handleLogout = ()=>{}
                 <div id="userIconSidebar" className={styles.userIcon}>
                 {userData.avatar!=undefined?<img className={styles.avatarImage} src={userData.avatar} />:<FaUserLarge size="1.5em" color="white"/>}
                 </div>
-                <div className={state?null:styles.hidden} style={{marginLeft:'8px',marginTop:'0px'}}><p>{userData.name!==undefined?userData.name:'Null'}<br/><span className={styles.userRole} style={{fontSize:'12px'}}>{userData.roleType!==undefined?`Role: ${userData.roleType}`:'Role: Null'}</span></p></div>
+                <div className={state?null:styles.hidden} style={{marginLeft:'8px',marginTop:'0px'}}><p>{userData.email!==undefined?`${userData.email.slice(0,9)}`:'NULL'}<br/><span className={styles.userRole} style={{fontSize:'12px'}}>{userData.role!==undefined?`Role: ${userData.role}`:'Role: Null'}</span></p></div>
             </div>
             <div className={styles.listContainer}>
             <div  className={(styles.item) +' '+' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
