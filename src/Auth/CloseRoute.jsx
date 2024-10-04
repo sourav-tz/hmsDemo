@@ -6,7 +6,7 @@ function CloseRoute({ children }) {
   console.log("is logged in "+typeof data +" "+data);
   
   if (data!=null) {
-    return children
+    return <div className="md:w-[94%] ml-auto">{children}</div>
   } else {
     return <Navigate to="/"/>
   }

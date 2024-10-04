@@ -152,7 +152,7 @@ const deleteCourse = async (courseId) => {
             <h2 className="text-xl font-bold">Course List</h2>
             <Button size="sm" className="bg-blue-700 hover:bg-blue-500">Export to CSV</Button>
           </div>
-          <Card className="w-[1300px]">
+          <Card className="">
             <Table>
               <TableHeader>
                 <TableRow>

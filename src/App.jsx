@@ -199,8 +199,9 @@ const handleStudentLogout = ()=>{
     </div>:null}
 
     {loading?<Loadingpage />:null}
-
-          <Routes>
+         <div className=''>
+           <div className='md:mx-auto'>
+           <Routes>
             
             {/* <Route path='*' element={<Role />} /> */}
 
@@ -244,6 +245,8 @@ const handleStudentLogout = ()=>{
             <Route path='/superAdminDashboard/studentActions/addCourses' element={<CloseRoute><AddCourses /></CloseRoute>} />
             
         </Routes>    
+           </div>
+        </div>
     </>
   )
 }

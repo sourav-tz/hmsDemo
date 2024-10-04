@@ -89,14 +89,14 @@ const addRoomsToHostels = async (req, res) => {
         // console.log(jsonRooms);
 
         const requiredAttributes = ["roomNo","block","floorNo","maxOccupancy","hostelNo"];
-        validateJsonData(jsonObj, requiredAttributes);
+        validateJsonData(jsonRooms, requiredAttributes);
         const allRoomsData = await db.rooms.findAll();
 
         let finalWithErrors=[];
         let theseEnteredInDB=[];
 
         // remove duplicates from csv
-        const { duplicates, unique } = filterDuplicates(jsonObj);
+        const { duplicates, unique } = filterDuplicates(jsonRooms);
         finalWithErrors=[...duplicates];
         console.log(unique);
 
