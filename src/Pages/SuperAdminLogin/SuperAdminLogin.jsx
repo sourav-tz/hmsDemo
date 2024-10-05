@@ -209,7 +209,7 @@ export default function SuperAdminLogin() {
                 />
                 <Textinput
                   type='password'
-                  style={{ marginTop: '25px', minWidth: '300px' }}
+                  style={{ marginTop: '0px', minWidth: '300px' }}
                   onChange={handlePassword}
                   label='Password'
                 />
@@ -217,7 +217,7 @@ export default function SuperAdminLogin() {
                   onClick={handleSubmit}
                   loading={loading}
                   variant='contained'
-                  style={{ marginTop: '25px', minWidth: '300px' }}
+                  style={{ marginTop: '0px', minWidth: '300px' }}
                   text='login'
                 />
 
@@ -225,11 +225,11 @@ export default function SuperAdminLogin() {
                   onClick={handelGoogleClick}
                   loading={loading}
                   variant='contained'
-                  style={{ marginTop: '25px' }}
+                  style={{ marginTop: '0px' }}
                   text='Continue With Google'
                 />
 
-                <p style={{ marginTop: '10px' }}>Forgot Password?</p>
+                <p style={{ marginTop: '0px' }}>Forgot Password?</p>
               </div>
             </div>
           </div>

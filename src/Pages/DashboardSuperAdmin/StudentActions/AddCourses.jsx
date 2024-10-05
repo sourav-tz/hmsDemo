@@ -71,6 +71,27 @@ useEffect(()=>{
 
 const onSubmitEdit = async (data) => {
     console.log(data);
+    const checkCourseExists = (data) => {
+      const { courseName, department, specialization } = data;
+  
+      return courses.some((course) => {
+        return (
+          course.courseName.trim().toLowerCase() === courseName.trim().toLowerCase() &&
+          course.department.trim().toLowerCase() === department.trim().toLowerCase() &&
+          course.specialization.trim().toLowerCase() === specialization.trim().toLowerCase()
+        );
+      });
+    };
+
+    const exists = checkCourseExists(data);
+    if(exists === true){
+      toast.error("Course with same specialization exist already");
+      return;
+    }
+    
+    else{
+
+    
     try{
         const res = await axios({
             method: 'patch',
@@ -95,6 +116,7 @@ const onSubmitEdit = async (data) => {
             console.log(err);
             toast.error("Failed to update course");
           }
+        }
 }
 
 const setDefaultValues = (course) => {
@@ -152,7 +174,7 @@ const deleteCourse = async (courseId) => {
             <h2 className="text-xl font-bold">Course List</h2>
             <Button size="sm" className="bg-blue-700 hover:bg-blue-500">Export to CSV</Button>
           </div>
-          <Card className="w-[1300px]">
+          <Card className="">
             <Table>
               <TableHeader>
                 <TableRow>

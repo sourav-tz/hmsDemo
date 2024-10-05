@@ -145,7 +145,7 @@ export default function () {
               />
               <Textinput
                 type='password'
-                style={{ marginTop: '25px', minWidth: '300px' }}
+                style={{ marginTop: '0px', minWidth: '300px' }}
                 onChange={handlePassword}
                 label='Password'
               />
@@ -153,7 +153,7 @@ export default function () {
                 onClick={handleSubmit}
                 loading={loading}
                 variant='contained'
-                style={{ marginTop: '25px', minWidth: '300px' }}
+                style={{ marginTop: '0px', minWidth: '300px' }}
                 text='login'
               />
 
@@ -161,11 +161,11 @@ export default function () {
                 onClick={handelGoogleClick}
                 loading={loading}
                 variant='contained'
-                style={{ marginTop: '25px' }}
+                style={{ marginTop: '0px' }}
                 text='Continue With Google'
               />
 
-              <p onClick={()=>{Navigator('/forgetPass')}} className='cursor-pointer' style={{ marginTop: '10px' }}>Forgot Password?</p>
+              <p onClick={()=>{Navigator('/forgetPass')}} className='cursor-pointer' style={{ marginTop: '0px' }}>Forgot Password?</p>
             </div>
           </div>
         </div>

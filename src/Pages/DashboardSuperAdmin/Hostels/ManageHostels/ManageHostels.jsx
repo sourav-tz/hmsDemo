@@ -315,6 +315,20 @@ const onSubmitEdit =async (data) => {
       position:'top-right'
     })
     setEditMode(false);
+    setRowData(prevData => {
+      
+    
+      return prevData.map(row => {
+        if (row.hostelNo == data.bodyHostelNo) {
+          console.log(row.hostelNo)
+          
+          return { ...row, ...data }; // Update the row with new data
+        } else {
+          
+          return row; // Return the unchanged row
+        }
+      });
+    });
   }
   catch(error){
     console.log(error);
@@ -429,6 +443,7 @@ const onSubmitEdit =async (data) => {
             </CardFooter>
           </Card>
         </div>  
+    </div>
 
     <div className={`-translate-y-full ${editMode?'translate-y-0':null} flex justify-center items-center fixed top-0 left-0 transition-all w-full min-h-screen z-50`}>
     <div className='fixed top-0 left-0 bg-black opacity-70 w-full h-screen'></div>
@@ -456,7 +471,7 @@ const onSubmitEdit =async (data) => {
                     render={({ field }) => (
                       <Select onValueChange={field.onChange}>
                         <SelectTrigger className="w-40  text-md p-3 m-2 text-black bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
-                          <SelectValue placeholder={hostelValues.type} />
+                          <SelectValue placeholder={hostelValues.type} defaultValue={hostelValues.type} />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="Boys">Boys</SelectItem>
@@ -481,10 +496,7 @@ const onSubmitEdit =async (data) => {
           </Card>
 
         </div>  
-
-    </div>
-</div>
-<ToastContainer />
+      </div>
   </>
 
   )

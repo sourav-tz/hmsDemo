@@ -15,7 +15,7 @@ function filterDuplicates(array) {
 
   return { duplicates, unique };
 }
-async function uploadStudents(data,emailAdmin){
+async function uploadStudents(data){
   try {
     const transaction = await db.sequelize.transaction();
     try {
@@ -28,7 +28,7 @@ async function uploadStudents(data,emailAdmin){
         email: data.email,
         password: securePassword,
         role: 'student',
-        lastUpdatedBy: emailAdmin,
+        // lastUpdatedBy: emailAdmin,
       },{transaction,validate:true});
 
       await db.students.create({
@@ -37,7 +37,7 @@ async function uploadStudents(data,emailAdmin){
               lastName: data.lastName,
               year: data.year,
               email: data.email,
-              lastUpdatedBy: emailAdmin,
+              // lastUpdatedBy: emailAdmin,
               courseId: data.courseId,
               hostelNo:data.hostelNo,
               roomId:data.roomId,
@@ -46,7 +46,7 @@ async function uploadStudents(data,emailAdmin){
        await db.profiles.create({
         ...data,
         rollNo: data.rollNo,
-        lastUpdatedBy: emailAdmin,
+        // lastUpdatedBy: emailAdmin,
        },{transaction,validate: true});
 
        await db.bankdetails.create({
@@ -55,7 +55,7 @@ async function uploadStudents(data,emailAdmin){
               bankName: data.bankName,
               accNumber: data.accNumber,
               IFSC: data.IFSC,
-              lastUpdatedBy: emailAdmin,
+              // lastUpdatedBy: emailAdmin,
        },{transaction,validate: true});
 
       await transaction.commit();

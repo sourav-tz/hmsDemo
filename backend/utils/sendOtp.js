@@ -22,7 +22,7 @@ const sendOtp = async (email) => {
 
         // check unique otp or not
         const now = new Date();
-        const expiration_time = AddMinutesToDate(now,1);
+        const expiration_time = AddMinutesToDate(now,5);
         
         const result = await db.otps.findOne({where:{email : email}})
         console.log('result' ,result);
