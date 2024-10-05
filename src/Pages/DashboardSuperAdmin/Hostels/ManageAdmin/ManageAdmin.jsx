@@ -384,7 +384,8 @@ const ManageAdmin = () => {
               className='w-60 m-2  text-lg p-3 placeholder:text-black bg-white  shadow-[0_3px_10px_rgb(0,0,0,0.2)]' 
               type="tel" 
               placeholder='Mobile No'
-              inputMode="numeric"       
+              inputMode="numeric"   
+              value={admin.mobile}    
               pattern="[0-9]*"
               maxLength="10"           
               required />
