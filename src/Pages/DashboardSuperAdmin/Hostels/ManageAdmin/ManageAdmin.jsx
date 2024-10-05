@@ -86,10 +86,12 @@ const ManageAdmin = () => {
     setAdmin((prev) => { return { ...prev, name: e.target.value } })
   }
   const handleMobile = (e) => {
-    setAdmin((prev) => {
-      return { ...prev, mobile: e.target.value }
-    })
-  }
+    const value = e.target.value;
+    // Allow only digits and limit to 10 digits
+    if (/^\d{0,10}$/.test(value)) {
+      setAdmin((prev) => ({ ...prev, mobile: value }));
+    }
+  };
   const handleEmail = (e) => {
     setAdmin((prev) => {
       return { ...prev, email: e.target.value }
@@ -376,7 +378,16 @@ const ManageAdmin = () => {
 
 
             <div className='flex'>
-              <Input name="mobile" onChange={handleMobile} className='w-60 m-2  text-lg p-3 placeholder:text-black bg-white  shadow-[0_3px_10px_rgb(0,0,0,0.2)]' type="tel" placeholder='Mobile No' />
+              <Input 
+              name="mobile" 
+              onChange={handleMobile} 
+              className='w-60 m-2  text-lg p-3 placeholder:text-black bg-white  shadow-[0_3px_10px_rgb(0,0,0,0.2)]' 
+              type="tel" 
+              placeholder='Mobile No'
+              inputMode="numeric"       
+              pattern="[0-9]*"
+              maxLength="10"           
+              required />
               <Input name="email" onChange={handleEmail} className='w-60 m-2  text-lg p-3 placeholder:text-black bg-white  shadow-[0_3px_10px_rgb(0,0,0,0.2)]' type="email" placeholder='Email' />
 
             </div>
