@@ -101,7 +101,7 @@ const ManageAdmin = () => {
 
       // let hostelNoForm = e[1];
       let hostelNoForm = e.split(" ")[0].substring(1);
-      console.log("HOSTEL NO _>", hostelNoForm);
+      // console.log("HOSTEL NO _>", hostelNoForm);
       return { ...prev, hostelNo: hostelNoForm };
 
     })
@@ -314,21 +314,9 @@ const ManageAdmin = () => {
                
 
               </select> */}
-              {/* <div className='mt-2'>
-                <Select>
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Theme" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="light">Light</SelectItem>
-                    <SelectItem value="dark">Dark</SelectItem>
-                    <SelectItem value="system">System</SelectItem>
-                  </SelectContent>
-                </Select>
+            
 
-              </div> */}
-
-              { }
+              
               <Select onValueChange={handleNoChange} >
                 <SelectTrigger className="mt-2 w-[270px] ml-2 text-base">
                   <SelectValue placeholder="Select Hostel" />

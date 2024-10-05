@@ -18,11 +18,11 @@ export default function MangageRooms() {
             <form className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="room-number">Room Number</Label>
-                <Input id="room-number" type="number" />
+                <Input id="room-number" type="number" min="0" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="floor">Floor</Label>
-                <Input id="floor" type="number" />
+                <Input id="floor" type="number" min="0" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="block">Block</Label>
@@ -30,11 +30,11 @@ export default function MangageRooms() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="capacity">Capacity</Label>
-                <Input id="capacity" type="number" />
+                <Input id="capacity" type="number" min="0" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="capacity">Hostel Number</Label>
-                <Input id="capacity" type="number" />
+                <Input id="capacity" type="number" min="0" />
               </div>
               <div className="col-span-2 space-y-2">
                 <Label htmlFor="amenities">Amenities</Label>

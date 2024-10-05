@@ -374,7 +374,7 @@ const onSubmitEdit =async (data) => {
 
           <div className='flex'>
             <div className='flex-col'>
-              <Input name="HostelNo" onChange={setHostelNumber} className='w-40 m-2  text-md p-3 placeholder:text-black bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)]' type="number"  placeholder='Hostel No.'/>
+                <Input name="HostelNo" onChange={setHostelNumber} className='w-40 m-2  text-md p-3 placeholder:text-black bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)]' type="number" placeholder='Hostel No.' min="0" />
               {/* {FormErrors.HostelNo && <div className='px-4 text-red-600'>{FormErrors.HostelNo}</div>} */}
             </div>
           </div>
