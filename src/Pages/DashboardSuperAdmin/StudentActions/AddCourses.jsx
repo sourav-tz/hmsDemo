@@ -374,34 +374,36 @@ const MyForm = () => {
     }
 
     const onSubmit = async (data) => {
-        console.log(data);
-        try{
-            const res = await axios({
-                method: 'post',
-                url:import.meta.env.VITE_BASE_URL  + '/SA/addCourse',
-                data: {
-                    "courseName":data.courseName,
-                    "department":data.department,
-                    "specialization":data.specialization,
-                    "courseDuration":data.courseDuration
-                },
-                headers: {
-                    "Content-Type": "application/json"
-                    },
-                    withCredentials: true
-
-                });
-                console.log(res);
-                await initialLoad();
-                reset();
-                toast.success("Course added successfully");
-        }catch(err){
-            console.log(err);
-            toast.error("Failed to add course");
-        }
-
-
-    }
+      console.log(data);
+      if (data.specialization === '') {
+          data.specialization = "NA";
+      }
+      try {
+          const res = await axios({
+              method: 'post',
+              url: import.meta.env.VITE_BASE_URL + '/SA/addCourse',
+              data: {
+                  "courseName": data.courseName,
+                  "department": data.department,
+                  "specialization": data.specialization,
+                  "courseDuration": data.courseDuration
+              },
+              headers: {
+                  "Content-Type": "application/json"
+              },
+              withCredentials: true
+          });
+          console.log(res.data.data);
+          reset(); // Clear the form
+          await initialLoad();
+          toast.success("Course added successfully");
+  
+      } catch (err) {
+          console.log(err);
+          toast.error("Failed to add course");
+      }
+  };
+  
 
     return (
       <>
@@ -430,7 +432,7 @@ const MyForm = () => {
         <div className="space-y-2">
           <Label htmlFor="specialization">Specialization</Label>
           <Input {...register("specialization",{
-            required:{value:true,message:'Specialization is required'}
+            required:{value:false,message:'Specialization is required'}
           })} name="specialization" id="specialization" placeholder="Enter specialization" />
           <p className="text-red-500 text-sm">{errors.specialization?.message}</p>
         </div>
