@@ -99,7 +99,7 @@ const Studentlogin = ()=>{
                 type='password' style={{marginTop:'0px',minWidth:'300px'}} label="Password"/>
                 <Button variant="contained" type="submit" className={`bg-indigo-500`} style={{marginTop:'0px',minWidth:'300px'}} text="login"/>
                 </form>
-                <p style={{marginTop:'10px',fontSize:'14px'}}>Forgot Password?</p>
+                <p onClick={()=>{Navigator('/forgetPass')}} className='cursor-pointer' style={{ marginTop: '0px' }}>Forgot Password?</p>
                 <div style={{display:'flex', flexDirection: 'row'}}>
                 <p style={{marginTop:'10px',marginRight:'10px',fontSize:'14px'}}>Don't Have an Account?</p>
                 <div>

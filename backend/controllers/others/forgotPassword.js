@@ -4,15 +4,15 @@ const forgotPassword = async (req, res) => {
 
     try {
         //extract var
-        const {email,newPassword,confirmPassword} = req.body;
-          if (confirmPassword !== newPassword) {
+        const {email,password,confirmPassword} = req.body;
+          if (confirmPassword !== password) {
             return res.json({
               success: false,
               message: "Password and Confirm Password Does not Match",
             });
           }
           //encrypt the password
-          const encryptedPassword = await bcrypt.hash(newPassword, 10);
+          const encryptedPassword = await bcrypt.hash(password, 10);
           //update the password in db
 	         // Update the user's password directly in one query
           const [updated] = await db.users.update(

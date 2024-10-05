@@ -229,7 +229,7 @@ export default function SuperAdminLogin() {
                   text='Continue With Google'
                 />
 
-                <p style={{ marginTop: '0px' }}>Forgot Password?</p>
+<p onClick={()=>{Navigator('/forgetPass')}} className='cursor-pointer' style={{ marginTop: '0px' }}>Forgot Password?</p>
               </div>
             </div>
           </div>
