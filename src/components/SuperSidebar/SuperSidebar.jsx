@@ -15,6 +15,7 @@ import storage from 'redux-persist/lib/storage';
 export default function SuperSidebar(){
 
 
+
     const Navigator = useNavigate();
     const param = useLocation();
     const [activeOption,setActiveOption] = useState('main');
@@ -24,7 +25,8 @@ export default function SuperSidebar(){
     const userData = useSelector(state=>state.userStorage.data);
 
     useEffect(()=>{
-        setActiveOption(param.pathname.split('/')[2]);
+        // Changed from setActiveOption(param.pathname.split('/')[2]);
+        setActiveOption(param.pathname.split('/')[3]);
         setActiveSubOption(param.pathname.split('/')[3]);
     },[param]);
 
@@ -118,31 +120,49 @@ const handleLogout = ()=>{}
             </div>
             <div className={styles.listContainer}>
             <div  className={(styles.item) +' '+' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
-                        <p onClick={()=>{changeSubMenu('Home')}} className={(activeOption==='main'?styles.activeItem:null) + ' flex items-center gap-2'}><i><IoHome  size="20px"/></i> <span className={(state?null:styles.hidden)+' mt-1'}>Main</span></p>
+                        <p onClick={()=>{changeSubMenu('Home'); Navigator('/superAdminDashboard/main/home')}} className={(activeOption==='home'?styles.activeItem:null) + ' flex items-center gap-2'}><i><IoHome  size="20px"/></i> <span className={(state?null:styles.hidden)+' mt-1'}>Home</span></p>
                         <ul className={state&&subHome?null:styles.hidden} >
-                        <li onClick={()=>{Navigator('/superAdminDashboard/main/home')}} className={styles.subOptions+' ' + (activeSubOption==='home'?styles.activeSubOption:null)}>Home</li>
+                        {/* <li onClick={()=>{Navigator('/superAdminDashboard/main/home')}} className={styles.subOptions+' ' + (activeSubOption==='home'?styles.activeSubOption:null)}>Home</li> */}
                         </ul>
             </div>
             <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
-                        <p onClick={()=>{changeSubMenu('studentInfo')}} className={(activeOption==='studentActions'?styles.activeItem:null)+ ' flex items-center gap-2'}><FaInfo /> <span className={(state?null:styles.hidden)+' mt-1'}>Student Actions</span></p>
-                        <ul className={state&&subStudent?null:styles.hidden}>
+                        <p onClick={()=>{changeSubMenu('studentInfo');Navigator('/superAdminDashboard/studentActions/addCourses')}} className={(activeOption==='addCourses'?styles.activeItem:null)+ ' flex items-center gap-2'}><FaInfo /> <span className={(state?null:styles.hidden)+' mt-1'}>Manage Courses</span></p>
+                        {/* <ul className={state&&subStudent?null:styles.hidden}> */}
                         {/* <li onClick={()=>{Navigator('/superAdminDashboard/studentActions/viewInfo')}} className={styles.subOptions+' ' + (activeSubOption==='viewInfo'?styles.activeSubOption:null)}>View Info</li> */}
-                        <li onClick={()=>{Navigator('/superAdminDashboard/studentActions/addCourses')}} className={styles.subOptions+' ' + (activeSubOption==='addCourses'?styles.activeSubOption:null)}>Add Courses</li>
-                        </ul>
+                        {/* <li onClick={()=>{Navigator('/superAdminDashboard/studentActions/addCourses')}} className={styles.subOptions+' ' + (activeSubOption==='addCourses'?styles.activeSubOption:null)}>Add Courses</li> */}
+                        {/* </ul> */}
+                    
             </div>
             <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
-                        <p onClick={()=>{changeSubMenu('roomActions')}} className={(activeOption==='roomActions'?styles.activeItem:null)+ ' flex items-center gap-2'}><MdOutlineBedroomChild /> <span className={(state?null:styles.hidden)+' mt-1'}>Room Actions</span></p>
-                        <ul className={state&&subRoom?null:styles.hidden}>
-                        <li onClick={()=>{Navigator('/superAdminDashboard/roomActions/allocateRooms')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='allocateRooms'?styles.activeSubOption:null)}>Allocate</li>
-                        <li onClick={()=>{Navigator('/superAdminDashboard/roomActions/manageRooms')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='manageRooms'?styles.activeSubOption:null)}>Manage Rooms</li>
-                        </ul>
+                        <p onClick={()=>{changeSubMenu('roomActions');Navigator('/superAdminDashboard/roomActions/allocateRooms')}} className={(activeOption==='allocateRooms'?styles.activeItem:null)+ ' flex items-center gap-2'}><MdOutlineBedroomChild /> <span className={(state?null:styles.hidden)+' mt-1'}>Allocate Rooms</span></p>
+                        {/* <ul className={state&&subRoom?null:styles.hidden}> */}
+                        {/* <li onClick={()=>{Navigator('/superAdminDashboard/roomActions/allocateRooms')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='allocateRooms'?styles.activeSubOption:null)}>Allocate</li> */}
+                        {/* <li onClick={()=>{Navigator('/superAdminDashboard/roomActions/manageRooms')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='manageRooms'?styles.activeSubOption:null)}>Manage Rooms</li> */}
+                        {/* </ul> */}
             </div>
+
             <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
-                        <p onClick={()=>{changeSubMenu('hostels')}} className={(activeOption==='hostels'?styles.activeItem:null)+ ' flex items-center gap-2'}><BsHouses /> <span className={(state?null:styles.hidden)+' mt-1'}>Hostels</span></p>
-                        <ul className={state&&subHostel?null:styles.hidden}>
-                        <li onClick={()=>{Navigator('/superAdminDashboard/hostels/manageHostels')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='manageHostels'?styles.activeSubOption:null)}>Manage Hostels</li>
-                        <li onClick={()=>{Navigator('/superAdminDashboard/hostels/manageAdmins')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='manageAdmins'?styles.activeSubOption:null)}>Manage Admins</li>
-                        </ul>
+                        <p onClick={()=>{changeSubMenu('roomActions');Navigator('/superAdminDashboard/roomActions/manageRooms')}} className={(activeOption==='manageRooms'?styles.activeItem:null)+ ' flex items-center gap-2'}><MdOutlineBedroomChild /> <span className={(state?null:styles.hidden)+' mt-1'}>Manage Room</span></p>
+                        {/* <ul className={state&&subRoom?null:styles.hidden}> */}
+                        {/* <li onClick={()=>{Navigator('/superAdminDashboard/roomActions/allocateRooms')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='allocateRooms'?styles.activeSubOption:null)}>Allocate</li> */}
+                        {/* <li onClick={()=>{Navigator('/superAdminDashboard/roomActions/manageRooms')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='manageRooms'?styles.activeSubOption:null)}>Manage Rooms</li> */}
+                        {/* </ul> */}
+            </div>
+
+            <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
+                        <p onClick={()=>{changeSubMenu('hostels');Navigator('/superAdminDashboard/hostels/manageHostels')}} className={(activeOption==='manageHostels'?styles.activeItem:null)+ ' flex items-center gap-2'}><BsHouses /> <span className={(state?null:styles.hidden)+' mt-1'}>Manage Hostels</span></p>
+                        {/* <ul className={state&&subHostel?null:styles.hidden}> */}
+                        {/* <li onClick={()=>{Navigator('/superAdminDashboard/hostels/manageHostels')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='manageHostels'?styles.activeSubOption:null)}>Manage Hostels</li> */}
+                        {/* <li onClick={()=>{Navigator('/superAdminDashboard/hostels/manageAdmins')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='manageAdmins'?styles.activeSubOption:null)}>Manage Admins</li> */}
+                        {/* </ul> */}
+            </div>
+
+            <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
+                        <p onClick={()=>{changeSubMenu('hostels');Navigator('/superAdminDashboard/hostels/manageAdmins')}} className={(activeOption==='manageAdmins'?styles.activeItem:null)+ ' flex items-center gap-2'}><BsHouses /> <span className={(state?null:styles.hidden)+' mt-1'}>Manage Admins</span></p>
+                        {/* <ul className={state&&subHostel?null:styles.hidden}> */}
+                        {/* <li onClick={()=>{Navigator('/superAdminDashboard/hostels/manageHostels')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='manageHostels'?styles.activeSubOption:null)}>Manage Hostels</li> */}
+                        {/* <li onClick={()=>{Navigator('/superAdminDashboard/hostels/manageAdmins')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='manageAdmins'?styles.activeSubOption:null)}>Manage Admins</li> */}
+                        {/* </ul> */}
             </div>
             </div>
             </div>

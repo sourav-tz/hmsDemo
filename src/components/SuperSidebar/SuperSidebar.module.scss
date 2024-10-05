@@ -16,9 +16,6 @@ ul{
     position:fixed;
     top:0;
     left:0;
-
-
-
     height: 100vh;
     background-color: $primary;
 
@@ -38,8 +35,8 @@ ul{
 }
 
 .active{
-    min-width: 200px;
-    transition: 0.52s;
+    min-width: 220px;
+    transition: 0.2s;
 }
 
 .hidden{
@@ -47,12 +44,10 @@ ul{
 }
 
 
-
 .itemsContainer{
     margin-top: 1.5rem;
     padding:0px 15px;
 }
-
 
 
 .userIcon{
@@ -90,19 +85,25 @@ ul{
 .item{
     display: flex;
     flex-direction: column;
-    padding: 0rem 0.3rem;
+    padding: 0.3rem;
     border-radius: 0px;
     margin: 20px 0px;
     cursor: pointer;
-    li{
-        padding:10px 5px;
-        margin-left: 25px;
-    }
+    // li{
+    //     padding:10px 5px;
+    //     margin-left: 25px;
+    // }   
 
 }
 
+.item:hover{
+    background-color: $nav-active;
+    border-radius: 5px;
+    color:$medium-grey;
+
+}
 .activeItem{
-    padding: 10px;
+    padding: 5px;
     border-radius: 5px;
     color:$medium-grey;
     background-color: $nav-active;
@@ -118,13 +119,13 @@ ul{
     justify-content: flex-start;
 }
 
-.subOptions{
-    margin-top: 5px;
-    &:hover{
-        background-color: $secondary;
-        border-radius: 5px;
-    }
-}
+// .subOptions{
+//     margin-top: 5px;
+//     &:hover{
+//         background-color: $secondary;
+//         border-radius: 5px;
+//     }
+// }
 
 .activeSubOption{
     background-color: $secondary;
@@ -135,5 +136,3 @@ ul{
     margin-bottom: 50px;
     padding: 5px;
 }
-
-
