@@ -72,13 +72,13 @@ useEffect(()=>{
 const onSubmitEdit = async (data) => {
     console.log(data);
     const checkCourseExists = (data) => {
-      const { courseName, department, specialization } = data;
+      const { courseName, department, specialization, isActive } = data;
   
       return courses.some((course) => {
         return (
           course.courseName.trim().toLowerCase() === courseName.trim().toLowerCase() &&
           course.department.trim().toLowerCase() === department.trim().toLowerCase() &&
-          course.specialization.trim().toLowerCase() === specialization.trim().toLowerCase()
+          course.specialization.trim().toLowerCase() === specialization.trim().toLowerCase() && course.active === isActive
         );
       });
     };
@@ -109,6 +109,32 @@ const onSubmitEdit = async (data) => {
                 withCredentials: true
 
             });
+
+            data.isActive === true ? (await axios({
+              method: 'post',
+              url:import.meta.env.VITE_BASE_URL  + '/SA/enableCourse',
+              data: {
+                  "courseId":data.courseId,
+              },
+              headers: {
+                  "Content-Type": "application/json"
+                  },
+                  withCredentials: true
+  
+              })) :(
+                await axios({
+                  method: 'delete',
+                  url: `${import.meta.env.VITE_BASE_URL}/SA/removeCourse`,
+                  params: {
+                    courseId: data.courseId, 
+                    softdelete: false          
+                  },
+                  headers: {
+                    "Content-Type": "application/json"
+                  },
+                  withCredentials: true
+                })
+              )
             console.log(res);
             initialLoad();
             toast.success("Course updated successfully");
