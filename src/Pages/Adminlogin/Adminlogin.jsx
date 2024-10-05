@@ -14,6 +14,8 @@ import 'react-toastify/dist/ReactToastify.css'
 import { GoogleAuthProvider, getAuth, signInWithPopup } from '@firebase/auth'
 import { app } from '../../Firebase/firebase';
 import GoogleButton from '../../components/Button/GoogleButton';
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+
 export default function () {
   const [data, setData] = useState({ email: null, password: null })
   const [loading, setLoading] = useState(false)
@@ -103,6 +105,14 @@ export default function () {
       })
   }
 
+  
+  // function to handle visible/hidden password
+  const [visible,setVisible] = useState(false);
+  const handleShowPassword = ()=>{
+    setVisible(!visible);
+  }
+
+
   return (
     <>
       <div className={styles.container}>
@@ -143,12 +153,21 @@ export default function () {
                 onChange={handleEmail}
                 label='Email'
               />
+
+            <div className='relative'>
               <Textinput
-                type='password'
+                type={visible?'text': 'password'}
                 style={{ marginTop: '0px', minWidth: '300px' }}
                 onChange={handlePassword}
                 label='Password'
               />
+
+              {visible?<FaEye className='absolute min-[300px]:top-[3.1rem] sm:top-9 md:top-8 right-3 cursor-pointer min-[300px]:size-6 sm:size-4 md:size-4' color='#5F57FF' onClick={handleShowPassword}></FaEye>:             
+              <FaEyeSlash className='absolute min-[300px]:top-[3.1rem] sm:top-9 md:top-8 right-3 cursor-pointer min-[300px]:size-6 sm:size-4 md:size-4' color='#5F57FF' onClick={handleShowPassword}></FaEyeSlash>}
+
+              </div>
+
+
               <Button
                 onClick={handleSubmit}
                 loading={loading}

@@ -11,6 +11,7 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 
 import GoogleButton from '../../components/Button/GoogleButton'
@@ -23,6 +24,7 @@ import {
 } from '@/components/ui/input-otp'
 
 import { Button } from '@/components/ui/button'
+import { FaE } from 'react-icons/fa6'
 
 
 export default function SuperAdminLogin() {
@@ -164,6 +166,11 @@ export default function SuperAdminLogin() {
     }
   }
 
+  // function to handle visible/hidden password
+  const [visible,setVisible] = useState(false);
+  const handleShowPassword = ()=>{
+    setVisible(!visible);
+  }
 
   return (
     <>
@@ -207,12 +214,19 @@ export default function SuperAdminLogin() {
                   onChange={handleEmail}
                   label='Email'
                 />
+                <div className='relative'>
                 <Textinput
-                  type='password'
+                  type={visible?'text': 'password'}
                   style={{ marginTop: '0px', minWidth: '300px' }}
                   onChange={handlePassword}
-                  label='Password'
+                  label='Password' 
                 />
+                {visible?<FaEye className='absolute min-[300px]:top-[3.1rem] sm:top-9 md:top-8 right-3 cursor-pointer min-[300px]:size-6 sm:size-4 md:size-4' color='#5F57FF' onClick={handleShowPassword}></FaEye>:             
+                <FaEyeSlash className='absolute min-[300px]:top-[3.1rem] sm:top-9 md:top-8 right-3 cursor-pointer min-[300px]:size-6 sm:size-4 md:size-4' color='#5F57FF' onClick={handleShowPassword}></FaEyeSlash>}
+   
+                </div>
+                
+              
                 <Button2
                   onClick={handleSubmit}
                   loading={loading}

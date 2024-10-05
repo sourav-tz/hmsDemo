@@ -10,6 +10,8 @@ import axios from 'axios';
 import { ToastContainer,toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
 import { setUserData } from '../../Store/Reducers/userSlice';
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+
 
 const Studentlogin = ()=>{
 
@@ -59,7 +61,11 @@ const Studentlogin = ()=>{
     }
 
 
-
+  // function to handle visible/hidden password
+  const [visible,setVisible] = useState(false);
+  const handleShowPassword = ()=>{
+    setVisible(!visible);
+  }
 
 
 
@@ -90,13 +96,22 @@ const Studentlogin = ()=>{
                 <Textinput onChange={(e)=>{
                     onSetMyData('email',e.target.value);
                 }} style={{minWidth:'300px'}} label="Email"/>
+
+
+                <div className='relative'>
                 <Textinput 
                 onChange={
                     (e)=>{
                         onSetMyData('password',e.target.value);
                     }
                 }
-                type='password' style={{marginTop:'0px',minWidth:'300px'}} label="Password"/>
+                type={visible?'text': 'password'}
+                style={{marginTop:'0px',minWidth:'300px'}} label="Password"/>
+
+                {visible?<FaEye className='absolute min-[300px]:top-[3.1rem] sm:top-9 md:top-8 right-3 cursor-pointer min-[300px]:size-6 sm:size-4 md:size-4' color='#5F57FF' onClick={handleShowPassword}></FaEye>:             
+                <FaEyeSlash className='absolute min-[300px]:top-[3.1rem] sm:top-9 md:top-8 right-3 cursor-pointer min-[300px]:size-6 sm:size-4 md:size-4' color='#5F57FF' onClick={handleShowPassword}></FaEyeSlash>}
+                </div>
+               
                 <Button variant="contained" type="submit" className={`bg-indigo-500`} style={{marginTop:'0px',minWidth:'300px'}} text="login"/>
                 </form>
                 <p onClick={()=>{Navigator('/forgetPass')}} className='cursor-pointer' style={{ marginTop: '0px' }}>Forgot Password?</p>
