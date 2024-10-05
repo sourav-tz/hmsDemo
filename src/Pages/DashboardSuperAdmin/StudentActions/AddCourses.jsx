@@ -71,6 +71,27 @@ useEffect(()=>{
 
 const onSubmitEdit = async (data) => {
     console.log(data);
+    const checkCourseExists = (data) => {
+      const { courseName, department, specialization } = data;
+  
+      return courses.some((course) => {
+        return (
+          course.courseName.trim().toLowerCase() === courseName.trim().toLowerCase() &&
+          course.department.trim().toLowerCase() === department.trim().toLowerCase() &&
+          course.specialization.trim().toLowerCase() === specialization.trim().toLowerCase()
+        );
+      });
+    };
+
+    const exists = checkCourseExists(data);
+    if(exists === true){
+      toast.error("Course with same specialization exist already");
+      return;
+    }
+    
+    else{
+
+    
     try{
         const res = await axios({
             method: 'patch',
@@ -95,6 +116,7 @@ const onSubmitEdit = async (data) => {
             console.log(err);
             toast.error("Failed to update course");
           }
+        }
 }
 
 const setDefaultValues = (course) => {
