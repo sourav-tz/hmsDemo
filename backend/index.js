@@ -36,7 +36,7 @@ app.use(cors({
 app.use('/SA', superAdmin); 
 app.use('/student', studentRouter);
 app.use('/HA', HARouter);
-app.use('/others', othersRouter);
+app.use('/', othersRouter);
 
 app.listen(3000, () => {
         console.log('listening on post 3000');

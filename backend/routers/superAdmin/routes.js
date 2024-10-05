@@ -83,8 +83,7 @@ router.post('/getAdminsAgainstHostel',auth,getAdminsAgainstHostel);
 //Todo admin timeline
 
 
-
-//todo forgot pass, change password
+// this is for change password
 router.post('/verifyOldPassword',auth,verifyOldPassword);
 router.post('/updatePassword',auth,updatePassword);
 

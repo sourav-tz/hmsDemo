@@ -7,7 +7,7 @@ function AddMinutesToDate(date, minutes) {
     return new Date(date.getTime() + minutes*60000);
   }
 
-const sendOtp = async (email) => {
+const sendOtp = async (email,title,htmlBodyFun) => {
 
     try {
        
@@ -31,12 +31,9 @@ const sendOtp = async (email) => {
         if(result){
             await db.otps.update({otp:otp,expiration_time: expiration_time},{where:{email:email}})
         }
-
-        let title = 'Super Admin OTP || NIT KURUKSHETRA'
-        let body = `Dear SuperAdmin ,\n\nYour OTP is: ${otp}\n\nRegards,\nNIT Hostel Management System`
         
         const otpPayload = {email,otp,expiration_time}
-        await mailSender(email,title,body)
+        await mailSender(email,title,htmlBodyFun(otp))
 
         if(!result){
          const otpBody = await db.otps.create(otpPayload)
