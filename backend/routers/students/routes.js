@@ -18,7 +18,7 @@ router.post('/studentReg' , studentRegistration)
 //// Complaints module
 
 router.post("/raiseComplaint",auth,raiseComplaint);
-router.get("/getComplaints",auth,getComplaints);
+router.post("/getComplaints",auth,getComplaints);
 
 ////notices
 router.get('/getNotices',auth,getNotices);
