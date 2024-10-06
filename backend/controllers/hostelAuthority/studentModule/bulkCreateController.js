@@ -27,8 +27,7 @@ async function uploadStudents(data){
       await db.users.create({
         email: data.email,
         password: securePassword,
-        role: 'student',
-        // lastUpdatedBy: emailAdmin,
+        role: 'Student',
       },{transaction,validate:true});
 
       await db.students.create({
@@ -37,10 +36,7 @@ async function uploadStudents(data){
               lastName: data.lastName,
               year: data.year,
               email: data.email,
-              // lastUpdatedBy: emailAdmin,
               courseId: data.courseId,
-              hostelNo:data.hostelNo,
-              roomId:data.roomId,
        }, { transaction, validate: true });
        
        await db.profiles.create({
@@ -55,7 +51,6 @@ async function uploadStudents(data){
               bankName: data.bankName,
               accNumber: data.accNumber,
               IFSC: data.IFSC,
-              // lastUpdatedBy: emailAdmin,
        },{transaction,validate: true});
 
       await transaction.commit();
@@ -103,7 +98,7 @@ exports.bulkCreateController = async (req, res) => {
                                   "bloodGroup","identificationMark","gender","pEmail","subAddress",
                                   "city","state","pinCode","contactNumber","secondaryContact","fatherName",
                                   "fatherContact","fatherOccupation","motherName","motherContact","motherOccupation",
-                                   "dob","addharNumber","accHolderName","bankName","accNumber","IFSC","courseId","hostelNo","roomId"];
+                                   "dob","addharNumber","accHolderName","bankName","accNumber","IFSC","courseId"];
 
         // Validate JSON data
         validateJsonData(jsonObj, requiredAttributes);
