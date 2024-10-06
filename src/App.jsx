@@ -42,6 +42,7 @@ import AdminSecuritysettings from './Pages/DashboardAdmin/Settings/AdminSecurity
 import ManageRooms from './Pages/DashboardSuperAdmin/RoomActions/ManageRooms/ManageRooms.jsx';
 import axios from 'axios';
 import CloseRoute from "./Auth/CloseRoute.jsx";
+import OpenRoute from "./Auth/OpenRoute.jsx";
 import { removeUserData } from './Store/Reducers/userSlice.js'
 import {
   DropdownMenu,
@@ -105,17 +106,17 @@ const handleLogoutAdmin = ()=>{
   .then(res=>{
       setLoadingPage(false);
       Dispatcher(removeUserData());
-      Navigator('/adminLogin');
+      Navigator('/adminLogin',{ replace: true });
 
   })
   .catch(err=>{
       setLoadingPage(false);
       Dispatcher(removeUserData());
-      Navigator('/adminLogin');
+      Navigator('/adminLogin',{ replace: true });
       console.log("error in admin logout");
       console.log(err);
       if(err.status===401){
-          Navigator('/adminLogin');
+          Navigator('/adminLogin',{ replace: true });
       }
   })
 }  
@@ -132,16 +133,16 @@ const handleSuperAdminLogout = ()=>{
   .then(res=>{
       setLoadingPage(false);
       Dispatcher(removeUserData());
-      Navigator('/superAdminLogin');
+      Navigator('/superAdminLogin',{ replace: true });
 
   })
   .catch(err=>{
       setLoadingPage(false);
       Dispatcher(removeUserData());
-      Navigator('/superAdminLogin');
+      Navigator('/superAdminLogin',{ replace: true });
       console.log(err);
       if(err.status===401){
-          Navigator('/superAdminLogin');
+          Navigator('/superAdminLogin',{ replace: true });
       }
   })
 }
@@ -158,15 +159,15 @@ const handleStudentLogout = ()=>{
   .then(res=>{
       setLoadingPage(false);
       Dispatcher(removeUserData());
-      Navigator('/studentLogin');
+      Navigator('/studentLogin',{ replace: true });
 
   })
   .catch(err=>{
       setLoadingPage(false);
-      Navigator('/studentLogin');
+      Navigator('/studentLogin',{ replace: true });
       console.log(err);
       if(err.status===401){
-          Navigator('/studentLogin');
+          Navigator('/studentLogin',{ replace: true });
       }
   })
 }
@@ -186,7 +187,7 @@ const handleStudentLogout = ()=>{
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={() => {
-            admin?Navigator('/adminDashboard/main/home'):superAdmin?Navigator('/superAdminDashboard/main/home'):Navigator('/studentDashboard/settings/profile')
+            admin?Navigator('/adminDashboard/main/home',):superAdmin?Navigator('/superAdminDashboard/main/home'):Navigator('/studentDashboard/settings/profile')
           }}
 
         >Profile</DropdownMenuItem>
@@ -205,11 +206,11 @@ const handleStudentLogout = ()=>{
             
             {/* <Route path='*' element={<Role />} /> */}
 
-            <Route path='/' element={<Role />}></Route>
-            <Route path='/studentLogin' element={<Studentlogin />} />
-            <Route path='/forgetPass' element={<ForgetPassword />} />
-            <Route path='/StudentSignUp' element={<StudentSignUp />} />
-            <Route path='/VerifyOtp' element={<VerifyOtp/>} />
+            <Route path='/' element={<OpenRoute><Role /></OpenRoute>}></Route>
+            <Route path='/studentLogin' element={<OpenRoute><Studentlogin /></OpenRoute>} />
+            <Route path='/forgetPass' element={<OpenRoute><ForgetPassword /></OpenRoute>} />
+            <Route path='/StudentSignUp' element={<OpenRoute><StudentSignUp /></OpenRoute>} />
+            <Route path='/VerifyOtp' element={<OpenRoute><VerifyOtp/></OpenRoute>} />
             {/* Students */}
             <Route path='/studentDashboard/main/home' element={<CloseRoute><Dashboard /></CloseRoute>} />
             <Route path='/studentDashboard/settings/profile' element={<CloseRoute><StudentProfileSettings /></CloseRoute>} />
@@ -219,10 +220,10 @@ const handleStudentLogout = ()=>{
 
             
             {/* Admin Routes */}
-            <Route path='/adminLogin' element={<Adminlogin />} />
-            <Route path='/sandbox' element={<Sandbox />} />
+            <Route path='/adminLogin' element={<OpenRoute><Adminlogin /></OpenRoute>} />
+            {/* <Route path='/sandbox' element={<Sandbox />} /> */}
             <Route path='/adminDashboard/main/home' element={<CloseRoute><AdminDashboard /></CloseRoute>} />
-            <Route path='/ResetPassword' element={<ResetPassword/>} />
+            <Route path='/ResetPassword' element={<CloseRoute></CloseRoute>} />
             <Route path='/adminDashboard/studentInfo/register' element={<CloseRoute><RegisterStudent/></CloseRoute>} />
             <Route path='/adminDashboard/studentInfo/update' element={<CloseRoute><UpdateStudent/></CloseRoute>} />
             <Route path='/adminDashboard/studentInfo/viewInfo' element={<CloseRoute><ViewInfo /></CloseRoute>} />
@@ -234,8 +235,8 @@ const handleStudentLogout = ()=>{
             <Route path='/adminDashboard/settings/security' element={<CloseRoute><AdminSecuritysettings /></CloseRoute>} />
 
             {/*super Admin Routes  */}
-            <Route path='/superAdminLogin' element={<SuperAdminLogin />} />
-            <Route path='/superAdminLogin/superAdminOtp' element={<SuperAdminOtp/>} />
+            <Route path='/superAdminLogin' element={<OpenRoute><SuperAdminLogin /></OpenRoute>} />
+            <Route path='/superAdminLogin/superAdminOtp' element={<OpenRoute><SuperAdminOtp/></OpenRoute>} />
             <Route path='/superAdminDashboard/main/home' element={<CloseRoute><Home /></CloseRoute>} />
             <Route path='/superAdminDashboard/hostels/manageAdmins' element={<CloseRoute><ManageAdmin /></CloseRoute>} />
             <Route path='/superAdminDashboard/hostels/manageHostels' element={<CloseRoute><ManageHostels /></CloseRoute>} />
