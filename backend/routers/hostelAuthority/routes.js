@@ -79,4 +79,8 @@ router.get('/getRoomsData',auth, getRoomsData)
 router.post('/addnotice',auth,upload.single('file'), addnotice);
 router.get('/getNotices',auth, getNotices);
 router.delete('/deleteNotices',auth, deleteNotices);
+
+router.get('/getComplaints',auth,getComplaintsAdmin);
+router.post('/rejectComplaint',auth,rejectComplaint);
+router.post('/resolveComplaint',auth,resoleComplaint);
 module.exports = router;
