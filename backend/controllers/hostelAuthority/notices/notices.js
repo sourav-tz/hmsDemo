@@ -1,35 +1,32 @@
 const db = require('../../../models/index')
-const cloudinary=require("cloudinary");
-const getDataUri=require("../../../utils/datauri");
-const addnotice=async (req, res) => {
-    try {
-        const {title}=req.body;
-        const hostelNo=req.body.hostelNo;
-        const file=req.file;
-        const fileUri=getDataUri(file);
+const fs = require('fs');
+const { v4: uuidv4 } = require('uuid');
 
-        console.log(req.body);  
-      
-        // const mycloud = await cloudinary.v2.uploader.upload(fileUri.content);
-         // Upload file to Cloudinary
-         const mycloud = await cloudinary.v2.uploader.upload(fileUri.content, {
-            resource_type: 'raw',
-        });
-        if (!mycloud || !mycloud.secure_url) {
-            return res.status(500).json({
-                success: false,
-                message: 'Failed to upload notice. Invalid Cloudinary response.',
-            });
+// Function to handle adding a notice
+const addnotice = async (req, res) => {
+    try {
+        const { title,HostelNo } = req.body;
+        const file = req.file;
+        
+        // Check if a file was uploaded
+        if (!file) {
+            return res.status(400).json({ success: false, message: 'No file uploaded' });
         }
+
+        // Save the notice to the database
         const newNotice = await db.notices.create({
-            title:title,
-            url:mycloud.secure_url,
-            public_id:mycloud.public_id,
-            hostelNo:hostelNo
+            title: title,
+            url: file.path,
+            public_id:uuidv4(),
+            hostelNo: HostelNo
         });
+
+        // Remove the file from the local storage
+
+        // Return a successful response
         return res.status(200).json({
             success: true,
-            message: 'notice uploaded successfully',
+            message: 'Notice uploaded successfully',
             data: newNotice,
         });
     } catch (error) {
@@ -50,7 +47,7 @@ const getNotices=async (req, res) => {
 
       const result = await db.notices.findAll({
         where: { hostelNo },
-        attributes: ["noticeId",'title', 'url','public_id','createdAt']
+        attributes: ['title', 'url','public_id','createdAt']
     });
     return res.status(200).json({
         success: true,
@@ -67,13 +64,31 @@ const getNotices=async (req, res) => {
 
 const deleteNotices=async (req, res) => {
     try {
-        const {noticeId}=req.body;
+        const {public_id}=req.body;
+        if (!public_id) {
+            return res.status(400).json({
+                success: false,
+                message: 'Notice ID is required',
+            });
+        }
+        const notice = await db.notices.findOne({ where: { public_id} });
+
+        if (!notice) {
+            return res.status(404).json({
+                success: false,
+                message: 'Notice not found',
+            });
+        }
+        
+        // Delete the notice from the database
+        fs.unlinkSync(notice.url);
         await db.notices.destroy({
-            where:{noticeId},
-          });
-          return res.status(200).json({
+            where: { public_id },
+        });
+
+        return res.status(200).json({
             success: true,
-            message: 'deleted Successfully',
+            message: 'Deleted successfully',
         });
     } catch (error) {
         console.error(error);

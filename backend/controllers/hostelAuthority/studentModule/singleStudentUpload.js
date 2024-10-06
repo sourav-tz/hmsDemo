@@ -1,10 +1,9 @@
 const db = require('../../../models/index')
-
+const bcrypt = require('bcrypt')
 const singleStudentUpload=async (req,res)=>{
     try {
           //? get json data from body
           const data = req.body;
-          const emailAdmin=req.body.email;    
         const studentData = await db.students.findOne({
           where: { rollNo:data.rollNo}
         });
@@ -20,12 +19,12 @@ const singleStudentUpload=async (req,res)=>{
             try {
               // Create users
               const password= data.contactNumber !== undefined ? String(data.contactNumber) : String(data.rollNo);
+              const salt = await bcrypt.genSalt(10)
               const securePassword = await bcrypt.hash(password, salt)
               const usersData = {
                 email: data.email,
                 password:securePassword,
-                role: 'student',
-                lastUpdatedBy: emailAdmin,
+                role: 'Student',
               };
           
               const insertedUser = await db.users.create(usersData, { transaction, validate: true });
@@ -36,28 +35,25 @@ const singleStudentUpload=async (req,res)=>{
                 firstName: data.firstName,
                 lastName: data.lastName,
                 year: data.year,
-                email: insertedUsers.email,
-                lastUpdatedBy: emailAdmin,
+                email: data.email,
                 courseId: data.courseId, // given using dropdown
               }, { transaction, validate: true });
           
               // Insert profiles
               const profilesData = {
                 ...data,
-                rollNo: insertedStudents.rollNo,
-                lastUpdatedBy: emailAdmin,
+                rollNo: data.rollNo,
               };
           
               await db.profiles.create(profilesData, { transaction, validate: true });
           
               // Insert bankdetails
               const bankdetailsData = {
-                rollNo: insertedStudents.rollNo,
+                rollNo: data.rollNo,
                 accHolderName: data.accHolderName,
                 bankName: data.bankName,
                 accNumber: data.accNumber,
                 IFSC: data.IFSC,
-                lastUpdatedBy: emailAdmin,
               };
           
               await db.bankdetails.create(bankdetailsData, { transaction, validate: true });

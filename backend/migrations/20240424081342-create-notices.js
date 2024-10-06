@@ -2,11 +2,6 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('notices', {
-      noticeId: {
-        type: Sequelize.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-      },
       title: {
         type: Sequelize.STRING,
         allowNull:false
@@ -17,6 +12,7 @@ module.exports = {
       },
       public_id:{
         type:Sequelize.STRING,
+        primaryKey: true,
       },
       last_updated_at: {
         allowNull: false,

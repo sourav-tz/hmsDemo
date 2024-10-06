@@ -32,7 +32,7 @@ var storage = multer.diskStorage({
         cb(null, path.join(__dirname, '../../public/uploads'))
     },
     filename: (req, file, cb) => {
-        cb(null, file.originalname);
+        cb(null, `${Date.now()}-${file.originalname}`);
     }
 });
 var upload = multer({ storage: storage });
@@ -75,4 +75,8 @@ router.get('/downloadfile',auth, downloadFile);
 router.post('/singleRoomRemove',auth, singleStudentRemove)
 router.get('/getRoomsData',auth, getRoomsData)
 
+
+router.post('/addnotice',auth,upload.single('file'), addnotice);
+router.get('/getNotices',auth, getNotices);
+router.delete('/deleteNotices',auth, deleteNotices);
 module.exports = router;

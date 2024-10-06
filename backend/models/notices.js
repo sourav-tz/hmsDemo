@@ -1,16 +1,12 @@
 module.exports = (sequelize, dataTypes) => {
 
     const notices = sequelize.define('notices', {
-        noticeId:{
-            type:dataTypes.INTEGER,
-            primaryKey:true,
-            autoIncrement:true
-        },
         title: {
             type: dataTypes.STRING,
         },
         public_id: {
-            type:dataTypes.STRING,
+            type:dataTypes.STRING,  
+            primaryKey: true,
         },
         url: {
             type: dataTypes.STRING,
