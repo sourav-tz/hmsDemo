@@ -4,9 +4,7 @@ const db = require('../../models/index')
 const raiseComplaint=async (req, res) => {
     try {
         // Extract necessary information from the request body
-        const {subject, tag,rollNo,description} = req.body;
-        const hostelNo=req.body.tokenHostelNo
-
+        const {subject, tag,rollNo,description,hostelNo} = req.body;
         if(hostelNo==null){
             return res.status(400).json({
                 success: false,
@@ -47,6 +45,7 @@ const getComplaints=async (req, res) => {
             rollNo
         }
       });
+      console.log(result);
       return res.status(200).json({success:true, result:result});
     } catch (error) {
       console.error(error);
