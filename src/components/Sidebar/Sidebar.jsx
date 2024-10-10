@@ -12,6 +12,7 @@ import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { FaNoteSticky } from "react-icons/fa6";
+import { SlSupport } from "react-icons/sl";
 
 
 
@@ -38,6 +39,7 @@ export default function Sidebar(){
     const [subRoom, setSubRoom] = useState(false);
     const [subSettings, setSubSettings] = useState(false);
     const [subNotice, setSubNotice] = useState(false);
+    const [subComplaint,setSubComplaint] = useState(false);
 
     const openMenu = ()=>{
         changeState(true);
@@ -55,30 +57,42 @@ export default function Sidebar(){
             setSubRoom(false);
             setSubSettings(false);
             setSubNotice(false);
+            setSubComplaint(false);
         }else if(value ==='studentInfo'){
             setSubHome(false);
             setSubStudent(prev => !prev);
             setSubRoom(false);
             setSubSettings(false);
             setSubNotice(false);
+            setSubComplaint(false);
         }else if(value === 'roomInfo'){
             setSubHome(false);
             setSubStudent(false);
             setSubRoom(prev=>!prev);
             setSubSettings(false);
             setSubNotice(false);
+            setSubComplaint(false);
         }else if(value === 'settings'){
             setSubHome(false);
             setSubStudent(false);
             setSubRoom(false);
             setSubSettings(prev=>!prev);
             setSubNotice(false);
+            setSubComplaint(false);
         }else if(value === 'notice'){
             setSubHome(false);
             setSubStudent(false);
             setSubRoom(false);
             setSubSettings(false);
             setSubNotice(prev=>!prev);
+            setSubComplaint(false);
+        }else if(value === 'complaint'){
+            setSubHome(false);
+            setSubStudent(false);
+            setSubRoom(false);
+            setSubSettings(false);
+            setSubNotice(false);
+            setSubComplaint(prev => !prev);
         }
 
     }
@@ -165,6 +179,14 @@ export default function Sidebar(){
                         <li onClick={()=>{navigator('/adminDashboard/notice/uploadNotice')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='uploadNotice'?styles.activeSubOption:null)}>Upload Notice</li>
                         <li onClick={()=>{navigator('/adminDashboard/notice/viewNotice')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='viewNotice'?styles.activeSubOption:null)}>View Notice</li>
                         </ul>
+            </div>
+            <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
+                        <p onClick={()=>{changeSubMenu('complaint');Navigator('/adminDashboard/complaints/complaints')}} className={(activeOption==='complaints'?styles.activeItem:null)+ ' flex items-center gap-2'}><SlSupport /> <span className={(state?null:styles.hidden)+' mt-1'}>Complaint</span></p>
+                        {/* <ul className={state&&subStudent?null:styles.hidden}> */}
+                        {/* <li onClick={()=>{Navigator('/superAdminDashboard/studentActions/viewInfo')}} className={styles.subOptions+' ' + (activeSubOption==='viewInfo'?styles.activeSubOption:null)}>View Info</li> */}
+                        {/* <li onClick={()=>{Navigator('/superAdminDashboard/studentActions/addCourses')}} className={styles.subOptions+' ' + (activeSubOption==='addCourses'?styles.activeSubOption:null)}>Add Courses</li> */}
+                        {/* </ul> */}
+                    
             </div>
             </div>
             </div>
