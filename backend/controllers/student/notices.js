@@ -1,7 +1,8 @@
 const db = require('../../models/index')
 const getNotices=async (req, res) => {
     try {
-      let hostelNo=req.body.tokenHostelNo;
+    //   let hostelNo=req.body.tokenHostelNo;
+        let {hostelNo}=req.query;
       if(hostelNo==undefined)hostelNo=null;
       const result = await db.notices.findAll({
         where: { hostelNo },

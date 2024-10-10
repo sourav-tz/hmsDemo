@@ -12,6 +12,7 @@ import { BsHouses } from "react-icons/bs";
 import { useLocation,useNavigate } from 'react-router-dom';
 import { SlSupport } from "react-icons/sl";
 import { MdFoodBank } from "react-icons/md";
+import { FaNoteSticky } from "react-icons/fa6";
 
 export default function StudentSidebar(){
 
@@ -38,6 +39,7 @@ export default function StudentSidebar(){
     const [subMess, setSubMess] = useState(false);
     const [subSettings, setSubSettings] = useState(false);
     const [subHostel,setSubHostel] = useState(false);
+    const [subNotice,setSubNotice] = useState(false);
 
 
     const changeSubMenu = (value)=>{
@@ -48,12 +50,15 @@ export default function StudentSidebar(){
             setSubMess(false);
             setSubSettings(false);
             setSubHostel(false);
+            setSubNotice(false);
         }else if(value ==='complaints'){
             setSubHome(false);
             setSubComplaint(prev => !prev);
             setSubMess(false);
             setSubSettings(false);
             setSubHostel(false);
+            setSubNotice(false);
+
 
         }else if(value === 'mess'){
             setSubHome(false);
@@ -61,6 +66,7 @@ export default function StudentSidebar(){
             setSubMess(prev=>!prev);
             setSubSettings(false);
             setSubHostel(false);
+            setSubNotice(false);
 
         }else if(value === 'settings'){
             setSubHome(false);
@@ -68,6 +74,7 @@ export default function StudentSidebar(){
             setSubMess(false);
             setSubSettings(prev=>!prev);
             setSubHostel(false);
+            setSubNotice(false);
 
         }else if(value=='hostels'){
             setSubHome(false);
@@ -75,6 +82,15 @@ export default function StudentSidebar(){
             setSubMess(false);
             setSubSettings(false);
             setSubHostel(prev=>!prev);
+            setSubNotice(false);
+        }
+        else if(value=='notices'){
+            setSubHome(false);
+            setSubComplaint(false);
+            setSubMess(false);
+            setSubSettings(false);
+            setSubHostel(false);
+            setSubNotice(prev=>!prev);
         }
 
     }
@@ -132,6 +148,13 @@ const handleLogout = ()=>{}
                         <ul className={state&&subComplaint?null:styles.hidden}>
                         <li onClick={()=>{Navigator('/studentDashboard/complaints/register')}} className={styles.subOptions+' ' + (activeSubOption==='register'?styles.activeSubOption:null)}>Register</li>
                         <li onClick={()=>{Navigator('/studentDashboard/complaints/status')}} className={styles.subOptions+' ' + (activeSubOption==='status'?styles.activeSubOption:null)}>Status</li>
+                        </ul>
+            </div>
+            {/* Student Notices */}
+            <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
+                        <p onClick={()=>{changeSubMenu('notices')}} className={(activeOption==='notices'?styles.activeItem:null)+ ' flex items-center gap-2'}><FaNoteSticky /> <span className={(state?null:styles.hidden)+' mt-1'}>Notices</span></p>
+                        <ul className={state&&subNotice?null:styles.hidden}>
+                        <li onClick={()=>{Navigator('/studentDashboard/notices/view')}} className={styles.subOptions+' ' + (activeSubOption==='view'?styles.activeSubOption:null)}>View Notices</li>
                         </ul>
             </div>
             <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>

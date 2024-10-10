@@ -38,11 +38,13 @@ const UploadNotice = ()=>{
         const formData = new FormData();
         formData.append('title',data.title);
         formData.append('file',data.notice[0]);
-        formData.append('hostelNo',userData.hostelNo)
+        formData.append('hostelNo',userData.dataValues.hostelNo)
+        // console.log("USER DATA_>",userData);
         const res = axios({
           method:'post',
-          url:import.meta.env.VITE_BASE_URL + '/HA/addNotice',
+          url:import.meta.env.VITE_BASE_URL + '/HA/addnotice',
           data:formData,
+          // tokenHostelNo:userData.hostelNo,
           headers:{
             "Content-Type": "multipart/form-data; boundary=${formData.getBoundary()}",
             "x-rapidapi-host": "file-upload8.p.rapidapi.com",

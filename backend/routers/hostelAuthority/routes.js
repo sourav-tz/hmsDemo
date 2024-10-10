@@ -76,9 +76,13 @@ router.post('/singleRoomRemove',auth, singleStudentRemove)
 router.get('/getRoomsData',auth, getRoomsData)
 
 
-router.post('/addnotice',auth,upload.single('file'), addnotice);
+
+
+// Notice Routes
+router.post('/addNotice',auth,upload.single('file'), addnotice);
 router.get('/getNotices',auth, getNotices);
 router.delete('/deleteNotices',auth, deleteNotices);
+
 
 router.get('/getComplaints',auth,getComplaintsAdmin);
 router.post('/rejectComplaint',auth,rejectComplaint);

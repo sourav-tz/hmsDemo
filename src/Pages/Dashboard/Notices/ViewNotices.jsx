@@ -14,28 +14,42 @@ import { DevTool } from "@hookform/devtools"
 import ReactPaginate from 'react-paginate';
 import '../../../MainStyles/Pagination.css';
 import axios from 'axios';
-import { set } from 'date-fns';
 import { useSelector } from 'react-redux';
-import formdata from '../../../config/formdata';
+// import { set } from 'dayte-fns';
 
-const ViewNotice = () => {
+const ViewNotices = () => {
 
     const totalPages = 10;
     const [notices,setNotices] = useState([]);
     const userData = useSelector(state=>state.userStorage.data);
 
+
     const getNotices = async () => {
         try {
+        
+        // Check if userData and userData.dataValues are defined
+        if (!userData ) {
+            console.log("User data missing.");
+        }
+        // Bug -> userData.dataValues does not exist
+        if ( !userData.dataValues ) {
+            console.log("User data ki data values missing.");
+        }
+
+            // if(userData.dataValues.hostelNo==undefined)userData.dataValues.hostelNo=10;
+            // console.log(userData.dataValues.hostelNo);
+            console.log("STUDENT DATA_>",userData);
             const res = await axios({
                 method: 'get',
-                url: import.meta.env.VITE_BASE_URL + '/HA/getNotices',
+                url: import.meta.env.VITE_BASE_URL + '/student/getNotices',
                 withCredentials: true,
-                params: { hostelNo: userData.dataValues.hostelNo }, // Send hostelNo as query parameter       
+                // params: { hostelNo: userData.dataValues.hostelNo } // Send hostelNo as query parameter
+                params: { hostelNo: (10) }, // (Hard Coding for Hostel 10)
+                // because hostelNo field is null in userData
+                // Solution: allot a hostel to the student, to fetch the notices of that hostel
+                // which are relevant to the student.
             })
-            console.log("SENT HOSTEL NO_>",userData.dataValues.hostelNo);
             console.log(res);
-            // printing data
-            console.log("DATA_>",res.data);
             setNotices(res.data.result);   
         } catch (err) {
             console.log(err);
@@ -51,22 +65,6 @@ const ViewNotice = () => {
         console.log(data.selected);
     }
 
-    const deleteNotice = async (noticeId) => { 
-        try {
-            console.log("TRYING DELETE_>",noticeId)
-            const res = await axios({
-                method: 'delete',
-                url: import.meta.env.VITE_BASE_URL + '/HA/deleteNotices',
-                data: {noticeId},
-                withCredentials: true
-            })
-            console.log(res);
-            getNotices();
-        } catch (err) {
-            console.log(err);
-        }
-    }
-
 
     return (
         <>
@@ -78,11 +76,10 @@ const ViewNotice = () => {
             <TableHeader>
                 <TableRow>
                 <TableHead className="">Notice ID</TableHead>
-                {/* <TableHead className="w-[100px]">Notice ID</TableHead> */}
                 <TableHead>Title</TableHead>
                 <TableHead>Date</TableHead>
-                {/* <TableHead className="text-right">Actions</TableHead> */}
-                <TableHead className="text-center">Actions</TableHead>
+                <TableHead className="text-center">View</TableHead>
+                {/* <TableHead className="text-center">Actions</TableHead> */}
                 </TableRow>
             </TableHeader>
             <TableBody>
@@ -97,9 +94,10 @@ const ViewNotice = () => {
                 </TableRow>)}:null} */}
 
                 {notices.length!==0?notices.map((d,index)=><TableRow>
+                {/* <TableCell className="font-medium">{d.public_id}</TableCell> */}
                 <TableCell className="font-medium">{index+1}</TableCell>
                 <TableCell>{d.title}</TableCell>
-                {/* <TableCell className="text-left">{d.createdAt.}</TableCell> */}
+                {/* <TableCell className="text-left">{d.createdAt}</TableCell> */}
                 <TableCell className="text-left">
                 {new Date(d.createdAt).toLocaleDateString("en-US", {
                     year: "numeric",
@@ -110,7 +108,7 @@ const ViewNotice = () => {
                 <TableCell className="text-center">
                     <Dialog>
                     <DialogTrigger>
-                    <Button className="bg-blue-700 hover:bg-blue-500 mr-10">Download</Button>
+                    <Button className="bg-blue-700 hover:bg-blue-500">Download</Button>
                     </DialogTrigger>
                     <DialogContent>
                     <DialogHeader>
@@ -119,19 +117,11 @@ const ViewNotice = () => {
                     <a href={d.url} target="_blank">Open PDF</a>
                     </DialogContent>
                     </Dialog>
-                    <Button onClick={()=>deleteNotice(d.public_id)} className="bg-red-700 hover:bg-red-500">Delete</Button>
                 </TableCell>
                 </TableRow>):null}
             </TableBody>
         </Table>
         </Card>
-        {/* {notices.length!==0?{notices.map(data=>{
-            
-        })}} */}
-        {/* {notices.length !== 0 ? notices.map(data=>{
-          <div>  {data}      <div>  data </div> </div>
-    
-        }):"blank"} */}
         {/* <ReactPaginate
         breakLabel="..."
         nextLabel="next >"
@@ -154,7 +144,7 @@ const ViewNotice = () => {
     )
 }
 
-export default ViewNotice;
+export default ViewNotices;
 
 
 

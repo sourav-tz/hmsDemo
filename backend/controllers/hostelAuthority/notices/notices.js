@@ -5,7 +5,7 @@ const { v4: uuidv4 } = require('uuid');
 // Function to handle adding a notice
 const addnotice = async (req, res) => {
     try {
-        const { title,HostelNo } = req.body;
+        const { title,hostelNo } = req.body;
         const file = req.file;
         
         // Check if a file was uploaded
@@ -18,7 +18,7 @@ const addnotice = async (req, res) => {
             title: title,
             url: file.path,
             public_id:uuidv4(),
-            hostelNo: HostelNo
+            hostelNo: hostelNo
         });
 
         // Remove the file from the local storage
@@ -40,9 +40,8 @@ const addnotice = async (req, res) => {
 
 const getNotices=async (req, res) => {
     try {
-      let hostelNo=req.body.tokenHostelNo;
+      let {hostelNo}=req.query;
       if(hostelNo==undefined)hostelNo=null;
-
         console.log(hostelNo);
 
       const result = await db.notices.findAll({
@@ -64,7 +63,7 @@ const getNotices=async (req, res) => {
 
 const deleteNotices=async (req, res) => {
     try {
-        const {public_id}=req.body;
+        const public_id=req.body.noticeId;
         if (!public_id) {
             return res.status(400).json({
                 success: false,

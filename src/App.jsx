@@ -52,6 +52,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import ViewNotices from './Pages/Dashboard/Notices/ViewNotices.jsx';
 
 
 
@@ -216,6 +217,7 @@ const handleStudentLogout = ()=>{
             <Route path='/studentDashboard/settings/profile' element={<CloseRoute><StudentProfileSettings /></CloseRoute>} />
             <Route path='/studentDashboard/complaints/register' element={<CloseRoute><Register /></CloseRoute>} />
             <Route path='/studentDashboard/complaints/status' element={<CloseRoute><ComplaintStatus /></CloseRoute>} />
+            <Route path='/studentDashboard/notices/view' element={<CloseRoute><ViewNotices /></CloseRoute>} />
             <Route path='/studentDashboard/mess/menu' element={<CloseRoute><NewMenu /></CloseRoute>} />
 
             
