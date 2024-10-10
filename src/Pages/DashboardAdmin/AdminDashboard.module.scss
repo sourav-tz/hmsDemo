@@ -5,6 +5,7 @@
     flex-direction: row;
     margin-top: 30px;
     color:$primary;
+   
 }
 
 
@@ -34,6 +35,12 @@
 .Header{
     flex-basis: 100%;
     margin-bottom: 35px;
+    @media(max-width:930px){
+        padding-right: 120px;
+    }
+    @media(max-width:590px){
+        padding-left:100px;
+    }
 }
 
 .logout{
@@ -59,4 +66,3 @@
         border-radius: 0.5rem;
     }
 }
-

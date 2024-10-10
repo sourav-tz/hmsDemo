@@ -19,9 +19,9 @@ export default function RegisterStudent() {
   return (
     <div className="w-full bg-gray-100">
     <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8">
-      <div className="space-y-8">
+      <div className="space-y-8 max-lg:pl-16">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Register Student</h1>
+          <h1 className="text-3xl font-bold tracking-tight max-md:pt-16">Register Student</h1>
           <p className="mt-2 text-gray-500 dark:text-gray-400">Register a New Student</p>
         </div>
         <form className="space-y-8 divide-y divide-gray-200 dark:divide-gray-800">

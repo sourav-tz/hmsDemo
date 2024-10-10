@@ -1,3 +1,4 @@
+
 import React, { useEffect,useState } from 'react';
 import { Button } from "@/components/ui/button"
 import {Card} from "@/components/ui/card"
@@ -71,9 +72,9 @@ const ViewNotice = () => {
     return (
         <>
         <div className='flex flex-col items-center w-full bg-gray-100 min-h-screen mx-auto item-center'>
-        <h1 className='text-3xl font-semibold mt-10'>Notice</h1>
+        <h1 className='text-3xl font-semibold mt-10 max-md:mt-24 '>Notice</h1>
         <p className='text-gray-500'>View Notices</p>
-        <Card className="w-[900px] mt-10">
+        <Card className="w-3/4 mt-10 ml-2 max-lg:ml-16 min-lg:ml-16 ">
         <Table>
             <TableHeader>
                 <TableRow>
@@ -155,23 +156,6 @@ const ViewNotice = () => {
 }
 
 export default ViewNotice;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // make table with the following columns:
 // noticeId
