@@ -85,6 +85,8 @@ router.delete('/deleteNotices',auth, deleteNotices);
 
 
 router.get('/getComplaints',auth,getComplaintsAdmin);
+// can include resolve by /getComplaints?rescomp=true
+// can include rejected by /getComplaints?rejcomp=true
 router.post('/rejectComplaint',auth,rejectComplaint);
 router.post('/resolveComplaint',auth,resoleComplaint);
 module.exports = router;
