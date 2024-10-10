@@ -156,30 +156,46 @@ const setDefaultValues = (course) => {
     });
 }
 
+const recalculateSerialNumbers = (updatedCourses) => {
+  return updatedCourses.map((course, index) => ({
+    ...course,
+    serialNumber: index + 1,
+  }));
+};
 
 const deleteCourse = async (courseId) => {
-    try{
-        const res = await axios({
-            method: 'delete',
-            url:import.meta.env.VITE_BASE_URL  + '/SA/removeCourse',
-            params: {
-                "courseId":courseId,
-                softdelete:true
-            },
-            headers: {
-                "Content-Type": "application/json"
-                },
-                withCredentials: true
+  try {
+    const res = await axios({
+      method: 'delete',
+      url: import.meta.env.VITE_BASE_URL + '/SA/removeCourse',
+      params: {
+        "courseId": courseId,
+        softdelete: true
+      },
+      headers: {
+        "Content-Type": "application/json"
+      },
+      withCredentials: true
+    });
 
-            });
-            console.log(res);
-            initialLoad();
-            toast.success("Course deleted successfully");
-    }catch(err){
-        console.log(err);
-        toast.error("Failed to delete course");
-    }
-}
+    console.log(res);
+
+    // Step 1: Filter out the deleted course
+    const updatedCourses = courses.filter(course => course.courseId !== courseId);
+
+    // Step 2: Recalculate serial numbers
+    const recalculatedCourses = recalculateSerialNumbers(updatedCourses);
+    
+    // Step 3: Update the state with the new list
+    setCourses(recalculatedCourses);
+
+    toast.success("Course deleted successfully");
+  } catch (err) {
+    console.log(err);
+    toast.error("Failed to delete course");
+  }
+};
+
 
   return (
     <div className="container mx-auto py-8 px-8 md:px-6">
@@ -218,17 +234,17 @@ const deleteCourse = async (courseId) => {
               </TableHeader>
               <TableBody>
 
-                {courses.map((course) => (
-                    <TableRow key={course.id}>
-                        <TableCell>{course.courseId}</TableCell>
-                        <TableCell>{course.courseName}</TableCell>
-                        <TableCell>{course.department}</TableCell>
-                        <TableCell>{course.specialization}</TableCell>
-                        <TableCell>{course.courseDuration}</TableCell>
-                        <TableCell>{course.lastUpdatedBy}</TableCell>
-                        <TableCell>{course.createdAt}</TableCell>
-                        <TableCell>{course.updatedAt}</TableCell>
-                        <TableCell>
+              {courses.map((course, index) => (
+                    <TableRow key={course.courseId}>
+                    <TableCell>{index + 1}</TableCell> {/* Serial Number based on index */}
+                    <TableCell>{course.courseName}</TableCell>
+                    <TableCell>{course.department}</TableCell>
+                    <TableCell>{course.specialization}</TableCell>
+                    <TableCell>{course.courseDuration}</TableCell>
+                    <TableCell>{course.lastUpdatedBy}</TableCell>
+                    <TableCell>{course.createdAt}</TableCell>
+                    <TableCell>{course.updatedAt}</TableCell>
+                    <TableCell>
                         <Badge variant={course.active ? "success" : "danger"}>
                             {course.active ? "Active" : "Inactive"}
                         </Badge>
