@@ -185,65 +185,93 @@ const handleDragEnter = (e) => {
 
 
     return<>
-        <div className={styles.container+' mt-8 flex flex-col justify-center items-center'}>
-            <div className={styles.Header}><h1 className='text-3xl'>Allocate Rooms</h1></div>
-            <div className={styles.uploadContainer}>
-
-                <div  className={styles.uploadArea+' '+(dragging?styles.drag:null)}
-                    onDragEnter={handleDragEnter}
-                    onDragLeave={handleDragLeave}
-                    onDragOver={handleDragOver}
-                    onDrop={handleDrop}
-                >
-                {step===1?<><input className={styles.myFile} type="file" ref={inputElement} onChange={handleFile}/>
-                    <IoIosCloudUpload size="60"/>
-                    <p>Drag and Drop Files <br/>Or</p>
-                    <Button onClick={handleButtonClick} variant="contained" style={{marginTop:'10px'}} text="Browser Files" /></>:null}
-                    {step===0?<FileCheckLoading/>:null}
-                    {step===2?<><div className='flex items-center'>
-                      <FaFileCsv size="60"/><p className='ml-4'>{file.name}</p>
-                    </div>
-                    <div className='flex gap-4'>
-                      <Button className="mt-4" onClick={()=>{setStep(1);setFiles(null);}} text="Discard"/>
-                      <Button disable={false} onClick={uploadFile}  className="mt-4" variant="contained" text="Upload"/>
-                    </div></>:null}
-                </div>
-                <div className={styles.uploadInfoAccord+' w-[700px]'}>
-                  {/* <Accordion accordData={accordData}/> */}
-                  <Accordion type="single" collapsible>
-                  <AccordionItem value="item-1">
-                    <AccordionTrigger>File Upload Instructions</AccordionTrigger>
-                    <AccordionContent>
-                      <ul>
-                        <li>Data Must be Uploaded in CSV Format.</li>
-                        <li>Must Match The Fields in Demo File</li>
-                        <li>Unique Data can only be uploaded once, But it can be modified after reuploading.</li>
-                        <li>Required Attributes are roomNo,block,floorNo,maxOccupancy,hostelNo</li>
-                      </ul>
-                    </AccordionContent>
-                  </AccordionItem>
-                  <AccordionItem value="item-2">
-                    <AccordionTrigger>Demo CSV File</AccordionTrigger>
-                    <AccordionContent>
-                      <Button onClick={handleDownloadClick} text="Download" />
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
-                </div>
-
-                {/* <TableLoader /> */}
-                {/* <div className={styles.duplicateTable}>
-                    <h3>Duplicate Data</h3>
-                    <StudentTable />
-                    <div className={styles.buttonArea}>
-                        <Button text="Discard" />
-                        <Button style={{marginLeft:'25px'}} variant="contained" text="Upload" />
-                    </div>
-                </div> */}
-            </div>
-            <ToastContainer />
+    <div className="mt-8 flex flex-col justify-center items-center">
+      {/* Header section with responsive font size */}
+      <div className="w-full">
+        <h1 className="text-2xl md:text-3xl lg:text-4xl text-center">Allocate Rooms</h1> 
+      </div>
+  
+      {/* File upload container, responsive width for different screens */}
+      <div className="w-full md:w-[80%] lg:w-[60%] px-4 mt-4">
+        {/* File upload area with responsive padding and border */}
+        <div 
+          className={`p-4 border border-dashed rounded-lg bg-gray-50 ${dragging ? 'bg-blue-100' : ''}`} 
+          onDragEnter={handleDragEnter}
+          onDragLeave={handleDragLeave}
+          onDragOver={handleDragOver}
+          onDrop={handleDrop}
+        >
+          {/* Step 1: File Input */}
+          {step === 1 ? (
+            <>
+              <input className="hidden" type="file" ref={inputElement} onChange={handleFile} />
+              <IoIosCloudUpload size="60" className="mx-auto my-4" />
+              <p className="text-center">Drag and Drop Files <br />Or</p>
+              {/* Responsive button with margin */}
+              <Button 
+                onClick={handleButtonClick} 
+                className="block mx-auto mt-4" 
+                variant="contained" 
+                text="Browse Files" 
+              />
+            </>
+          ) : null}
+  
+          {/* Step 0: Loading State */}
+          {step === 0 ? <FileCheckLoading /> : null}
+  
+          {/* Step 2: File Preview and Upload */}
+          {step === 2 ? (
+            <>
+              <div className="flex items-center justify-center my-4">
+                <FaFileCsv size="60" /> 
+                <p className="ml-4 text-center">{file.name}</p> 
+              </div>
+              <div className="flex gap-4 justify-center">
+                <Button 
+                  className="mt-4" 
+                  onClick={() => { setStep(1); setFiles(null); }} 
+                  text="Discard" 
+                />
+                <Button 
+                  disable={false} 
+                  onClick={uploadFile} 
+                  className="mt-4" 
+                  variant="contained" 
+                  text="Upload" 
+                />
+              </div>
+            </>
+          ) : null}
         </div>
-    </>
+  
+        {/* Accordion for upload instructions */}
+        <div className="w-full md:w-[90%] lg:w-[80%] mx-auto mt-4">
+          <Accordion type="single" collapsible>
+            <AccordionItem value="item-1">
+              <AccordionTrigger>File Upload Instructions</AccordionTrigger>
+              <AccordionContent>
+                <ul className="list-disc ml-6">
+                  <li>Data Must be Uploaded in CSV Format.</li>
+                  <li>Must Match The Fields in Demo File</li>
+                  <li>Unique Data can only be uploaded once, but it can be modified after reuploading.</li>
+                  <li>Required Attributes are roomNo, block, floorNo, maxOccupancy, hostelNo.</li>
+                </ul>
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="item-2">
+              <AccordionTrigger>Demo CSV File</AccordionTrigger>
+              <AccordionContent>
+                <Button onClick={handleDownloadClick} text="Download" />
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        </div>
+      </div>
+      <ToastContainer />
+    </div>
+  </>
+  
 
 };
 
