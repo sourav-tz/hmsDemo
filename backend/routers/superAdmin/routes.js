@@ -40,26 +40,27 @@ router.get('/', (req, res) => {
     return res.send('success')
 })
 
+// auth
 router.post('/superlogin', superAdminLogin);
 router.post('/superAdminLoginToken',superAdminLoginToken);
 router.get('/superAdminLogout', auth, LogOut);
+router.post('/verifyOldPassword',auth,verifyOldPassword);
+router.post('/updatePassword',auth,updatePassword);
 
 
-
+// Manage Course
 router.get('/getCourses',auth, getCourses);
 router.post('/addCourse',auth, addCourse);
 router.delete('/removeCourse',auth, removeCourse);
 router.post('/enableCourse',auth, enableCourse);
 router.patch('/updateCourse',auth, updateCourse);
 
+// Manage Hostels
 router.get('/getHostels',auth, getHostels);
 router.post('/addHostel',auth, addHostel);
 router.delete('/removeHostel',auth, removeHostel);
 router.post('/enableHostel',auth, enableHostel);
 router.patch('/updateHostel',auth, updateHostel);
-
-// Admin registration
-router.post('/adminReg',auth, AdminRegister)
 
 
 // RoomsTypes Api's
@@ -70,29 +71,20 @@ router.delete('/removeRoomType',auth, deleteRoomType);
 router.get('/downloadfile',auth, downloadFile);
 
 
-// Manage rooms page                   admin will do update(occupancy,roomtype)
-router.get('/getrooms',getrooms);
-router.post('/addroom',addroom);
-router.patch('/updateroom',updateroom);
-router.delete('/deleteroom',deleteroom);
+// Manage rooms                   admin will do update(occupancy,roomtype)
+router.get('/getrooms',auth,getrooms);
+router.post('/addroom',auth,addroom);
+router.patch('/updateroom',auth,updateroom);
+router.delete('/deleteroom',auth,deleteroom);
 
 //manage admins
+router.post('/adminReg',auth, AdminRegister)
 router.get('/getAdmins',auth,getAdmins);
 router.post('/giveLoginAccess',auth,giveLoginAccess);
-
 router.post('/revokeLoginAccess',auth,revokeLoginAcess);
 router.post('/changeHostel',auth,changeHostel);
 router.post('/deleteAdmin',auth,deleteAdmin);
 router.post('/getAdminsAgainstHostel',auth,getAdminsAgainstHostel);
-
-//Todo admin timeline
-
-
-// this is for change password
-router.post('/verifyOldPassword',auth,verifyOldPassword);
-router.post('/updatePassword',auth,updatePassword);
-
-
 
 
 

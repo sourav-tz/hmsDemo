@@ -10,17 +10,17 @@ router.get('/', (req, res) => {
     res.send('success')
 })
 
-
+//auth
 router.post('/login', Login);
 router.get('/studentLogout',auth,LogOut);
-
 router.post('/studentReg' , studentRegistration)
-//// Complaints module
 
+
+// Complaints module
 router.post("/raiseComplaint",auth,raiseComplaint);
 router.post("/getComplaints",auth,getComplaints);
 
-////notices
+//Notices
 router.get('/getNotices',auth,getNotices);
 
 

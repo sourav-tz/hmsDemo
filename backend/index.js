@@ -2,6 +2,7 @@ const express = require('express')
 const app = express();
 const db = require('./models')
 const cors = require("cors");
+const path = require('path');
 const superAdmin = require('./routers/superAdmin/routes');
 const studentRouter = require('./routers/students/routes');
 const HARouter = require('./routers/hostelAuthority/routes');
@@ -20,8 +21,9 @@ cloudinary.v2.config({
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded());
-app.use(express.static('public'));  //*to access public folder
+// app.use(express.static('public'));  //*to access public folder
 app.disable('x-powered-by'); //*less hackers know about our stack
+app.use('/public', express.static(path.join(__dirname, 'public')));
 
 
 

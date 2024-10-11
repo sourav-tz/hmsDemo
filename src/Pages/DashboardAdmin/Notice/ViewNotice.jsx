@@ -52,13 +52,13 @@ const ViewNotice = () => {
         console.log(data.selected);
     }
 
-    const deleteNotice = async (noticeId) => { 
+    const deleteNotice = async (public_id) => { 
         try {
-            console.log("TRYING DELETE_>",noticeId)
+            console.log("TRYING DELETE_>",public_id)
             const res = await axios({
                 method: 'delete',
                 url: import.meta.env.VITE_BASE_URL + '/HA/deleteNotices',
-                data: {noticeId},
+                data: {public_id},
                 withCredentials: true
             })
             console.log(res);

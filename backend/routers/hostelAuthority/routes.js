@@ -41,13 +41,13 @@ router.get('/', (req, res) => {
     return res.send('success')
 })
 
-//// Authentication Hostel Authority
+// Authentication Hostel Authority
 router.post('/adminLogin', Login)
 router.post('/adminGoogleLogin', AdminGoogleLogin)
 router.get('/adminLogout', auth, Logout)
 router.get('/isCookie', isCookie)
 
-////viewInfo Module
+///viewInfo Module
 //* Apis for bulk
 router.post('/bulkCreate',auth, upload.single('file'), csvToJsonConverter, bulkCreateController);
 router.patch('/updateBulk',auth, updateBulk);
@@ -61,13 +61,12 @@ router.post('/getSingleCourse',auth,getSingleCourse);
 //* Apis single student
 router.post('/singleStudentUpload', auth,singleStudentUpload);
 router.patch('/updateSingleStudent', auth,updateSingleStudent);
-//todo:update api
 router.delete('/deleteStudent', auth,deleteStudent);
 
 
 
 
-////Rooms Module routes
+//Rooms Module routes
 
 router.post('/bulkRoomAllot',auth, upload.single('file'), csvToJsonConverter, bulkRoomAllotmentToStudent)
 router.post('/singleRoomAllot',auth, singleStudentAllot);
@@ -83,10 +82,11 @@ router.post('/addNotice',auth,upload.single('file'), addnotice);
 router.get('/getNotices',auth, getNotices);
 router.delete('/deleteNotices',auth, deleteNotices);
 
-
+//Complaints Routes
 router.get('/getComplaints',auth,getComplaintsAdmin);
 // can include resolve by /getComplaints?rescomp=true
 // can include rejected by /getComplaints?rejcomp=true
 router.post('/rejectComplaint',auth,rejectComplaint);
 router.post('/resolveComplaint',auth,resoleComplaint);
+
 module.exports = router;
