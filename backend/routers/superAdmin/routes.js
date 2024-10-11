@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { getCourses, addCourse, removeCourse, enableCourse, updateCourse } = require('../../controllers/superAdmin/Manage_Courses/Courses');
 const { getHostels, addHostel, removeHostel, enableHostel, updateHostel } = require('../../controllers/superAdmin/Manage_Hostels/Hostels');
+const { getrooms,addroom,updateroom ,deleteroom} = require('../../controllers/superAdmin/ManageRooms/managerooms.js');
 const {addRoomType,deleteRoomType,getRoomTypes } = require('../../controllers/superAdmin/Manage_roomTypes');
 const { getAdmins,revokeLoginAcess,giveLoginAccess,changeHostel } = require('../../controllers/superAdmin/Manage_Admins');
 const multer = require('multer');
@@ -69,9 +70,13 @@ router.delete('/removeRoomType',auth, deleteRoomType);
 router.get('/downloadfile',auth, downloadFile);
 
 
-//TODO new single room add in rooms table add,remove                    admin will do update(occupancy,roomtype)
-//*bulk,addremove single student ,get room data 
-//Todo: timeline , single room add del
+// Manage rooms page                   admin will do update(occupancy,roomtype)
+router.get('/getrooms',getrooms);
+router.post('/addroom',addroom);
+router.patch('/updateroom',updateroom);
+router.delete('/deleteroom',deleteroom);
+
+//manage admins
 router.get('/getAdmins',auth,getAdmins);
 router.post('/giveLoginAccess',auth,giveLoginAccess);
 
