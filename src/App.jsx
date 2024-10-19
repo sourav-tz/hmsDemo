@@ -212,6 +212,8 @@ const handleStudentLogout = ()=>{
             <Route path='/forgetPass' element={<OpenRoute><ForgetPassword /></OpenRoute>} />
             <Route path='/StudentSignUp' element={<OpenRoute><StudentSignUp /></OpenRoute>} />
             <Route path='/VerifyOtp' element={<OpenRoute><VerifyOtp/></OpenRoute>} />
+            <Route path='/ResetPassword' element={<OpenRoute><ResetPassword/></OpenRoute>} />
+
             {/* Students */}
             <Route path='/studentDashboard/main/home' element={<CloseRoute><Dashboard /></CloseRoute>} />
             <Route path='/studentDashboard/settings/profile' element={<CloseRoute><StudentProfileSettings /></CloseRoute>} />
@@ -225,7 +227,6 @@ const handleStudentLogout = ()=>{
             <Route path='/adminLogin' element={<OpenRoute><Adminlogin /></OpenRoute>} />
             {/* <Route path='/sandbox' element={<Sandbox />} /> */}
             <Route path='/adminDashboard/main/home' element={<CloseRoute><AdminDashboard /></CloseRoute>} />
-            <Route path='/ResetPassword' element={<CloseRoute></CloseRoute>} />
             <Route path='/adminDashboard/studentInfo/register' element={<CloseRoute><RegisterStudent/></CloseRoute>} />
             <Route path='/adminDashboard/studentInfo/update' element={<CloseRoute><UpdateStudent/></CloseRoute>} />
             <Route path='/adminDashboard/studentInfo/viewInfo' element={<CloseRoute><ViewInfo /></CloseRoute>} />
