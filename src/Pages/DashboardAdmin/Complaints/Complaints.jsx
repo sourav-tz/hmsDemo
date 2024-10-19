@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import axios from 'axios';
@@ -10,23 +11,22 @@ const Complaints = () => {
   const [complaints, setComplaints] = useState([]);
   const [selectedComplaint, setSelectedComplaint] = useState(null);
   const [actionType, setActionType] = useState(null);
-  const [selectedValue, setSelectedValue] = useState('view'); // Track the selected value in the dropdown
-  const [isDescriptionDialogOpen, setIsDescriptionDialogOpen] = useState(false); // State for description dialog
+  const [comment, setComment] = useState('');
+  const [isDescriptionDialogOpen, setIsDescriptionDialogOpen] = useState(false);
+  const [actionStates, setActionStates] = useState({});
 
   // Fetch complaints from API
   const fetchComplaints = async () => {
-    // const userData = JSON.parse(localStorage.getItem('persist:root'));
-    // const hostelNo = JSON.parse(userData.userStorage).data.dataValues.hostelNo;
-
     try {
-      const response = await axios({
-        method: 'get',
-        url: import.meta.env.VITE_BASE_URL + '/HA/getComplaints',
-        withCredentials: true,
-      });
+      const response = await axios.get(import.meta.env.VITE_BASE_URL + '/HA/getComplaints', { withCredentials: true });
 
       if (response.data.result && Array.isArray(response.data.result)) {
         setComplaints(response.data.result);
+        const initialStates = {};
+        response.data.result.forEach(complaint => {
+          initialStates[complaint.complaintId] = 'view'; // Default state
+        });
+        setActionStates(initialStates);
       }
     } catch (err) {
       console.error(err);
@@ -37,28 +37,11 @@ const Complaints = () => {
     fetchComplaints();
   }, []);
 
-  // Function to resolve complaint
-  const resolveComplaint = async (complaintId) => {
+  // Function to resolve or reject complaint
+  const handleComplaintAction = async (complaintId, action) => {
     try {
-      await axios.post(
-        import.meta.env.VITE_BASE_URL + '/HA/resolveComplaint',
-        { complaintId },
-        { withCredentials: true }
-      );
-      fetchComplaints(); // Refresh the complaint list
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  // Function to reject complaint
-  const rejectComplaint = async (complaintId) => {
-    try {
-      await axios.post(
-        import.meta.env.VITE_BASE_URL + '/HA/rejectComplaint',
-        { complaintId },
-        { withCredentials: true }
-      );
+      const endpoint = action === 'resolve' ? '/HA/resolveComplaint' : '/HA/rejectComplaint';
+      await axios.post(import.meta.env.VITE_BASE_URL + endpoint, { complaintId, comment }, { withCredentials: true });
       fetchComplaints(); // Refresh the complaint list
     } catch (err) {
       console.error(err);
@@ -67,34 +50,36 @@ const Complaints = () => {
 
   // Handle action change
   const handleActionChange = (complaintId, action) => {
+    setActionStates(prev => ({ ...prev, [complaintId]: action })); // Update action state
     if (action === 'view') {
       const complaintToView = complaints.find(c => c.complaintId === complaintId);
-      setSelectedComplaint(complaintToView); // Set the selected complaint for viewing
-      setIsDescriptionDialogOpen(true); // Open description dialog
-      setSelectedValue('view'); // Reset to view if selected
+      setSelectedComplaint(complaintToView);
+      setIsDescriptionDialogOpen(true);
     } else if (action === 'resolve' || action === 'reject') {
-      setSelectedComplaint(complaintId); // Set the selected complaint
-      setActionType(action); // Set action type for confirmation
-      setSelectedValue(action); // Set dropdown value to the action
+      setSelectedComplaint(complaintId);
+      setActionType(action);
     }
   };
 
   // Confirm action
   const confirmAction = () => {
-    if (actionType === 'resolve') {
-      resolveComplaint(selectedComplaint);
-    } else if (actionType === 'reject') {
-      rejectComplaint(selectedComplaint);
+    if (actionType) {
+      handleComplaintAction(selectedComplaint, actionType);
     }
-    setActionType(null); // Reset action type
-    setSelectedComplaint(null); // Close the dialog
+    resetState();
+  };
+
+  // Reset state function
+  const resetState = () => {
+    setActionType(null);
+    setSelectedComplaint(null);
+    setComment('');
+    setActionStates(prev => ({ ...prev, [selectedComplaint]: 'view' })); // Reset to 'view'
   };
 
   // Handle cancel action
   const handleCancel = () => {
-    setActionType(null); // Reset action type
-    setSelectedComplaint(null); // Close the dialog
-    setSelectedValue('view'); // Reset dropdown selection to 'view'
+    resetState();
   };
 
   // Close description dialog
@@ -123,6 +108,7 @@ const Complaints = () => {
           <TableHeader>
             <TableRow>
               <TableHead className="w-[100px]">Complaint ID</TableHead>
+              <TableHead>Roll No.</TableHead>
               <TableHead>Subject</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Date</TableHead>
@@ -134,17 +120,22 @@ const Complaints = () => {
             {complaints.map((complaint) => (
               <TableRow key={complaint.complaintId}>
                 <TableCell className="font-medium">{complaint.complaintId}</TableCell>
+                <TableCell>{complaint.rollNo}</TableCell>
                 <TableCell>{complaint.subject}</TableCell>
-                <TableCell>{complaint.status}</TableCell>
+                <TableCell>
+                  {complaint.status === 'pending' ? (
+                    <span className="px-2 py-1 text-xs font-semibold text-yellow-800 bg-yellow-200 rounded-full">
+                      {complaint.status}
+                    </span>
+                  ) : (
+                    <span>{complaint.status}</span>
+                  )}
+                </TableCell>
                 <TableCell>{formatDate(complaint.createdAt)}</TableCell>
                 <TableCell>
                   <Button 
-                    className="text-xs bg-green-600 hover:bg-green-500" // Small size and green color
+                    className="text-xs bg-green-600 hover:bg-green-500"
                     onClick={() => {
-                      // Close any open description dialog before opening a new one
-                      if (isDescriptionDialogOpen) {
-                        closeDescriptionDialog();
-                      }
                       const complaintToView = complaints.find(c => c.complaintId === complaint.complaintId);
                       setSelectedComplaint(complaintToView);
                       setIsDescriptionDialogOpen(true);
@@ -154,7 +145,7 @@ const Complaints = () => {
                   </Button>
                 </TableCell>
                 <TableCell className="text-right">
-                  <Select value={selectedValue} onValueChange={(value) => handleActionChange(complaint.complaintId, value)}>
+                  <Select value={actionStates[complaint.complaintId] || 'view'} onValueChange={(value) => handleActionChange(complaint.complaintId, value)}>
                     <SelectTrigger>
                       <SelectValue placeholder="Actions" />
                     </SelectTrigger>
@@ -173,17 +164,33 @@ const Complaints = () => {
 
       {/* Dialog for confirming action */}
       {selectedComplaint && actionType && (
-        <Dialog open={Boolean(selectedComplaint)} onOpenChange={() => handleCancel()}>
+        <Dialog open={Boolean(actionType)} onOpenChange={() => handleCancel()}>
           <DialogContent>
             <DialogHeader>
               <DialogTitle>{actionType === 'resolve' ? 'Confirm Resolve' : 'Confirm Reject'}</DialogTitle>
             </DialogHeader>
             <DialogDescription>
               <p>Are you sure you want to {actionType} this complaint?</p>
+              <label className="block mt-4 font-medium">
+                Add a comment <span className="text-red-600">*</span>
+              </label>
+              <Textarea
+                placeholder="Add a comment (mandatory)"
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                className="mt-2 w-full h-24 p-2 border rounded-md resize-none"
+                required
+              />
             </DialogDescription>
             <div className='flex justify-end gap-4'>
-              <Button className='bg-gray-300' onClick={handleCancel}>Cancel</Button>
-              <Button className='bg-red-600 hover:bg-red-400' onClick={confirmAction}>Confirm</Button>
+              <Button className='bg-blue-500 hover:bg-blue-400' onClick={handleCancel}>Cancel</Button>
+              <Button 
+                className={`bg-red-600 hover:bg-red-400 ${!comment ? 'opacity-50 cursor-not-allowed' : ''}`} 
+                onClick={confirmAction}
+                disabled={!comment} // Disable the button if comment is empty
+              >
+                Confirm
+              </Button>
             </div>
           </DialogContent>
         </Dialog>
@@ -197,7 +204,7 @@ const Complaints = () => {
               <DialogTitle>Complaint Description</DialogTitle>
             </DialogHeader>
             <DialogDescription>
-              <p><strong>Description:</strong> {selectedComplaint.description}</p>
+              <p>{selectedComplaint.description}</p>
             </DialogDescription>
             <div className='flex justify-end'>
               <Button onClick={closeDescriptionDialog}>Close</Button>

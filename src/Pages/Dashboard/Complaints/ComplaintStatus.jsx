@@ -149,12 +149,16 @@ import {
                     </TableRow>
   
                     {expandedComplaintId === complaint.complaintId && (
-                      <TableRow>
-                        <TableCell colSpan={5} className="bg-gray-100 p-4">
-                          <p><strong>Description:</strong> {complaint.description}</p>
-                        </TableCell>
-                      </TableRow>
+                    <TableRow>
+                      <TableCell colSpan={5} className="bg-gray-100 p-4">
+                        <p><strong>Description:</strong> {complaint.description}</p>
+                        {complaint.comment && complaint.comment !== "null" && (
+                          <p style={{ marginTop: '10px' }}><strong>Response:</strong> {complaint.comment}</p>
+                        )}
+                      </TableCell>
+                    </TableRow>
                     )}
+
                   </React.Fragment>
                 ))
               )}

@@ -42,7 +42,10 @@ module.exports = {
       },
       last_updated_at: {
         type: Sequelize.DATE
-      }
+      },
+      comment : {
+        type : Sequelize.TEXT
+      },
     });
   },
 

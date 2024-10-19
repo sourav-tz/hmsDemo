@@ -84,8 +84,8 @@ const result = await db.complaints.findAll({
   };
 const resoleComplaint=async (req, res) => {
     try {
-      const {complaintId}=req.body;
-      await db.complaints.update({status:"resolved"},{
+      const {complaintId , comment}=req.body;
+      await db.complaints.update({status:"resolved",comment : comment},{
         where:{
             complaintId
         }
@@ -98,8 +98,8 @@ const resoleComplaint=async (req, res) => {
   };
 const rejectComplaint=async (req, res) => {
     try {
-      const {complaintId}=req.body;
-      await db.complaints.update({status:"rejected"},{
+      const {complaintId, comment}=req.body;
+      await db.complaints.update({status:"rejected",comment : comment},{
         where:{
             complaintId
         }
