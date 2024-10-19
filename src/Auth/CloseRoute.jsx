@@ -17,6 +17,10 @@ import { Navigate } from "react-router-dom"
 function CloseRoute({children}){
   const {data}=useSelector((state)=>state.userStorage)
   const role = localStorage.getItem('role');
+  // console.log("role"+role);
+  //   console.log(JSON.stringify(data));
+  //   console.log(children);
+
   if (data==null) {
     // If not authenticated, redirect to login
     if(role=="SuperAdmin"){
@@ -26,6 +30,7 @@ function CloseRoute({children}){
     }else if(role=="Student"){
       return <Navigate to="/studentLogin" replace />;
     }
+    // return <Navigate to="/" replace/>;
   }
 
   return <div className="md:w-[94%] ml-auto">{children}</div>;

@@ -3,6 +3,12 @@ import { Navigate } from "react-router-dom"
 const OpenRoute = ({ children }) => {
     const {data}=useSelector((state)=>state.userStorage)
     const role = localStorage.getItem('role');
+    // console.log("roleO"+role);
+    // console.log("datO");
+    // console.log(JSON.stringify(data));
+    // console.log(data==null);
+    // console.log(children.type);
+    
     if (data!=null) {
       // If authenticated, redirect to home (or any other role-based page)
       if(role=="SuperAdmin"){
