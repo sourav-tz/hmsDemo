@@ -78,7 +78,7 @@ const onSubmitEdit = async (data) => {
         return (
           course.courseName.trim().toLowerCase() === courseName.trim().toLowerCase() &&
           course.department.trim().toLowerCase() === department.trim().toLowerCase() &&
-          course.specialization.trim().toLowerCase() === specialization.trim().toLowerCase() && course.active === isActive
+          course.specialization?.trim().toLowerCase() === specialization?.trim().toLowerCase() && course.active === isActive
         );
       });
     };
@@ -254,6 +254,7 @@ const deleteCourse = async (courseId) => {
                   </Badge>
                 </TableCell>
                 <TableCell className="flex justify-center items-center gap-2">
+
                   {/* Edit Course Dialog */}
                   <Dialog>
                     <DialogTrigger asChild>
