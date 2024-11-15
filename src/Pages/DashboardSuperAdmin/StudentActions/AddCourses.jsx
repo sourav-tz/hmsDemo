@@ -198,7 +198,7 @@ const deleteCourse = async (courseId) => {
 
 
   return (
-   <div className="container mx-auto py-8 px-4 sm:px-8">
+   <div className="mt-24 md:mt-0 container mx-auto py-8 px-4 sm:px-8">
   <div className="flex flex-col justify-center items-center gap-8">
     {/* Add New Course Section */}
     <div className="w-full lg:w-[600px]">
@@ -402,12 +402,14 @@ const deleteCourse = async (courseId) => {
                             </DialogTrigger>
                           </div>
                           <div>
+                            <DialogTrigger asChild>
                             <Button
                               type="submit"
                               className="bg-blue-700 hover:bg-blue-500"
                             >
                               Save Changes
                             </Button>
+                            </DialogTrigger>
                           </div>
                         </DialogFooter>
                       </form>
