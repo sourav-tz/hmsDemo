@@ -35,6 +35,7 @@ jobs:
         with:
           push: true
           tags: maxansari/nithms-v2:1.0
+          context: ./backend
 
       - name: Deploy using SSH and Docker Compose
         run: |
