@@ -53,6 +53,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import ViewNotices from './Pages/Dashboard/Notices/ViewNotices.jsx';
+import GuestLanding from './Pages/GuestDashboard/GuestLanding/GuestLanding.jsx';
+import GuestReigster from './Pages/GuestDashboard/GuestRegister/GuestReigster.jsx';
+import GuestStatus from './Pages/GuestDashboard/GuestStatus/GuestStatus.jsx';
+import GuestReferral from './Pages/Dashboard/GuestReferral/GuestReferral.jsx';
+import GuestVerify from './Pages/DashboardAdmin/GuestFunctionality/GuestVerify/GuestVerify.jsx';
+import GuestView from './Pages/DashboardAdmin/GuestFunctionality/GuestView/GuestView.jsx';
 
 
 
@@ -221,8 +227,12 @@ const handleStudentLogout = ()=>{
             <Route path='/studentDashboard/complaints/status' element={<CloseRoute><ComplaintStatus /></CloseRoute>} />
             <Route path='/studentDashboard/notices/view' element={<CloseRoute><ViewNotices /></CloseRoute>} />
             <Route path='/studentDashboard/mess/menu' element={<CloseRoute><NewMenu /></CloseRoute>} />
-
             
+            {/*Student Guest Verify Referral Page */}
+            <Route path='/studentDashboard/guest/referral' element={<CloseRoute><GuestReferral /></CloseRoute>} />
+            
+
+
             {/* Admin Routes */}
             <Route path='/adminLogin' element={<OpenRoute><Adminlogin /></OpenRoute>} />
             {/* <Route path='/sandbox' element={<Sandbox />} /> */}
@@ -236,6 +246,12 @@ const handleStudentLogout = ()=>{
             <Route path='/adminDashboard/notice/uploadNotice' element={<CloseRoute><UploadNotice /></CloseRoute>} />
             <Route path='/adminDashboard/notice/viewNotice' element={<CloseRoute><ViewNotice /></CloseRoute>} />
             <Route path='/adminDashboard/settings/security' element={<CloseRoute><AdminSecuritysettings /></CloseRoute>} />
+            
+            {/* Admin Guest Pages */}
+            <Route path='/adminDashboard/guest/verify' element={<CloseRoute><GuestVerify /></CloseRoute>} />
+            <Route path='/adminDashboard/guest/viewAll' element={<CloseRoute><GuestView /></CloseRoute>} />
+
+
 
             {/*super Admin Routes  */}
             <Route path='/superAdminLogin' element={<OpenRoute><SuperAdminLogin /></OpenRoute>} />
@@ -248,6 +264,13 @@ const handleStudentLogout = ()=>{
             <Route path='/superAdminDashboard/settings/security' element={<CloseRoute><Securitysettings /></CloseRoute>} />
             <Route path='/superAdminDashboard/studentActions/addCourses' element={<CloseRoute><AddCourses /></CloseRoute>} />
             
+
+            {/* Guest Routes */}
+            <Route path='/guest/home' element={<CloseRoute><GuestLanding /></CloseRoute>} />
+            <Route path='/guest/register' element={<CloseRoute><GuestReigster /></CloseRoute>} />
+            <Route path='/guest/status' element={<CloseRoute><GuestStatus /></CloseRoute>} />
+
+
         </Routes>    
            </div>
         </div>
