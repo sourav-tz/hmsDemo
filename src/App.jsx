@@ -59,6 +59,7 @@ import GuestStatus from './Pages/GuestDashboard/GuestStatus/GuestStatus.jsx';
 import GuestReferral from './Pages/Dashboard/GuestReferral/GuestReferral.jsx';
 import GuestVerify from './Pages/DashboardAdmin/GuestFunctionality/GuestVerify/GuestVerify.jsx';
 import GuestView from './Pages/DashboardAdmin/GuestFunctionality/GuestView/GuestView.jsx';
+import GuestSidebar from './components/GuestSidebar/GuestSidebar.jsx';
 
 
 
@@ -70,6 +71,7 @@ function App() {
 const [admin,setAdmin] = useState(false);
 const [student,setStudent] = useState(false);
 const [superAdmin,setSuperAdmin] = useState(false);
+const [guest,setGuest] = useState(false);
 const [loading,setLoadingPage] = useState(false);
 
 const location = useLocation();
@@ -81,21 +83,31 @@ useEffect(()=>{
     setAdmin(true);
     setStudent(false);
     setSuperAdmin(false);
+    setGuest(false);
   }
   else if(location.pathname.split('/')[1]==='superAdminDashboard'){
     setAdmin(false);
     setStudent(false);
     setSuperAdmin(true);
+    setGuest(false);
   }
   else if(location.pathname.split('/')[1]==='studentDashboard'){
     setAdmin(false);
     setStudent(true);
     setSuperAdmin(false);
+    setGuest(false);
+  }
+  else if(location.pathname.split('/')[1]==='guest'){
+    setAdmin(false);
+    setStudent(false);
+    setSuperAdmin(false);
+    setGuest(true);
   }
   else{
     setAdmin(false);
     setStudent(false);
     setSuperAdmin(false);
+    setGuest(false);
   }
 
 },[location]);
@@ -185,6 +197,7 @@ const handleStudentLogout = ()=>{
     {admin?<Sidebar />:null}
     {superAdmin?<SuperSidebar />:null}
     {student?<StudentSidebar />:null}
+    {guest?<GuestSidebar />:null}
 
     {admin||superAdmin||student?<div className='absolute top-4 right-20'>
       <DropdownMenu>
