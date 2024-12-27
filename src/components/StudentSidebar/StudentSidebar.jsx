@@ -5,7 +5,7 @@ import { IconContext } from 'react-icons';
 import { IoHome } from "react-icons/io5";
 import { FaRegEye } from "react-icons/fa6";
 import { FaInfo } from "react-icons/fa";
-import { MdOutlineBedroomChild } from "react-icons/md";
+import { MdLocalHotel, MdOutlineBedroomChild } from "react-icons/md";
 import { FaGear } from "react-icons/fa6";
 import { useSelector } from 'react-redux';
 import { BsHouses } from "react-icons/bs";
@@ -40,6 +40,7 @@ export default function StudentSidebar(){
     const [subSettings, setSubSettings] = useState(false);
     const [subHostel,setSubHostel] = useState(false);
     const [subNotice,setSubNotice] = useState(false);
+    const [subReferral,setSubReferral] = useState(false);
 
 
     const changeSubMenu = (value)=>{
@@ -51,6 +52,7 @@ export default function StudentSidebar(){
             setSubSettings(false);
             setSubHostel(false);
             setSubNotice(false);
+            setSubReferral(false);
         }else if(value ==='complaints'){
             setSubHome(false);
             setSubComplaint(prev => !prev);
@@ -58,7 +60,7 @@ export default function StudentSidebar(){
             setSubSettings(false);
             setSubHostel(false);
             setSubNotice(false);
-
+            setSubReferral(false);
 
         }else if(value === 'mess'){
             setSubHome(false);
@@ -67,6 +69,7 @@ export default function StudentSidebar(){
             setSubSettings(false);
             setSubHostel(false);
             setSubNotice(false);
+            setSubReferral(false);
 
         }else if(value === 'settings'){
             setSubHome(false);
@@ -75,6 +78,7 @@ export default function StudentSidebar(){
             setSubSettings(prev=>!prev);
             setSubHostel(false);
             setSubNotice(false);
+            setSubReferral(false);
 
         }else if(value=='hostels'){
             setSubHome(false);
@@ -83,6 +87,7 @@ export default function StudentSidebar(){
             setSubSettings(false);
             setSubHostel(prev=>!prev);
             setSubNotice(false);
+            setSubReferral(false);
         }
         else if(value=='notices'){
             setSubHome(false);
@@ -91,6 +96,16 @@ export default function StudentSidebar(){
             setSubSettings(false);
             setSubHostel(false);
             setSubNotice(prev=>!prev);
+            setSubReferral(false);
+        }
+        else if(value == 'referral'){
+            setSubHome(false);
+            setSubComplaint(false);
+            setSubMess(false);
+            setSubSettings(false);
+            setSubHostel(false);
+            setSubNotice(false);
+            setSubReferral(prev=>!prev);
         }
 
     }
@@ -163,6 +178,15 @@ const handleLogout = ()=>{}
                         <li onClick={()=>{Navigator('/studentDashboard/mess/menu')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='menu'?styles.activeSubOption:null)}>New Mess Menu</li>
                         </ul>
             </div>
+
+            {/* Verify Guest Referral */}
+            <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
+                        <p onClick={()=>{changeSubMenu('referral')}} className={(activeOption==='referral'?styles.activeItem:null)+ ' flex items-center gap-2'}><MdLocalHotel /><span className={(state?null:styles.hidden)+' mt-1'}>Guest Referral</span></p>
+                        <ul className={state&&subReferral?null:styles.hidden}>
+                        <li onClick={()=>{Navigator('/studentDashboard/guest/referral')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='referral'?styles.activeSubOption:null)}>Verify Guest Referral</li>
+                        </ul>
+            </div>
+
             {/* <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
                         <p onClick={()=>{changeSubMenu('hostels')}} className={(activeOption==='hostels'?styles.activeItem:null)+ ' flex items-center gap-2'}><BsHouses /> <span className={(state?null:styles.hidden)+' mt-1'}>Hostels</span></p>
                         <ul className={state&&subHostel?null:styles.hidden}>
