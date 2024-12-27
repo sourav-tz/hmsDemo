@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false,
             validate: {
-                isIn: [['pending', 'approved', 'rejected']], // Example statuses
+                isIn: [['pendingAtReferrer', 'rejectedByReferrer', 'pendingAtAdmin','rejectedByAdmin','approvedByAdmin']], // Example statuses
             },
         },
         first_name: {

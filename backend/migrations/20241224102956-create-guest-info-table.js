@@ -11,7 +11,7 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
         validate: {
-          isIn: [['pending', 'approved', 'rejected']], // Example statuses
+          isIn: [['pendingAtReferrer', 'rejectedByReferrer', 'pendingAtAdmin','rejectedByAdmin','approvedByAdmin']],
         },
       },
       first_name: {
