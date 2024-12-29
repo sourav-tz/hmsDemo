@@ -61,6 +61,10 @@ module.exports = (sequelize, dataTypes) => {
                 name: 'roomId'
             }
         });
+        students.hasMany(models.guestInfo, {
+            foreignKey: 'referrer_email',
+            as: 'referrals',
+        });
     };
     return students;
 }

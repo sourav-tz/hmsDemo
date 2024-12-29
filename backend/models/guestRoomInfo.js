@@ -28,17 +28,24 @@ module.exports = (sequelize, DataTypes) => {
         status: {
             type: DataTypes.STRING,
             allowNull: false,
-            validate: {
-                isIn: [['booked', 'available']],
-            },
+            validate: { isIn: [['booked', 'available']] },
         },
         hostelNo: {
             type: DataTypes.STRING,
             allowNull: false,
         },
-    }, {
-        updatedAt: 'last_updated_at'
+        
+    },
+    {
+        timestamps: true,
     });
+
+    guestRoomInfo.associate = (models) => {
+        guestRoomInfo.hasMany(models.bookingInfo, {
+            foreignKey: 'roomId',
+            as: 'bookings',
+        });
+    };
 
     return guestRoomInfo;
 };

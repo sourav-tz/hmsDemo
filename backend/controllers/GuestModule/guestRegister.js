@@ -22,7 +22,8 @@ const guestRegister = async (req, res) => {
       additional_requests,
       purpose_of_visit,
     } = req.body;
-
+    console.log(req.body);
+    console.log(referrer_email)
     // Validate required fields
     if (!guest_email) {
       return res.status(400).json({ message: "Guest email is required." });
@@ -66,7 +67,7 @@ const guestRegister = async (req, res) => {
 
     // Check if a pending entry for the same guest_email already exists
     const existingGuest = await guestInfo.findOne({
-      where: { guest_email, status: "pending" },
+      where: { guest_email, status: "pendingAtReferrer" },
     });
 
     if (existingGuest) {
@@ -90,7 +91,7 @@ const guestRegister = async (req, res) => {
 
     // Insert guest info into the database
     const newGuestInfo = await guestInfo.create({
-      status: "pending",
+      status: "pendingAtReferrer",
       first_name,
       last_name,
       guest_email,

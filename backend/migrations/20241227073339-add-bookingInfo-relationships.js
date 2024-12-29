@@ -21,9 +21,12 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'guestRoomInfo',
+          model: 'guestRoomInfos',
           key: 'roomID',
         },
+      },
+      allocatedHostel:{
+        type:Sequelize.STRING.INTEGER
       },
       createdAt: {
         type: Sequelize.DATE,

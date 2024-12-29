@@ -72,9 +72,7 @@ module.exports = (sequelize, DataTypes) => {
         gender: {
             type: DataTypes.STRING,
             allowNull: false,
-            validate: {
-                isIn: [['male', 'female', 'other']], // Define gender options
-            },
+            validate: { isIn: [['male', 'female', 'other']] },
         },
         city: {
             type: DataTypes.STRING,
@@ -111,6 +109,17 @@ module.exports = (sequelize, DataTypes) => {
         timestamps: true, // Automatically adds createdAt and updatedAt fields
         paranoid: true,   // Enables soft deletion
     });
+
+    guestInfo.associate = (models) => {
+        guestInfo.hasOne(models.bookingInfo, {
+            foreignKey: 'application_id',
+            as: 'booking',
+        });
+        guestInfo.belongsTo(models.students, {
+            foreignKey: 'referrer_email',
+            as: 'referrer',
+        });
+    };
 
     return guestInfo;
 };

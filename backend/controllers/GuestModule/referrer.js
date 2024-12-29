@@ -38,6 +38,8 @@ const rejectApplication = async (req, res) => {
   try {
     const studentEmail = req.body.tokenEmail;
     const { application_id } = req.params;
+    console.log(studentEmail);
+    console.log(application_id);
 
     if (!application_id || !studentEmail) {
       return res.status(400).json({
@@ -47,7 +49,7 @@ const rejectApplication = async (req, res) => {
     }
 
     const application = await guestInfo.findOne({
-      where: { application_id ,status:"pendingByReferrer"},
+      where: { application_id ,status:"pendingAtReferrer"},
     });
 
     if (!application) {
@@ -56,8 +58,6 @@ const rejectApplication = async (req, res) => {
         message: "Application not found.",
       });
     }
-
-    // Check if the roll number matches the first 9 characters of the referrer_email
     const referrerEmail = application.referrer_email;
     if (referrerEmail !== studentEmail) {
       return res.status(403).json({
@@ -99,7 +99,7 @@ const acceptApplication = async (req, res) => {
     }
 
     const application = await guestInfo.findOne({
-      where: { application_id ,status:"pendingByReferrer"},
+      where: { application_id ,status:"pendingAtReferrer"},
     });
 
     if (!application) {
@@ -109,7 +109,6 @@ const acceptApplication = async (req, res) => {
       });
     }
 
-    // Check if the roll number matches the first 9 characters of the referrer_email
     const referrerEmail = application.referrer_email;
     if (referrerEmail !== studentEmail) {
       return res.status(403).json({
