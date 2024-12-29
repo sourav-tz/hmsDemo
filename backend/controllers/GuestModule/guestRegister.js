@@ -1,5 +1,6 @@
 const { guestInfo } = require("../../models");
 const { users } = require("../../models");
+const { Sequelize } = require('sequelize');
 
 const guestRegister = async (req, res) => {
   try {
@@ -67,8 +68,15 @@ const guestRegister = async (req, res) => {
 
     // Check if a pending entry for the same guest_email already exists
     const existingGuest = await guestInfo.findOne({
-      where: { guest_email, status: "pendingAtReferrer" },
+      where: {
+        guest_email,
+        [Sequelize.Op.or]: [
+          { status: "pendingAtReferrer" },
+          { status: "pendingAtAdmin" },
+        ],
+      },
     });
+    
 
     if (existingGuest) {
       return res.status(409).json({
