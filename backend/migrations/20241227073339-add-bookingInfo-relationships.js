@@ -26,10 +26,7 @@ module.exports = {
         },
       },
       allocatedHostel:{
-i
         type:Sequelize.STRING
-
-
       },
       createdAt: {
         type: Sequelize.DATE,
