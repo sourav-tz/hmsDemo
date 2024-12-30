@@ -1,140 +1,152 @@
-/**
- * v0 by Vercel.
- * @see https://v0.dev/t/tyylSvQO5pt
- * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
- */
+
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-
+import { useForm } from "react-hook-form"
+import { DevTool } from "@hookform/devtools"
+import axios from "axios";
+import { ToastContainer,toast } from "react-toastify"
+import { AgGridReact } from 'ag-grid-react';
+import "ag-grid-community/styles/ag-grid.css";
+import "ag-grid-community/styles/ag-theme-quartz.css";
+import { useState } from "react"
 export default function MangageRooms() {
+
+const { register, handleSubmit, control } = useForm({
+  defaultValues: {
+    roomNo: "",
+    floorNo: "",
+    block: "",
+    maxOccupancy: "",
+    hostelNo: "",
+  },
+  mode: "onBlur",
+})
+
+
+const onSubmit = async (data) => {
+  console.log(data);
+  try {
+    const response = await axios({
+      url: import.meta.env.VITE_BASE_URL + "/SA/addroom",
+      method: "POST",
+      data: {
+        roomNo: data.roomNo,
+        block: data.block,
+        floorNo: data.floorNo,
+        maxOccupancy: data.maxOccupancy,
+        hostelNo: data.hostelNo,
+      },
+      withCredentials: true,
+    })
+
+    console.log(response.data)
+    toast.success('Room Added Succesfully', {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      });
+
+  } catch (error) {
+    console.error(error.response.data.message)
+    toast.error(error.response.data.message, {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+  })
+}
+}
+
+
+// Table for Rooms
+  const [rowData, setRowData] = useState([
+      { make: "Tesla", model: "Model Y", price: 64950, electric: true },
+      { make: "Ford", model: "F-Series", price: 33850, electric: false },
+      { make: "Toyota", model: "Corolla", price: 29600, electric: false },
+  ]);
+
+  // Column Definitions: Defines the columns to be displayed.
+  const [colDefs, setColDefs] = useState([
+      { field: "make" },
+      { field: "model" },
+      { field: "price" },
+      { field: "electric" }
+  ]);
+
+
+
+
+
   return (
     <>
-      <main className="bg-gray-100 py-8 px-6">
+    
+      <main className="bg-gray-100 py-8 px-6 min-h-screen">
         <div className="container mx-auto">
         <div className="mt-8 bg-white rounded-lg shadow-md p-6">
             <h3 className="text-xl font-bold mb-4">Add New Room</h3>
-            <form className="grid grid-cols-2 gap-4">
+            <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="room-number">Room Number</Label>
-                <Input id="room-number" type="number" />
+                <Input {...register('roomNo')} id="room-number" type="number" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="floor">Floor</Label>
-                <Input id="floor" type="number" />
+                <Input {...register('floorNo')} id="floor" type="number" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="block">Block</Label>
-                <Input id="block" type="text" />
+                <Input {...register('block')} id="block" type="text" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="capacity">Capacity</Label>
-                <Input id="capacity" type="number" />
+                <Input {...register('maxOccupancy')} id="capacity" type="number" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="capacity">Hostel Number</Label>
-                <Input id="capacity" type="number" />
-              </div>
-              <div className="col-span-2 space-y-2">
-                <Label htmlFor="amenities">Amenities</Label>
-                <Textarea id="amenities" rows={3} />
+                <Input {...register('hostelNo')} id="capacity" type="number" />
               </div>
               <div className="col-span-2 flex justify-end">
-                <Button variant="primary">Add Room</Button>
+                <Button className="bg-blue-600 hover:bg-blue-500 text-white" variant="primary" size="sm">Add Room</Button>
               </div>
             </form>
           </div>
-          <div className="flex justify-between items-center mb-6">
+          <div className="mb-6 mt-10">
             <h2 className="text-2xl font-bold">Rooms</h2>
-            <Button className="px-4 py-2" variant="primary">
-              Add Room
-            </Button>
+            <div className="ag-theme-quartz" style={{ height: 400, width: "100%" }}>
+              <AgGridReact
+                      rowData={rowData}
+                      columnDefs={colDefs}
+                      rowHeight={50}
+                      headerHeight={50}
+
+              />
           </div>
-          <div className="bg-white rounded-lg shadow-md overflow-hidden">
-            <table className="w-full table-auto">
-              <thead className="bg-gray-200">
-                <tr>
-                  <th className="px-4 py-3 text-left">Room #</th>
-                  <th className="px-4 py-3 text-left">Floor</th>
-                  <th className="px-4 py-3 text-left">Block</th>
-                  <th className="px-4 py-3 text-left">Capacity</th>
-                  <th className="px-4 py-3 text-left">Amenities</th>
-                  <th className="px-4 py-3 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b">
-                  <td className="px-4 py-3">101</td>
-                  <td className="px-4 py-3">1</td>
-                  <td className="px-4 py-3">A</td>
-                  <td className="px-4 py-3">4</td>
-                  <td className="px-4 py-3">
-                    <ul className="list-disc pl-4">
-                      <li>Bed</li>
-                      <li>Desk</li>
-                      <li>Closet</li>
-                    </ul>
-                  </td>
-                  <td className="px-4 py-3 text-right space-x-2">
-                    <Button size="sm" variant="secondary">
-                      Edit
-                    </Button>
-                    <Button size="sm" variant="danger">
-                      Delete
-                    </Button>
-                  </td>
-                </tr>
-                <tr className="border-b">
-                  <td className="px-4 py-3">102</td>
-                  <td className="px-4 py-3">1</td>
-                  <td className="px-4 py-3">A</td>
-                  <td className="px-4 py-3">2</td>
-                  <td className="px-4 py-3">
-                    <ul className="list-disc pl-4">
-                      <li>Bed</li>
-                      <li>Desk</li>
-                    </ul>
-                  </td>
-                  <td className="px-4 py-3 text-right space-x-2">
-                    <Button size="sm" variant="secondary">
-                      Edit
-                    </Button>
-                    <Button size="sm" variant="danger">
-                      Delete
-                    </Button>
-                  </td>
-                </tr>
-                <tr className="border-b">
-                  <td className="px-4 py-3">103</td>
-                  <td className="px-4 py-3">2</td>
-                  <td className="px-4 py-3">B</td>
-                  <td className="px-4 py-3">6</td>
-                  <td className="px-4 py-3">
-                    <ul className="list-disc pl-4">
-                      <li>Bed</li>
-                      <li>Desk</li>
-                      <li>Closet</li>
-                      <li>Ensuite Bathroom</li>
-                    </ul>
-                  </td>
-                  <td className="px-4 py-3 text-right space-x-2">
-                    <Button size="sm" variant="secondary">
-                      Edit
-                    </Button>
-                    <Button size="sm" variant="danger">
-                      Delete
-                    </Button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
           </div>
-          <div className="mt-8 flex justify-end">
-            <Button variant="danger">Drop All Rooms</Button>
-          </div>
-        </div>
+         </div>
       </main>
+      <DevTool control={control} />
+      <ToastContainer
+        position="top-right"
+        autoClose={1000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </>
   )
 }
