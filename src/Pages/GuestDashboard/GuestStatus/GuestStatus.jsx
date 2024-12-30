@@ -1,16 +1,69 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState } from 'react';
+import backgroundImage from '../../../Assets/hostel11.jpg'; // Ensure the path to your image is correct.
 
 const GuestStatus = () => {
+  const [referralNumber, setReferralNumber] = useState('');
+  const [status, setStatus] = useState('');
+
+  const checkStatus = () => {
+    // Simulate checking status (replace this logic with actual API call if needed)
+    if (referralNumber.trim() === 'ABCD1234') {
+      setStatus('Pending');
+    } else {
+      setStatus('Not Found');
+    }
+  };
+
   return (
-    <>
-    <div className='flex flex-col items-center w-full bg-gray-100 min-h-screen mx-auto item-center gap-5'>
-        <h1 className='text-3xl font-semibold mt-10 max-md:mt-24 '>Guest Status</h1>
-        <Link className="bg-purple-600 text-white font-bold py-2 px-4 rounded hover:bg-purple-700" to="/guest/home">Go Back</Link>
+    <div className="relative min-h-screen">
+      {/* Background image container */}
+      <div
+        className="absolute top-0 left-0 w-full h-full"
+        style={{
+          backgroundImage: `url(${backgroundImage})`,
+          backgroundPosition: 'center',
+          backgroundSize: 'cover',
+          filter: 'blur(3px)', // Optional: Adds a blur effect
+          opacity: 0.5, // Slightly reduce opacity for effect
+          zIndex: -1, // Place the background behind the content
+        }}
+      ></div>
+
+      {/* Content area */}
+      <div className="flex flex-col min-h-screen items-center py-20">
+        <div className="z-10 flex flex-col items-center">
+          <h1 className="text-3xl font-semibold mb-10">Check Application Status</h1>
+          <div className="bg-[#5757FF] rounded-lg p-10 w-[400px] sm:w-[450px] text-white shadow-lg">
+            <div className="mb-6">
+              <label htmlFor="referralNumber" className="block text-lg font-medium mb-3">
+                Enter Referral Number
+              </label>
+              <input
+                id="referralNumber"
+                type="text"
+                value={referralNumber}
+                onChange={(e) => setReferralNumber(e.target.value)}
+                className="w-full p-3 rounded-md text-black"
+                placeholder="Enter Referral Number"
+              />
+            </div>
+            <button onClick={checkStatus} className="bg-black text-white w-full py-3 rounded-md hover:bg-gray-700">
+              Check Status
+            </button>
+            <div className="mt-8">
+              <label htmlFor="status" className="block text-lg font-medium mb-3">
+                Status
+              </label>
+              <div id="status" className="w-full p-3 rounded-md bg-white text-black text-center font-semibold">
+                {status || 'Enter Referral Number to Check Status'}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+  );
+};
 
-    </>
-  )
-}
+export default GuestStatus
 
-export default GuestStatus;

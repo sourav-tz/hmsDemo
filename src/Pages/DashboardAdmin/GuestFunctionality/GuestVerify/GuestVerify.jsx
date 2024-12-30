@@ -255,11 +255,11 @@ const GuestVerify = () => {
                             <DialogTrigger>
                             <Button className="bg-purple-700 hover:bg-purple-500">Verify Details</Button>
                             </DialogTrigger>
-                            <DialogContent className="max-w-fit">
+                            <DialogContent className="min-w-fit ">
                             <DialogHeader>
-                            <DialogTitle>{"Application ID" + " : " + guest.applicationId + " - " + guest.name}</DialogTitle>
+                            <DialogTitle className="text-xl">{"Application ID" + " : " + guest.applicationId + " - " + guest.name}</DialogTitle>
                             </DialogHeader>
-                            <GuestVerifyDialog guest={guest}> </GuestVerifyDialog>
+                            <GuestVerifyDialog className="min-w-fit w-4/5" guest={guest}> </GuestVerifyDialog>
                             </DialogContent>
                           </Dialog> 
                         </TableCell>
