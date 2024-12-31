@@ -134,15 +134,9 @@ const handleLogout = async()=>{
            <div className={styles.itemsContainer}>
             <div className={styles.userItem}>
                 <div id="userIconSidebar" className={styles.userIcon}>
-<<<<<<< HEAD
                 {userData?.avatar!=undefined?<img className={styles.avatarImage} src={userData?.avatar} />:<FaUserLarge size="1.5em" color="white"/>}
                 </div>
                 <div className={state?null:styles.hidden} style={{marginLeft:'8px',marginTop:'0px'}}><p>{userData?.email!==undefined?`${userData?.email.slice(0,9)}`:'NULL'}<br/><span className={styles.userRole} style={{fontSize:'12px'}}>{userData?.role!==undefined?`Role: ${userData?.role}`:'Role: Null'}</span></p></div>
-=======
-                {userData?.avatar!=undefined?<img className={styles.avatarImage} src={userData.avatar} />:<FaUserLarge size="1.5em" color="white"/>}
-                </div>
-                <div className={state?null:styles.hidden} style={{marginLeft:'8px',marginTop:'0px'}}><p>{userData?.email!==undefined?`${userData.email.slice(0,9)}`:'NULL'}<br/><span className={styles.userRole} style={{fontSize:'12px'}}>{userData?.role!==undefined?`Role: ${userData.role}`:'Role: Null'}</span></p></div>
->>>>>>> fixing-responsiveness
             </div>
             <div className={styles.listContainer}>
             <div  className={(styles.item) +' '+' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
