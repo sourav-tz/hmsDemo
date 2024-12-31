@@ -182,7 +182,6 @@ const onSubmit = async (data) => {
         draggable
         pauseOnHover
         theme="light"
-
       />
     </>
   )
