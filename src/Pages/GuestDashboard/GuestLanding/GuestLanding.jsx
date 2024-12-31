@@ -17,4 +17,4 @@ const GuestLanding = () => {
   )
 }
 
-export default GuestLanding
+export default GuestLanding;
