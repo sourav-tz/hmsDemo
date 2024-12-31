@@ -53,13 +53,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import ViewNotices from './Pages/Dashboard/Notices/ViewNotices.jsx';
-import GuestLanding from './Pages/GuestDashboard/GuestLanding/GuestLanding.jsx';
-import GuestReigster from './Pages/GuestDashboard/GuestRegister/GuestReigster.jsx';
-import GuestStatus from './Pages/GuestDashboard/GuestStatus/GuestStatus.jsx';
-import GuestReferral from './Pages/Dashboard/GuestReferral/GuestReferral.jsx';
-import GuestVerify from './Pages/DashboardAdmin/GuestFunctionality/GuestVerify/GuestVerify.jsx';
-import GuestView from './Pages/DashboardAdmin/GuestFunctionality/GuestView/GuestView.jsx';
-import GuestSidebar from './components/GuestSidebar/GuestSidebar.jsx';
 
 
 
@@ -71,7 +64,6 @@ function App() {
 const [admin,setAdmin] = useState(false);
 const [student,setStudent] = useState(false);
 const [superAdmin,setSuperAdmin] = useState(false);
-const [guest,setGuest] = useState(false);
 const [loading,setLoadingPage] = useState(false);
 
 const location = useLocation();
@@ -83,31 +75,21 @@ useEffect(()=>{
     setAdmin(true);
     setStudent(false);
     setSuperAdmin(false);
-    setGuest(false);
   }
   else if(location.pathname.split('/')[1]==='superAdminDashboard'){
     setAdmin(false);
     setStudent(false);
     setSuperAdmin(true);
-    setGuest(false);
   }
   else if(location.pathname.split('/')[1]==='studentDashboard'){
     setAdmin(false);
     setStudent(true);
     setSuperAdmin(false);
-    setGuest(false);
-  }
-  else if(location.pathname.split('/')[1]==='guest'){
-    setAdmin(false);
-    setStudent(false);
-    setSuperAdmin(false);
-    setGuest(true);
   }
   else{
     setAdmin(false);
     setStudent(false);
     setSuperAdmin(false);
-    setGuest(false);
   }
 
 },[location]);
@@ -197,7 +179,6 @@ const handleStudentLogout = ()=>{
     {admin?<Sidebar />:null}
     {superAdmin?<SuperSidebar />:null}
     {student?<StudentSidebar />:null}
-    {guest?<GuestSidebar />:null}
 
     {admin||superAdmin||student?<div className='absolute top-4 right-20'>
       <DropdownMenu>
@@ -240,12 +221,8 @@ const handleStudentLogout = ()=>{
             <Route path='/studentDashboard/complaints/status' element={<CloseRoute><ComplaintStatus /></CloseRoute>} />
             <Route path='/studentDashboard/notices/view' element={<CloseRoute><ViewNotices /></CloseRoute>} />
             <Route path='/studentDashboard/mess/menu' element={<CloseRoute><NewMenu /></CloseRoute>} />
-            
-            {/*Student Guest Verify Referral Page */}
-            <Route path='/studentDashboard/guest/referral' element={<CloseRoute><GuestReferral /></CloseRoute>} />
-            
 
-
+            
             {/* Admin Routes */}
             <Route path='/adminLogin' element={<OpenRoute><Adminlogin /></OpenRoute>} />
             {/* <Route path='/sandbox' element={<Sandbox />} /> */}
@@ -259,12 +236,6 @@ const handleStudentLogout = ()=>{
             <Route path='/adminDashboard/notice/uploadNotice' element={<CloseRoute><UploadNotice /></CloseRoute>} />
             <Route path='/adminDashboard/notice/viewNotice' element={<CloseRoute><ViewNotice /></CloseRoute>} />
             <Route path='/adminDashboard/settings/security' element={<CloseRoute><AdminSecuritysettings /></CloseRoute>} />
-            
-            {/* Admin Guest Pages */}
-            <Route path='/adminDashboard/guest/verify' element={<CloseRoute><GuestVerify /></CloseRoute>} />
-            <Route path='/adminDashboard/guest/viewAll' element={<CloseRoute><GuestView /></CloseRoute>} />
-
-
 
             {/*super Admin Routes  */}
             <Route path='/superAdminLogin' element={<OpenRoute><SuperAdminLogin /></OpenRoute>} />
@@ -277,13 +248,6 @@ const handleStudentLogout = ()=>{
             <Route path='/superAdminDashboard/settings/security' element={<CloseRoute><Securitysettings /></CloseRoute>} />
             <Route path='/superAdminDashboard/studentActions/addCourses' element={<CloseRoute><AddCourses /></CloseRoute>} />
             
-
-            {/* Guest Routes */}
-            <Route path='/guest/home' element={<CloseRoute><GuestLanding /></CloseRoute>} />
-            <Route path='/guest/register' element={<CloseRoute><GuestReigster /></CloseRoute>} />
-            <Route path='/guest/status' element={<CloseRoute><GuestStatus /></CloseRoute>} />
-
-
         </Routes>    
            </div>
         </div>

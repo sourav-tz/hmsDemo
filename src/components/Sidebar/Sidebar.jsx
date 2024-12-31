@@ -5,7 +5,7 @@ import { IconContext } from 'react-icons';
 import { IoHome } from "react-icons/io5";
 import { FaRegEye } from "react-icons/fa6";
 import { FaInfo } from "react-icons/fa";
-import { MdLocalHotel, MdOutlineBedroomChild } from "react-icons/md";
+import { MdOutlineBedroomChild } from "react-icons/md";
 import { FaGear } from "react-icons/fa6";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -40,7 +40,6 @@ export default function Sidebar(){
     const [subSettings, setSubSettings] = useState(false);
     const [subNotice, setSubNotice] = useState(false);
     const [subComplaint,setSubComplaint] = useState(false);
-    const [subGuest,setSubGuest] = useState(false);
 
     const openMenu = ()=>{
         changeState(true);
@@ -59,7 +58,6 @@ export default function Sidebar(){
             setSubSettings(false);
             setSubNotice(false);
             setSubComplaint(false);
-            setSubGuest(false);
         }else if(value ==='studentInfo'){
             setSubHome(false);
             setSubStudent(prev => !prev);
@@ -67,7 +65,6 @@ export default function Sidebar(){
             setSubSettings(false);
             setSubNotice(false);
             setSubComplaint(false);
-            setSubGuest(false);
         }else if(value === 'roomInfo'){
             setSubHome(false);
             setSubStudent(false);
@@ -75,7 +72,6 @@ export default function Sidebar(){
             setSubSettings(false);
             setSubNotice(false);
             setSubComplaint(false);
-            setSubGuest(false);
         }else if(value === 'settings'){
             setSubHome(false);
             setSubStudent(false);
@@ -83,7 +79,6 @@ export default function Sidebar(){
             setSubSettings(prev=>!prev);
             setSubNotice(false);
             setSubComplaint(false);
-            setSubGuest(false);
         }else if(value === 'notice'){
             setSubHome(false);
             setSubStudent(false);
@@ -91,7 +86,6 @@ export default function Sidebar(){
             setSubSettings(false);
             setSubNotice(prev=>!prev);
             setSubComplaint(false);
-            setSubGuest(false);
         }else if(value === 'complaint'){
             setSubHome(false);
             setSubStudent(false);
@@ -99,16 +93,6 @@ export default function Sidebar(){
             setSubSettings(false);
             setSubNotice(false);
             setSubComplaint(prev => !prev);
-            setSubGuest(false);
-        }
-        else if(value == 'guest'){
-            setSubHome(false);
-            setSubStudent(false);
-            setSubRoom(false);
-            setSubSettings(false);
-            setSubNotice(false);
-            setSubComplaint(false);
-            setSubGuest(prev => !prev);
         }
 
     }
@@ -203,15 +187,6 @@ export default function Sidebar(){
                         {/* <li onClick={()=>{Navigator('/superAdminDashboard/studentActions/addCourses')}} className={styles.subOptions+' ' + (activeSubOption==='addCourses'?styles.activeSubOption:null)}>Add Courses</li> */}
                         {/* </ul> */}
                     
-            </div>
-
-            {/* Admin Guest Panel */}
-            <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
-                        <p onClick={()=>{changeSubMenu('guest')}} className={(activeOption==='guest'?styles.activeItem:null)+ ' flex items-center gap-2'}><MdLocalHotel /> <span className={(state?null:styles.hidden)+' mt-1'}>Guest Info</span></p>
-                        <ul className={state&&subGuest?null:styles.hidden}>
-                        <li onClick={()=>{navigator('/adminDashboard/guest/verify')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='verify'?styles.activeSubOption:null)}>Verify Guests</li>
-                        <li onClick={()=>{navigator('/adminDashboard/guest/viewAll')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='viewAll'?styles.activeSubOption:null)}>View All Guests</li>
-                        </ul>
             </div>
             </div>
             </div>

@@ -2,7 +2,6 @@ import styles from './Role.module.scss';
 import Button from '../../components/Button/Button';
 import adminImage from './assets/admin.png';
 import studentImage from './assets/student.png';
-import guestImage from './assets/guest-thumb.svg';
 import Footer from '../../components/Footer/Footer';
 import officeImage from '../../Assets/officeImage.svg';
 import { useNavigate } from 'react-router-dom';
@@ -42,23 +41,6 @@ export default function(){
                 <h3 className='text-xl'>Who are you?</h3>
             </div>
             <div className={styles.cardSection}>
-
-            {/* ---------Guest------------- */}
-                <div className={styles.card}>
-                <div className={styles.cardImage}>
-                    <img className='mt-5' src={guestImage} alt='Guest-Image' />
-                    </div>
-                    <Button onClick={
-                        ()=>{
-                                Navigator('/guest/home');
-                                localStorage.setItem('role','Guest');
-                            }
-                        } 
-                        style={{width:'100%'}}
-                    variant='contained' text='Guest' />
-                </div>
-                    {/* ------------------ */}
-
                 <div className={styles.card}>
                 <div className={styles.cardImage}>
                     <img src={studentImage} alt='Student-Image' />
