@@ -22,9 +22,9 @@ import GuestVerifyDialog from './GuestVerifyDialog';
 
 const GuestVerify = () => {
   const totalPages = 10;
-  const [guestsSchedule,setGuestsSchedule] = useState([]);
+  const [guestsRequestList,setGuestsRequestList] = useState([]);
   
-  const getGuestsSchedule = async() =>{
+  const getGuestsRequestList = async() =>{
     try {
       const res = await axios({
           method: 'get',
@@ -33,14 +33,14 @@ const GuestVerify = () => {
                 
       })
       console.log(res.data.result);
-      setGuestsSchedule(res.data.result);   
+      setGuestsRequestList(res.data.result);   
   } catch (err) {
       console.log(err);
   }
   }
 
   useEffect(() => {
-      getGuestsSchedule();
+      getGuestsRequestList();
   }, [])
 
 
@@ -49,7 +49,7 @@ const GuestVerify = () => {
     // Executes after an application is either accepted or rejected
     // Delay the function so that the accept/reject screen shows for some time
     setTimeout(() => {
-    setGuestsSchedule((prevSchedule) =>
+      setGuestsRequestList((prevSchedule) =>
       prevSchedule.filter((guest) => guest.application_id !== applicationId)
     );
   }, 3000); // Delay in milliseconds
@@ -58,7 +58,7 @@ const GuestVerify = () => {
   return (
     <>
     <div className='flex flex-col items-center w-full bg-gray-100 min-h-screen mx-auto item-center'>
-         <h1 className='text-3xl font-semibold mt-10 max-md:mt-24 '>Verify Guest Applications</h1>
+         <h1 className='text-3xl font-semibold mt-10 max-md:mt-24 '>View Guest Applications</h1>
          <Card className="w-3/4 mt-10 ml-2 max-lg:ml-16 min-lg:ml-16 w-4/5">
          <Table>
              <TableHeader>
@@ -74,8 +74,8 @@ const GuestVerify = () => {
                  </TableRow>
              </TableHeader>
              <TableBody>
-                 {guestsSchedule.length !== 0
-                  ? guestsSchedule.map((guest, index) => (
+                 {guestsRequestList.length !== 0
+                  ? guestsRequestList.map((guest, index) => (
                       <TableRow key={index}>
                         <TableCell className="font-medium text-center">{guest.application_id}</TableCell>
                         <TableCell className="text-center">{guest.id_proof_no}</TableCell>

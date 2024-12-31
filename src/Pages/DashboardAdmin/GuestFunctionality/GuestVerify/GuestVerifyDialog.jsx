@@ -64,14 +64,6 @@ const GuestVerifyDialog = ({ guest, removeRequest }) => {
                 </div>
               </div>
 
-              {/* Status */}
-              <div>
-                <label className="font-semibold text-sm text-gray-700">Status</label>
-                <div className="border rounded-md p-2 text-gray-800">
-                  {guest.status}
-                </div>
-              </div>
-
               {/* First Name */}
               <div>
                 <label className="font-semibold text-sm text-gray-700">
@@ -89,6 +81,14 @@ const GuestVerifyDialog = ({ guest, removeRequest }) => {
                 </label>
                 <div className="border rounded-md p-2 text-gray-800">
                   {guest.last_name}
+                </div>
+              </div>
+
+              {/* Gender */}
+              <div>
+                <label className="font-semibold text-sm text-gray-700">*Gender</label>
+                <div className="border rounded-md p-2 text-gray-800">
+                  {guest.gender || "N/A"}
                 </div>
               </div>
 
@@ -196,14 +196,6 @@ const GuestVerifyDialog = ({ guest, removeRequest }) => {
                 </div>
               </div>
 
-              {/* Gender */}
-              <div>
-                <label className="font-semibold text-sm text-gray-700">*Gender</label>
-                <div className="border rounded-md p-2 text-gray-800">
-                  {guest.gender || "N/A"}
-                </div>
-              </div>
-
               {/* Number of Guests */}
               <div>
                 <label className="font-semibold text-sm text-gray-700">*Guests</label>
@@ -213,7 +205,7 @@ const GuestVerifyDialog = ({ guest, removeRequest }) => {
               </div>
 
               {/* Purpose of Visit */}
-              <div className="col-span-4">
+              <div className="col-span-5">
                 <label className="font-semibold text-sm text-gray-700">
                   Purpose of Visit
                 </label>
