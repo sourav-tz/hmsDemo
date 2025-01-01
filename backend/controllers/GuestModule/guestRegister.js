@@ -1,6 +1,9 @@
 const { guestInfo } = require("../../models");
 const { users } = require("../../models");
 const { Sequelize } = require('sequelize');
+const mailSender = require('../../utils/mailSender');
+const GuestRegister = require('../../MailTemplates/GuestRegister')
+const ReferrerApplicationEmail =  require('../../MailTemplates/ReferrerApplicationEmail')
 
 const guestRegister = async (req, res) => {
   try {
@@ -118,6 +121,14 @@ const guestRegister = async (req, res) => {
       additional_requests,
       purpose_of_visit,
     });
+    
+    // sending email to guest
+    let title = 'Guest Register || NIT KURUKSHETRA'
+    await mailSender(guest_email,title,GuestRegister(first_name,newGuestInfo.application_id))
+    // sending email to referrer
+    title ='Application Approval Needed || NIT KURUKSHETRA'
+    await mailSender(referrer_email,title,ReferrerApplicationEmail(first_name,newGuestInfo.application_id))
+
 
     // Return the created application ID
     res.status(201).json({
