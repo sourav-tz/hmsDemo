@@ -23,77 +23,6 @@ import GuestDetailsDialog from './GuestDetailsDialog';
 const GuestView = () => {
   
   const totalPages = 10;
-  const [guestsSchedule,setGuestsSchedule] = useState([]);
-  const userData = useSelector(state=>state.userStorage.data);
-
-  // const getNotices = async () => {
-  //     try {
-  //         const res = await axios({
-  //             method: 'get',
-  //             url: import.meta.env.VITE_BASE_URL + '/HA/getNotices',
-  //             withCredentials: true,
-  //             params: { hostelNo: userData.dataValues.hostelNo }, // Send hostelNo as query parameter       
-  //         })
-  //         console.log("SENT HOSTEL NO_>",userData.dataValues.hostelNo);
-  //         console.log(res);
-  //         // printing data
-  //         console.log("DATA_>",res.data);
-  //         setNotices(res.data.result);   
-  //     } catch (err) {
-  //         console.log(err);
-  //     }
-  // }
-
-  // Dummy getGuests function
-
-  const notices = []
-  // const dummyGuestSchedule = [
-  //   {
-  //     applicationId: "A001",
-  //     guestId: "G101",
-  //     name: "John Doe",
-  //     roomNo: "202",
-  //     fromDate: "2024-12-20",
-  //     toDate: "2024-12-25",
-  //     numberOfGuests: 2,
-  //   },
-  //   {
-  //     applicationId: "A002",
-  //     guestId: "G102",
-  //     name: "Jane Smith",
-  //     roomNo: "305",
-  //     fromDate: "2024-12-18",
-  //     toDate: "2024-12-22",
-  //     numberOfGuests: 1,
-  //   },
-  //   {
-  //     applicationId: "A003",
-  //     guestId: "G103",
-  //     name: "Alice Johnson",
-  //     roomNo: "101",
-  //     fromDate: "2024-12-15",
-  //     toDate: "2024-12-20",
-  //     numberOfGuests: 3,
-  //   },
-  //   {
-  //     applicationId: "A004",
-  //     guestId: "G104",
-  //     name: "Bob Brown",
-  //     roomNo: "207",
-  //     fromDate: "2024-12-10",
-  //     toDate: "2024-12-14",
-  //     numberOfGuests: 4,
-  //   },
-  //   {
-  //     applicationId: "A005",
-  //     guestId: "G105",
-  //     name: "Charlie Green",
-  //     roomNo: "309",
-  //     fromDate: "2024-12-08",
-  //     toDate: "2024-12-12",
-  //     numberOfGuests: 2,
-  //   },
-  // ];
 
   const dummyGuestSchedule = [
     {
@@ -182,126 +111,87 @@ const GuestView = () => {
       rejectionReason: "N/A",
     },
   ];
+
+
+  // ?------------
+    const [guestsScheduleList,setGuestsScheduleList] = useState([]);
+    
+    const getGuestsScheduleList = async() =>{
+      try {
+        const res = await axios({
+            method: 'get',
+            url: import.meta.env.VITE_BASE_URL + '/guest/getApprovedApplicationAdmin',
+            withCredentials: true,
+                  
+        })
+        console.log(res.data.result);
+        setGuestsScheduleList(res.data.result);   
+    } catch (err) {
+        console.log(err);
+    }
+    }
   
-  
-  const getGuestsSchedule = () =>{
-    setGuestsSchedule(dummyGuestSchedule);
-  }
-
-
-  useEffect(() => {
-      getGuestsSchedule();
-  }, [])
-
-  const handlePageClick = (data) => { 
-      console.log(data.selected);
-  }
+    useEffect(() => {
+        getGuestsScheduleList();
+    }, [])
 
   return (
     <>
-   <div className='flex flex-col items-center w-full bg-gray-100 min-h-screen mx-auto item-center'>
-         <h1 className='text-3xl font-semibold mt-10 max-md:mt-24 '>View Guests Schedule</h1>
+    <div className='flex flex-col items-center w-full bg-gray-100 min-h-screen mx-auto item-center'>
+         <h1 className='text-3xl font-semibold mt-10 max-md:mt-24 '>Verify Guest Applications</h1>
          <Card className="w-3/4 mt-10 ml-2 max-lg:ml-16 min-lg:ml-16 w-4/5">
          <Table>
              <TableHeader>
                  <TableRow>
                  <TableHead className="font-medium text-center">Application ID</TableHead>
                  <TableHead className="text-center">Guest ID</TableHead>
-                 {/* <TableHead className="w-[100px]">Notice ID</TableHead> */}
                  <TableHead className="text-center">Name</TableHead>
-                 <TableHead className="text-center">Room No.</TableHead>
+                 <TableHead className="text-center">Referral ID</TableHead>
                  <TableHead className="text-center">From</TableHead>
                  <TableHead className="text-center">To</TableHead>
                  <TableHead className="text-center">No. of Guests</TableHead>
-                 {/* <TableHead className="text-right">Actions</TableHead> */}
-                 <TableHead className="text-center">View Details</TableHead>
+                 <TableHead className="text-center">Verify Details</TableHead>
                  </TableRow>
              </TableHeader>
              <TableBody>
-                 {/* {notices.length!==0?{notices.map(d=><TableRow>
-                 <TableCell className="font-medium">{d.noticeId}</TableCell>
-                 <TableCell>{d.title}</TableCell>
-                 <TableCell className="text-left">{d.createdAt}</TableCell>
-                 <TableCell className="text-right">
-                     <Button className="bg-blue-700 hover:bg-blue-500">View</Button>
-                     <Button className="bg-red-700 hover:bg-red-500">Delete</Button>
-                 </TableCell>
-                 </TableRow>)}:null} */}
-
-
-                 {guestsSchedule.length !== 0
-                  ? guestsSchedule.map((guest, index) => (
+                 {guestsScheduleList.length !== 0
+                  ? guestsScheduleList.map((guest, index) => (
                       <TableRow key={index}>
-                        <TableCell className="font-medium text-center">{guest.applicationId}</TableCell>
-                        <TableCell className="text-center">{guest.guestId}</TableCell>
-                        <TableCell className="text-center">{guest.name}</TableCell>
-                        <TableCell className="text-center">{guest.roomNo}</TableCell>
+                        <TableCell className="font-medium text-center">{guest.application_id}</TableCell>
+                        <TableCell className="text-center">{guest.id_proof_no}</TableCell>
+                        <TableCell className="text-center">{guest.first_name + " " + guest.last_name}</TableCell>
+                        <TableCell className="text-center">{guest.referrer_email}</TableCell>
                         <TableCell className="text-center">
-                          {new Date(guest.fromDate).toLocaleDateString("en-US", {
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                          })}
+                        {new Date(guest.checkin_date).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })}
                         </TableCell>
                         <TableCell  className="text-center">
-                          {new Date(guest.toDate).toLocaleDateString("en-US", {
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                          })}
+                        {new Date(guest.checkout_date).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })}
                         </TableCell>
-                        <TableCell className="text-center">{guest.numberOfGuests}</TableCell>
+                        <TableCell className="text-center">{guest.number_of_guests}</TableCell>
                         <TableCell className="text-center">
                           <Dialog>
                             <DialogTrigger>
-                            <Button className="bg-blue-700 hover:bg-blue-500">View Details</Button>
+                            <Button className="bg-purple-700 hover:bg-purple-500">View Details</Button>
                             </DialogTrigger>
-                            <DialogContent className="max-w-fit">
+                            <DialogContent className="min-w-fit ">
                             <DialogHeader>
-                            <DialogTitle>{"Application ID" + " : " + guest.applicationId + " - " + guest.name}</DialogTitle>
+                            <DialogTitle className="text-xl">{"Application ID" + " : " + guest.application_id + " - " + guest.first_name + " " + guest.last_name}</DialogTitle>
                             </DialogHeader>
-                            <GuestDetailsDialog guest={guest}> </GuestDetailsDialog>
+                            <GuestDetailsDialog className="min-w-fit w-4/5" guest={guest}> </GuestDetailsDialog>
                             </DialogContent>
                           </Dialog> 
                         </TableCell>
                       </TableRow>
                     ))
                   : null}
-
- 
-                        {/* -----------REMOVE THIS------------ */}
-                 {notices.length!==0?notices.map((d,index)=>
-                 <TableRow>
-                 <TableCell className="font-medium">{index+1}</TableCell>
-                 <TableCell>{d.title}</TableCell>
-                 {/* <TableCell className="text-left">{d.createdAt.}</TableCell> */}
-                 <TableCell className="text-left">
-                 {new Date(d.createdAt).toLocaleDateString("en-US", {
-                     year: "numeric",
-                     month: "long",
-                     day: "numeric",
-                 })}
-                 </TableCell>
-                 <TableCell className="text-center">
-                     <Dialog>
-                     <DialogTrigger>
-                     <Button className="bg-blue-700 hover:bg-blue-500 mr-10">Download</Button>
-                     </DialogTrigger>
-                     <DialogContent>
-                     <DialogHeader>
-                     <DialogTitle>{d.title}</DialogTitle>
-                     </DialogHeader>
-                     <a href={d.url} target="_blank">Open PDF</a>
-                     </DialogContent>
-                     </Dialog>
-                     <Button onClick={()=>deleteNotice(d.public_id)} className="bg-red-700 hover:bg-red-500">Delete</Button>
-                 </TableCell>
-                 </TableRow>
-                 )
-                 :null}
-                 {/* ------------------ */}
-
-
              </TableBody>
          </Table>
          </Card>
@@ -330,6 +220,7 @@ const GuestView = () => {
              activeLinkClassName="active-page"
        /> */}
          </div>
+
     </>
   )
 }
