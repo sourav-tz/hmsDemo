@@ -211,6 +211,7 @@ export default function Sidebar(){
                         <ul className={state&&subGuest?null:styles.hidden}>
                         <li onClick={()=>{navigator('/adminDashboard/guest/verify')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='verify'?styles.activeSubOption:null)}>Verify Guests</li>
                         <li onClick={()=>{navigator('/adminDashboard/guest/viewAll')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='viewAll'?styles.activeSubOption:null)}>View All Guests</li>
+                        <li onClick={()=>{navigator('/adminDashboard/guest/allot')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='allot'?styles.activeSubOption:null)}>Allot Rooms To Guests</li>
                         </ul>
             </div>
             </div>
