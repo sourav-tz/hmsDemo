@@ -5,23 +5,23 @@ import uploadIconCoud from "./upload-icon.svg"
 
 const GuestReigster = () => {
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    idProofNo: "",
-    email: "",
-    referrelEmail: "",
-    contactNumber: "",
-    state: "",
-    city: "",
-    pincode: "",
-    address: "",
-    checkInDate: "",
-    checkOutDate: "",
-    gender: "",
-    numberOfGuests: "",
-    hostelNo: "",
-    purposeOfVisit: "",
-    additionalRequests: "",
+      first_name: "",
+      last_name: "",
+      guest_email: "",
+      referrer_email: "",
+      id_proof_no: "",
+      hostel_no: "",
+      contact_number: "",
+      address: "",
+      checkin_date: "",
+      checkout_date: "",
+      gender: "",
+      city: "",
+      state: "",
+      pincode: "",
+      number_of_guests: "",
+      additional_requests: "",
+      purpose_of_visit: ""
   });
 
   // Handle input changes
@@ -39,23 +39,23 @@ const GuestReigster = () => {
     console.log("Form Data as JSON:", formData);
 
     setFormData({
-      firstName: "",
-      lastName: "",
-      idProofNo: "",
-      email: "",
-      referrelEmail: "",
-      contactNumber: "",
-      state: "",
-      city: "",
-      pincode: "",
+      first_name: "",
+      last_name: "",
+      guest_email: "",
+      referrer_email: "",
+      id_proof_no: "",
+      hostel_no: "",
+      contact_number: "",
       address: "",
-      checkInDate: "",
-      checkOutDate: "",
+      checkin_date: "",
+      checkout_date: "",
       gender: "",
-      numberOfGuests: "",
-      hostelNo: "",
-      purposeOfVisit: "",
-      additionalRequests: "",
+      city: "",
+      state: "",
+      pincode: "",
+      number_of_guests: "",
+      additional_requests: "",
+      purpose_of_visit: ""
     });
 
     alert("Form submitted successfully!"); // Optional: Display success message
@@ -90,8 +90,8 @@ const GuestReigster = () => {
             </ul>
           </div>
 
-          <div className="flex flex-col justify-center items-center rounded-md gap-2">
-            <h1 className="text-lg font-semibold mb-2">Upload Document here</h1>
+          <div className="flex flex-col justify-center items-center rounded-md gap-1">
+            <h1 className="text-lg font-semibold ">Upload Document here</h1>
             <img src={uploadIconCoud} className="ml-4"></img>
             <div className="flex flex-col justify-center items-center">
               <div className="text-gray-500 ">
@@ -123,8 +123,8 @@ const GuestReigster = () => {
                   type="text"
                   required
                   placeholder="First Name"
-                  value={formData.firstName}
-                  name="firstName"
+                  value={formData.first_name}
+                  name="first_name"
                   onChange={handleChange}
                   className="mt-0 p-2 border rounded-lg focus:outline-blue-500"
                 />
@@ -135,8 +135,8 @@ const GuestReigster = () => {
                 <input
                   type="text"
                   placeholder="Last Name"
-                  name="lastName"
-                  value={formData.lastName}
+                  name="last_name"
+                  value={formData.last_name}
                   onChange={handleChange}
                   className="mt-0 p-2 border rounded-lg focus:outline-blue-500"
                 />
@@ -147,8 +147,8 @@ const GuestReigster = () => {
                   type="text"
                   required
                   placeholder="ABC123"
-                  name="idProofNo"
-                  value={formData.idProofNo}
+                  name="id_proof_no"
+                  value={formData.id_proof_no}
                   onChange={handleChange}
                   className="mt-0 p-2 border rounded-lg focus:outline-blue-500"
                 />
@@ -174,8 +174,8 @@ const GuestReigster = () => {
                   type="email"
                   required
                   placeholder="eg:523110020@nitkkr.ac.in"
-                  name="referrelEmail"
-                  value={formData.referrelEmail}
+                  name="referrer_email"
+                  value={formData.referrer_email}
                   onChange={handleChange}
                   pattern="[0-9]+@nitkkr\.ac\.in$"
                   className="mt-0 p-2 border rounded-lg focus:outline-blue-500"
@@ -187,10 +187,10 @@ const GuestReigster = () => {
                 <input
                   type="text"
                   required
-                  value={formData.contactNumber}
+                  value={formData.contact_number}
                   onChange={handleChange}
                   placeholder="Contact Number (e.g., +91 1234567890)"
-                  name="contactNumber"
+                  name="contact_number"
                   maxLength="10"
                   pattern="\d{10}"
                   className="mt-0 p-2 border rounded-lg focus:outline-blue-500"
@@ -259,8 +259,8 @@ const GuestReigster = () => {
                 <input
                   type="date"
                   required
-                  name="checkInDate"
-                  value={formData.checkInDate}
+                  name="checkin_date"
+                  value={formData.checkin_date}
                   onChange={handleChange}
                   className="mt-0 p-2 border rounded-lg focus:outline-blue-500"
                 />
@@ -271,8 +271,8 @@ const GuestReigster = () => {
                 <input
                   type="date"
                   required
-                  name="checkOutDate"
-                  value={formData.checkOutDate}
+                  name="checkout_date"
+                  value={formData.checkout_date}
                   onChange={handleChange}
                   className="mt-0 p-2 border rounded-lg focus:outline-blue-500"
                 />
@@ -301,8 +301,8 @@ const GuestReigster = () => {
                   type="number"
                   required
                   placeholder="Number of Guests"
-                  name="numberOfGuests"
-                  value={formData.numberOfGuests}
+                  name="number_of_guests"
+                  value={formData.number_of_guests}
                   onChange={handleChange}
                   className="mt-0 p-2 border rounded-lg focus:outline-blue-500"
                 />
@@ -314,8 +314,8 @@ const GuestReigster = () => {
                 </label>
                 <select
                   className="mt-0 p-2 border rounded-lg focus:outline-blue-500"
-                  name="hostelNo"
-                  value={formData.hostelNo}
+                  name="hostel_no"
+                  value={formData.hostel_no}
                   onChange={handleChange}
                   required
                 >
@@ -340,8 +340,8 @@ const GuestReigster = () => {
                   type="text"
                   required
                   placeholder="Purpose of Visit"
-                  name="purposeOfVisit"
-                  value={formData.purposeOfVisit}
+                  name="purpose_of_visit"
+                  value={formData.purpose_of_visit}
                   onChange={handleChange}
                   className="mt-0 p-2 border rounded-lg focus:outline-blue-500"
                 />
@@ -352,8 +352,8 @@ const GuestReigster = () => {
                 <textarea
                   rows="3"
                   placeholder="Additional Requests"
-                  name="additionalRequests"
-                  value={formData.additionalRequests}
+                  name="additional_requests"
+                  value={formData.additional_requests}
                   onChange={handleChange}
                   className="mt-0 p-2 border rounded-lg focus:outline-blue-500 resize-none"
                 ></textarea>

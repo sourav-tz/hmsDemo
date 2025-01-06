@@ -40,8 +40,7 @@ import formdata from "../../../../config/formdata";
 import GuestFinalDialog from "./GuestFinalDialog";
 
 const GuestFinal = () => {
-
-  const [guestsScheduleList, setGuestsScheduleList] = useState([]);
+  const [guestsDetailList, setGuestsDetailList] = useState([]);
 
   return (
     <>
@@ -66,8 +65,8 @@ const GuestFinal = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {guestsScheduleList.length !== 0
-                ? guestsScheduleList.map((guest, index) => (
+              {guestsDetailList.length !== 0
+                ? guestsDetailList.map((guest, index) => (
                     <TableRow key={index}>
                       <TableCell className="font-medium text-center">
                         {guest.application_id}

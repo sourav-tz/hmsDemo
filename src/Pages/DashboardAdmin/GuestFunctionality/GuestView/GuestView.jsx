@@ -114,7 +114,6 @@ const GuestView = () => {
 
   // ?------------
     const [guestsScheduleList,setGuestsScheduleList] = useState([]);
-    
     const getGuestsScheduleList = async() =>{
       try {
         const res = await axios({
@@ -123,6 +122,7 @@ const GuestView = () => {
             withCredentials: true,
                   
         })
+        console.log("RES",res);
         console.log(res.data.result);
         setGuestsScheduleList(res.data.result);   
     } catch (err) {
