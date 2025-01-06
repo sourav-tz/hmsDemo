@@ -61,6 +61,7 @@ import GuestVerify from './Pages/DashboardAdmin/GuestFunctionality/GuestVerify/G
 import GuestView from './Pages/DashboardAdmin/GuestFunctionality/GuestView/GuestView.jsx';
 import GuestSidebar from './components/GuestSidebar/GuestSidebar.jsx';
 import GuestAllot from './Pages/DashboardAdmin/GuestFunctionality/GuestAllot/GuestAllot.jsx';
+import GuestFinal from './Pages/DashboardAdmin/GuestFunctionality/GuestFinal/GuestFinal.jsx';
 
 
 
@@ -263,8 +264,9 @@ const handleStudentLogout = ()=>{
             
             {/* Admin Guest Pages */}
             <Route path='/adminDashboard/guest/verify' element={<CloseRoute><GuestVerify /></CloseRoute>} />
-            <Route path='/adminDashboard/guest/viewAll' element={<CloseRoute><GuestView /></CloseRoute>} />
+            <Route path='/adminDashboard/guest/viewSchedule' element={<CloseRoute><GuestView /></CloseRoute>} />
             <Route path='/adminDashboard/guest/allot' element={<CloseRoute><GuestAllot /></CloseRoute>} />
+            <Route path='/adminDashboard/guest/viewDetail' element={<CloseRoute><GuestFinal /></CloseRoute>} />
 
 
 
