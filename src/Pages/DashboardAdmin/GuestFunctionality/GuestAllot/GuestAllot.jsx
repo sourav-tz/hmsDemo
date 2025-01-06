@@ -9,11 +9,12 @@ import GuestAllotDialog from './GuestAllotDialog';
 const GuestAllot = () => {
   const [guestsRequestList, setGuestsRequestList] = useState([]);
 
+
   const getGuestsRequestList = async () => {
     try {
       const res = await axios({
         method: 'get',
-        url: import.meta.env.VITE_BASE_URL + '/guest/getPendingApplicationAdmin',
+        url: import.meta.env.VITE_BASE_URL + '/guest/getApprovedApplicationAdmin',
         withCredentials: true,
       });
       console.log(res.data.result);
@@ -24,7 +25,9 @@ const GuestAllot = () => {
   };
 
   useEffect(() => {
+
     getGuestsRequestList();
+    
   }, []);
 
   const removeRequest = (applicationId) => {

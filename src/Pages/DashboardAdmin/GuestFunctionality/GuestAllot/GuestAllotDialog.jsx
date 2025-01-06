@@ -3,25 +3,26 @@ import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { IoCheckmarkDoneCircle } from "react-icons/io5";
 import { ImCross } from "react-icons/im";
+import { useSelector } from "react-redux";
 
 const GuestAllotDialog = ({ guest, removeRequest }) => {
   const [allot, setAllot] = useState(false);
-  const [hostelNo, setHostelNo] = useState('');
   const [blockNo, setBlockNo] = useState('');
   const [floorNo, setFloorNo] = useState('');
   const [roomNo, setRoomNo] = useState('');
+  const userData = useSelector((state) => state.userStorage.data);
 
   const allotGuestApplication = async () => {
     try {
       const res = await axios({
-        method: 'put',
-        url: import.meta.env.VITE_BASE_URL + '/guest/allotApplicationAdmin/' + guest.application_id,
+        method: 'post',
+        url: import.meta.env.VITE_BASE_URL + '/guest/bookRoomAdmin/' + guest.application_id,
         withCredentials: true,
         data: {
-          hostel_no: hostelNo,
-          block_no: blockNo,
-          floor_no: floorNo,
-          room_no: roomNo,
+          hostelNo:userData.dataValues.hostelNo,
+          block: blockNo,
+          floorNo: floorNo,
+          roomNo: roomNo
         }
       });
       console.log(res);
@@ -33,6 +34,8 @@ const GuestAllotDialog = ({ guest, removeRequest }) => {
       console.log(err);
     }
   };
+  
+  
 
   return (
     <>
@@ -44,17 +47,6 @@ const GuestAllotDialog = ({ guest, removeRequest }) => {
               <ImCross className="cursor-pointer" onClick={() => setAllot(false)} />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm p-4">
-              {/* Hostel Number */}
-              <div>
-                <label className="font-semibold text-sm text-gray-700">Hostel No</label>
-                <input
-                  type="text"
-                  className="border rounded-md p-2 text-gray-800 w-full"
-                  value={hostelNo}
-                  onChange={(e) => setHostelNo(e.target.value)}
-                />
-              </div>
-
               {/* Block Number */}
               <div>
                 <label className="font-semibold text-sm text-gray-700">Block No</label>
