@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom'; // Import Link from react-router-dom
 import backgroundImage from '../../../Assets/hostel11.jpg'; // Ensure the path to your image is correct.
 
 const GuestStatus = () => {
@@ -30,9 +31,10 @@ const GuestStatus = () => {
       ></div>
 
       {/* Content area */}
-      <div className="flex flex-col min-h-screen items-center py-20">
-        <div className="z-10 flex flex-col items-center">
+      {/* Link to Change Role */}
+      <div className="flex flex-col min-h-screen items-center py-10">
           <h1 className="text-3xl font-semibold mb-10">Check Application Status</h1>
+        <div className="z-10 flex flex-col items-center">
           <div className="bg-[#5757FF] rounded-lg p-10 w-[400px] sm:w-[450px] text-white shadow-lg">
             <div className="mb-6">
               <label htmlFor="referralNumber" className="block text-lg font-medium mb-3">
@@ -47,9 +49,12 @@ const GuestStatus = () => {
                 placeholder="Enter Referral Number"
               />
             </div>
-            <button onClick={checkStatus} className="bg-black text-white w-full py-3 rounded-md hover:bg-gray-700">
+            <div className="flex items-center justify-between mt-4">
+            <button onClick={checkStatus} className="bg-[#131133] text-white font-bold py-3 px-5 rounded-md hover:bg-gray-700">
               Check Status
             </button>
+          <Link className="bg-red-700 text-white font-bold py-3 px-10 rounded-md hover:bg-red-500 self-start mt-" to="/guest/home">Cancel</Link>
+          </div>
             <div className="mt-8">
               <label htmlFor="status" className="block text-lg font-medium mb-3">
                 Status
