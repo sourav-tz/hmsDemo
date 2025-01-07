@@ -15,38 +15,45 @@ const GuestStatus = () => {
           withCredentials: true,
       })
       console.log("RES",res)
-      console.log("MESSGAE ",res.response.data.message)
-      return res.response.data.message;
+      console.log("MESSGAE ",res.data.status)
+      return res.data.status;
       // console.log(res);
       // setGuestStatus(res.status);   
   } catch (err) {
       console.log(err);
+      console.log("Chnaging status for error _>")
+      setGuestStatus(err.response.data.message)
+      return err.response.data.message
   }
   };
 
   const checkStatus = async () => {
     // Simulate checking status (replace this logic with actual API call if needed)
     const resMessage = await getGuestsSchedule(); // Call API.
-    if (resMessage == "") {
+    if (!resMessage) {
       setGuestStatus('Error fetching status');
       return;
     }
     setGuestStatus(resMessage)
-    // switch (res.status) {
-    //   case 'pendingAtReferrer':
-    //   case 'pendingAtAdmin':
-    //     setGuestStatus('Pending');
-    //     break;
-    //   case 'rejectedByReferrer':
-    //   case 'rejectedByAdmin':
-    //     setGuestStatus('Rejected');
-    //     break;
-    //   case 'approvedByAdmin':
-    //     setGuestStatus('Accepted');
-    //     break;
-    //   default:
-    //     setGuestStatus('Not Found');
-    // }
+    switch (resMessage) {
+      case 'pendingAtReferrer':
+        setGuestStatus('Awaiting Referrer Verification');
+        break;
+      case 'pendingAtAdmin':
+        setGuestStatus('Awaiting Admin Verification');
+        break;
+      case 'rejectedByReferrer':
+        setGuestStatus('Application rejected By Referrer');
+        break;
+      case 'rejectedByAdmin':
+        setGuestStatus('Application rejected By Admin');
+        break;
+      case 'approvedByAdmin':
+        setGuestStatus('Application has been accepted');
+        break;
+      default:
+        setGuestStatus(resMessage);
+    }
   };
 
   return (
@@ -89,14 +96,22 @@ const GuestStatus = () => {
               Check Status
             </button>
           </div>
-            <div className="mt-8">
-              <label htmlFor="status" className="block text-lg font-medium mb-3">
-                Status
-              </label>
-              <div id="status" className="w-full p-3 rounded-md bg-white text-black text-center font-semibold">
-                {guestStatus || 'Enter Referral Number to Check Status'}
-              </div>
-            </div>
+          <div className="mt-8">
+  <label htmlFor="status" className="block text-lg font-medium mb-3">
+    Status
+  </label>
+  <div
+    id="status"
+    className={`w-full p-3 rounded-md text-black bg-gray-100 text-center font-bold
+      ${guestStatus === 'Awaiting Referrer Verification' || guestStatus === 'Awaiting Admin Verification' ? 'text-orange-500' : ''}
+      ${guestStatus === 'Application has been accepted' ? 'text-green-500' : ''}
+      ${guestStatus === 'Application rejected By Referrer' || guestStatus === 'Application rejected By Admin' ? 'text-red-500' : ''}
+      ${!guestStatus || guestStatus === 'Enter Application Number to Check Status' ? 'bg-gray-300' : ''}
+    `}
+  >
+    {guestStatus || 'Enter Application Number to Check Status'}
+  </div>
+</div>
           </div>
         </div>
       </div>
