@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import uploadIconCoud from "./upload-icon.svg"
 import axios from "axios";
+import { ToastContainer,toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const GuestReigster = () => {
   const [formData, setFormData] = useState({
@@ -52,9 +54,16 @@ const GuestReigster = () => {
       });
 
       console.log("RES",res);
+      console.log("RES STATUS",res.status)
+
+      toast.success("YAYYYY")
+      // toast.success(err.response.data.message)
     } catch (err) {
       console.error(err); // Log the error for debugging
+      toast.error(err.response.data.message)
+
     }
+
 
 
     // setFormData({
@@ -77,7 +86,7 @@ const GuestReigster = () => {
     //   purpose_of_visit: ""
     // });
 
-    alert("Form submitted successfully!"); // Optional: Display success message
+    // alert("Form submitted successfully!"); // Optional: Display success message
   };
 
   return (
@@ -397,6 +406,8 @@ const GuestReigster = () => {
           </form>
         </div>
       </div>
+      <ToastContainer />
+
     </div>
   );
 };
