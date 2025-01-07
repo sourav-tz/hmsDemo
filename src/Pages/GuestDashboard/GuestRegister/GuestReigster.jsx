@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import uploadIconCoud from "./upload-icon.svg"
+import axios from "axios";
 
 const GuestReigster = () => {
   const [formData, setFormData] = useState({
@@ -34,29 +35,47 @@ const GuestReigster = () => {
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
-    console.log("Form Data as JSON:", formData);
+    // console.log("Form Data as JSON:", formData);
 
-    setFormData({
-      first_name: "",
-      last_name: "",
-      guest_email: "",
-      referrer_email: "",
-      id_proof_no: "",
-      hostel_no: "",
-      contact_number: "",
-      address: "",
-      checkin_date: "",
-      checkout_date: "",
-      gender: "",
-      city: "",
-      state: "",
-      pincode: "",
-      number_of_guests: "",
-      additional_requests: "",
-      purpose_of_visit: ""
-    });
+    // api call
+    try {
+      const res = await axios({
+        method: 'post',
+        url: import.meta.env.VITE_BASE_URL + '/guest/register',
+        data: formData, 
+        headers:{
+            "Content-Type": "application/json",
+          },
+        withCredentials: true
+      });
+
+      console.log("RES",res);
+    } catch (err) {
+      console.error(err); // Log the error for debugging
+    }
+
+
+    // setFormData({
+    //   first_name: "",
+    //   last_name: "",
+    //   guest_email: "",
+    //   referrer_email: "",
+    //   id_proof_no: "",
+    //   hostel_no: "",
+    //   contact_number: "",
+    //   address: "",
+    //   checkin_date: "",
+    //   checkout_date: "",
+    //   gender: "",
+    //   city: "",
+    //   state: "",
+    //   pincode: "",
+    //   number_of_guests: "",
+    //   additional_requests: "",
+    //   purpose_of_visit: ""
+    // });
 
     alert("Form submitted successfully!"); // Optional: Display success message
   };
@@ -159,10 +178,10 @@ const GuestReigster = () => {
                 <input
                   type="email"
                   required
-                  value={formData.email}
+                  value={formData.guest_email}
                   onChange={handleChange}
                   placeholder="eg:prashant454@gmail.com"
-                  name="email"
+                  name="guest_email"
                   className="mt-0 p-2 border rounded-lg focus:outline-blue-500"
                 />
               </div>
@@ -288,9 +307,9 @@ const GuestReigster = () => {
                   required
                 >
                   <option>Choose</option>
-                  <option>Male</option>
-                  <option>Female</option>
-                  <option>Other</option>
+                  <option>male</option>
+                  <option>female</option>
+                  <option>other</option>
                 </select>
               </div>
 
