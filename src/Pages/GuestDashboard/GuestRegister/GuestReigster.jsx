@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import uploadIconCoud from "./upload-icon.svg"
 import axios from "axios";
+import { Button } from "@/components/ui/button"
 import { ToastContainer,toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -91,7 +92,9 @@ const GuestReigster = () => {
 
   return (
     <div className=" flex  flex-row  w-full bg-blue-950 p-2 items-center justify-center h-screen overflow-y-hidden ">
-      <div className="   flex flex-row p-2 bg-slate-200 rounded-sm   h-full  w-max w-11/12 pr-4 pl-4">
+       {/* <Button onClick className="bg-purple-700 hover:bg-purple-500 absolute top-10 left-24">Go Back</Button> */}
+        <Link className="bg-purple-600 text-white font-bold py-2 px-4 rounded hover:bg-purple-700 self-start absolute top-10 left-24" to="/guest/home">Go Back</Link>
+      <div className=" flex flex-row p-2 bg-slate-200 rounded-sm   h-full  w-max w-11/12 pr-4 pl-4">
         <div className="flex flex-col gap-4 w-1/3 w-[30%]">
           <div className="bg-blue-300 max-w-72 p-4  rounded-md ">
             <h1 className="text-base font-semibold ">Document Accepted</h1>
