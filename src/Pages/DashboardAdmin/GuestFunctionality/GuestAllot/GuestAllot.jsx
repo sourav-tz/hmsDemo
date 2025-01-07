@@ -9,7 +9,6 @@ import GuestAllotDialog from './GuestAllotDialog';
 const GuestAllot = () => {
   const [guestsRequestList, setGuestsRequestList] = useState([]);
 
-
   const getGuestsRequestList = async () => {
     try {
       const res = await axios({
@@ -25,9 +24,7 @@ const GuestAllot = () => {
   };
 
   useEffect(() => {
-
     getGuestsRequestList();
-    
   }, []);
 
   const removeRequest = (applicationId) => {
@@ -81,7 +78,7 @@ const GuestAllot = () => {
                         <DialogHeader>
                           <DialogTitle className="text-xl">{"Application ID" + " : " + guest.application_id + " - " + guest.first_name + " " + guest.last_name}</DialogTitle>
                         </DialogHeader>
-                        <GuestAllotDialog className="min-w-fit w-4/5" guest={guest} removeRequest={removeRequest}> </GuestAllotDialog>
+                        <GuestAllotDialog className="min-w-fit w-4/5" guest={guest} removeRequest={removeRequest} closeDialog={() => setGuestsRequestList([])}> </GuestAllotDialog>
                       </DialogContent>
                     </Dialog>
                   </TableCell>

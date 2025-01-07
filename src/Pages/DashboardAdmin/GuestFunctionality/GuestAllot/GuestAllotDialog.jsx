@@ -2,10 +2,9 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { IoCheckmarkDoneCircle } from "react-icons/io5";
-import { ImCross } from "react-icons/im";
 import { useSelector } from "react-redux";
 
-const GuestAllotDialog = ({ guest, removeRequest }) => {
+const GuestAllotDialog = ({ guest, removeRequest, closeDialog }) => {
   const [allot, setAllot] = useState(false);
   const [blockNo, setBlockNo] = useState('');
   const [floorNo, setFloorNo] = useState('');
@@ -19,7 +18,7 @@ const GuestAllotDialog = ({ guest, removeRequest }) => {
         url: import.meta.env.VITE_BASE_URL + '/guest/bookRoomAdmin/' + guest.application_id,
         withCredentials: true,
         data: {
-          hostelNo:userData.dataValues.hostelNo,
+          hostelNo: userData.dataValues.hostelNo,
           block: blockNo,
           floorNo: floorNo,
           roomNo: roomNo
@@ -34,8 +33,6 @@ const GuestAllotDialog = ({ guest, removeRequest }) => {
       console.log(err);
     }
   };
-  
-  
 
   return (
     <>
@@ -44,7 +41,6 @@ const GuestAllotDialog = ({ guest, removeRequest }) => {
           <div className="bg-white shadow-lg rounded-md w-max relative">
             <div className="flex justify-between items-center p-4 border-b">
               <h2 className="text-xl font-semibold">Enter Room Details</h2>
-              <ImCross className="cursor-pointer" onClick={() => setAllot(false)} />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm p-4">
               {/* Block Number */}
@@ -81,7 +77,7 @@ const GuestAllotDialog = ({ guest, removeRequest }) => {
               </div>
             </div>
             <div className="flex justify-end p-4 border-t space-x-4">
-              <Button onClick={() => setAllot(false)} className="bg-red-700 text-white px-6 py-2 rounded-md shadow hover:bg-red-500">
+              <Button onClick={closeDialog} className="bg-red-700 text-white px-6 py-2 rounded-md shadow hover:bg-red-500">
                 Cancel
               </Button>
               <Button onClick={allotGuestApplication} className="bg-blue-700 text-white px-6 py-2 rounded-md shadow hover:bg-blue-500">
