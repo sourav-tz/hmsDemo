@@ -58,7 +58,7 @@ const GuestVerify = () => {
   return (
     <>
     <div className='flex flex-col items-center w-full bg-gray-100 min-h-screen mx-auto item-center'>
-         <h1 className='text-3xl font-semibold mt-10 max-md:mt-24 '>View Guest Applications</h1>
+         <h1 className='text-3xl font-semibold mt-10 max-md:mt-24 '>Verify Guest Applications</h1>
          <Card className="w-3/4 mt-10 ml-2 max-lg:ml-16 min-lg:ml-16 w-4/5">
          <Table>
              <TableHeader>

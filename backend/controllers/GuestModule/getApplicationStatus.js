@@ -2,7 +2,8 @@ const { guestInfo } = require("../../models");
 
 const getApplicationStatus = async (req, res) => {
   try {
-    const { application_id } = req.params; // Get application_id from URL params
+    const { application_id } = req.params; // Get application_id from URL params\
+    console.log(application_id); 
 
     // Validation: Check if application_id is a valid number
     if (!application_id || isNaN(application_id)) {

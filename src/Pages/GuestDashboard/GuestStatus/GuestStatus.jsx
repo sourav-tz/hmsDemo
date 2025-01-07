@@ -1,17 +1,52 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+import { Link } from 'react-router-dom'; // Import Link from react-router-dom
 import backgroundImage from '../../../Assets/hostel11.jpg'; // Ensure the path to your image is correct.
 
 const GuestStatus = () => {
-  const [referralNumber, setReferralNumber] = useState('');
-  const [status, setStatus] = useState('');
+  const [guestStatus,setGuestStatus] = useState('');
+  const [application_id, setApplicationId] = useState('');
+  
+  const getGuestsSchedule = async() =>{
+    try {
+      const res = await axios({
+          method: 'get',
+          url: import.meta.env.VITE_BASE_URL + '/guest/application-status/' + application_id,
+          withCredentials: true,
+      })
+      console.log("RES",res)
+      console.log("MESSGAE ",res.response.data.message)
+      return res.response.data.message;
+      // console.log(res);
+      // setGuestStatus(res.status);   
+  } catch (err) {
+      console.log(err);
+  }
+  };
 
-  const checkStatus = () => {
+  const checkStatus = async () => {
     // Simulate checking status (replace this logic with actual API call if needed)
-    if (referralNumber.trim() === 'ABCD1234') {
-      setStatus('Pending');
-    } else {
-      setStatus('Not Found');
+    const resMessage = await getGuestsSchedule(); // Call API.
+    if (resMessage == "") {
+      setGuestStatus('Error fetching status');
+      return;
     }
+    setGuestStatus(resMessage)
+    // switch (res.status) {
+    //   case 'pendingAtReferrer':
+    //   case 'pendingAtAdmin':
+    //     setGuestStatus('Pending');
+    //     break;
+    //   case 'rejectedByReferrer':
+    //   case 'rejectedByAdmin':
+    //     setGuestStatus('Rejected');
+    //     break;
+    //   case 'approvedByAdmin':
+    //     setGuestStatus('Accepted');
+    //     break;
+    //   default:
+    //     setGuestStatus('Not Found');
+    // }
   };
 
   return (
@@ -30,32 +65,36 @@ const GuestStatus = () => {
       ></div>
 
       {/* Content area */}
-      <div className="flex flex-col min-h-screen items-center py-20">
-        <div className="z-10 flex flex-col items-center">
+      {/* Link to Change Role */}
+      <div className="flex flex-col min-h-screen items-center py-10">
           <h1 className="text-3xl font-semibold mb-10">Check Application Status</h1>
+        <div className="z-10 flex flex-col items-center">
           <div className="bg-[#5757FF] rounded-lg p-10 w-[400px] sm:w-[450px] text-white shadow-lg">
             <div className="mb-6">
-              <label htmlFor="referralNumber" className="block text-lg font-medium mb-3">
-                Enter Referral Number
+              <label htmlFor="application-id" className="block text-lg font-medium mb-3">
+                Enter Application ID
               </label>
               <input
-                id="referralNumber"
+                id="applicationId"
                 type="text"
-                value={referralNumber}
-                onChange={(e) => setReferralNumber(e.target.value)}
+                value={application_id}
+                onChange={(e) => setApplicationId(e.target.value)}
                 className="w-full p-3 rounded-md text-black"
-                placeholder="Enter Referral Number"
+                placeholder="Enter Application ID"
               />
             </div>
-            <button onClick={checkStatus} className="bg-black text-white w-full py-3 rounded-md hover:bg-gray-700">
+            <div className="flex items-center justify-between mt-4">
+            <Link className="bg-red-700 text-white font-bold py-3 px-10 rounded-md hover:bg-red-500 self-start mt-" to="/guest/home">Cancel</Link>
+            <button onClick={checkStatus} className="bg-[#131133] text-white font-bold py-3 px-5 rounded-md hover:bg-gray-700">
               Check Status
             </button>
+          </div>
             <div className="mt-8">
               <label htmlFor="status" className="block text-lg font-medium mb-3">
                 Status
               </label>
               <div id="status" className="w-full p-3 rounded-md bg-white text-black text-center font-semibold">
-                {status || 'Enter Referral Number to Check Status'}
+                {guestStatus || 'Enter Referral Number to Check Status'}
               </div>
             </div>
           </div>
