@@ -86,13 +86,32 @@ const GuestReigster = () => {
       toast.error(err.response.data.message)
 
     }
-
-
-
-
     // alert("Form submitted successfully!"); // Optional: Display success message
   };
 
+  const clearForm = () =>{
+    setFormData({
+      first_name: "",
+      last_name: "",
+      guest_email: "",
+      referrer_email: "",
+      id_proof_no: "",
+      hostel_no: "",
+      contact_number: "",
+      address: "",
+      checkin_date: "",
+      checkout_date: "",
+      gender: "",
+      city: "",
+      state: "",
+      pincode: "",
+      number_of_guests: "",
+      additional_requests: "",
+      purpose_of_visit: ""
+    });
+  }
+
+  
   return (
     <div className=" flex  flex-row  w-full bg-blue-950 p-2 items-center justify-center h-screen overflow-y-hidden ">
        {/* <Button onClick className="bg-purple-700 hover:bg-purple-500 absolute top-10 left-24">Go Back</Button> */}
@@ -397,6 +416,7 @@ const GuestReigster = () => {
             {/* Submit Buttons */}
             <div className="flex justify-between mt-4 gap-4">
               <button
+              onClick={clearForm}
                 type="reset"
                 className="px-6 py-2 bg-gray-300 rounded-xl hover:bg-gray-400 w-1/2"
               >
