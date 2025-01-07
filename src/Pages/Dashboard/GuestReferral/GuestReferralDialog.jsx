@@ -16,8 +16,6 @@ const GuestReferralDialog = ({ guest, removeRequest }) => {
           withCredentials: true,
                 
       })
-      // printing data
-      console.log(res)
       if (res.data.success) {
         setAccept(true);
         // removes the request entry from the frontend
