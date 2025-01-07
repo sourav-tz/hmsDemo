@@ -69,9 +69,7 @@ const GuestStatus = () => {
           opacity: 0.5, // Slightly reduce opacity for effect
           zIndex: -1, // Place the background behind the content
         }}
-      >
-        
-      </div>
+      ></div>
 
       {/* Content area */}
       {/* Link to Change Role */}

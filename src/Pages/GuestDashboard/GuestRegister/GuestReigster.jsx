@@ -5,6 +5,7 @@ import uploadIconCoud from "./upload-icon.svg"
 import axios from "axios";
 import { Button } from "@/components/ui/button"
 import { ToastContainer,toast } from "react-toastify";
+import backgroundImage from '../../../Assets/hostel11.jpg'; // Ensure the path to your image is correct.
 import 'react-toastify/dist/ReactToastify.css';
 
 const GuestReigster = () => {
@@ -94,14 +95,27 @@ const GuestReigster = () => {
   };
 
   return (
-    <div className=" flex  flex-row  w-full bg-blue-950 p-2 items-center justify-center h-screen overflow-y-hidden ">
+    <div>
+    <div
+            className="absolute top-0 left-0 w-full h-full"
+            style={{
+              backgroundImage: `url(${backgroundImage})`,
+              backgroundPosition: 'center',
+              backgroundSize: 'cover',
+              filter: 'blur(3px)', // Optional: Adds a blur effect
+              opacity: 0.5, // Slightly reduce opacity for effect
+              zIndex: -1, // Place the background behind the content
+            }}
+          >
+          </div>
+    <div className=" flex  flex-row  w-full bg-grey-950 p-2 items-center justify-center h-screen overflow-y-hidden ">
        {/* <Button onClick className="bg-purple-700 hover:bg-purple-500 absolute top-10 left-24">Go Back</Button> */}
-        <Link className="bg-purple-600 text-white font-bold py-2 px-4 rounded hover:bg-purple-700 self-start mt-4 mr-4" to="/guest/home">Go Back</Link>
+        <Link className="bg-[#5757FF] text-white font-bold py-2 px-4 rounded hover:bg-grey-700 self-start mt-4 mr-4" to="/guest/home">Go Back</Link>
       <div className=" flex flex-row p-2 bg-slate-200 rounded-sm   h-full  w-max w-11/12 pr-4 pl-4">
         <div className="flex flex-col gap-4 w-1/3 w-[30%]">
-          <div className="bg-blue-300 max-w-72 p-4  rounded-md ">
-            <h1 className="text-base font-semibold ">Document Accepted</h1>
-            <ul className="list-disc ml-3 p-2 text-xs text-blue-700">
+          <div className="bg-[#5757FF] max-w-72 p-4  rounded-md ">
+            <h1 className="text-base font-semibold text-white">Document Accepted</h1>
+            <ul className="list-disc ml-3 p-2 text-xs text-white">
               <li>Adhar Card</li>
               <li>Voter ID</li>
               <li>Driving License</li>
@@ -109,10 +123,10 @@ const GuestReigster = () => {
               <li>Passport with visa (for international visitors)</li>
             </ul>
 
-            <h1 className="text-base font-semibold mt-1">
+            <h1 className="text-base font-semibold mt-1 text-white">
               File Upload Instructions
             </h1>
-            <ul className="list-disc ml-3 p-2 text-xs text-blue-700">
+            <ul className="list-disc ml-3 p-2 text-xs text-white">
               <li>
                 Guest should be greater than 18 if less to be accompanied by
               </li>
@@ -404,7 +418,7 @@ const GuestReigster = () => {
               </button>
               <button
                 type="submit"
-                className="px-6 py-2 bg-blue-500 text-white rounded-xl hover:bg-blue-600 w-1/2"
+                className="px-6 py-2 bg-[#5757FF] text-white rounded-xl hover:bg-gray-900 w-1/2"
               >
                 Submit
               </button>
@@ -413,7 +427,7 @@ const GuestReigster = () => {
         </div>
       </div>
       <ToastContainer />
-
+      </div>
     </div>
   );
 };
