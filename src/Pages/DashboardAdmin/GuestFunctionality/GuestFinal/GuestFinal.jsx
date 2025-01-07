@@ -40,7 +40,28 @@ import formdata from "../../../../config/formdata";
 import GuestFinalDialog from "./GuestFinalDialog";
 
 const GuestFinal = () => {
-  const [guestsDetailList, setGuestsDetailList] = useState([]);
+  const totalPages = 10;
+
+  const [guestsDetailList,setGuestsDetailList] = useState([]);
+  const getGuestsDetailList = async() =>{
+    try {
+      const res = await axios({
+          method: 'get',
+          url: import.meta.env.VITE_BASE_URL + '/guest/getSchedule',
+          withCredentials: true,
+                
+      })
+      console.log("RES",res);
+      console.log(res.data.result);
+      setGuestsDetailList(res.data.result);   
+  } catch (err) {
+      console.log(err);
+  }
+  }
+
+  useEffect(() => {
+      getGuestsDetailList();
+  }, [])
 
   return (
     <>
@@ -52,16 +73,12 @@ const GuestFinal = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="font-medium text-center">
-                  Application ID
-                </TableHead>
-                <TableHead className="text-center">Guest ID</TableHead>
-                <TableHead className="text-center">Name</TableHead>
-                <TableHead className="text-center">Referral ID</TableHead>
-                <TableHead className="text-center">From</TableHead>
-                <TableHead className="text-center">To</TableHead>
-                <TableHead className="text-center">No. of Guests</TableHead>
-                <TableHead className="text-center">Verify Details</TableHead>
+                <TableHead className="font-medium text-center">Sno</TableHead>
+                <TableHead className="font-medium text-center">Booking ID</TableHead>
+                <TableHead className="font-medium text-center">Application ID</TableHead>
+                <TableHead className="text-center">Room ID</TableHead>
+                <TableHead className="text-center">Allocated Hostel</TableHead>
+                <TableHead className="text-center">View All Details</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -69,45 +86,25 @@ const GuestFinal = () => {
                 ? guestsDetailList.map((guest, index) => (
                     <TableRow key={index}>
                       <TableCell className="font-medium text-center">
+                        {index+1}
+                      </TableCell>
+                      <TableCell className="font-medium text-center">
+                        {guest.bookingId}
+                      </TableCell>
+                      <TableCell className="font-medium text-center">
                         {guest.application_id}
                       </TableCell>
                       <TableCell className="text-center">
-                        {guest.id_proof_no}
+                        {guest.roomId}
                       </TableCell>
                       <TableCell className="text-center">
-                        {guest.first_name + " " + guest.last_name}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {guest.referrer_email}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {new Date(guest.checkin_date).toLocaleDateString(
-                          "en-US",
-                          {
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                          }
-                        )}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {new Date(guest.checkout_date).toLocaleDateString(
-                          "en-US",
-                          {
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                          }
-                        )}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {guest.number_of_guests}
+                        {guest.allocatedHostel}
                       </TableCell>
                       <TableCell className="text-center">
                         <Dialog>
                           <DialogTrigger>
                             <Button className="bg-purple-700 hover:bg-purple-500">
-                              View Details
+                            View All Details
                             </Button>
                           </DialogTrigger>
                           <DialogContent className="min-w-fit ">
@@ -115,11 +112,7 @@ const GuestFinal = () => {
                               <DialogTitle className="text-xl">
                                 {"Application ID" +
                                   " : " +
-                                  guest.application_id +
-                                  " - " +
-                                  guest.first_name +
-                                  " " +
-                                  guest.last_name}
+                                  guest.application_id}
                               </DialogTitle>
                             </DialogHeader>
                             <GuestFinalDialog

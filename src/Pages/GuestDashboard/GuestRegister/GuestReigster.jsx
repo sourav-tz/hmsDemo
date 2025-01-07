@@ -57,8 +57,30 @@ const GuestReigster = () => {
       console.log("RES",res);
       console.log("RES STATUS",res.status)
 
-      toast.success("YAYYYY")
-      // toast.success(err.response.data.message)
+      if(res.status === 201){
+        toast.success("Guest information created successfully.")
+      // toast.success(res.response.data.message)
+      }
+
+      setFormData({
+        first_name: "",
+        last_name: "",
+        guest_email: "",
+        referrer_email: "",
+        id_proof_no: "",
+        hostel_no: "",
+        contact_number: "",
+        address: "",
+        checkin_date: "",
+        checkout_date: "",
+        gender: "",
+        city: "",
+        state: "",
+        pincode: "",
+        number_of_guests: "",
+        additional_requests: "",
+        purpose_of_visit: ""
+      });
     } catch (err) {
       console.error(err); // Log the error for debugging
       toast.error(err.response.data.message)
@@ -67,25 +89,6 @@ const GuestReigster = () => {
 
 
 
-    // setFormData({
-    //   first_name: "",
-    //   last_name: "",
-    //   guest_email: "",
-    //   referrer_email: "",
-    //   id_proof_no: "",
-    //   hostel_no: "",
-    //   contact_number: "",
-    //   address: "",
-    //   checkin_date: "",
-    //   checkout_date: "",
-    //   gender: "",
-    //   city: "",
-    //   state: "",
-    //   pincode: "",
-    //   number_of_guests: "",
-    //   additional_requests: "",
-    //   purpose_of_visit: ""
-    // });
 
     // alert("Form submitted successfully!"); // Optional: Display success message
   };
@@ -93,7 +96,7 @@ const GuestReigster = () => {
   return (
     <div className=" flex  flex-row  w-full bg-blue-950 p-2 items-center justify-center h-screen overflow-y-hidden ">
        {/* <Button onClick className="bg-purple-700 hover:bg-purple-500 absolute top-10 left-24">Go Back</Button> */}
-        <Link className="bg-purple-600 text-white font-bold py-2 px-4 rounded hover:bg-purple-700 self-start absolute top-10 left-24" to="/guest/home">Go Back</Link>
+        <Link className="bg-purple-600 text-white font-bold py-2 px-4 rounded hover:bg-purple-700 self-start mt-4 mr-4" to="/guest/home">Go Back</Link>
       <div className=" flex flex-row p-2 bg-slate-200 rounded-sm   h-full  w-max w-11/12 pr-4 pl-4">
         <div className="flex flex-col gap-4 w-1/3 w-[30%]">
           <div className="bg-blue-300 max-w-72 p-4  rounded-md ">
