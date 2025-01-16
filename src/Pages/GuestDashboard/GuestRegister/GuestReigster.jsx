@@ -60,6 +60,8 @@ const GuestReigster = () => {
 
       if(res.status === 201){
         toast.success("Guest information created successfully.")
+        // toast.success(res.data.application_id)
+        toast.success(`Your Application ID: ${res.data.application_id}`);
       // toast.success(res.response.data.message)
       }
 
