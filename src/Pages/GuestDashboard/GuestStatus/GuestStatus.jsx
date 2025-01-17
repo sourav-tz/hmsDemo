@@ -69,16 +69,14 @@ const GuestStatus = () => {
           opacity: 0.5, // Slightly reduce opacity for effect
           zIndex: -1, // Place the background behind the content
         }}
-      >
-        
-      </div>
+      ></div>
 
       {/* Content area */}
       {/* Link to Change Role */}
       <div className="flex flex-col min-h-screen items-center py-10">
           <h1 className="text-3xl font-semibold mb-10">Check Application Status</h1>
         <div className="z-10 flex flex-col items-center">
-          <div className="bg-[#5757FF] rounded-lg p-10 w-[400px] sm:w-[450px] text-white shadow-lg">
+          <div className="bg-[#5757FF] rounded-2xl p-10 w-[400px] sm:w-[450px] text-white shadow-lg">
             <div className="mb-6">
               <label htmlFor="application-id" className="block text-lg font-medium mb-3">
                 Enter Application ID
