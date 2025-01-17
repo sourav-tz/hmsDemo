@@ -22,7 +22,7 @@ const addroom=async (req,res)=>{
       return res.status(200).json({messgae:"Rooms Added Successfully",data:newRoom});
       } catch (error) {
         console.error(error);
-        return res.status(500).json({ error: error?.fields });
+        return res.status(500).json({ error: error });
       }
 };
 const updateroom = async (req,res)=>{

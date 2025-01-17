@@ -78,7 +78,7 @@ const onSubmitEdit = async (data) => {
         return (
           course.courseName.trim().toLowerCase() === courseName.trim().toLowerCase() &&
           course.department.trim().toLowerCase() === department.trim().toLowerCase() &&
-          course.specialization?.trim().toLowerCase() === specialization?.trim().toLowerCase() && course.active === isActive
+          course.specialization.trim().toLowerCase() === specialization.trim().toLowerCase() && course.active === isActive
         );
       });
     };
@@ -205,7 +205,7 @@ const deleteCourse = async (courseId) => {
 
 
   return (
-   <div className="mt-24 md:mt-0 container mx-auto py-8 px-4 sm:px-8">
+   <div className="container mx-auto py-8 px-4 sm:px-8">
   <div className="flex flex-col justify-center items-center gap-8">
     {/* Add New Course Section */}
     <div className="w-full lg:w-[600px]">
@@ -255,7 +255,6 @@ const deleteCourse = async (courseId) => {
                   </Badge>
                 </TableCell>
                 <TableCell className="flex justify-center items-center gap-2">
-
                   {/* Edit Course Dialog */}
                   <Dialog>
                     <DialogTrigger asChild>
@@ -403,14 +402,12 @@ const deleteCourse = async (courseId) => {
                             </DialogTrigger>
                           </div>
                           <div>
-                            <DialogTrigger asChild>
                             <Button
                               type="submit"
                               className="bg-blue-700 hover:bg-blue-500"
                             >
                               Save Changes
                             </Button>
-                            </DialogTrigger>
                           </div>
                         </DialogFooter>
                       </form>

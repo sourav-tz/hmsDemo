@@ -10,13 +10,9 @@ import { AgGridReact } from 'ag-grid-react';
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import { useState } from "react"
-import { themeQuartz } from 'ag-grid-community';
-
-
-
 export default function MangageRooms() {
 
-const { register, handleSubmit, control, formState:{errors} } = useForm({
+const { register, handleSubmit, control } = useForm({
   defaultValues: {
     roomNo: "",
     floorNo: "",
@@ -26,23 +22,6 @@ const { register, handleSubmit, control, formState:{errors} } = useForm({
   },
   mode: "onBlur",
 })
-
-const myTheme = themeQuartz.withParams(
-  {
-      backgroundColor: '#FFE8E0',
-      foregroundColor: '#361008CC',
-      browserColorScheme: 'light',
-  },
-  'light-red'
-)
-.withParams(
-  {
-      backgroundColor: '#201008',
-      foregroundColor: '#FFFFFFCC',
-      browserColorScheme: 'dark',
-  },
-  'dark-red'
-);
 
 
 const onSubmit = async (data) => {
@@ -74,7 +53,7 @@ const onSubmit = async (data) => {
       });
 
   } catch (error) {
-    console.log(error)
+    console.error(error.response.data.message)
     toast.error(error.response.data.message, {
       position: "top-right",
       autoClose: 5000,
@@ -85,16 +64,6 @@ const onSubmit = async (data) => {
       progress: undefined,
       theme: "light",
   })
-  toast.error(`Invalid Entries for ${error.response.data.error.map(d=>`${d},`)}`, {
-    position: "top-right",
-    autoClose: 5000,
-    hideProgressBar: false,
-    closeOnClick: false,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-    theme: "light",
-})
 }
 }
 
@@ -128,27 +97,23 @@ const onSubmit = async (data) => {
             <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="room-number">Room Number</Label>
-                <Input className={`${errors.roomNo?'outline-double outline-2 outline-red-600':''}`} {...register('roomNo',{required:"Room No is required"})} id="room-number" type="number" />
-                <p className="text-red-500 text-sm">{errors.roomNo?.message}</p>
+                <Input {...register('roomNo')} id="room-number" type="number" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="floor">Floor</Label>
-                <Input className={`${errors.floorNo?'outline-double outline-2 outline-red-600':''}`} {...register('floorNo',{required:"Floor No is required"})} id="floor" type="number" />
-                <p className="text-red-500 text-sm">{errors.floorNo?.message}</p>
+                <Input {...register('floorNo')} id="floor" type="number" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="block">Block</Label>
-                <Input className={`${errors.block?'outline-double outline-2 outline-red-600':''}`} {...register('block',{required:"block is required"})} id="block" />
-                <p className="text-red-500 text-sm">{errors.block?.message}</p>              </div>
-              <div className="space-y-2">
-                <Label htmlFor="capacity">Capacity</Label>
-                <Input className={`${errors.maxOccupancy?'outline-double outline-2 outline-red-600':''}`} {...register('maxOccupancy',{required:"Capacity No is required"})} id="capacity" type="number" />
-                <p className="text-red-500 text-sm">{errors.maxOccupancy?.message}</p>
+                <Input {...register('block')} id="block" type="text" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="hostelNo">Hostel Number</Label>
-                <Input className={`${errors.hostelNo?'outline-double outline-2 outline-red-600':''}`} {...register('hostelNo',{required:"Hostel No is required"})} id="hostelNo" type="number" />
-                <p className="text-red-500 text-sm">{errors.hostelNo?.message}</p>
+                <Label htmlFor="capacity">Capacity</Label>
+                <Input {...register('maxOccupancy')} id="capacity" type="number" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="capacity">Hostel Number</Label>
+                <Input {...register('hostelNo')} id="capacity" type="number" />
               </div>
               <div className="col-span-2 flex justify-end">
                 <Button className="bg-blue-600 hover:bg-blue-500 text-white" variant="primary" size="sm">Add Room</Button>
@@ -163,7 +128,6 @@ const onSubmit = async (data) => {
                       columnDefs={colDefs}
                       rowHeight={50}
                       headerHeight={50}
-                      theme={myTheme}
 
               />
           </div>

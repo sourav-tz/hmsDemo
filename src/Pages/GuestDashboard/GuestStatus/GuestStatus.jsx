@@ -119,5 +119,4 @@ const GuestStatus = () => {
   );
 };
 
-export default GuestStatus
-
+export default GuestStatus;

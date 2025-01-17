@@ -298,9 +298,9 @@ const ManageAdmin = () => {
   return (
 
     <>
-     <div className='flex flex-col p-8 md:p-4 items-center justify-center mt-[5rem] md:mt-[6rem] lg:mt-[8rem]'>
+     <div className='flex flex-col items-center justify-center mt-[5rem] md:mt-[6rem] lg:mt-[8rem]'>
       {/* Added max-w-full to ensure the form doesn’t exceed screen width on small devices */}
-      <div className='w-full m-6 p-12 max-w-full lg:max-w-max rounded-[30px] shadow-[0_3px_10px_rgb(0,0,0,0.2)]'>
+      <div className='m-6 p-5 max-w-full lg:max-w-max rounded-[30px] shadow-[0_3px_10px_rgb(0,0,0,0.2)]'>
         <form>
           <div>
             <h1 className='text-xl md:text-2xl m-2 font-bold'>Register Admin</h1> {/* Reduced heading size for smaller screens */}

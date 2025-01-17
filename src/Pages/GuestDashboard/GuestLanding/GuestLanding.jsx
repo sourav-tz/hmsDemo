@@ -119,13 +119,7 @@ const GuestLanding = () => {
       </div>
     </>
 
-<<<<<<< HEAD
-<<<<<<< HEAD
   );
 };
 
-=======
->>>>>>> 07c25747cd639ac7289eb18de540cf27e72319d2
-=======
->>>>>>> 07c25747cd639ac7289eb18de540cf27e72319d2
 export default GuestLanding;
