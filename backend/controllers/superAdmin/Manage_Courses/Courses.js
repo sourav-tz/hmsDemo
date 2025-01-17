@@ -76,10 +76,6 @@ const enableCourse = async (req,res)=>{
         const isDeleted=await db.courses.restore({
             where:{courseId}
         });
-        if(!isDeleted){
-
-          return res.status(400).json({message:"Course Not found or already enabled"});
-        }
       return res.status(200).json({message:"successfully enabled"});
       } catch (error) {
         console.error(error);
@@ -94,7 +90,7 @@ const updateCourse=async (req, res) => {
     if(department)data.department=department;
     if(specialization)data.specialization=specialization;
     if(courseDuration)data.courseDuration=courseDuration;
-    await db.courses.update(data,{
+    const updateData = await db.courses.update(data,{
         where:{courseId:courseId}
     });
   return res.status(200).json({message:"successfully updated"});
