@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 <<<<<<< HEAD
+<<<<<<< HEAD
 import uploadIconCoud from "./upload-icon.svg"
 import axios from "axios";
 import { Button } from "@/components/ui/button"
@@ -54,6 +55,30 @@ const GuestReigster = () => {
 
 
 >>>>>>> 07c25747cd639ac7289eb18de540cf27e72319d2
+=======
+
+const GuestReigster = () => {
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    referrelEmail:"",
+    contactNumber: "",
+    state: "",
+    city: "",
+    pincode: "",
+    address: "",
+    checkInDate: "",
+    checkOutDate: "",
+    gender: "",
+    numberOfGuests: "",
+    purposeOfVisit: "",
+    additionalGuestNames: "",
+    additionalRequests: "",
+  });
+
+
+>>>>>>> 07c25747cd639ac7289eb18de540cf27e72319d2
   // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -64,6 +89,7 @@ const GuestReigster = () => {
   };
 
   // Handle form submission
+<<<<<<< HEAD
 <<<<<<< HEAD
   const handleSubmit = async(e) => {
     e.preventDefault();
@@ -478,6 +504,8 @@ const GuestReigster = () => {
       </div>
     </div>
 =======
+=======
+>>>>>>> 07c25747cd639ac7289eb18de540cf27e72319d2
   const handleSubmit = (e) => {
     
     e.preventDefault();
@@ -659,6 +687,9 @@ const GuestReigster = () => {
       </div>
     </div>
     
+<<<<<<< HEAD
+>>>>>>> 07c25747cd639ac7289eb18de540cf27e72319d2
+=======
 >>>>>>> 07c25747cd639ac7289eb18de540cf27e72319d2
   );
 };
