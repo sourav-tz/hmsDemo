@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux';
 import { BsHouses } from "react-icons/bs";
 import { useLocation,useNavigate } from 'react-router-dom';
 import storage from 'redux-persist/lib/storage';
+import axios from 'axios'
 
 export default function SuperSidebar(){
 
@@ -104,7 +105,26 @@ export default function SuperSidebar(){
     }
 
 
-const handleLogout = ()=>{}
+const handleLogout = async()=>{
+
+    try{
+        const res = await axios({
+            method:"GET",
+            url:import.meta.env.VITE_BASE_URL + '/SA/superAdminLogout',
+            withCredentials:true
+        })
+
+        console.log(res);
+        Navigator('/superAdminLogin')
+
+
+    }catch(err){
+        console.log(err);
+        Navigator('/superAdminLogin')
+    }
+    
+
+}
 
 
 
@@ -199,12 +219,13 @@ const handleLogout = ()=>{}
                         <ul className={`${subHostel?'':'hidden'} text-sm text-white  font-thin ml-8 transition-all`}>
                             <li onClick={()=>{Navigator('/superAdminDashboard/hostels/manageHostels');handleHamBurger()}} className={`text-xl hover:scale-110 transition-all rounded-md px-2 py-[2px] ${activeSubOption==='manageHostels'?'bg-blue-900 font-normal':''}`}> Manage Hostels</li>
                             <li onClick={()=>{Navigator('/superAdminDashboard/hostels/manageAdmins');handleHamBurger()}} className={`text-xl hover:scale-110 transition-all rounded-md px-2 py-[2px] ${activeSubOption==='manageAdmin'?'bg-blue-900 font-normal':''}`}> Manage Admins</li>
+                            <li onClick={()=>{Navigator('/superAdminDashboard/studentActions/addCourses');handleHamBurger()}} className={`text-xl hover:scale-110 transition-all rounded-md px-2 py-[2px] ${activeSubOption==='addCourses'?'bg-blue-900 font-normal':''}`}>Add Courses</li>
                         </ul>
                     </li>
 
 
                 </ul>
-                <div onClick={handleLogout} className='absolute bottom-16 cursor-pointer left-[40%] text-white'>
+                <div onClick={()=>handleLogout()} className='absolute bottom-16 cursor-pointer left-[40%] text-white'>
                 Logout
             </div>
             </div>
