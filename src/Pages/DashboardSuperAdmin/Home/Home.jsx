@@ -1,4 +1,6 @@
-import React from 'react'
+// import React from 'react'
+import { Link } from 'react-router-dom'
+
 import {
     Card,
     CardContent,
@@ -24,7 +26,6 @@ import {
   Chart.register(CategoryScale);
 
   import { AiOutlineRightCircle } from "react-icons/ai";
-
 
 
 const Home = () => {
@@ -63,12 +64,11 @@ const Home = () => {
             <CardDescription>Here are the action you can take</CardDescription>
             <CardContent>
                 <ul className='mt-4'>
-                    <li className='flex items-center gap-2 px-2 text-gray-600 text-xl cursor-pointer hover:translate-x-3 transition-all hover:text-purple-700 font-medium'><AiOutlineRightCircle /> Upload Rooms in Bulk</li>
-                    <li className='flex items-center gap-2 px-2 text-gray-600 text-xl cursor-pointer hover:translate-x-3 transition-all hover:text-purple-700 font-medium'><AiOutlineRightCircle /> Add Admins & Manage Admins</li>
-                    <li className='flex items-center gap-2 px-2 text-gray-600 text-xl cursor-pointer hover:translate-x-3 transition-all hover:text-purple-700 font-medium'><AiOutlineRightCircle /> Add Courses</li>
-                    <li className='flex items-center gap-2 px-2 text-gray-600 text-xl cursor-pointer hover:translate-x-3 transition-all hover:text-purple-700 font-medium'><AiOutlineRightCircle /> Add & Manage Hostels</li>
-                    <li className='flex items-center gap-2 px-2 text-gray-600 text-xl cursor-pointer hover:translate-x-3 transition-all hover:text-purple-700 font-medium'><AiOutlineRightCircle /> Register A Guest</li>
-                    <li className='flex items-center gap-2 px-2 text-gray-600 text-xl cursor-pointer hover:translate-x-3 transition-all hover:text-purple-700 font-medium'><AiOutlineRightCircle /> View Student Info</li>
+                <Link to="/superAdminDashboard/roomActions/allocateRooms"><li className='flex items-center gap-2 px-2 text-gray-600 text-xl cursor-pointer hover:translate-x-3 transition-all hover:text-purple-700 font-medium'><AiOutlineRightCircle /> Upload Rooms in Bulk</li></Link>
+                <Link to="/superAdminDashboard/roomActions/manageRooms"><li className='flex items-center gap-2 px-2 text-gray-600 text-xl cursor-pointer hover:translate-x-3 transition-all hover:text-purple-700 font-medium'><AiOutlineRightCircle /> Manage Rooms</li></Link>
+                <Link to="/superAdminDashboard/hostels/manageAdmins"><li className='flex items-center gap-2 px-2 text-gray-600 text-xl cursor-pointer hover:translate-x-3 transition-all hover:text-purple-700 font-medium'><AiOutlineRightCircle /> Add Admins & Manage Admins</li></Link>
+                <Link to="/superAdminDashboard/studentActions/addCourses"><li className='flex items-center gap-2 px-2 text-gray-600 text-xl cursor-pointer hover:translate-x-3 transition-all hover:text-purple-700 font-medium'><AiOutlineRightCircle /> Add Courses</li></Link>
+                <Link to="/superAdminDashboard/hostels/manageHostels"><li className='flex items-center gap-2 px-2 text-gray-600 text-xl cursor-pointer hover:translate-x-3 transition-all hover:text-purple-700 font-medium'><AiOutlineRightCircle /> Add & Manage Hostels</li></Link>
                 </ul>
             </CardContent>
             </CardHeader>

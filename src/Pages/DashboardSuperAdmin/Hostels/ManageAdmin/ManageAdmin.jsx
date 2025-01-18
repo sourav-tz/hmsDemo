@@ -153,46 +153,55 @@ const ManageAdmin = () => {
 
 
   const deleteConfirmation = () => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       setConfirmModal(true);
       yesRef.current.onclick = () => {
-        resolve(true);
-        setConfirmModal(false);
-      }
+        resolve(true); // Resolve as true when "Yes" is clicked
+        setConfirmModal(false); // Close the modal
+      };
       noRef.current.onclick = () => {
-        resolve(false);
-        setConfirmModal(false);
-      }
-    })
-  }
+        resolve(false); // Resolve as false when "No" is clicked
+        setConfirmModal(false); // Close the modal
+      };
+    });
+  };
+  
+
 
 
   const deleteAdmin = async (e) => {
     console.log(e.data.email);
-    const deleteRes = await deleteConfirmation();
-
+  
+    const deleteRes = await deleteConfirmation(); // Wait for confirmation
+    if (!deleteRes) {
+      // If "No" is clicked, do nothing
+      console.log("Deletion canceled by the user");
+      return;
+    }
+  
+    // Proceed with deletion only if deleteRes is true
     try {
       const res = await axios({
         url: import.meta.env.VITE_BASE_URL + '/SA/deleteAdmin',
         method: 'post',
         data: { email: e.data.email },
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        withCredentials: true
-      })
+        withCredentials: true,
+      });
       console.log(res);
       toast.success("Admin Deleted Successfully", {
-        position: "top-center"
+        position: "top-center",
       });
       getAdmins();
     } catch (error) {
       console.log(error);
       toast.error("Error in Transaction !", {
-        position: "top-center"
+        position: "top-center",
       });
     }
-  }
+  };
 
   const handleEdit = (e) => {
     console.log(e);
@@ -397,8 +406,8 @@ const ManageAdmin = () => {
             <CardDescription>Do you really want to delete this hostel?</CardDescription>
           </CardContent>
           <CardFooter className='flex justify-between'>
-            <Button ref={noRef} onClick={() => { setConfirmModal(false) }} className="bg-green-700">No</Button>
-            <Button ref={yesRef} onClick={() => { }} className="bg-red-700">Yes</Button>
+            <Button ref={noRef} onClick={() => { setConfirmModal(false) }} className="bg-blue-500">Cancel</Button>
+            <Button ref={yesRef} onClick={() => { }} className="bg-red-700">Delete</Button>
           </CardFooter>
         </Card>
       </div>
@@ -416,6 +425,7 @@ const ManageAdmin = () => {
             <form onSubmit={handleSubmit(onSubmitEdit)}>
               <div className='w-full min-h-[150px] md:w-[600px]'>
                 <Input
+                  readOnly
                   defaultValue={editValues.name}
                   {...register("name")}
                   name="name"
@@ -436,6 +446,7 @@ const ManageAdmin = () => {
                   max="11"
                 />
                 <Input
+                  readOnly
                   defaultValue={editValues.mobile}
                   {...register("mobile")}
                   name="mobile"
@@ -445,6 +456,7 @@ const ManageAdmin = () => {
                   placeholder='Mobile No'
                 />
                 <Input
+                  readOnly
                   defaultValue={editValues.email}
                   {...register("email")}
                   name="email"
