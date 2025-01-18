@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
@@ -9,7 +8,36 @@ import { ToastContainer,toast } from "react-toastify"
 import { AgGridReact } from 'ag-grid-react';
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import {Chart, ArcElement, Tooltip, Legend, Title} from 'chart.js';
+import { Doughnut } from "react-chartjs-2";
+
+  
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { useNavigate } from "react-router-dom"
+import { useSelector } from "react-redux"
+import {
+  Select, SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '../../../../components/ui/select';
+
+
+Chart.register(ArcElement, Tooltip, Legend, Title);
+Chart.defaults.plugins.tooltip.backgroundColor = 'rgb(0, 0, 156)';
+Chart.defaults.plugins.legend.position = 'left';
+Chart.defaults.plugins.legend.title.display = true;
+Chart.defaults.plugins.legend.title.font = 'Helvetica Neue';
 export default function MangageRooms() {
 
 const { register, handleSubmit, control } = useForm({
@@ -22,6 +50,7 @@ const { register, handleSubmit, control } = useForm({
   },
   mode: "onBlur",
 })
+
 
 
 const onSubmit = async (data) => {
@@ -68,23 +97,91 @@ const onSubmit = async (data) => {
 }
 
 
-// Table for Rooms
-  const [rowData, setRowData] = useState([
-      { make: "Tesla", model: "Model Y", price: 64950, electric: true },
-      { make: "Ford", model: "F-Series", price: 33850, electric: false },
-      { make: "Toyota", model: "Corolla", price: 29600, electric: false },
-  ]);
 
-  // Column Definitions: Defines the columns to be displayed.
-  const [colDefs, setColDefs] = useState([
-      { field: "make" },
-      { field: "model" },
-      { field: "price" },
-      { field: "electric" }
-  ]);
+// CHART FOR SUPERADMIN
+const [totalRooms,setTotalRooms] = useState(0);
+const [partiallyFilled,setPartiallyFilled] = useState(0);
+const [vacant,setVacant] = useState(0);
+const [fullyFilled,setFullyFilled] = useState(0);
+
+const [hostelData, setHostelData] = useState([]);
+const [hostelNo, setHostelNo] = useState();
 
 
+const getHostelRoomsData = async ()=>{
+    try{
+      
+      console.log("Calling for _>",hostelNo)
+        const res = await axios({
+            method: 'get',
+            url:import.meta.env.VITE_BASE_URL  + '/SA/getAllRoomsData',
+            params: { tokenHostelNo: hostelNo }, // Send data as query parameters
+            withCredentials:true
+          });
+          console.log("HOSTELS DATA _>",res);
+          setTotalRooms(res.data.totalRooms);
+          setPartiallyFilled(res.data.partiallyFilledCount);
+          setVacant(res.data.vacantCount);
+          setFullyFilled(res.data.fullyFilledCount);
+    }catch(err){
+        console.log(err);
+    }
+}
 
+useEffect(()=>{
+    getHostelsTry();
+    if (hostelNo) {
+      getHostelRoomsData();
+    }
+},[hostelNo])
+
+
+// getting hostel names
+const getHostelsTry = async () => {
+  try {
+    const res1 = await axios({
+      url: import.meta.env.VITE_BASE_URL + "/SA/getHostels",
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      withCredentials: true
+    })
+
+    let arr = res1.data.map((elem) => {
+      return `H${elem.hostelNo}  ${elem.hostelName}`;
+    })
+
+    setHostelData(arr);
+
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+
+const handleNoChange = (e) => {
+  setHostelNo(() => {
+    let hostelNoForm = e.split(" ")[0].substring(1);
+    console.log("HOSTEL NO _>", hostelNoForm);
+    return hostelNoForm;
+
+  })
+}
+
+
+Chart.defaults.plugins.legend.title.text = `Out of ${totalRooms}`;
+const data = {
+    labels: ["fully filled", "Vacant", "Partially Filled"],
+    datasets: [
+      {
+        data: [fullyFilled, vacant, partiallyFilled],
+        backgroundColor: ["green", "skyblue", "orange"],
+      },
+    ],
+    borderWidth:2,
+    radius: '40%' 
+  };
 
 
   return (
@@ -120,19 +217,33 @@ const onSubmit = async (data) => {
               </div>
             </form>
           </div>
-          <div className="mb-6 mt-10">
-            <h2 className="text-2xl font-bold">Rooms</h2>
-            <div className="ag-theme-quartz" style={{ height: 400, width: "100%" }}>
-              <AgGridReact
-                      rowData={rowData}
-                      columnDefs={colDefs}
-                      rowHeight={50}
-                      headerHeight={50}
-
-              />
-          </div>
-          </div>
+          
          </div>
+          <div className="container mx-auto mt-10">
+            <Card>
+            <CardHeader>
+                <CardTitle>Rooms Status</CardTitle>
+                <CardDescription>Check the Rooms Status of whole hostel</CardDescription>
+            </CardHeader>
+            <CardContent>
+            <div className="">
+            <Select onValueChange={handleNoChange}>
+              <SelectTrigger className="mt-2 w-full md:w-[270px] ml-2 text-base">
+                <SelectValue placeholder="Select Hostel" />
+              </SelectTrigger>
+              <SelectContent>
+                {hostelData.map((elem, index) => {
+                  return <SelectItem key={index + 1} value={elem}>{elem}</SelectItem>;
+                })}
+              </SelectContent>
+            </Select>
+            <div className="w-1/3 ">
+              <Doughnut type="doughnut" data={data}/>
+            </div>
+            </div>
+            </CardContent>
+            </Card>
+        </div>
       </main>
       <DevTool control={control} />
       <ToastContainer
