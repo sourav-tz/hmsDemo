@@ -220,13 +220,6 @@ const ManageHostels = () => {
         editable: editMode, 
         cellStyle: {textAlign: 'center'}
       },
-      {
-        field: "Edit",
-        headerClass: "font-bold border p-2 font-bold text-md",
-        cellRenderer:({data})=> <Button className='p-3 h-[40px] bg-blue-700 hover:bg-blue-500' onClick={()=>handleEditClick(data)}><FaRegEdit size={10}/></Button>,
-        cellStyle: {textAlign: 'center'}
-      },
-        
 
         // {field: "Edit", headerClass:"font-bold border p-2 font-bold text-md", cellRenderer:()=> <Button className='p-3' onClick={()=> handleHostelEdit}><FaRegEdit /></Button>},
 
@@ -242,14 +235,7 @@ const ManageHostels = () => {
         headerClass:"font-bold border p-2 font-bold text-md", 
         cellRenderer:({data})=> <Button onClick={()=>getAdminsAgainstHostel(data)} className='p-3 h-[40px] bg-orange-700 hover:bg-orange-500'><MdAccountCircle size={10}/></Button>, 
         cellStyle: {textAlign: 'center'}
-      },
-      {
-        field: "Delete", 
-        headerClass:"font-bold border p-2 font-bold text-md", 
-        cellRenderer:({ data }) => <Button className='p-3 h-[40px] bg-red-700 hover:bg-red-500' onClick={() => handleDeleteRow(data.hostelNo)}><ImBin size={10}/></Button>, 
-        cellStyle: {textAlign: 'center'}
-      },
-
+      }
     
    ])
 
@@ -388,8 +374,9 @@ const onSubmitEdit =async (data) => {
 
       <div className='mt-4 mb-2 p-1 w-5/6 h-[380px] rounded-xl shadow-[0_3px_10px_rgb(0,0,0,0.2)] '>
 
-        <div className="ag-theme-quartz" style={{ height: '100%' , width: '100%'}}>
-            <AgGridReact 
+        <div className="ag-theme-quartz " style={{ height: '100%' , width: '100%'}}>
+            <AgGridReact
+              
               rowData={rowData} 
               columnDefs={colDefs}  
               defaultColDef={{ resizable: true }}
