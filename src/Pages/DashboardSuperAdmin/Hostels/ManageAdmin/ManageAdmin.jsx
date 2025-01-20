@@ -109,12 +109,28 @@ const ManageAdmin = () => {
     })
     console.log("ADMIN_> ", admin);
   }
+
+
+  const handleEditHostelNoChange = (e) => {
+    setAdmin((prev) => {
+
+
+      // let hostelNoForm = e[1];
+      let hostelNoForm = e.target.value
+      console.log("HOSTEL NO _>", hostelNoForm);
+      return { ...prev, hostelNo: hostelNoForm };
+
+    })
+    console.log("ADMIN_> ", admin);
+  }
+
+
   // let {email,name,roleType,mobile,password,hostelNo} = admin;
 
   const handleAdmin = (e) => {
     e.preventDefault();
-    // setRowData([...rowData,{name,hostelNo,mobile}])
-    ; (async () => {
+    // setRowData([...rowData,{name,hostelNo,mobile}]); 
+    (async () => {
       try {
         const res = await axios({
           url: import.meta.env.VITE_BASE_URL + '/SA/adminReg',
@@ -430,7 +446,7 @@ const ManageAdmin = () => {
                   {...register("name")}
                   name="name"
                   onChange={handleName}
-                  className='w-full m-2 text-lg p-3 placeholder:text-black bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)]'
+                  className='w-full m-2 text-lg p-3 placeholder:text-black bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)] text-gray-400'
                   type="text"
                   placeholder='Name'
                 />
@@ -438,7 +454,7 @@ const ManageAdmin = () => {
                   defaultValue={editValues.hostelNo}
                   {...register("hostelNo")}
                   name="hostelNo"
-                  onChange={handleNoChange}
+                  onChange={handleEditHostelNoChange}
                   className='w-full m-2 text-lg p-3 placeholder:text-black bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)]'
                   type="number"
                   placeholder='Hostel No'
@@ -451,7 +467,7 @@ const ManageAdmin = () => {
                   {...register("mobile")}
                   name="mobile"
                   onChange={handleMobile}
-                  className='w-full m-2 text-lg p-3 placeholder:text-black bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)]'
+                  className='w-full m-2 text-lg p-3 placeholder:text-black bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)]  text-gray-400'
                   type="tel"
                   placeholder='Mobile No'
                 />
@@ -461,7 +477,7 @@ const ManageAdmin = () => {
                   {...register("email")}
                   name="email"
                   onChange={handleEmail}
-                  className='w-full m-2 text-lg p-3 placeholder:text-black bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)]'
+                  className='w-full m-2 text-lg p-3 placeholder:text-black bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)] text-gray-400'
                   type="text"
                   placeholder='Email'
                 />
