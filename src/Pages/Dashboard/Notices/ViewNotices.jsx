@@ -10,68 +10,35 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { useForm, Controller } from "react-hook-form";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { DevTool } from "@hookform/devtools";
-import ReactPaginate from "react-paginate";
-import "../../../MainStyles/Pagination.css";
-import axios from "axios";
 import { useSelector } from "react-redux";
-// import { set } from 'dayte-fns';
+import axios from "axios";
 
 const ViewNotices = () => {
-  const totalPages = 10;
   const [notices, setNotices] = useState([]);
   const userData = useSelector((state) => state.userStorage.data);
 
   const getNotices = async () => {
-    // to give value to the hostelNo
-    // userData.hostelNo = 10;
     try {
-      // Check if userData are defined
-      if (!userData) {
-        console.log("User data missing.");
-      }
-      console.log("STUDENT DATA_>", userData);
-      if(userData.hostelNo){
+      if (userData?.hostelNo) {
         const res = await axios({
-            method: "get",
-            url: import.meta.env.VITE_BASE_URL + "/student/getNotices",
-            withCredentials: true,
-            // params: { hostelNo: userData.hostelNo } // Send hostelNo as query parameter
-            params: { hostelNo : userData.hostelNo},
-            // because hostelNo field is null in userData
-            // Solution: allot a hostel to the student, to fetch the notices of that hostel
-            // which are relevant to the student.
-          });
-          console.log(res);
-          // Sort the notices by createdAt in descending order
-          const sortedNotices = res.data.result.sort(
-            (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-          );
-          setNotices(sortedNotices);
+          method: "get",
+          url: import.meta.env.VITE_BASE_URL + "/student/getNotices",
+          withCredentials: true,
+          params: { hostelNo: userData.hostelNo },
+        });
+        const sortedNotices = res.data.result.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        );
+        setNotices(sortedNotices);
       }
-     
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 
@@ -79,78 +46,79 @@ const ViewNotices = () => {
     getNotices();
   }, []);
 
-  const handlePageClick = (data) => {
-    console.log(data.selected);
-  };
-
   return (
-    <>
-      <div className="flex flex-col items-center w-full bg-gray-100 min-h-screen mx-auto item-center">
-        <h1 className="text-3xl font-semibold mt-10">Notice</h1>
-        <p className="text-gray-500">View Notices</p>
-        <Card className="w-[900px] mt-10">
-        {!userData.hostelNo ? (<div className="w-full h-full p-10 font-bold text-center text-xl">Student not alloted a Hostel yet.</div>): (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="">Notice ID</TableHead>
-                <TableHead>Title</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead className="text-center">View/Download</TableHead>
-                {/* <TableHead className="text-center">Actions</TableHead> */}
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {/* {notices.length!==0?{notices.map(d=><TableRow>
-                <TableCell className="font-medium">{d.noticeId}</TableCell>
-                <TableCell>{d.title}</TableCell>
-                <TableCell className="text-left">{d.createdAt}</TableCell>
-                <TableCell className="text-right">
-                    <Button className="bg-blue-700 hover:bg-blue-500">View</Button>
-                    <Button className="bg-red-700 hover:bg-red-500">Delete</Button>
-                </TableCell>
-                </TableRow>)}:null} */}
-
-              {notices.length !== 0
-                ? notices.map((d, index) => (
+    <div className="flex flex-col items-center w-full bg-gray-100 min-h-screen px-4 [@media(min-width:100px)]:py-16 sm:px-8 py-10 lg:py-16">
+      <h1 className="text-3xl font-semibold mt-5 text-center">Notice</h1>
+      <p className="text-gray-500 text-center">View Notices</p>
+      <Card className="w-full max-w-4xl mt-10">
+        {!userData?.hostelNo ? (
+          <div className="w-full p-10 text-center text-xl font-bold">
+            Student not allotted a hostel yet.
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="text-left">Notice ID</TableHead>
+                  <TableHead className="text-left">Title</TableHead>
+                  <TableHead className="text-left">Date</TableHead>
+                  <TableHead className="text-center">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {notices.length !== 0 ? (
+                  notices.map((d, index) => (
                     <TableRow key={index}>
-                      {/* <TableCell className="font-medium">{d.public_id}</TableCell> */}
                       <TableCell className="font-medium">{index + 1}</TableCell>
                       <TableCell>{d.title}</TableCell>
-                      {/* <TableCell className="text-left">{d.createdAt}</TableCell> */}
-                      <TableCell className="text-left">
+                      <TableCell>
                         {new Date(d.createdAt).toLocaleDateString("en-US", {
                           year: "numeric",
                           month: "long",
                           day: "numeric",
                         })}
                       </TableCell>
-                      <TableCell className="text-center">
+                      <TableCell className="text-center space-x-2">
                         <Dialog>
                           <DialogTrigger>
-                            <Button className="bg-blue-700 hover:bg-blue-500">
-                              Download
+                            <Button className="bg-blue-700 hover:bg-blue-500 text-white">
+                              View
                             </Button>
                           </DialogTrigger>
                           <DialogContent>
                             <DialogHeader>
                               <DialogTitle>{d.title}</DialogTitle>
                             </DialogHeader>
-                            <a href={d.url} target="_blank">
+                            <a
+                              href={d.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-500 underline"
+                            >
                               Open PDF
                             </a>
                           </DialogContent>
                         </Dialog>
+                        <Button className="bg-red-700 hover:bg-red-500 text-white">
+                          Delete
+                        </Button>
                       </TableCell>
                     </TableRow>
                   ))
-                : null}
-            </TableBody>
-          </Table>
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={4} className="text-center">
+                      No notices available.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
         )}
-        </Card>
-        
-        {/* <ReactPaginate
+      </Card>
+      {/* <ReactPaginate
         breakLabel="..."
         nextLabel="next >"
         onPageChange={handlePageClick}
@@ -167,20 +135,22 @@ const ViewNotices = () => {
             nextLinkClassName="page-link"
             activeLinkClassName="active-page"
       /> */}
-        </div>
-        </>
-    )
-}
+    </div>
+  );
+};
 
 export default ViewNotices;
 
 
-// make table with the following columns:
-// noticeId
-// title
-// description
-// date
-// - View
-// - Delete
-//use shadcn ui components
-//use tailwind css for styling
+
+
+// // make table with the following columns:
+// // noticeId
+// // title
+// // description
+// // date
+// // - View
+// // - Delete
+// //use shadcn ui components
+// //use tailwind css for styling
+
