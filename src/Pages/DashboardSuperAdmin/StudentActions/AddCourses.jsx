@@ -93,6 +93,7 @@ const onSubmitEdit = async (data) => {
 
     
     try{
+      // if we change the data
         const res = await axios({
             method: 'patch',
             url:import.meta.env.VITE_BASE_URL  + '/SA/updateCourse',
@@ -109,32 +110,38 @@ const onSubmitEdit = async (data) => {
                 withCredentials: true
 
             });
-
-            data.isActive === true ? (await axios({
-              method: 'post',
-              url:import.meta.env.VITE_BASE_URL  + '/SA/enableCourse',
-              data: {
-                  "courseId":data.courseId,
-              },
-              headers: {
-                  "Content-Type": "application/json"
-                  },
-                  withCredentials: true
-  
-              })) :(
-                await axios({
-                  method: 'delete',
-                  url: `${import.meta.env.VITE_BASE_URL}/SA/removeCourse`,
-                  params: {
-                    courseId: data.courseId, 
-                    softdelete: false          
-                  },
-                  headers: {
+            console.log("Update result from the dataBase")
+            console.log(res);
+            if(data.isActive === true){
+              const enableCourse = await axios({
+                method: 'post',
+                url:import.meta.env.VITE_BASE_URL  + '/SA/enableCourse',
+                data: {
+                    "courseId":data.courseId,
+                },
+                headers: {
                     "Content-Type": "application/json"
-                  },
-                  withCredentials: true
-                })
-              )
+                    },
+                    withCredentials: true
+                });
+                console.log("course enabled")
+            }
+            // to disable the course
+            else{
+              const disabledCourse =  await axios({
+                method: 'delete',
+                url: `${import.meta.env.VITE_BASE_URL}/SA/removeCourse`,
+                params: {
+                  courseId: data.courseId, 
+                  softdelete: false          
+                },
+                headers: {
+                  "Content-Type": "application/json"
+                },
+                withCredentials: true
+              })
+              console.log("couse disabled")
+            }
             console.log(res);
             initialLoad();
             toast.success("Course updated successfully");
@@ -229,9 +236,6 @@ const deleteCourse = async (courseId) => {
               <TableHead>Department</TableHead>
               <TableHead>Specialization</TableHead>
               <TableHead>Duration</TableHead>
-              <TableHead>Last Updated By</TableHead>
-              <TableHead>Created At</TableHead>
-              <TableHead>Last Updated At</TableHead>
               <TableHead>Active</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
@@ -245,9 +249,6 @@ const deleteCourse = async (courseId) => {
                 <TableCell>{course.department}</TableCell>
                 <TableCell>{course.specialization}</TableCell>
                 <TableCell>{course.courseDuration}</TableCell>
-                <TableCell>{course.lastUpdatedBy}</TableCell>
-                <TableCell>{course.createdAt}</TableCell>
-                <TableCell>{course.updatedAt}</TableCell>
                 <TableCell>
                   <Badge variant={course.active ? "success" : "danger"}>
                     {course.active ? "Active" : "Inactive"}

@@ -24,6 +24,7 @@ const { downloadFile } = require('../../controllers/hostelAuthority/studentModul
 const superAdminLoginToken = require('../../controllers/Login/superAdminLoginToken.js');
 const LogOut = require('../../controllers/LoggingOut/LogOut.js');
 
+const getAllRoomsData = require('../../controllers/superAdmin/ManageRooms/getAllRoomsData.js')
 
 var storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -73,6 +74,7 @@ router.get('/downloadfile',auth, downloadFile);
 
 // Manage rooms                   admin will do update(occupancy,roomtype)
 router.get('/getrooms',auth,getrooms);
+router.get('/getAllRoomsData',auth,getAllRoomsData);
 router.post('/addroom',auth,addroom);
 router.patch('/updateroom',auth,updateroom);
 router.delete('/deleteroom',auth,deleteroom);
