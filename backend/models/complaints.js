@@ -1,5 +1,3 @@
-const { comment } = require("postcss");
-
 module.exports = (sequelize, dataTypes) => {
 
     const complaints = sequelize.define('complaints', {
