@@ -22,7 +22,7 @@ Developers may be contacted to take credentials to try the software.
 2. Dev Pratap Singh
 
 **brief:**  
- NIT Hostel Management System is a groundbreaking application. It will be solving the heart of the problem encountered by hostel authorities & students living in college hostels. The application is expected to keep all the information about students handy for the authorities giving a real-time picture while reducing the effort of Supervisors managing the hostels. This will also add transparency in the processes of the Hostel Sector.
+ NIT Hostel Management System is a groundbreaking application. It will be solving the heart of the problem encountered by hostel authorities & students living in college hostels. The application is expected to keep all the information about students handy for the authorities giving a real-time picture while reducing the effort of Supervisors managing the hostels. This will also add transparency in the processes of the Hostel sector.
 
 # How To Raise an Issue?
 
