@@ -33,10 +33,10 @@ const ViewNotice = () => {
                 withCredentials: true,
                 params: { hostelNo: userData.dataValues.hostelNo }, // Send hostelNo as query parameter       
             })
-            console.log("SENT HOSTEL NO_>",userData.dataValues.hostelNo);
-            console.log(res);
+            // console.log("SENT HOSTEL NO_>",userData.dataValues.hostelNo);
+            // console.log(res);
             // printing data
-            console.log("DATA_>",res.data);
+            // console.log("DATA_>",res.data);
             setNotices(res.data.result);   
         } catch (err) {
             console.log(err);
@@ -49,19 +49,19 @@ const ViewNotice = () => {
     }, [])
 
     const handlePageClick = (data) => { 
-        console.log(data.selected);
+        // console.log(data.selected);
     }
 
     const deleteNotice = async (public_id) => { 
         try {
-            console.log("TRYING DELETE_>",public_id)
+            // console.log("TRYING DELETE_>",public_id)
             const res = await axios({
                 method: 'delete',
                 url: import.meta.env.VITE_BASE_URL + '/HA/deleteNotices',
                 data: {public_id},
                 withCredentials: true
             })
-            console.log(res);
+            // console.log(res);
             getNotices();
         } catch (err) {
             console.log(err);

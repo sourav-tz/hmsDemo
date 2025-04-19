@@ -54,7 +54,7 @@ const { register, handleSubmit, control } = useForm({
 
 
 const onSubmit = async (data) => {
-  console.log(data);
+  // console.log(data);
   try {
     const response = await axios({
       url: import.meta.env.VITE_BASE_URL + "/SA/addroom",
@@ -69,7 +69,7 @@ const onSubmit = async (data) => {
       withCredentials: true,
     })
 
-    console.log(response.data)
+    // console.log(response.data)
     toast.success('Room Added Succesfully', {
       position: "top-right",
       autoClose: 5000,
@@ -82,7 +82,7 @@ const onSubmit = async (data) => {
       });
 
   } catch (error) {
-    console.error(error.response.data.message)
+    // console.error(error.response.data.message)
     toast.error(error.response.data.message, {
       position: "top-right",
       autoClose: 5000,
@@ -111,14 +111,14 @@ const [hostelNo, setHostelNo] = useState();
 const getHostelRoomsData = async ()=>{
     try{
       
-      console.log("Calling for _>",hostelNo)
+      // console.log("Calling for _>",hostelNo)
         const res = await axios({
             method: 'get',
             url:import.meta.env.VITE_BASE_URL  + '/SA/getAllRoomsData',
             params: { tokenHostelNo: hostelNo }, // Send data as query parameters
             withCredentials:true
           });
-          console.log("HOSTELS DATA _>",res);
+          // console.log("HOSTELS DATA _>",res);
           setTotalRooms(res.data.totalRooms);
           setPartiallyFilled(res.data.partiallyFilledCount);
           setVacant(res.data.vacantCount);
@@ -163,14 +163,15 @@ const getHostelsTry = async () => {
 const handleNoChange = (e) => {
   setHostelNo(() => {
     let hostelNoForm = e.split(" ")[0].substring(1);
-    console.log("HOSTEL NO _>", hostelNoForm);
+    // console.log("HOSTEL NO _>", hostelNoForm);
     return hostelNoForm;
 
   })
 }
 
 
-Chart.defaults.plugins.legend.title.text = `Out of ${totalRooms}`;
+Chart.defaults.plugins.legend.title.text = totalRooms ? `Out of: ${totalRooms}` : "No rooms available";
+
 const data = {
     labels: ["fully filled", "Vacant", "Partially Filled"],
     datasets: [

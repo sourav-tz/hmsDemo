@@ -1,7 +1,7 @@
 # National Institute of Technology Hostel Management System
 
 The deployment for testing purpose for the supervisors are here at
-https://www.nitkkrhostels.live/
+https://www.nitkkrhostel.me/
 Developers may be contacted to take credentials to try the software.
 
 ## Developer Team

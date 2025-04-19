@@ -27,12 +27,12 @@ const UploadNotice = ()=>{
     const userData = useSelector(state=>state.userStorage.data);
 
     useEffect(()=>{
-      console.log(userData);
+      // console.log(userData);
     },[])
 
 
     const onSubmit = (data)=>{
-      console.log(data.notice[0])
+      // console.log(data.notice[0])
 
       try{
         const formData = new FormData();

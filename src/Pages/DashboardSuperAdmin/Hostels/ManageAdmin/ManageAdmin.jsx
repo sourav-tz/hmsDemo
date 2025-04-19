@@ -70,7 +70,7 @@ const ManageAdmin = () => {
         withCredentials: true
       })
 
-      console.log(res);
+      // console.log(res);
       setRowData(res.data);
 
     } catch (error) {
@@ -103,11 +103,11 @@ const ManageAdmin = () => {
 
       // let hostelNoForm = e[1];
       let hostelNoForm = e.split(" ")[0].substring(1);
-      console.log("HOSTEL NO _>", hostelNoForm);
+      // console.log("HOSTEL NO _>", hostelNoForm);
       return { ...prev, hostelNo: hostelNoForm };
 
     })
-    console.log("ADMIN_> ", admin);
+    // console.log("ADMIN_> ", admin);
   }
 
 
@@ -117,11 +117,11 @@ const ManageAdmin = () => {
 
       // let hostelNoForm = e[1];
       let hostelNoForm = e.target.value
-      console.log("HOSTEL NO _>", hostelNoForm);
+      // console.log("HOSTEL NO _>", hostelNoForm);
       return { ...prev, hostelNo: hostelNoForm };
 
     })
-    console.log("ADMIN_> ", admin);
+    // console.log("ADMIN_> ", admin);
   }
 
 
@@ -141,7 +141,7 @@ const ManageAdmin = () => {
           },
           withCredentials: true
         })
-        console.log(res);
+        // console.log(res);
         toast.success("Hostel Admin Created Email Sent !", {
           position: "top-center"
         });
@@ -155,7 +155,7 @@ const ManageAdmin = () => {
       }
     })()
 
-    console.log(admin);
+    // console.log(admin);
     setPass("");
 
   }
@@ -186,12 +186,12 @@ const ManageAdmin = () => {
 
 
   const deleteAdmin = async (e) => {
-    console.log(e.data.email);
+    // console.log(e.data.email);
   
     const deleteRes = await deleteConfirmation(); // Wait for confirmation
     if (!deleteRes) {
       // If "No" is clicked, do nothing
-      console.log("Deletion canceled by the user");
+      // console.log("Deletion canceled by the user");
       return;
     }
   
@@ -206,7 +206,7 @@ const ManageAdmin = () => {
         },
         withCredentials: true,
       });
-      console.log(res);
+      // console.log(res);
       toast.success("Admin Deleted Successfully", {
         position: "top-center",
       });
@@ -220,7 +220,7 @@ const ManageAdmin = () => {
   };
 
   const handleEdit = (e) => {
-    console.log(e);
+    // console.log(e);
     setEditMode(true);
     setEditValues(e);
 
@@ -259,7 +259,7 @@ const ManageAdmin = () => {
   }
 
   const onSubmitEdit = async (data) => {
-    console.log(data);
+    // console.log(data);
     setEditMode(false);
     if (data.hostelNo !== '') {
       try {
@@ -272,7 +272,7 @@ const ManageAdmin = () => {
           },
           withCredentials: true
         })
-        console.log(res);
+        // console.log(res);
         toast.success("Admin Edited Successfully", {
           position: "top-center"
         });

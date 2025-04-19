@@ -39,7 +39,7 @@ const Securitysettings = () => {
         },
         withCredentials: true
       })
-      console.log(res);
+      // console.log(res);
       setVerifyMessage(res.data.message);
       if(res.data.message === 'Password Verified'){
         setIsVerified(true);
@@ -69,7 +69,7 @@ const onSubmit = async (data) => {
           withCredentials: true
       }
       )
-      console.log(res);
+      // console.log(res);
       if(res.data.message === 'Password Changed Successfully'){
         toast.success('Password Updated',{
           position: 'top-right'

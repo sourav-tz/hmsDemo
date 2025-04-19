@@ -70,7 +70,7 @@ const ManageHostels = () => {
         withCredentials:true
       }) 
       setRowData(res.data);
-      console.log(res);
+      // console.log(res);
     
     } catch(error) {
       console.log(error);
@@ -171,16 +171,16 @@ const ManageHostels = () => {
       const handleEditClick = (e) => {
         setEditMode(true);
         setHostelValues(e);
-        console.log(e);
+        // console.log(e);
       };
     
       const handleCellValueChanged = (event) => {
-        console.log("Cell value changed: ", event.data);
+        // console.log("Cell value changed: ", event.data);
       };
 
 
       const getAdminsAgainstHostel = async (e) => {
-        console.log(e.hostelNo);
+        // console.log(e.hostelNo);
         setShowAdmins(true);
         try{
           const res = await axios({
@@ -192,7 +192,7 @@ const ManageHostels = () => {
             },
             withCredentials:true
           })
-          console.log(res);
+          // console.log(res);
           setAdminsData(res.data);
 
         }catch(error){
@@ -282,8 +282,8 @@ const setEditHostelNo=(e)=>{
 
 const onSubmitEdit =async (data) => {
   setValue("type",hostelValues.type);
-  console.log(data);
-  console.log('clicked')
+  // console.log(data);
+  // console.log('clicked')
   setErrorMessage('');
 
   try{
@@ -296,7 +296,7 @@ const onSubmitEdit =async (data) => {
       },
       withCredentials:true
     })
-    console.log(res);
+    // console.log(res);
     toast.success("Hostel Updated Successfully",{
       position:'top-right'
     })
@@ -306,7 +306,7 @@ const onSubmitEdit =async (data) => {
     
       return prevData.map(row => {
         if (row.hostelNo == data.bodyHostelNo) {
-          console.log(row.hostelNo)
+          // console.log(row.hostelNo)
           
           return { ...row, ...data }; // Update the row with new data
         } else {

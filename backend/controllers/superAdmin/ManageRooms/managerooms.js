@@ -18,7 +18,7 @@ const addroom=async (req,res)=>{
         if(alreadyExists){
             return res.status(400).json({message:"this room already exists"});
         }
-        const newRoom= await db.rooms.create({roomNo,block,floorNo,currentOccupancy:"0",maxOccupancy,hostelNo})
+        const newRoom= await db.rooms.create({roomNo,block,floorNo,currentOccupancy:"vacant",maxOccupancy,hostelNo})
       return res.status(200).json({messgae:"Rooms Added Successfully",data:newRoom});
       } catch (error) {
         console.error(error);

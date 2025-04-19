@@ -51,7 +51,6 @@ const StudentSignUp = () => {
         },
         withCredentials: true
       })
-      console.log(res);
       if(res.data.success === 'Student Register into db Successfully'){
         setStep(2);
       }
