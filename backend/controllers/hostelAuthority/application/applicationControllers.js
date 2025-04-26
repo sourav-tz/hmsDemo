@@ -4,14 +4,19 @@ const { Application } = require('../../../models');
 const directlyApprovableTags = [];
 
 // Get all applications forwarded to the admin's hostel
+// Get all applications forwarded to the admin's hostel
+
 exports.getAllApplications = async (req, res) => {
   try {
     // const hostelNo = req.admin.hostelNo;
     const hostelNo = 5;
+
+    const { status } = req.query; // frontend can send status like ?status=resolved
+
     const applications = await Application.findAll({
       where: {
         forwardedTo: hostelNo,
-        status: 'pendingAtAdmin'
+        status: status || 'pendingAtAdmin' // default to 'pendingAtAdmin' if no status provided
       }
     });
 
@@ -24,6 +29,7 @@ exports.getAllApplications = async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch applications' });
   }
 };
+
 
 // Approve an application (only if tag is directly approvable)
 exports.approveApplication = async (req, res) => {

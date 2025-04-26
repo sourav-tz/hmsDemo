@@ -6,9 +6,11 @@ const mailSender = require('../../../utils/mailSender');
 // Get all applications forwarded to super admin
 exports.getAllForwardedApplications = async (req, res) => {
   try {
+    const { status } = req.query; // frontend can send ?status=resolved etc.
+
     const applications = await Application.findAll({
       where: {
-        status: 'pendingAtSuperAdmin'
+        status: status || 'pendingAtSuperAdmin' // default to 'pendingAtSuperAdmin' if not provided
       }
     });
 
@@ -21,6 +23,7 @@ exports.getAllForwardedApplications = async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch applications' });
   }
 };
+
 
 exports.approveBySuperAdmin = async (req, res) => {
   try {
