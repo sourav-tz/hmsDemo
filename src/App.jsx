@@ -32,6 +32,8 @@ import StudentProfileSettings from './Pages/Dashboard/Settings/StudentProfileSet
 import Register from './Pages/Dashboard/Complaints/Register.jsx';
 import ComplaintStatus from './Pages/Dashboard/Complaints/ComplaintStatus.jsx';
 import Complaints from './Pages/DashboardAdmin/Complaints/Complaints.jsx';
+import Application from './Pages/DashboardAdmin/Application/application.jsx';
+
 import SuperAdminOtp from './Pages/SuperAdminLogin/SuperAdminOtp';
 import UploadNotice from './Pages/DashboardAdmin/Notice/UploadNotice.jsx';
 import NewMenu from './Pages/Dashboard/Mess/NewMenu.jsx';
@@ -258,6 +260,7 @@ const handleStudentLogout = ()=>{
             <Route path='/adminDashboard/studentInfo/uploadInfo' element={<CloseRoute><UploadInfo /></CloseRoute>} />
             <Route path='/adminDashboard/roomInfo/allotRooms' element={<CloseRoute><AllotRooms /></CloseRoute>} />
             <Route path='/adminDashboard/complaints/complaints' element={<CloseRoute><Complaints /></CloseRoute>} />
+            <Route path='/adminDashboard/application/application' element={<CloseRoute><Application /></CloseRoute>} />
             <Route path='/adminDashboard/notice/uploadNotice' element={<CloseRoute><UploadNotice /></CloseRoute>} />
             <Route path='/adminDashboard/notice/viewNotice' element={<CloseRoute><ViewNotice /></CloseRoute>} />
             <Route path='/adminDashboard/settings/security' element={<CloseRoute><AdminSecuritysettings /></CloseRoute>} />

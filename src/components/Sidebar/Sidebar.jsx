@@ -40,6 +40,7 @@ export default function Sidebar(){
     const [subSettings, setSubSettings] = useState(false);
     const [subNotice, setSubNotice] = useState(false);
     const [subComplaint,setSubComplaint] = useState(false);
+    const [subApplication,setsubApplication] = useState(false);
     const [subGuest,setSubGuest] = useState(false);
 
     const openMenu = ()=>{
@@ -59,6 +60,7 @@ export default function Sidebar(){
             setSubSettings(false);
             setSubNotice(false);
             setSubComplaint(false);
+            setsubApplication(false);
             setSubGuest(false);
         }else if(value ==='studentInfo'){
             setSubHome(false);
@@ -67,6 +69,7 @@ export default function Sidebar(){
             setSubSettings(false);
             setSubNotice(false);
             setSubComplaint(false);
+            setsubApplication(false);
             setSubGuest(false);
         }else if(value === 'roomInfo'){
             setSubHome(false);
@@ -75,6 +78,7 @@ export default function Sidebar(){
             setSubSettings(false);
             setSubNotice(false);
             setSubComplaint(false);
+            setsubApplication(false);
             setSubGuest(false);
         }else if(value === 'settings'){
             setSubHome(false);
@@ -83,6 +87,7 @@ export default function Sidebar(){
             setSubSettings(prev=>!prev);
             setSubNotice(false);
             setSubComplaint(false);
+            setsubApplication(false);
             setSubGuest(false);
         }else if(value === 'notice'){
             setSubHome(false);
@@ -91,6 +96,7 @@ export default function Sidebar(){
             setSubSettings(false);
             setSubNotice(prev=>!prev);
             setSubComplaint(false);
+            setsubApplication(false);
             setSubGuest(false);
         }else if(value === 'complaint'){
             setSubHome(false);
@@ -99,7 +105,19 @@ export default function Sidebar(){
             setSubSettings(false);
             setSubNotice(false);
             setSubComplaint(prev => !prev);
+            setsubApplication(false);
             setSubGuest(false);
+        }
+        else if(value === 'application'){
+            setSubHome(false);
+            setSubStudent(false);
+            setSubRoom(false);
+            setSubSettings(false);
+            setSubNotice(false);
+            setSubComplaint(false);
+            setsubApplication(prev => !prev);
+            setSubGuest(false);
+
         }
         else if(value == 'guest'){
             setSubHome(false);
@@ -108,6 +126,7 @@ export default function Sidebar(){
             setSubSettings(false);
             setSubNotice(false);
             setSubComplaint(false);
+            setsubApplication(false);
             setSubGuest(prev => !prev);
         }
 
@@ -203,6 +222,13 @@ export default function Sidebar(){
                         {/* <li onClick={()=>{Navigator('/superAdminDashboard/studentActions/addCourses')}} className={styles.subOptions+' ' + (activeSubOption==='addCourses'?styles.activeSubOption:null)}>Add Courses</li> */}
                         {/* </ul> */}
                     
+            </div>
+            {/* application */}
+            <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
+                        <p onClick={()=>{changeSubMenu('application')}} className={(activeOption==='application'?styles.activeItem:null)+ ' flex items-center gap-2'}><FaNoteSticky /> <span className={(state?null:styles.hidden)+' mt-1'}>Application</span></p>
+                        <ul className={state&&subApplication?null:styles.hidden}>
+                        <li onClick={()=>{navigator('/adminDashboard/application/application')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='application'?styles.activeSubOption:null)}>New Application</li>
+                        </ul>
             </div>
 
             {/* Admin Guest Panel */}
