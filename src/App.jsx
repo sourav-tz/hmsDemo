@@ -31,10 +31,10 @@ import AddCourses from './Pages/DashboardSuperAdmin/StudentActions/AddCourses.js
 import StudentProfileSettings from './Pages/Dashboard/Settings/StudentProfileSettings.jsx';
 import Register from './Pages/Dashboard/Complaints/Register.jsx';
 import ComplaintStatus from './Pages/Dashboard/Complaints/ComplaintStatus.jsx';
-import ApplicationStatus from './Pages/Dashboard/Application/Application.jsx';
-// import Application from './Pages/Dashboard/Application/ApplicationStatus.jsx';
+import ApplicationStudent from './Pages/Dashboard/Application/Application.jsx';
+import ApplicationStatusStudent from './Pages/Dashboard/Application/ApplicationStatus.jsx';
 import Complaints from './Pages/DashboardAdmin/Complaints/Complaints.jsx';
-import Application from './Pages/DashboardAdmin/Application/application.jsx';
+import ApplicationAdmin from './Pages/DashboardAdmin/Application/application.jsx';
 
 import SuperAdminOtp from './Pages/SuperAdminLogin/SuperAdminOtp';
 import UploadNotice from './Pages/DashboardAdmin/Notice/UploadNotice.jsx';
@@ -245,8 +245,8 @@ const handleStudentLogout = ()=>{
             <Route path='/studentDashboard/settings/profile' element={<CloseRoute><StudentProfileSettings /></CloseRoute>} />
             <Route path='/studentDashboard/complaints/register' element={<CloseRoute><Register /></CloseRoute>} />
             <Route path='/studentDashboard/complaints/status' element={<CloseRoute><ComplaintStatus /></CloseRoute>} />
-            <Route path='/studentDashboard/request/application' element={<CloseRoute><Application /></CloseRoute>} />
-            <Route path='/studentDashboard/request/applicationstatus' element={<CloseRoute><ApplicationStatus /></CloseRoute>} />
+            <Route path='/studentDashboard/student/application' element={<CloseRoute><ApplicationStudent /></CloseRoute>} />
+            <Route path='/studentDashboard/student/applicationstatus' element={<CloseRoute><ApplicationStatusStudent /></CloseRoute>} />
             <Route path='/studentDashboard/notices/view' element={<CloseRoute><ViewNotices /></CloseRoute>} />
             <Route path='/studentDashboard/mess/menu' element={<CloseRoute><NewMenu /></CloseRoute>} />
             
@@ -265,7 +265,7 @@ const handleStudentLogout = ()=>{
             <Route path='/adminDashboard/studentInfo/uploadInfo' element={<CloseRoute><UploadInfo /></CloseRoute>} />
             <Route path='/adminDashboard/roomInfo/allotRooms' element={<CloseRoute><AllotRooms /></CloseRoute>} />
             <Route path='/adminDashboard/complaints/complaints' element={<CloseRoute><Complaints /></CloseRoute>} />
-            <Route path='/adminDashboard/application/application' element={<CloseRoute><Application /></CloseRoute>} />
+            <Route path='/adminDashboard/admin/application' element={<CloseRoute><ApplicationAdmin /></CloseRoute>} />
             <Route path='/adminDashboard/notice/uploadNotice' element={<CloseRoute><UploadNotice /></CloseRoute>} />
             <Route path='/adminDashboard/notice/viewNotice' element={<CloseRoute><ViewNotice /></CloseRoute>} />
             <Route path='/adminDashboard/settings/security' element={<CloseRoute><AdminSecuritysettings /></CloseRoute>} />

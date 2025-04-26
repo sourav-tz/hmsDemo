@@ -183,12 +183,12 @@ const handleLogout = ()=>{}
                         <li onClick={()=>{Navigator('/studentDashboard/complaints/status')}} className={styles.subOptions+' ' + (activeSubOption==='status'?styles.activeSubOption:null)}>Status</li>
                         </ul>
             </div>
-            {/* request  */}
+            {/* Application  */}
             <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
-                        <p onClick={()=>{changeSubMenu('request')}} className={(activeOption==='request'?styles.activeItem:null)+ ' flex items-center gap-2'}><SlSupport /> <span className={(state?null:styles.hidden)+' mt-1'}>Request</span></p>
+                        <p onClick={()=>{changeSubMenu('request')}} className={(activeOption==='request'?styles.activeItem:null)+ ' flex items-center gap-2'}><SlSupport /> <span className={(state?null:styles.hidden)+' mt-1'}>Application</span></p>
                         <ul className={state&&subRequest?null:styles.hidden}>
-                        <li onClick={()=>{Navigator('/studentDashboard/request/applicationstatus')}} className={styles.subOptions+' ' + (activeSubOption==='applicationstatus'?styles.activeSubOption:null)}>New Application</li>
-                        <li onClick={()=>{Navigator('/studentDashboard/request/application')}} className={styles.subOptions+' ' + (activeSubOption==='application'?styles.activeSubOption:null)}>Status of Application</li>
+                        <li onClick={()=>{Navigator('/studentDashboard/student/application')}} className={styles.subOptions+' ' + (activeSubOption==='application'?styles.activeSubOption:null)}>New Application</li>
+                        <li onClick={()=>{Navigator('/studentDashboard/student/applicationstatus')}} className={styles.subOptions+' ' + (activeSubOption==='applicationstatus'?styles.activeSubOption:null)}>Status of Application</li>
                         </ul>
             </div>
             {/* Student Notices */}

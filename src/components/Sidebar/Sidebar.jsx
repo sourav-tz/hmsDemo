@@ -227,7 +227,7 @@ export default function Sidebar(){
             <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
                         <p onClick={()=>{changeSubMenu('application')}} className={(activeOption==='application'?styles.activeItem:null)+ ' flex items-center gap-2'}><FaNoteSticky /> <span className={(state?null:styles.hidden)+' mt-1'}>Application</span></p>
                         <ul className={state&&subApplication?null:styles.hidden}>
-                        <li onClick={()=>{navigator('/adminDashboard/application/application')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='application'?styles.activeSubOption:null)}>New Application</li>
+                        <li onClick={()=>{navigator('/adminDashboard/admin/application')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='application'?styles.activeSubOption:null)}>New Application</li>
                         </ul>
             </div>
 
