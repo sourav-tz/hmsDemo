@@ -7,14 +7,15 @@ import { DevTool } from '@hookform/devtools';
 import Papa from 'papaparse';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import axios from 'axios';
 
 const Application = () => {
-  const { register, handleSubmit, formState: { errors, isValid }, control, setValue } = useForm({
+  const { register, handleSubmit,reset, formState: { errors, isValid }, control, setValue } = useForm({
     mode: 'onChange',
     defaultValues: {
       tag: '',
       subject: '',
-      description: '', // Use this field for both description and hostel change reason
+      description: '',
       otherTitle: '',
       preferredHostel: ''
     },
@@ -25,18 +26,16 @@ const Application = () => {
   const [csvData, setCsvData] = useState([]);
   const [showCsvUpload, setShowCsvUpload] = useState(false);
 
-  const cleanInput = (value) => value.trim().replace(/\s+/g, ' ');
-
   const handleTitle = (selectedValue) => {
     setShowOtherTitle(selectedValue === 'other');
-    setChangeHostel(selectedValue === 'hostel-change-bulk');  // Updated condition
-    setShowCsvUpload(selectedValue === 'hostel-change-bulk');  // Show CSV upload only for 'hostel-change-bulk'
+    setChangeHostel(selectedValue === 'hostel-change-bulk');
+    setShowCsvUpload(selectedValue === 'hostel-change-bulk');
 
     if (selectedValue !== 'hostel-change-bulk') {
-      setValue('preferredHostel', '');  // Reset hostel fields when not 'hostel-change-bulk'
+      setValue('preferredHostel', '');
     }
     if (selectedValue !== 'other') {
-      setValue('otherTitle', '');  // Ensure otherTitle is removed if not 'other'
+      setValue('otherTitle', '');
     }
   };
 
@@ -63,26 +62,35 @@ const Application = () => {
     }
   };
 
-  const onSubmit = (data) => {
-    // Bind all the form data in one object
+  const onSubmit = async (data) => {
     const finalData = {
       subject: data.subject,
-      description: data.description || "",  // Using description for hostel change reason
+      description: data.description || "",
       tag: data.tag,
       extraData: {
         hostelNo: data.preferredHostel || "",
         rollNos: csvData,
-      }
+      },
     };
 
-    // Send finalData to your backend here, e.g., via fetch or axios
-    // fetch('/api/submit', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(finalData)
-    // }).then(response => response.json()).then(data => console.log(data));
-
-    toast.success("Application submitted successfully.");
+    try {
+      const response = await axios({
+        method: "post",
+        url: import.meta.env.VITE_BASE_URL + "/HA/applications/bulk-hostel-change",
+        data: finalData,
+        withCredentials: true,
+      });
+      console.log(response)
+      if (response.status === 201) {
+        toast.success("Application submitted successfully!");
+        reset();
+      } else {
+        toast.error(response.data.message || "Failed to submit application.");
+      }
+    } catch (err) {
+      console.error("Error submitting application:", err);
+      toast.error(err.response?.data?.message || "Failed to submit application.");
+    }
   };
 
   return (
@@ -95,6 +103,7 @@ const Application = () => {
       <div className="w-full max-w-lg px-4 sm:px-6">
         <form onSubmit={handleSubmit(onSubmit)} className="bg-white shadow rounded-lg p-6 sm:p-8">
           <div className="flex flex-col gap-6">
+            
             {/* Subject */}
             <div className="flex flex-col gap-2">
               <label className="text-sm font-semibold">
@@ -124,9 +133,10 @@ const Application = () => {
                       handleTitle(e.target.value);
                     }}
                     value={field.value}
+                    className="border p-2 rounded"
                   >
                     <option value="">Select a Tag</option>
-                    <option value="hostel-change-bulk">Hostel Change in Bulk</option> {/* Updated value */}
+                    <option value="hostel-change-bulk">Hostel Change in Bulk</option>
                   </select>
                 )}
               />
@@ -145,7 +155,7 @@ const Application = () => {
                     control={control}
                     rules={{ required: 'Please select a hostel' }}
                     render={({ field }) => (
-                      <select {...field}>
+                      <select {...field} className="border p-2 rounded">
                         <option value="">Select a Hostel</option>
                         <option value="1">H1 Abhimanyu Bhawan</option>
                         <option value="2">H2 Bhishma Bhawan</option>
@@ -170,7 +180,7 @@ const Application = () => {
               </>
             )}
 
-            {/* Description / Hostel Change Reason (Conditionally Rendered) */}
+            {/* Description / Reason */}
             {changeHostel && (
               <div className="flex flex-col gap-2">
                 <label className="text-sm font-semibold">
@@ -192,13 +202,13 @@ const Application = () => {
                   Upload CSV <span className="text-red-500">*</span>
                 </label>
                 <Input type="file" accept=".csv" onChange={handleFileUpload} />
-                <p className="text-sm text-red-500 mt-2">
-                  Note: The CSV file must only contain roll numbers in the first column (no other data or headers). 
-                  Please ensure the file format is .csv.
+                <p className="text-sm text-gray-500 mt-2">
+                  Note: The CSV file must only contain roll numbers in the first column (no other data or headers).
                 </p>
               </div>
             )}
 
+            {/* Submit Button */}
             <Button
               type="submit"
               className="bg-blue-700 hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded"
@@ -211,10 +221,21 @@ const Application = () => {
         </form>
       </div>
 
+      {/* DevTool for Debugging */}
       <DevTool control={control} placement="top-right" />
-      
-      {/* Toast Container */}
-      <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={true} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
+
+      {/* Toast Notifications */}
+      <ToastContainer 
+        position="top-right" 
+        autoClose={5000} 
+        hideProgressBar={false} 
+        newestOnTop={true} 
+        closeOnClick 
+        rtl={false} 
+        pauseOnFocusLoss 
+        draggable 
+        pauseOnHover 
+      />
     </div>
   );
 };

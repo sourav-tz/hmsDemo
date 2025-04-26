@@ -25,6 +25,18 @@ const {getComplaintsAdmin,rejectComplaint,resoleComplaint}=require('../../contro
 const  updatePassword  = require('../../controllers/hostelAuthority/user/user.controller.js');
 const {addnotice,getNotices,deleteNotices} =require("../../controllers/hostelAuthority/notices/notices.js")
 const singleUpload =  require("../../middlewares/multer.js");
+
+const {
+    getAllApplications,
+    getApplicationById,
+    approveApplication,
+    rejectApplication,
+    forwardApplication,
+    editApplication,
+    raiseBulkHostelChangeByAdmin
+} = require('../../controllers/hostelAuthority/application/applicationControllers.js');
+
+
 const getRoomTimeline = require('../../controllers/hostelAuthority/RoomModule/getRoomTimeline.js');
 
 var storage = multer.diskStorage({
@@ -88,5 +100,17 @@ router.get('/getComplaints',auth,getComplaintsAdmin);
 // can include rejected by /getComplaints?rejcomp=true
 router.post('/rejectComplaint',auth,rejectComplaint);
 router.post('/resolveComplaint',auth,resoleComplaint);
+
+
+//application api
+
+router.get('/applications', auth, getAllApplications);
+router.get('/applications/:id', auth, getApplicationById);
+router.patch('/applications/approve/:id', auth, approveApplication);
+router.patch('/applications/reject/:id', auth, rejectApplication);
+router.patch('/applications/forward/:id', auth, forwardApplication); 
+router.patch('/applications/edit/:applicationId', auth, editApplication);
+router.post("/applications/bulk-hostel-change", auth, raiseBulkHostelChangeByAdmin);
+
 
 module.exports = router;

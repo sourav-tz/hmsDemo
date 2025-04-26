@@ -26,6 +26,12 @@ const LogOut = require('../../controllers/LoggingOut/LogOut.js');
 
 const getAllRoomsData = require('../../controllers/superAdmin/ManageRooms/getAllRoomsData.js')
 
+const {
+    getAllForwardedApplications,
+    approveBySuperAdmin,
+    rejectBySuperAdmin
+  } = require('../../controllers/superAdmin/Manage_Applications/application.controllers.js')
+
 var storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, path.join(__dirname, '../../public/uploads'))
@@ -88,6 +94,11 @@ router.post('/changeHostel',auth,changeHostel);
 router.post('/deleteAdmin',auth,deleteAdmin);
 router.post('/getAdminsAgainstHostel',auth,getAdminsAgainstHostel);
 
+
+// manage applications
+router.get('/applications', auth, getAllForwardedApplications);
+router.patch('/applications/approve/:id', auth, approveBySuperAdmin);
+router.patch('/applications/reject/:id', auth, rejectBySuperAdmin);
 
 
 module.exports = router;

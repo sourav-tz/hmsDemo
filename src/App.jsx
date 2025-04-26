@@ -31,6 +31,8 @@ import AddCourses from './Pages/DashboardSuperAdmin/StudentActions/AddCourses.js
 import StudentProfileSettings from './Pages/Dashboard/Settings/StudentProfileSettings.jsx';
 import Register from './Pages/Dashboard/Complaints/Register.jsx';
 import ComplaintStatus from './Pages/Dashboard/Complaints/ComplaintStatus.jsx';
+import ApplicationStatus from './Pages/Dashboard/Application/Application.jsx';
+// import Application from './Pages/Dashboard/Application/ApplicationStatus.jsx';
 import Complaints from './Pages/DashboardAdmin/Complaints/Complaints.jsx';
 import Application from './Pages/DashboardAdmin/Application/application.jsx';
 
@@ -67,7 +69,8 @@ import GuestFinal from './Pages/DashboardAdmin/GuestFunctionality/GuestFinal/Gue
 
 
 
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; 
 
 
 function App() {
@@ -242,6 +245,8 @@ const handleStudentLogout = ()=>{
             <Route path='/studentDashboard/settings/profile' element={<CloseRoute><StudentProfileSettings /></CloseRoute>} />
             <Route path='/studentDashboard/complaints/register' element={<CloseRoute><Register /></CloseRoute>} />
             <Route path='/studentDashboard/complaints/status' element={<CloseRoute><ComplaintStatus /></CloseRoute>} />
+            <Route path='/studentDashboard/request/application' element={<CloseRoute><Application /></CloseRoute>} />
+            <Route path='/studentDashboard/request/applicationstatus' element={<CloseRoute><ApplicationStatus /></CloseRoute>} />
             <Route path='/studentDashboard/notices/view' element={<CloseRoute><ViewNotices /></CloseRoute>} />
             <Route path='/studentDashboard/mess/menu' element={<CloseRoute><NewMenu /></CloseRoute>} />
             
@@ -294,6 +299,7 @@ const handleStudentLogout = ()=>{
         </Routes>    
            </div>
         </div>
+        <ToastContainer />
     </>
   )
 }

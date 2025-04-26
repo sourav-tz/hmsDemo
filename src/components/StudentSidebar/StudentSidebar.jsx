@@ -41,6 +41,7 @@ export default function StudentSidebar(){
     const [subHostel,setSubHostel] = useState(false);
     const [subNotice,setSubNotice] = useState(false);
     const [subReferral,setSubReferral] = useState(false);
+    const [subRequest,setRequest] = useState(false);
 
 
     const changeSubMenu = (value)=>{
@@ -53,6 +54,7 @@ export default function StudentSidebar(){
             setSubHostel(false);
             setSubNotice(false);
             setSubReferral(false);
+            setRequest(false);
         }else if(value ==='complaints'){
             setSubHome(false);
             setSubComplaint(prev => !prev);
@@ -61,6 +63,17 @@ export default function StudentSidebar(){
             setSubHostel(false);
             setSubNotice(false);
             setSubReferral(false);
+            setRequest(false);
+
+        }else if(value ==='request'){
+            setSubHome(false);
+            setSubComplaint(false);
+            setSubMess(false);
+            setSubSettings(false);
+            setSubHostel(false);
+            setSubNotice(false);
+            setSubReferral(false);
+            setRequest(prev => !prev);
 
         }else if(value === 'mess'){
             setSubHome(false);
@@ -70,6 +83,7 @@ export default function StudentSidebar(){
             setSubHostel(false);
             setSubNotice(false);
             setSubReferral(false);
+            setRequest(false);
 
         }else if(value === 'settings'){
             setSubHome(false);
@@ -79,6 +93,7 @@ export default function StudentSidebar(){
             setSubHostel(false);
             setSubNotice(false);
             setSubReferral(false);
+            setRequest(false);
 
         }else if(value=='hostels'){
             setSubHome(false);
@@ -88,6 +103,7 @@ export default function StudentSidebar(){
             setSubHostel(prev=>!prev);
             setSubNotice(false);
             setSubReferral(false);
+            setRequest(false);
         }
         else if(value=='notices'){
             setSubHome(false);
@@ -97,6 +113,7 @@ export default function StudentSidebar(){
             setSubHostel(false);
             setSubNotice(prev=>!prev);
             setSubReferral(false);
+            setRequest(false);
         }
         else if(value == 'referral'){
             setSubHome(false);
@@ -106,6 +123,7 @@ export default function StudentSidebar(){
             setSubHostel(false);
             setSubNotice(false);
             setSubReferral(prev=>!prev);
+            setRequest(false);
         }
 
     }
@@ -163,6 +181,14 @@ const handleLogout = ()=>{}
                         <ul className={state&&subComplaint?null:styles.hidden}>
                         <li onClick={()=>{Navigator('/studentDashboard/complaints/register')}} className={styles.subOptions+' ' + (activeSubOption==='register'?styles.activeSubOption:null)}>Register</li>
                         <li onClick={()=>{Navigator('/studentDashboard/complaints/status')}} className={styles.subOptions+' ' + (activeSubOption==='status'?styles.activeSubOption:null)}>Status</li>
+                        </ul>
+            </div>
+            {/* request  */}
+            <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
+                        <p onClick={()=>{changeSubMenu('request')}} className={(activeOption==='request'?styles.activeItem:null)+ ' flex items-center gap-2'}><SlSupport /> <span className={(state?null:styles.hidden)+' mt-1'}>Request</span></p>
+                        <ul className={state&&subRequest?null:styles.hidden}>
+                        <li onClick={()=>{Navigator('/studentDashboard/request/applicationstatus')}} className={styles.subOptions+' ' + (activeSubOption==='applicationstatus'?styles.activeSubOption:null)}>New Application</li>
+                        <li onClick={()=>{Navigator('/studentDashboard/request/application')}} className={styles.subOptions+' ' + (activeSubOption==='application'?styles.activeSubOption:null)}>Status of Application</li>
                         </ul>
             </div>
             {/* Student Notices */}
