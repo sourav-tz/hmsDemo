@@ -5,13 +5,14 @@ import { IconContext } from 'react-icons';
 import { IoHome } from "react-icons/io5";
 import { FaRegEye } from "react-icons/fa6";
 import { FaInfo } from "react-icons/fa";
-import { MdOutlineBedroomChild } from "react-icons/md";
+import { MdLocalHotel, MdOutlineBedroomChild } from "react-icons/md";
 import { FaGear } from "react-icons/fa6";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { FaNoteSticky } from "react-icons/fa6";
+import { SlSupport } from "react-icons/sl";
 
 
 
@@ -38,6 +39,8 @@ export default function Sidebar(){
     const [subRoom, setSubRoom] = useState(false);
     const [subSettings, setSubSettings] = useState(false);
     const [subNotice, setSubNotice] = useState(false);
+    const [subComplaint,setSubComplaint] = useState(false);
+    const [subGuest,setSubGuest] = useState(false);
 
     const openMenu = ()=>{
         changeState(true);
@@ -55,30 +58,57 @@ export default function Sidebar(){
             setSubRoom(false);
             setSubSettings(false);
             setSubNotice(false);
+            setSubComplaint(false);
+            setSubGuest(false);
         }else if(value ==='studentInfo'){
             setSubHome(false);
             setSubStudent(prev => !prev);
             setSubRoom(false);
             setSubSettings(false);
             setSubNotice(false);
+            setSubComplaint(false);
+            setSubGuest(false);
         }else if(value === 'roomInfo'){
             setSubHome(false);
             setSubStudent(false);
             setSubRoom(prev=>!prev);
             setSubSettings(false);
             setSubNotice(false);
+            setSubComplaint(false);
+            setSubGuest(false);
         }else if(value === 'settings'){
             setSubHome(false);
             setSubStudent(false);
             setSubRoom(false);
             setSubSettings(prev=>!prev);
             setSubNotice(false);
+            setSubComplaint(false);
+            setSubGuest(false);
         }else if(value === 'notice'){
             setSubHome(false);
             setSubStudent(false);
             setSubRoom(false);
             setSubSettings(false);
             setSubNotice(prev=>!prev);
+            setSubComplaint(false);
+            setSubGuest(false);
+        }else if(value === 'complaint'){
+            setSubHome(false);
+            setSubStudent(false);
+            setSubRoom(false);
+            setSubSettings(false);
+            setSubNotice(false);
+            setSubComplaint(prev => !prev);
+            setSubGuest(false);
+        }
+        else if(value == 'guest'){
+            setSubHome(false);
+            setSubStudent(false);
+            setSubRoom(false);
+            setSubSettings(false);
+            setSubNotice(false);
+            setSubComplaint(false);
+            setSubGuest(prev => !prev);
         }
 
     }
@@ -134,9 +164,9 @@ export default function Sidebar(){
            <div className={styles.itemsContainer}>
             <div className={styles.userItem}>
                 <div id="userIconSidebar" className={styles.userIcon}>
-                {userData.avatar!=undefined?<img className={styles.avatarImage} src={userData.avatar} />:<FaUserLarge size="1.5em" color="white"/>}
+                {userData?.avatar!=undefined?<img className={styles.avatarImage} src={userData?.avatar} />:<FaUserLarge size="1.5em" color="white"/>}
                 </div>
-                <div className={state?null:styles.hidden} style={{marginLeft:'8px',marginTop:'0px'}}><p>{userData.dataValues.name!==undefined?`${userData.dataValues.name}`:"NULL"}<br/><span className={styles.userRole} style={{fontSize:'12px'}}>{userData.role!==undefined?`Role: ${userData.role}`:'Role: Null'}</span></p></div>
+                <div className={state?null:styles.hidden} style={{marginLeft:'8px',marginTop:'0px'}}><p>{userData?.dataValues?.name!==undefined?`${userData?.dataValues?.name}`:"NULL"}<br/><span className={styles.userRole} style={{fontSize:'12px'}}>{userData?.role!==undefined?`Role: ${userData?.role}`:'Role: Null'}</span></p></div>
             </div>
             <div className={styles.listContainer}>
             <div  className={(styles.item) +' '+' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
@@ -164,6 +194,25 @@ export default function Sidebar(){
                         <ul className={state&&subNotice?null:styles.hidden}>
                         <li onClick={()=>{navigator('/adminDashboard/notice/uploadNotice')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='uploadNotice'?styles.activeSubOption:null)}>Upload Notice</li>
                         <li onClick={()=>{navigator('/adminDashboard/notice/viewNotice')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='viewNotice'?styles.activeSubOption:null)}>View Notice</li>
+                        </ul>
+            </div>
+            <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
+                        <p onClick={()=>{changeSubMenu('complaint');Navigator('/adminDashboard/complaints/complaints')}} className={(activeOption==='complaints'?styles.activeItem:null)+ ' flex items-center gap-2'}><SlSupport /> <span className={(state?null:styles.hidden)+' mt-1'}>Complaint</span></p>
+                        {/* <ul className={state&&subStudent?null:styles.hidden}> */}
+                        {/* <li onClick={()=>{Navigator('/superAdminDashboard/studentActions/viewInfo')}} className={styles.subOptions+' ' + (activeSubOption==='viewInfo'?styles.activeSubOption:null)}>View Info</li> */}
+                        {/* <li onClick={()=>{Navigator('/superAdminDashboard/studentActions/addCourses')}} className={styles.subOptions+' ' + (activeSubOption==='addCourses'?styles.activeSubOption:null)}>Add Courses</li> */}
+                        {/* </ul> */}
+                    
+            </div>
+
+            {/* Admin Guest Panel */}
+            <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
+                        <p onClick={()=>{changeSubMenu('guest')}} className={(activeOption==='guest'?styles.activeItem:null)+ ' flex items-center gap-2'}><MdLocalHotel /> <span className={(state?null:styles.hidden)+' mt-1'}>Guest Info</span></p>
+                        <ul className={state&&subGuest?null:styles.hidden}>
+                        <li onClick={()=>{navigator('/adminDashboard/guest/verify')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='verify'?styles.activeSubOption:null)}>Verify Guests</li>
+                        <li onClick={()=>{navigator('/adminDashboard/guest/viewSchedule')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='viewSchedule'?styles.activeSubOption:null)}>View Guests Schedule</li>
+                        <li onClick={()=>{navigator('/adminDashboard/guest/allot')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='allot'?styles.activeSubOption:null)}>Allot Rooms To Guests</li>
+                        <li onClick={()=>{navigator('/adminDashboard/guest/viewDetail')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='viewDetail'?styles.activeSubOption:null)}>View Guest Detail</li>
                         </ul>
             </div>
             </div>
@@ -204,6 +253,7 @@ export default function Sidebar(){
                             <li onClick={()=>{Navigator('/adminDashboard/roomInfo/allotRooms');handleHamBurger()}} className={`text-xl hover:scale-110 transition-all rounded-md px-2 py-[2px] ${activeSubOption==='allotRooms'?'bg-blue-900 font-normal':''}`}> Allot Rooms</li>
                         </ul>
                     </li>
+                    
                 </ul>
                 <div onClick={handleLogout} className='absolute bottom-16 cursor-pointer left-[40%] text-white'>
                 Logout

@@ -1,12 +1,9 @@
-const { Description } = require('@storybook/blocks');
 const db = require('../../models/index')
-
+const { Op } = require('sequelize');
 const raiseComplaint=async (req, res) => {
     try {
         // Extract necessary information from the request body
-        const {subject, tag,rollNo,description} = req.body;
-        const hostelNo=req.body.tokenHostelNo
-
+        const {subject, tag,rollNo,description,hostelNo} = req.body;
         if(hostelNo==null){
             return res.status(400).json({
                 success: false,
@@ -47,6 +44,7 @@ const getComplaints=async (req, res) => {
             rollNo
         }
       });
+      console.log(result);
       return res.status(200).json({success:true, result:result});
     } catch (error) {
       console.error(error);
@@ -56,11 +54,28 @@ const getComplaints=async (req, res) => {
 const getComplaintsAdmin=async (req, res) => {
     try {
       const hostelNo=req.body.tokenHostelNo;
-      const result= await db.complaints.findAll({
-        where:{
-            hostelNo,status:"pending"
-        }
-      });
+      const resolvedB=req.query.rescomp == "true";
+      const rejectedB=req.query.rejcomp == "true";
+      const statuses = ["pending"];  // Always include "pending" by default
+
+// Add "resolved" if resolvedB is true
+if (resolvedB) {
+  statuses.push("resolved");
+}
+
+// Add "rejected" if rejectedB is true
+if (rejectedB) {
+  statuses.push("rejected");
+}
+
+const result = await db.complaints.findAll({
+  where: {
+    hostelNo,  // Assuming hostelNo is a variable with some value
+    status: {
+      [Op.in]: statuses  // Filter by dynamically built statuses array
+    }
+  }
+});
       return res.status(200).json({success:true, result:result});
     } catch (error) {
       console.error(error);
@@ -69,8 +84,8 @@ const getComplaintsAdmin=async (req, res) => {
   };
 const resoleComplaint=async (req, res) => {
     try {
-      const {complaintId}=req.body;
-      await db.complaints.update({status:"resolved"},{
+      const {complaintId , comment}=req.body;
+      await db.complaints.update({status:"resolved",comment : comment},{
         where:{
             complaintId
         }
@@ -83,8 +98,8 @@ const resoleComplaint=async (req, res) => {
   };
 const rejectComplaint=async (req, res) => {
     try {
-      const {complaintId}=req.body;
-      await db.complaints.update({status:"rejected"},{
+      const {complaintId, comment}=req.body;
+      await db.complaints.update({status:"rejected",comment : comment},{
         where:{
             complaintId
         }

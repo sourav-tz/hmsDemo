@@ -1,3 +1,5 @@
+const { comment } = require("postcss");
+
 module.exports = (sequelize, dataTypes) => {
 
     const complaints = sequelize.define('complaints', {
@@ -18,6 +20,9 @@ module.exports = (sequelize, dataTypes) => {
         status: {
             type: dataTypes.STRING,
         },
+        comment : {
+            type : dataTypes.TEXT,
+        }
     },{
         updatedAt: 'last_updated_at',
     })

@@ -2,7 +2,7 @@
 const db = require('../../models/index');
 const sendOtp = require('../../utils/sendOtp');
 const bcrypt = require('bcrypt')
-
+const SALoginOTP = require('../../MailTemplates/SALoginOTP');
 
 const superAdminLogin = async (req, res) => {
     try {
@@ -17,7 +17,8 @@ const superAdminLogin = async (req, res) => {
         if (isMatch) {
 
             console.log("Super Admin Credientials verified");
-             await sendOtp(email).then(() =>{
+            let title = 'Super Admin OTP || NIT KURUKSHETRA'
+             await sendOtp(email,title,SALoginOTP("Super Admin")).then(() =>{
                 const {password , ...userData} = user.dataValues
                 console.log(userData);
                 return  res.status(200).json({message:'Otp sent successfully', userData})

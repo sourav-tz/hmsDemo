@@ -38,11 +38,13 @@ const UploadNotice = ()=>{
         const formData = new FormData();
         formData.append('title',data.title);
         formData.append('file',data.notice[0]);
-        formData.append('hostelNo',userData.hostelNo)
+        formData.append('hostelNo',userData.dataValues.hostelNo)
+        // console.log("USER DATA_>",userData);
         const res = axios({
           method:'post',
-          url:import.meta.env.VITE_BASE_URL + '/HA/addNotice',
+          url:import.meta.env.VITE_BASE_URL + '/HA/addnotice',
           data:formData,
+          // tokenHostelNo:userData.hostelNo,
           headers:{
             "Content-Type": "multipart/form-data; boundary=${formData.getBoundary()}",
             "x-rapidapi-host": "file-upload8.p.rapidapi.com",
@@ -69,25 +71,25 @@ const UploadNotice = ()=>{
 
     return(
         <>
-        <div className='flex flex-col min-h-screen bg-gray-100 w-full justify-start py-10 items-center'>
+        <div className='flex flex-col min-h-screen  bg-gray-100 w-full justify-start py-10 items-center'>
             <div className=''>
-              <h1 className='text-3xl font-semibold'>Upload Notice</h1>
+              <h1 className='text-3xl font-semibold max-md:mt-16' >Upload Notice</h1>
               <p className='text-gray-500'>Please upload the notice in pdf format</p>
             </div>
-            <div>
+            <div className="max-sm:pl-72 max-md:pl-40">
               <form onSubmit={handleSubmit(onSubmit)}>
               <div className='flex flex-col w-[600px] gap-4 mt-6'>
                 <div className='flex flex-col gap-2'>
-                  <label className='text-sm font-semibold'>Notice Title</label>
-                  <Input {...register("title",{required:{value:true,message:'Title is required'}})} name="title" placeholder='Enter Title' />
+                  <label className=' text-sm font-semibold'>Notice Title</label>
+                  <Input {...register("title",{required:{value:true,message:'Title is required'}})} className="w-full max-w-lg" name="title" placeholder='Enter Title'  />
                 </div>
                 <p className='text-red-500 text-sm'>{errors.title && errors.title.message}</p>
                 <div className='flex flex-col gap-2'>
                   <label className='text-sm font-semibold'>Upload Notice</label>
-                  <Input {...register("notice",{required:{value:true,message:'Notice is required',}})} type='file' name="notice" />
+                  <Input {...register("notice",{required:{value:true,message:'Notice is required',}})} className="w-full max-w-lg" type='file' name="notice" />
                     <p className='text-red-500 text-sm'>{errors.notice && errors.notice.message}</p>
                 </div>
-                <Button className="bg-blue-700 hover:bg-blue-500">Upload</Button>
+                <Button className="bg-blue-700 hover:bg-blue-500 w-full max-w-lg" >Upload</Button>
               </div>
               </form>
             </div>
@@ -100,8 +102,7 @@ const UploadNotice = ()=>{
 }
 
 export default UploadNotice;
-
-
 // - make upload page with a form to upload notice in pdf form
 // apply check if not pdf then show error with toastify
 // make drag drop area to upload pdf
+

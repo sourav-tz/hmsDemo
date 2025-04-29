@@ -6,6 +6,9 @@ import { DevTool } from "@hookform/devtools";
 import axios from 'axios';
 import { Button } from "@/components/ui/button";
 import { ToastContainer,toast } from "react-toastify";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+
+
 const StudentSignUp = () => {
   const [name, setName] = useState("");
   const [Roll, setRoll] = useState("");
@@ -61,6 +64,17 @@ const StudentSignUp = () => {
     }
 
   };
+
+    
+  // function to handle visible/hidden password
+  const [visiblePassword,setVisiblePassword] = useState(false);
+  const [visibleConfirmPassword,setVisibleConfirmPassword] = useState(false);
+  const handleShowPassword = ()=>{
+    setVisiblePassword(!visiblePassword);
+  }
+  const handleShowConfirmPassword = ()=>{
+    setVisibleConfirmPassword(!visibleConfirmPassword);
+  }
 
 
   return (
@@ -129,24 +143,28 @@ const StudentSignUp = () => {
             ></input>
             <p className="text-red-600 text-xs">{errors.rollNo?.message}</p>
             <p className="mt-2 text-xs font-semibold">Password*</p>
-            <div class="Relative">
+            <div className="relative">
               <input
                 className="shadow-sm p-2 rounded-lg border mt-0 w-full"
                 placeholder="Enter password"
-                type="password"
+                type={visiblePassword?'text': 'password'}
                 name="password"
                 {...register("password",
                 {required:{value:true,message:'Password Required'},
                 minLength:{value:6,message:'Password length must be greater than 6'}})}
               ></input>
+                 
+              {visiblePassword?<FaEye className='absolute top-3 right-3 cursor-pointer min-[300px]:size-6 sm:size-4 md:size-4' color='#5F57FF' onClick={handleShowPassword}></FaEye>:             
+              <FaEyeSlash className='absolute top-3 right-3 cursor-pointer min-[300px]:size-6 sm:size-4 md:size-4' color='#5F57FF' onClick={handleShowPassword}></FaEyeSlash>}
+
             </div>
             <p className="text-red-600 text-xs">{errors.password?.message}</p>
             <p className="mt-2 text-xs font-semibold">Confirm Password*</p>
-            <div class="Relative">
+            <div className="relative">
               <input
                 className="shadow-sm p-2 rounded-lg border mt-0 w-full"
                 placeholder="Enter password"
-                type="password"
+                type={visibleConfirmPassword?'text': 'password'}
                 name="confirmPassword"
                 {...register("confirmPassword",
                 {required:{value:true,message:'Password Required'},
@@ -154,6 +172,10 @@ const StudentSignUp = () => {
                 validate: value => value === watch('password') || "Passwords do not match"
               })}
               ></input>
+              
+              {visibleConfirmPassword?<FaEye className='absolute top-3 right-3 cursor-pointer min-[300px]:size-6 sm:size-4 md:size-4' color='#5F57FF' onClick={handleShowConfirmPassword}></FaEye>:             
+              <FaEyeSlash className='absolute top-3 right-3 cursor-pointer min-[300px]:size-6 sm:size-4 md:size-4' color='#5F57FF' onClick={handleShowConfirmPassword}></FaEyeSlash>}
+              
             </div>
             <p className="text-red-600 text-xs">{errors.confirmPassword?.message}</p>
             <button

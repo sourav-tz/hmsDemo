@@ -9,7 +9,9 @@ import { MdOutlineBedroomChild } from "react-icons/md";
 import { FaGear } from "react-icons/fa6";
 import { useSelector } from 'react-redux';
 import { BsHouses } from "react-icons/bs";
-import { useLocation,useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { FaNoteSticky } from "react-icons/fa6";
+
 import storage from 'redux-persist/lib/storage';
 
 export default function SuperSidebar(){
@@ -35,7 +37,9 @@ export default function SuperSidebar(){
     const [subStudent, setSubStudent] = useState(false);
     const [subRoom, setSubRoom] = useState(false);
     const [subSettings, setSubSettings] = useState(false);
-    const [subHostel,setSubHostel] = useState(false);
+    const [subHostel, setSubHostel] = useState(false);
+    const [subNotice, setSubNotice] = useState(false);
+
 
 
     const changeSubMenu = (value)=>{
@@ -53,7 +57,15 @@ export default function SuperSidebar(){
             setSubSettings(false);
             setSubHostel(false);
 
-        }else if(value === 'roomActions'){
+        } else if (value === 'notice') {
+            setSubHome(false);
+            setSubStudent(false);
+            setSubRoom(false);
+            setSubSettings(false);
+            setSubNotice(prev => !prev);
+            setSubHostel(false);
+
+        }else if (value === 'roomActions') {
             setSubHome(false);
             setSubStudent(false);
             setSubRoom(prev=>!prev);
@@ -114,9 +126,9 @@ const handleLogout = ()=>{}
            <div className={styles.itemsContainer}>
             <div className={styles.userItem}>
                 <div id="userIconSidebar" className={styles.userIcon}>
-                {userData.avatar!=undefined?<img className={styles.avatarImage} src={userData.avatar} />:<FaUserLarge size="1.5em" color="white"/>}
+                {userData?.avatar!=undefined?<img className={styles.avatarImage} src={userData?.avatar} />:<FaUserLarge size="1.5em" color="white"/>}
                 </div>
-                <div className={state?null:styles.hidden} style={{marginLeft:'8px',marginTop:'0px'}}><p>{userData.email!==undefined?`${userData.email.slice(0,9)}`:'NULL'}<br/><span className={styles.userRole} style={{fontSize:'12px'}}>{userData.role!==undefined?`Role: ${userData.role}`:'Role: Null'}</span></p></div>
+                <div className={state?null:styles.hidden} style={{marginLeft:'8px',marginTop:'0px'}}><p>{userData?.email!==undefined?`${userData?.email.slice(0,9)}`:'NULL'}<br/><span className={styles.userRole} style={{fontSize:'12px'}}>{userData?.role!==undefined?`Role: ${userData?.role}`:'Role: Null'}</span></p></div>
             </div>
             <div className={styles.listContainer}>
             <div  className={(styles.item) +' '+' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
@@ -133,6 +145,26 @@ const handleLogout = ()=>{}
                         {/* </ul> */}
                     
             </div>
+                       
+                        
+
+
+                        {/* <div className={styles.item + ' ' + (state ? styles.ItemOpenMenu : styles.ItemCloseMenu)}>
+                            <p onClick={() => { changeSubMenu('notice') }} className={(activeOption === 'notice' ? styles.activeItem : null) + ' flex items-center gap-2'}><FaNoteSticky /> <span className={(state ? null : styles.hidden) + ' mt-1'}>Notice</span></p>
+                            <ul className={state && subNotice ? null : styles.hidden}>
+                                <li onClick={() => { navigator('/superAdminDashboard/notice/uploadNotice') }} className={(state ? null : styles.hidden) + ' ' + styles.subOptions + ' ' + (activeSubOption === 'uploadNotice' ? styles.activeSubOption : null)}>Upload Notice</li>
+                                <li onClick={() => { navigator('/superAdminDashboard/notice/viewNotice') }} className={(state ? null : styles.hidden) + ' ' + styles.subOptions + ' ' + (activeSubOption === 'viewNotice' ? styles.activeSubOption : null)}>View Notice</li>
+                            </ul>
+                        </div> */}
+            <div className={styles.item + ' ' + (state ? styles.ItemOpenMenu : styles.ItemCloseMenu)}>
+                        <p onClick={() => { changeSubMenu('notice') }} className={(activeOption === 'notice' ? styles.activeItem : null) + ' flex items-center gap-2'}><FaNoteSticky /> <span className={(state ? null : styles.hidden) + ' mt-1'}>Notice</span></p>
+                        <ul className={state && subNotice ? null : styles.hidden}>
+                        <li onClick={()=>{Navigator('/superAdminDashboard/notice/uploadNotice')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='uploadNotice'?styles.activeSubOption:null)}>Upload Notice</li>
+                        <li onClick={()=>{Navigator('/superAdminDashboard/notice/viewNotice')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='viewNotice'?styles.activeSubOption:null)}>View Notice</li>
+                        </ul>
+            </div>
+
+
             <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
                         <p onClick={()=>{changeSubMenu('roomActions');Navigator('/superAdminDashboard/roomActions/allocateRooms')}} className={(activeOption==='allocateRooms'?styles.activeItem:null)+ ' flex items-center gap-2'}><MdOutlineBedroomChild /> <span className={(state?null:styles.hidden)+' mt-1'}>Allocate Rooms</span></p>
                         {/* <ul className={state&&subRoom?null:styles.hidden}> */}
@@ -194,6 +226,7 @@ const handleLogout = ()=>{}
                             <li onClick={()=>{Navigator('/superAdminDashboard/roomActions/allocateRooms');handleHamBurger()}} className={`text-xl hover:scale-110 transition-all rounded-md px-2 py-[2px] ${activeSubOption==='allocateRooms'?'bg-blue-900 font-normal':''}`}> Allot Rooms</li>
                         </ul>
                     </li>
+                  
 
                     <li className='mt-4 cursor-pointer flex flex-col text-xl font-semibold'><div onClick={()=>{changeSubMenu('hostels')}} className={`flex items-center gap-2 ${activeOption==='studentInfo'?'text-orange-400':'text-white'}`}><FaInfo size='15px' />  Hostels</div>
                         <ul className={`${subHostel?'':'hidden'} text-sm text-white  font-thin ml-8 transition-all`}>

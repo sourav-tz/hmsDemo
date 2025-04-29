@@ -20,7 +20,7 @@ const getCourses=async (req, res) => {
         paranoid:false
     });
     const result=data.map((key)=>(key.dataValues.deletedAt)?{...key.dataValues,active:false}:{...key.dataValues,active:true});
-  return res.json(result);
+  return res.status(200).json(result);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: error });

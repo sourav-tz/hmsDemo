@@ -1,18 +1,24 @@
 import * as React from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { DayPicker } from "react-day-picker"
-
+import { useState } from "react"
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 
-function Calendar({
-  className,
-  classNames,
-  showOutsideDays = true,
-  ...props
-}) {
+function Calendar({ className,classNames,showOutsideDays = true,...props}) {
+  const [selected, setSelected] = useState();
+  const handleSelectedDate = (event)=>{
+    console.log(event);
+    console.log("SAVED -> ", selected);
+  }
+ 
   return (
     (<DayPicker
+      hideNavigation captionLayout="dropdown"
+      mode="single" 
+      selected={selected} 
+      onSelect={setSelected} 
+      footer={selected ? `Selected: ${selected.toLocaleDateString()}` : "Pick a day."}
       showOutsideDays={showOutsideDays}
       className={cn("p-3", className)}
       classNames={{

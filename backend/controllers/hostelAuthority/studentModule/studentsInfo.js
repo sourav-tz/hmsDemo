@@ -7,12 +7,14 @@ exports.studentsInfo = async (req, res) => {
     let page = parseInt(req.query.page);
     const limit = parseInt(req.query.limit);
     let totalpages = parseInt(req.query.total);
+    let currHostelOnly = req.query.currHostel == 'true';
     // Define filters based on query parameters
     
     const filtersProfile = {};
     let myQuery = {};
     // we are going to fetch only those students who are resident into that hostel
-    myQuery.hostelNo = req.body.tokenHostelNo;
+    if(currHostelOnly)
+       myQuery.hostelNo = req.body.tokenHostelNo;
 
     if (req.query.rollNo) {
       

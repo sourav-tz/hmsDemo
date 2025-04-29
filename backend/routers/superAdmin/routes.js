@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { getCourses, addCourse, removeCourse, enableCourse, updateCourse } = require('../../controllers/superAdmin/Manage_Courses/Courses');
 const { getHostels, addHostel, removeHostel, enableHostel, updateHostel } = require('../../controllers/superAdmin/Manage_Hostels/Hostels');
+const { getrooms,addroom,updateroom ,deleteroom} = require('../../controllers/superAdmin/ManageRooms/managerooms.js');
 const {addRoomType,deleteRoomType,getRoomTypes } = require('../../controllers/superAdmin/Manage_roomTypes');
 const { getAdmins,revokeLoginAcess,giveLoginAccess,changeHostel } = require('../../controllers/superAdmin/Manage_Admins');
 const multer = require('multer');
@@ -22,6 +23,7 @@ const { downloadFile } = require('../../controllers/hostelAuthority/studentModul
 
 const superAdminLoginToken = require('../../controllers/Login/superAdminLoginToken.js');
 const LogOut = require('../../controllers/LoggingOut/LogOut.js');
+const { addnotice, getNotices, deleteNotices } = require('../../controllers/superAdmin/Manage_Notices/notices.js');
 
 
 var storage = multer.diskStorage({
@@ -29,7 +31,8 @@ var storage = multer.diskStorage({
         cb(null, path.join(__dirname, '../../public/uploads'))
     },
     filename: (req, file, cb) => {
-        cb(null, file.originalname);
+        // cb(null, file.originalname);
+        cb(null, `${Date.now()}-${file.originalname}`);
     }
 });
 var upload = multer({ storage: storage });
@@ -39,26 +42,32 @@ router.get('/', (req, res) => {
     return res.send('success')
 })
 
+// auth
 router.post('/superlogin', superAdminLogin);
 router.post('/superAdminLoginToken',superAdminLoginToken);
 router.get('/superAdminLogout', auth, LogOut);
+router.post('/verifyOldPassword',auth,verifyOldPassword);
+router.post('/updatePassword',auth,updatePassword);
 
 
-
+// Manage Course
 router.get('/getCourses',auth, getCourses);
 router.post('/addCourse',auth, addCourse);
 router.delete('/removeCourse',auth, removeCourse);
 router.post('/enableCourse',auth, enableCourse);
 router.patch('/updateCourse',auth, updateCourse);
 
+// Manage Hostels
 router.get('/getHostels',auth, getHostels);
 router.post('/addHostel',auth, addHostel);
 router.delete('/removeHostel',auth, removeHostel);
 router.post('/enableHostel',auth, enableHostel);
 router.patch('/updateHostel',auth, updateHostel);
 
-// Admin registration
-router.post('/adminReg',auth, AdminRegister)
+// Notice Routes
+router.post('/addNotice', auth, upload.single('file'), addnotice);
+router.get('/getNotices', auth, getNotices);
+router.delete('/deleteNotices', auth, deleteNotices);
 
 
 // RoomsTypes Api's
@@ -69,26 +78,20 @@ router.delete('/removeRoomType',auth, deleteRoomType);
 router.get('/downloadfile',auth, downloadFile);
 
 
-//TODO new single room add in rooms table add,remove                    admin will do update(occupancy,roomtype)
-//*bulk,addremove single student ,get room data 
-//Todo: timeline , single room add del
+// Manage rooms                   admin will do update(occupancy,roomtype)
+router.get('/getrooms',auth,getrooms);
+router.post('/addroom',auth,addroom);
+router.patch('/updateroom',auth,updateroom);
+router.delete('/deleteroom',auth,deleteroom);
+
+//manage admins
+router.post('/adminReg',auth, AdminRegister)
 router.get('/getAdmins',auth,getAdmins);
 router.post('/giveLoginAccess',auth,giveLoginAccess);
-
 router.post('/revokeLoginAccess',auth,revokeLoginAcess);
 router.post('/changeHostel',auth,changeHostel);
 router.post('/deleteAdmin',auth,deleteAdmin);
 router.post('/getAdminsAgainstHostel',auth,getAdminsAgainstHostel);
-
-//Todo admin timeline
-
-
-
-//todo forgot pass, change password
-router.post('/verifyOldPassword',auth,verifyOldPassword);
-router.post('/updatePassword',auth,updatePassword);
-
-
 
 
 

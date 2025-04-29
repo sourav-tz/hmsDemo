@@ -11,7 +11,6 @@ import ReactPaginate from 'react-paginate';
 import { setSearchQuery } from '../../../../Store/Reducers/viewInfoSlice';
 import { useNavigate } from 'react-router-dom';
 import './Pagination.css';
-import Sidebar from '../../../../components/Sidebar/Sidebar';
 
 import {
   Select,
@@ -28,13 +27,13 @@ import {
 const ViewInfo = ()=>{
     const [data,setData] = useState([]);
     const searchQuery = useSelector(state=>state.viewInfoStates.searchQuery);
-    const [link,setLink] = useState('');
     const [totalPages , setTotalPages] = useState(null);
     const [tableLoading,setTableLoading] = useState(true);
     const Dispatcher = useDispatch();
     const [mycourses,setMyCourses] = useState([]);
     const [noOfYears,setNoOfYears] = useState(8);
-    const [years,setMyYears] = useState([1,2,3,4,5,6,7,8]);
+    const [years,setMyYears] = useState([1,2,3,4]);
+    const [currHostelOnly, setCurrHostelOnly] = useState(false);
     const Navigator = useNavigate();
 
 
@@ -120,7 +119,6 @@ const ViewInfo = ()=>{
         'None'
       ];
       
-      const academicQualifications = ['MCA', 'M.tech', 'B.tech', 'M.sc', 'Ph.D', 'MBA','None'];
       const repeatedArray = Array(6).fill().map((_, index) => index + 1);
       repeatedArray.push('None')
 
@@ -140,6 +138,7 @@ const ViewInfo = ()=>{
           page:1,
           limit:10,
           total:0,
+          currHostel:currHostelOnly,
           ...((searchQuery.firstName !== '') && { firstName: searchQuery.firstName }),
           ...((searchQuery.lastName !== '') && { lastName: searchQuery.lastName}),
           ...((searchQuery.rollNo !== '') && { rollNo: searchQuery.rollNo}),
@@ -221,6 +220,7 @@ const handleCourse = (e)=>{
       params:{
         page:selectedPage,
         limit:10,
+        currHostel:currHostelOnly,
         total:0,
           ...((searchQuery.firstName !== '') && { firstName: searchQuery.firstName }),
           ...((searchQuery.lastName !== '') && { lastName: searchQuery.lastName}),
@@ -250,6 +250,10 @@ const handleCourse = (e)=>{
 
 
       }
+  // Function to handle checkbox change
+  const handleCheckboxChange = (event) => {
+    setCurrHostelOnly(event.target.checked);  // Update state with checkbox value
+  };
 
     return <>
         <div className="w-full flex flex-col items-center justify-center mt-16 md:mt-0 p-4">
@@ -293,6 +297,15 @@ const handleCourse = (e)=>{
   </SelectContent>
 </Select>
             </div>
+<div> <label>
+        <input
+          type="checkbox"
+          checked={currHostelOnly}          // Bind the checked state to checkbox
+          onChange={handleCheckboxChange} // Handle changes on checkbox
+          className='mr-2'
+        />
+        Current Hostel Only
+      </label></div>
             <div className={styles.buttonArea+' mt-4'}>
                 <div>
                     <Button onClick={handleReset} text="Reset" style={{marginRight:'15px'}}/>
@@ -303,7 +316,7 @@ const handleCourse = (e)=>{
         </div>
         <div className={' w-full flex justify-center items-center flex-col md:p-4 '}>
         {tableLoading?<TableLoader />:null}
-        {tableLoading===false?<div className='w-full md:min-w-[800px] md:max-w-[900px]'><ViewInfoTable data={data} /></div>:null}
+        {tableLoading===false?<div className='w-[80%] '><ViewInfoTable data={data} /></div>:null}
         <ReactPaginate
         breakLabel="..."
         nextLabel="next >"

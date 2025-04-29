@@ -1,2 +1,2 @@
-rollNo,firstName,lastName,year,email,bloodGroup,identificationMark,gender,pEmail,subAddress,city,state,pinCode,contactNumber,secondaryContact,fatherName,fatherContact,fatherOccupation,motherName,motherContact,motherOccupation,dob,addharNumber,accHolderName,bankName,accNumber,IFSC,courseId,hostelNo,roomId
-1,Deepak,Sharma,2,deepak@gmail.com,B+,no,M,deepak123@gmail.com,saraswati colony,kkr,hry,136131,1234567891,8888888888,omparkash,1234567891,,,,,25-Mar-15,123456789012,Deepak,SBI,,,,,,
+rollNo,firstName,lastName,year,email,bloodGroup,identificationMark,gender,pEmail,subAddress,city,state,pinCode,contactNumber,secondaryContact,fatherName,fatherContact,fatherOccupation,motherName,motherContact,motherOccupation,dob,addharNumber,accHolderName,bankName,accNumber,IFSC,courseId
+1,John,Doe,1,john@nitkkr.ac.in,B+,no,M,john@gmail.com,sec 14,kurukshetra,haryana,136131,1234567891,8888888888,Bob,1234567891,,,,,25-Mar-15,123456789012,John,City Bank,,,,

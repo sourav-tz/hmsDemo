@@ -438,7 +438,7 @@ const handleStudentInfo =(rollNo)=>{
 
 
     return<>
-    <h1 className='text-3xl mt-16 md:mt-4 text-blue-600 p-8 md:p-8 text-center'>Rooms Allotement</h1>
+    <h1 className='text-3xl mt-16 md:mt-4 text-blue-600 p-8 md:p-8 text-center max-sm:pt-16'>Rooms Allotement</h1>
     <div className={styles.container + ' flex flex-col items-center'}>
 
 <div className='flex flex-col md:flex-row'>
@@ -456,7 +456,7 @@ const handleStudentInfo =(rollNo)=>{
 
 
 {/* //Search query */}
-    <div className='mt-4 md:mt-0 md:p-4 p-4 min-w-[350px]'>
+    <div className='mt-4 md:mt-0 md:p-4 p-4 min-w-[350px] max-lg:w-[230px] '>
         <Card>
         <CardHeader>
             <CardTitle>Search Queries</CardTitle>

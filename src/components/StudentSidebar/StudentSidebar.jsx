@@ -5,13 +5,14 @@ import { IconContext } from 'react-icons';
 import { IoHome } from "react-icons/io5";
 import { FaRegEye } from "react-icons/fa6";
 import { FaInfo } from "react-icons/fa";
-import { MdOutlineBedroomChild } from "react-icons/md";
+import { MdLocalHotel, MdOutlineBedroomChild } from "react-icons/md";
 import { FaGear } from "react-icons/fa6";
 import { useSelector } from 'react-redux';
 import { BsHouses } from "react-icons/bs";
 import { useLocation,useNavigate } from 'react-router-dom';
 import { SlSupport } from "react-icons/sl";
 import { MdFoodBank } from "react-icons/md";
+import { FaNoteSticky } from "react-icons/fa6";
 
 export default function StudentSidebar(){
 
@@ -38,6 +39,8 @@ export default function StudentSidebar(){
     const [subMess, setSubMess] = useState(false);
     const [subSettings, setSubSettings] = useState(false);
     const [subHostel,setSubHostel] = useState(false);
+    const [subNotice,setSubNotice] = useState(false);
+    const [subReferral,setSubReferral] = useState(false);
 
 
     const changeSubMenu = (value)=>{
@@ -48,12 +51,16 @@ export default function StudentSidebar(){
             setSubMess(false);
             setSubSettings(false);
             setSubHostel(false);
+            setSubNotice(false);
+            setSubReferral(false);
         }else if(value ==='complaints'){
             setSubHome(false);
             setSubComplaint(prev => !prev);
             setSubMess(false);
             setSubSettings(false);
             setSubHostel(false);
+            setSubNotice(false);
+            setSubReferral(false);
 
         }else if(value === 'mess'){
             setSubHome(false);
@@ -61,6 +68,8 @@ export default function StudentSidebar(){
             setSubMess(prev=>!prev);
             setSubSettings(false);
             setSubHostel(false);
+            setSubNotice(false);
+            setSubReferral(false);
 
         }else if(value === 'settings'){
             setSubHome(false);
@@ -68,6 +77,8 @@ export default function StudentSidebar(){
             setSubMess(false);
             setSubSettings(prev=>!prev);
             setSubHostel(false);
+            setSubNotice(false);
+            setSubReferral(false);
 
         }else if(value=='hostels'){
             setSubHome(false);
@@ -75,6 +86,26 @@ export default function StudentSidebar(){
             setSubMess(false);
             setSubSettings(false);
             setSubHostel(prev=>!prev);
+            setSubNotice(false);
+            setSubReferral(false);
+        }
+        else if(value=='notices'){
+            setSubHome(false);
+            setSubComplaint(false);
+            setSubMess(false);
+            setSubSettings(false);
+            setSubHostel(false);
+            setSubNotice(prev=>!prev);
+            setSubReferral(false);
+        }
+        else if(value == 'referral'){
+            setSubHome(false);
+            setSubComplaint(false);
+            setSubMess(false);
+            setSubSettings(false);
+            setSubHostel(false);
+            setSubNotice(false);
+            setSubReferral(prev=>!prev);
         }
 
     }
@@ -116,9 +147,9 @@ const handleLogout = ()=>{}
            <div className={styles.itemsContainer}>
             <div className={styles.userItem}>
                 <div id="userIconSidebar" className={styles.userIcon}>
-                {userData.avatar!=undefined?<img className={styles.avatarImage} src={userData.avatar} />:<FaUserLarge size="1.5em" color="white"/>}
+                {userData?.avatar!=undefined?<img className={styles.avatarImage} src={userData?.avatar} />:<FaUserLarge size="1.5em" color="white"/>}
                 </div>
-                <div className={state?null:styles.hidden} style={{marginLeft:'8px',marginTop:'0px'}}><p>{userData.firstName!==undefined?userData.firstName+' '+userData.lastName:'Null'}<br/><span className={styles.userRole} style={{fontSize:'12px'}}>{userData.roleType!==undefined?`Role: ${userData.roleType}`:'Role: Null'}</span></p></div>
+                <div className={state?null:styles.hidden} style={{marginLeft:'8px',marginTop:'0px'}}><p>{userData?.firstName!==undefined?userData?.firstName+' '+userData?.lastName:'Null'}<br/><span className={styles.userRole} style={{fontSize:'12px'}}>{userData?.roleType!==undefined?`Role: ${userData?.roleType}`:'Role: Null'}</span></p></div>
             </div>
             <div className={styles.listContainer}>
             <div  className={(styles.item) +' '+' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
@@ -134,12 +165,28 @@ const handleLogout = ()=>{}
                         <li onClick={()=>{Navigator('/studentDashboard/complaints/status')}} className={styles.subOptions+' ' + (activeSubOption==='status'?styles.activeSubOption:null)}>Status</li>
                         </ul>
             </div>
+            {/* Student Notices */}
+            <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
+                        <p onClick={()=>{changeSubMenu('notices')}} className={(activeOption==='notices'?styles.activeItem:null)+ ' flex items-center gap-2'}><FaNoteSticky /> <span className={(state?null:styles.hidden)+' mt-1'}>Notices</span></p>
+                        <ul className={state&&subNotice?null:styles.hidden}>
+                        <li onClick={()=>{Navigator('/studentDashboard/notices/view')}} className={styles.subOptions+' ' + (activeSubOption==='view'?styles.activeSubOption:null)}>View Notices</li>
+                        </ul>
+            </div>
             <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
                         <p onClick={()=>{changeSubMenu('mess')}} className={(activeOption==='mess'?styles.activeItem:null)+ ' flex items-center gap-2'}><MdFoodBank /> <span className={(state?null:styles.hidden)+' mt-1'}>Mess</span></p>
                         <ul className={state&&subMess?null:styles.hidden}>
                         <li onClick={()=>{Navigator('/studentDashboard/mess/menu')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='menu'?styles.activeSubOption:null)}>New Mess Menu</li>
                         </ul>
             </div>
+
+            {/* Verify Guest Referral */}
+            <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
+                        <p onClick={()=>{changeSubMenu('referral')}} className={(activeOption==='referral'?styles.activeItem:null)+ ' flex items-center gap-2'}><MdLocalHotel /><span className={(state?null:styles.hidden)+' mt-1'}>Guest Referral</span></p>
+                        <ul className={state&&subReferral?null:styles.hidden}>
+                        <li onClick={()=>{Navigator('/studentDashboard/guest/referral')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='referral'?styles.activeSubOption:null)}>Verify Guest Referral</li>
+                        </ul>
+            </div>
+
             {/* <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
                         <p onClick={()=>{changeSubMenu('hostels')}} className={(activeOption==='hostels'?styles.activeItem:null)+ ' flex items-center gap-2'}><BsHouses /> <span className={(state?null:styles.hidden)+' mt-1'}>Hostels</span></p>
                         <ul className={state&&subHostel?null:styles.hidden}>

@@ -26,7 +26,7 @@ const verifyOtp = async (email,otp) => {
         
 
     } catch (error) {
-        console.log('Error in verifying OTP')
+        console.log('Error in verifying OTP'+error)
         throw error
     }
 

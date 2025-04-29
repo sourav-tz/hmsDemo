@@ -86,10 +86,12 @@ const ManageAdmin = () => {
     setAdmin((prev) => { return { ...prev, name: e.target.value } })
   }
   const handleMobile = (e) => {
-    setAdmin((prev) => {
-      return { ...prev, mobile: e.target.value }
-    })
-  }
+    const value = e.target.value;
+    // Allow only digits and limit to 10 digits
+    if (/^\d{0,10}$/.test(value)) {
+      setAdmin((prev) => ({ ...prev, mobile: value }));
+    }
+  };
   const handleEmail = (e) => {
     setAdmin((prev) => {
       return { ...prev, email: e.target.value }
@@ -296,165 +298,174 @@ const ManageAdmin = () => {
   return (
 
     <>
-      <div className='flex flex-col items-center justify-center'>
-        <div className=' m-6 p-5  max-w-max rounded-[30px] shadow-[0_3px_10px_rgb(0,0,0,0.2)] '>
-          <form  >
-            <div>
-              <h1 className='text-2xl m-2 font-bold'>Register Admin</h1>
-            </div>
-            <div className='flex'>
-
-              <Input name="name" onChange={handleName} className='w-60 m-2 text-lg p-3 placeholder:text-black bg-white  shadow-[0_3px_10px_rgb(0,0,0,0.2)] ' type="text" placeholder='Name' />
-              {/* <Input name="hostelNo" onChange={handleNoChange} className='w-60 m-2  text-lg p-3 placeholder:text-black bg-white  shadow-[0_3px_10px_rgb(0,0,0,0.2)]' type="number" min="1" max="11"  placeholder='Hostel No'/> */}
-
-
-              {/* <select onChange={handleNoChange} id="options" name="options" className='w-60 m-2  text-lg p-3 placeholder:text-black bg-white  shadow-[0_3px_10px_rgb(0,0,0,0.2)]'>
-                <option >Hostel No.</option>
-                <hr />
-               
-
-              </select> */}
-            
-
-              
-              <Select onValueChange={handleNoChange} >
-                <SelectTrigger className="mt-2 w-[270px] ml-2 text-base">
-                  <SelectValue placeholder="Select Hostel" />
-                </SelectTrigger>
-                <SelectContent  >
-                  {hostelData.map((elem, index) => {
-                    // console.log("PRINT ->", elem)
-                    return <SelectItem key={index + 1} value={elem} >{elem} </SelectItem>;
-                  })}
-
-
-                  {/* <SelectGroup>
-                   <SelectItem value="h1">{hostelData} </SelectItem>
-                    </SelectGroup> */}
-                  {/* <SelectGroup  >
-                      <SelectLabel >Boys</SelectLabel>
-                      <hr />
-                      <SelectItem value="h1">Abhimanyu Bhawan H-1</SelectItem>
-                      <SelectItem value="h2"> Bhishma Bhawan H-2</SelectItem>
-                      <SelectItem value="h3">Chakradhar Bhawan H-3</SelectItem>
-                      <SelectItem value="h4">Dronacharya Bhawan H-4</SelectItem>
-                      <SelectItem value="h5">Eklavya Bhawan H-5</SelectItem>
-                      <SelectItem value="h6">Fanibhushan Bhawan H-6</SelectItem>
-                      <SelectItem value="h7">Girivar Bhawan H-7</SelectItem>
-                      <SelectItem value="h8">Harihar Bhawan H-8</SelectItem>
-                      <SelectItem value="h9">Indivar Bhawan H-9</SelectItem>
-                      <SelectItem value="h10">Visvesvaraya Bhawan H-10</SelectItem>
-                      <SelectItem value="h11">Vivekananda Bhawan H-11</SelectItem>
-
-                  </SelectGroup>
-                  <SelectGroup>
-                      <SelectLabel >Girls</SelectLabel>
-                      <hr />
-                      <SelectItem value="h12">Bhagirathi Bhawan</SelectItem>
-                      <SelectItem value="h13">Cauvery Bhawan</SelectItem>
-                      <SelectItem value="h14">Kalpana Chawla Hostel</SelectItem>  
-                      <SelectItem value="h15">Alaknanda Bhawan</SelectItem>
-
-                      </SelectGroup>  */}
-
-                </SelectContent>
-              </Select>
-
-            </div>
-
-
-            <div className='flex'>
-              <Input name="mobile" onChange={handleMobile} className='w-60 m-2  text-lg p-3 placeholder:text-black bg-white  shadow-[0_3px_10px_rgb(0,0,0,0.2)]' type="tel" placeholder='Mobile No' />
-              <Input name="email" onChange={handleEmail} className='w-60 m-2  text-lg p-3 placeholder:text-black bg-white  shadow-[0_3px_10px_rgb(0,0,0,0.2)]' type="email" placeholder='Email' />
-
-            </div>
-
-
-            <div className='flex' >
-
-
-              <Button className=' w-60 m-2 p-3 bg-[#5F57FF] hover:bg-[#7870ff] text-white rounded-lg  text-lg  shadow-[0_3px_10px_rgb(0,0,0,0.2)]' onClick={passwordGenerator}  >Generate Password</Button>
-              <Input name="password" value={Pass} onChange={(e) => setPass(e.target.value)} className='w-60 m-2 text-lg p-3 placeholder:text-black bg-white   shadow-[0_3px_10px_rgb(0,0,0,0.2)]' type="text" placeholder='Password' disabled />
-              <Button onClick={handleAdmin} className=' w-36  m-2 p-3 bg-[#5F57FF] hover:bg-[#7870ff] text-white rounded-lg  text-lg shadow-[0_3px_10px_rgb(0,0,0,0.2)]' >Register</Button>
-
-            </div>
-          </form>
-
-        </div>
-
-
-
-        <div className='mt-4 mb-2 p-1 w-2/3 h-[380px] rounded-xl shadow-[0_3px_10px_rgb(0,0,0,0.2)] '>
-
-          <div className="ag-theme-quartz  " style={{ height: '100%', width: '800' }}>
-            <AgGridReact rowData={rowData} columnDefs={colDefs} />
+     <div className='flex flex-col items-center justify-center mt-[5rem] md:mt-[6rem] lg:mt-[8rem]'>
+      {/* Added max-w-full to ensure the form doesn’t exceed screen width on small devices */}
+      <div className='m-6 p-5 max-w-full lg:max-w-max rounded-[30px] shadow-[0_3px_10px_rgb(0,0,0,0.2)]'>
+        <form>
+          <div>
+            <h1 className='text-xl md:text-2xl m-2 font-bold'>Register Admin</h1> {/* Reduced heading size for smaller screens */}
           </div>
-
+          <div className='flex flex-col md:flex-row'>
+            {/* Made input fields full width for small screens and applied margin */}
+            <Input
+              name="name"
+              onChange={handleName}
+              className='w-full md:w-60 m-2 text-lg p-3 placeholder:text-black bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)]'
+              type="text"
+              placeholder='Name'
+            />
+            
+            <Select onValueChange={handleNoChange}>
+              <SelectTrigger className="mt-2 w-full md:w-[270px] ml-2 text-base">
+                <SelectValue placeholder="Select Hostel" />
+              </SelectTrigger>
+              <SelectContent>
+                {hostelData.map((elem, index) => {
+                  return <SelectItem key={index + 1} value={elem}>{elem}</SelectItem>;
+                })}
+              </SelectContent>
+            </Select>
+          </div>
+  
+          <div className='flex flex-col md:flex-row'>
+            {/* Made input fields responsive */}
+            <Input
+              name="mobile"
+              onChange={handleMobile}
+              className='w-full md:w-60 m-2 text-lg p-3 placeholder:text-black bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)]'
+              type="tel"
+              placeholder='Mobile No'
+              inputMode="numeric"
+              value={admin.mobile}
+              pattern="[0-9]*"
+              maxLength="10"
+              required
+            />
+            <Input
+              name="email"
+              onChange={handleEmail}
+              className='w-full md:w-60 m-2 text-lg p-3 placeholder:text-black bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)]'
+              type="email"
+              placeholder='Email'
+            />
+          </div>
+  
+          <div className='flex flex-col md:flex-row'>
+            {/* Buttons stack vertically on smaller screens */}
+            <Button
+              className='w-full md:w-60 m-2 p-3 bg-[#5F57FF] hover:bg-[#7870ff] text-white rounded-lg text-lg shadow-[0_3px_10px_rgb(0,0,0,0.2)]'
+              onClick={passwordGenerator}
+            >
+              Generate Password
+            </Button>
+            <Input
+              name="password"
+              value={Pass}
+              onChange={(e) => setPass(e.target.value)}
+              className='w-full md:w-60 m-2 text-lg p-3 placeholder:text-black bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)]'
+              type="text"
+              placeholder='Password'
+              disabled
+            />
+            <Button
+              onClick={handleAdmin}
+              className='w-full md:w-36 m-2 p-3 bg-[#5F57FF] hover:bg-[#7870ff] text-white rounded-lg text-lg shadow-[0_3px_10px_rgb(0,0,0,0.2)]'
+            >
+              Register
+            </Button>
+          </div>
+        </form>
+      </div>
+  
+      <div className='mt-4 mb-2 p-1 w-full lg:w-2/3 h-[380px] rounded-xl shadow-[0_3px_10px_rgb(0,0,0,0.2)]'>
+        {/* Adjusted width for smaller screens */}
+        <div className="ag-theme-quartz" style={{ height: '100%', width: '100%' }}>
+          <AgGridReact rowData={rowData} columnDefs={colDefs} />
         </div>
       </div>
-      <ToastContainer />
-
-
-      <div className={`flex justify-center items-center -translate-y-full ${confirmModal ? 'translate-y-0' : null} top-0 left-0 transition-all fixed w-full min-h-screen`}>
-        <div className='fixed top-0 left-0 bg-black opacity-70 w-full h-screen'></div>
-        <div className='min-w-[300px] z-50'>
-          <Card>
-            <CardHeader>
-              <CardTitle>Confirmation</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription>Do you really want to delete this hostel?</CardDescription>
-            </CardContent>
-            <CardFooter className='flex justify-between'>
-              <Button ref={noRef} onClick={() => { setConfirmModal(false) }} className="bg-green-700">No</Button>
-              <Button ref={yesRef} onClick={() => { }} className="bg-red-700">Yes</Button>
-            </CardFooter>
-          </Card>
-        </div>
+    </div>
+    <ToastContainer />
+  
+    <div className={`flex justify-center items-center -translate-y-full ${confirmModal ? 'translate-y-0' : ''} top-0 left-0 transition-all fixed w-full min-h-screen`}>
+      <div className='fixed top-0 left-0 bg-black opacity-70 w-full h-screen'></div>
+      <div className='min-w-[300px] z-50'>
+        <Card>
+          <CardHeader>
+            <CardTitle>Confirmation</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <CardDescription>Do you really want to delete this hostel?</CardDescription>
+          </CardContent>
+          <CardFooter className='flex justify-between'>
+            <Button ref={noRef} onClick={() => { setConfirmModal(false) }} className="bg-green-700">No</Button>
+            <Button ref={yesRef} onClick={() => { }} className="bg-red-700">Yes</Button>
+          </CardFooter>
+        </Card>
       </div>
-
-
-
-      <div className={`-translate-y-full ${editMode ? 'translate-y-0' : null} flex justify-center items-center fixed top-0 left-0 transition-all w-full min-h-screen z-50`}>
-        <div className='fixed top-0 left-0 bg-black opacity-70 w-full h-screen'></div>
-        <div className='min-w-[300px] z-[1000]'>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Edit Hostel</CardTitle>
-              <CardDescription>Change Hostel Information</CardDescription>
-            </CardHeader>
-
-            <CardContent>
-              <form onSubmit={handleSubmit(onSubmitEdit)}>
-
-
-                <div className='w-full min-h-[150px] md:w-[600px]'>
-                  <Input defaultValue={editValues.name} {...register("name")} name="name" onChange={handleName} className='w-full m-2 text-lg p-3 placeholder:text-black bg-white  shadow-[0_3px_10px_rgb(0,0,0,0.2)] ' type="text" placeholder='Name' />
-                  <Input defaultValue={editValues.hostelNo} {...register("hostelNo")} name="hostelNo" onChange={handleNoChange} className='w-full m-2  text-lg p-3 placeholder:text-black bg-white  shadow-[0_3px_10px_rgb(0,0,0,0.2)]' type="number" placeholder='Hostel No' min="0" max="11" />
-                  <Input defaultValue={editValues.mobile} {...register("mobile")} name="mobile" onChange={handleMobile} className='w-full m-2  text-lg p-3 placeholder:text-black bg-white  shadow-[0_3px_10px_rgb(0,0,0,0.2)]' type="tel" placeholder='Mobile No' />
-                  <Input defaultValue={editValues.email} {...register("email")} name="email" onChange={handleEmail} className='w-full m-2  text-lg p-3 placeholder:text-black bg-white  shadow-[0_3px_10px_rgb(0,0,0,0.2)]' type="text" placeholder='Email' />
-                </div>
-
-
-                <div className='p-4 flex justify-between'>
-
-                  <Button type="button" onClick={() => { setEditMode(false); setErrorMessage('') }} className="bg-red-700">Close</Button>
-                  <Button type="submit" className="bg-green-700">Submit</Button>
-
-                </div>
-
-              </form>
-            </CardContent>
-          </Card>
-
-        </div>
-
+    </div>
+  
+    <div className={`-translate-y-full ${editMode ? 'translate-y-0' : ''} flex justify-center items-center fixed top-0 left-0 transition-all w-full min-h-screen z-50`}>
+      <div className='fixed top-0 left-0 bg-black opacity-70 w-full h-screen'></div>
+      <div className='min-w-[300px] z-[1000]'>
+        <Card>
+          <CardHeader>
+            <CardTitle>Edit Hostel</CardTitle>
+            <CardDescription>Change Hostel Information</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit(onSubmitEdit)}>
+              <div className='w-full min-h-[150px] md:w-[600px]'>
+                <Input
+                  defaultValue={editValues.name}
+                  {...register("name")}
+                  name="name"
+                  onChange={handleName}
+                  className='w-full m-2 text-lg p-3 placeholder:text-black bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)]'
+                  type="text"
+                  placeholder='Name'
+                />
+                <Input
+                  defaultValue={editValues.hostelNo}
+                  {...register("hostelNo")}
+                  name="hostelNo"
+                  onChange={handleNoChange}
+                  className='w-full m-2 text-lg p-3 placeholder:text-black bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)]'
+                  type="number"
+                  placeholder='Hostel No'
+                  min="0"
+                  max="11"
+                />
+                <Input
+                  defaultValue={editValues.mobile}
+                  {...register("mobile")}
+                  name="mobile"
+                  onChange={handleMobile}
+                  className='w-full m-2 text-lg p-3 placeholder:text-black bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)]'
+                  type="tel"
+                  placeholder='Mobile No'
+                />
+                <Input
+                  defaultValue={editValues.email}
+                  {...register("email")}
+                  name="email"
+                  onChange={handleEmail}
+                  className='w-full m-2 text-lg p-3 placeholder:text-black bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)]'
+                  type="text"
+                  placeholder='Email'
+                />
+              </div>
+              <div className='p-4 flex justify-between'>
+                <Button type="button" onClick={() => { setEditMode(false); setErrorMessage('') }} className="bg-red-700">Close</Button>
+                <Button type="submit" className="bg-green-700">Submit</Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
       </div>
-      <DevTool control={control} />
-
-
-    </>
+    </div>
+    <DevTool control={control} />
+  </>
+  
 
 
   )
