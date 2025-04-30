@@ -13,6 +13,8 @@ import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { FaNoteSticky } from "react-icons/fa6";
 import { SlSupport } from "react-icons/sl";
+import { FaRegFileAlt } from 'react-icons/fa';
+
 
 
 
@@ -41,6 +43,8 @@ export default function Sidebar(){
     const [subNotice, setSubNotice] = useState(false);
     const [subComplaint,setSubComplaint] = useState(false);
     const [subApplication,setsubApplication] = useState(false);
+    const [subApplicationStatus,setsubApplicationStatus] = useState(false);
+
     const [subGuest,setSubGuest] = useState(false);
 
     const openMenu = ()=>{
@@ -61,6 +65,7 @@ export default function Sidebar(){
             setSubNotice(false);
             setSubComplaint(false);
             setsubApplication(false);
+            setsubApplicationStatus(false);
             setSubGuest(false);
         }else if(value ==='studentInfo'){
             setSubHome(false);
@@ -70,6 +75,7 @@ export default function Sidebar(){
             setSubNotice(false);
             setSubComplaint(false);
             setsubApplication(false);
+            setsubApplicationStatus(false);
             setSubGuest(false);
         }else if(value === 'roomInfo'){
             setSubHome(false);
@@ -79,6 +85,7 @@ export default function Sidebar(){
             setSubNotice(false);
             setSubComplaint(false);
             setsubApplication(false);
+            setsubApplicationStatus(false);
             setSubGuest(false);
         }else if(value === 'settings'){
             setSubHome(false);
@@ -88,6 +95,7 @@ export default function Sidebar(){
             setSubNotice(false);
             setSubComplaint(false);
             setsubApplication(false);
+            setsubApplicationStatus(false);
             setSubGuest(false);
         }else if(value === 'notice'){
             setSubHome(false);
@@ -97,6 +105,7 @@ export default function Sidebar(){
             setSubNotice(prev=>!prev);
             setSubComplaint(false);
             setsubApplication(false);
+            setsubApplicationStatus(false);
             setSubGuest(false);
         }else if(value === 'complaint'){
             setSubHome(false);
@@ -106,6 +115,7 @@ export default function Sidebar(){
             setSubNotice(false);
             setSubComplaint(prev => !prev);
             setsubApplication(false);
+            setsubApplicationStatus(false);
             setSubGuest(false);
         }
         else if(value === 'application'){
@@ -116,6 +126,18 @@ export default function Sidebar(){
             setSubNotice(false);
             setSubComplaint(false);
             setsubApplication(prev => !prev);
+            setsubApplicationStatus(false);
+            setSubGuest(false);
+
+        }else if(value === 'applicationstatus'){
+            setSubHome(false);
+            setSubStudent(false);
+            setSubRoom(false);
+            setSubSettings(false);
+            setSubNotice(false);
+            setSubComplaint(false);
+            setsubApplication(false);
+            setsubApplicationStatus(prev => !prev);
             setSubGuest(false);
 
         }
@@ -127,6 +149,7 @@ export default function Sidebar(){
             setSubNotice(false);
             setSubComplaint(false);
             setsubApplication(false);
+            setsubApplicationStatus(false);
             setSubGuest(prev => !prev);
         }
 
@@ -225,9 +248,10 @@ export default function Sidebar(){
             </div>
             {/* application */}
             <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
-                        <p onClick={()=>{changeSubMenu('application')}} className={(activeOption==='application'?styles.activeItem:null)+ ' flex items-center gap-2'}><FaNoteSticky /> <span className={(state?null:styles.hidden)+' mt-1'}>Application</span></p>
+                        <p onClick={()=>{changeSubMenu('application')}} className={(activeOption==='application'?styles.activeItem:null)+ ' flex items-center gap-2'}><FaRegFileAlt /> <span className={(state?null:styles.hidden)+' mt-1'}>Application</span></p>
                         <ul className={state&&subApplication?null:styles.hidden}>
                         <li onClick={()=>{navigator('/adminDashboard/admin/application')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='application'?styles.activeSubOption:null)}>New Application</li>
+                        <li onClick={()=>{navigator('/adminDashboard/admin/applicationstatus')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='applicationstatus'?styles.activeSubOption:null)}>Status of Application</li>
                         </ul>
             </div>
 

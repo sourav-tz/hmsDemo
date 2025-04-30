@@ -13,6 +13,8 @@ import { useLocation,useNavigate } from 'react-router-dom';
 import { SlSupport } from "react-icons/sl";
 import { MdFoodBank } from "react-icons/md";
 import { FaNoteSticky } from "react-icons/fa6";
+import { FaRegFileAlt } from 'react-icons/fa';
+
 
 export default function StudentSidebar(){
 
@@ -185,7 +187,7 @@ const handleLogout = ()=>{}
             </div>
             {/* Application  */}
             <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
-                        <p onClick={()=>{changeSubMenu('request')}} className={(activeOption==='request'?styles.activeItem:null)+ ' flex items-center gap-2'}><SlSupport /> <span className={(state?null:styles.hidden)+' mt-1'}>Application</span></p>
+                        <p onClick={()=>{changeSubMenu('request')}} className={(activeOption==='request'?styles.activeItem:null)+ ' flex items-center gap-2'}><FaRegFileAlt /> <span className={(state?null:styles.hidden)+' mt-1'}>Application</span></p>
                         <ul className={state&&subRequest?null:styles.hidden}>
                         <li onClick={()=>{Navigator('/studentDashboard/student/application')}} className={styles.subOptions+' ' + (activeSubOption==='application'?styles.activeSubOption:null)}>New Application</li>
                         <li onClick={()=>{Navigator('/studentDashboard/student/applicationstatus')}} className={styles.subOptions+' ' + (activeSubOption==='applicationstatus'?styles.activeSubOption:null)}>Status of Application</li>

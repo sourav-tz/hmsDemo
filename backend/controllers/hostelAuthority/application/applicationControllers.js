@@ -1,3 +1,4 @@
+const { Rewind } = require('lucide-react');
 const { Application } = require('../../../models');
 
 // fill by those values by which admin can approve directly 
@@ -8,17 +9,19 @@ const directlyApprovableTags = [];
 
 exports.getAllApplications = async (req, res) => {
   try {
-    // const hostelNo = req.admin.hostelNo;
-    const hostelNo = 5;
-
-    const { status } = req.query; // frontend can send status like ?status=resolved
+    const hostelNo = req.body.tokenHostelNo;
+    const { status } = req.query; // e.g., ?status=resolved or ?status=all
+    // Build the where clause dynamically
+    
+    const whereClause = {
+      forwardedTo: hostelNo,
+      ...(status && status !== 'all' ? { status } : {}) 
+    };
 
     const applications = await Application.findAll({
-      where: {
-        forwardedTo: hostelNo,
-        status: status || 'pendingAtAdmin' // default to 'pendingAtAdmin' if no status provided
-      }
+      where: whereClause,
     });
+
 
     res.status(200).json({
       message: 'Applications fetched successfully',
@@ -31,12 +34,12 @@ exports.getAllApplications = async (req, res) => {
 };
 
 
+
 // Approve an application (only if tag is directly approvable)
 exports.approveApplication = async (req, res) => {
   try {
     const applicationId = req.params.id;
-    // const hostelNo = req.admin.hostelNo;
-    const hostelNo = 5;
+    const hostelNo = req.admin.tokenHostelNo;
 
     const application = await Application.findOne({
       where: {
@@ -68,8 +71,7 @@ exports.approveApplication = async (req, res) => {
 exports.rejectApplication = async (req, res) => {
   try {
     const applicationId = req.params.id;
-    // const hostelNo = req.admin.hostelNo;
-    const hostelNo = 5;
+    const hostelNo = req.body.tokenHostelNo;
 
 
     const application = await Application.findOne({
@@ -99,7 +101,10 @@ exports.forwardApplication = async (req, res) => {
   try {
     const applicationId = req.params.id;
     // const hostelNo = req.admin.hostelNo;
-    const hostelNo = 5;
+    console.log(req.body.tokenHostelNo);
+    const hostelNo = req.body.tokenHostelNo;
+    const remark = req.body.remark
+    console.log(req.body);
 
     const application = await Application.findOne({
       where: {
@@ -118,6 +123,7 @@ exports.forwardApplication = async (req, res) => {
     }
 
     application.status = 'pendingAtSuperAdmin';
+    application.adminComment = remark;
     await application.save();
 
     res.status(200).json({ message: 'Application forwarded to super admin successfully' });
@@ -132,7 +138,7 @@ exports.getApplicationById = async (req, res) => {
   try {
     const applicationId = req.params.id;
     // const hostelNo = req.admin.hostelNo;
-    const hostelNo = 5
+    const hostelNo = req.body.tokenHostelNo
 
 
     const application = await Application.findOne({
@@ -157,11 +163,11 @@ exports.editApplication = async (req, res) => {
     try {
       const { applicationId } = req.params;
       const { tag, hostelChangeTo } = req.body;
-  
+      console.log(hostelChangeTo);
       const application = await Application.findOne({
         where: {
           applicationId,
-          forwardedTo: req.admin.hostelNo,
+          forwardedTo: req.body.tokenHostelNo,
           status: 'pendingAtAdmin'
         }
       });
@@ -169,14 +175,18 @@ exports.editApplication = async (req, res) => {
       if (!application) {
         return res.status(404).json({ error: 'Application not found or not accessible' });
       }
-  
       // Only allow edit for specific tag
-      if (tag === 'hostelChange') {
-        application.hostelChangeTo = hostelChangeTo;
+      if (tag === 'hostel-change') {
+        application.extraData = {
+          ...application.extraData,
+          hostelNo: hostelChangeTo 
+        };
         await application.save();
+        
+      console.log("done")
+
         return res.status(200).json({ message: 'Application updated successfully', application });
       }
-  
       return res.status(400).json({ error: 'Editing not allowed for this tag' });
   
     } catch (error) {

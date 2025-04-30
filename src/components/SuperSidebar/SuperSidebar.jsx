@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux';
 import { BsHouses } from "react-icons/bs";
 import { useLocation,useNavigate } from 'react-router-dom';
 import storage from 'redux-persist/lib/storage';
+import { FaRegFileAlt } from 'react-icons/fa';
 
 export default function SuperSidebar(){
 
@@ -159,6 +160,13 @@ const handleLogout = ()=>{}
 
             <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
                         <p onClick={()=>{changeSubMenu('hostels');Navigator('/superAdminDashboard/hostels/manageAdmins')}} className={(activeOption==='manageAdmins'?styles.activeItem:null)+ ' flex items-center gap-2'}><BsHouses /> <span className={(state?null:styles.hidden)+' mt-1'}>Manage Admins</span></p>
+                        {/* <ul className={state&&subHostel?null:styles.hidden}> */}
+                        {/* <li onClick={()=>{Navigator('/superAdminDashboard/hostels/manageHostels')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='manageHostels'?styles.activeSubOption:null)}>Manage Hostels</li> */}
+                        {/* <li onClick={()=>{Navigator('/superAdminDashboard/hostels/manageAdmins')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='manageAdmins'?styles.activeSubOption:null)}>Manage Admins</li> */}
+                        {/* </ul> */}
+            </div>
+            <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
+                        <p onClick={()=>{changeSubMenu('applicatoin');Navigator('/superAdminDashboard/application/applicationStatus')}} className={(activeOption==='manageApplication'?styles.activeItem:null)+ ' flex items-center gap-2'}><FaRegFileAlt /> <span className={(state?null:styles.hidden)+' mt-1'}>Manage Applications</span></p>
                         {/* <ul className={state&&subHostel?null:styles.hidden}> */}
                         {/* <li onClick={()=>{Navigator('/superAdminDashboard/hostels/manageHostels')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='manageHostels'?styles.activeSubOption:null)}>Manage Hostels</li> */}
                         {/* <li onClick={()=>{Navigator('/superAdminDashboard/hostels/manageAdmins')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='manageAdmins'?styles.activeSubOption:null)}>Manage Admins</li> */}

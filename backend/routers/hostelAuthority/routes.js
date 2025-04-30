@@ -106,10 +106,10 @@ router.post('/resolveComplaint',auth,resoleComplaint);
 
 router.get('/applications', auth, getAllApplications);
 router.get('/applications/:id', auth, getApplicationById);
-router.patch('/applications/approve/:id', auth, approveApplication);
-router.patch('/applications/reject/:id', auth, rejectApplication);
-router.patch('/applications/forward/:id', auth, forwardApplication); 
-router.patch('/applications/edit/:applicationId', auth, editApplication);
+router.post('/applications/approve/:id', auth, approveApplication);
+router.post('/applications/reject/:id', auth, rejectApplication);
+router.post('/applications/forward/:id', auth, forwardApplication); 
+router.post('/applications/edit/:applicationId', auth, editApplication);
 router.post("/applications/bulk-hostel-change", auth, raiseBulkHostelChangeByAdmin);
 
 

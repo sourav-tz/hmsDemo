@@ -32,12 +32,17 @@ exports.createApplication = async (req, res) => {
 // Function to get all applications by the student
 exports.getApplications = async (req, res) => {
   try {
-    console.log(req.body);
+   
     const studentId = req.query.rollNo;
-    console.log(studentId);
+    const status = req.query.status;
+   
     // Find all applications created by the student
+    const whereClause = {
+      createdBy: studentId,
+      ...(status && status !== 'all' ? { status } : {}) 
+    };
     const applications = await Application.findAll({
-      where: { createdBy: studentId },
+      where: whereClause
     });
 
     res.status(200).json({
@@ -54,7 +59,7 @@ exports.getApplicationById = async (req, res) => {
   try {
     const applicationId = req.params.id;
     // not in use currently 
-    const studentId = 523110024; // Assuming the student's roll number is in `req.user`
+    const studentId = req.query.rollNo // Assuming the student's roll number is in `req.user`
 
     // Find the specific application created by the student
     const application = await Application.findOne({

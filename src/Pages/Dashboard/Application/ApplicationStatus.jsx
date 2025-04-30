@@ -12,15 +12,24 @@ import { Card } from "@/components/ui/card";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const ApplicationStatus = () => {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [expandedApplicationId, setExpandedApplicationId] = useState(null);
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [isEditingHostel, setIsEditingHostel] = useState(false);
   
 
-  const fetchApplications = async () => {
+  const fetchApplications = async (status = "all") => {
     const userData = localStorage.getItem("persist:root");
     const rollNo = JSON.parse(JSON.parse(userData).userStorage).data.rollNo;
 
@@ -31,13 +40,16 @@ const ApplicationStatus = () => {
       const response = await axios({
         method: "get",
         url: import.meta.env.VITE_BASE_URL + "/student/applications",
-        params: { rollNo },
+        params: { rollNo , status },
         withCredentials: true,
       });
 
       if (response.data?.applications) {
-        setApplications(response.data.applications);
-      } else {
+        const sortedApplications = response.data.applications.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        );
+        setApplications(sortedApplications);
+      }  else {
         setError("No applications data received");
       }
     } catch (err) {
@@ -48,32 +60,70 @@ const ApplicationStatus = () => {
     }
   };
 
+  
+
   useEffect(() => {
     fetchApplications();
   }, []);
 
   const handleRefresh = () => {
     fetchApplications();
+    setStatusFilter("all")
   };
 
   const toggleDescription = (applicationId) => {
     setExpandedApplicationId(expandedApplicationId === applicationId ? null : applicationId);
   };
 
-  const getStatusBadge = (status) => {
+  const getStatusBadgeClassName = (status) => {
     switch (status) {
       case "pendingAtAdmin":
-        return <Badge className="bg-yellow-500 hover:bg-yellow-500">Pending at Admin</Badge>;
+        return "bg-yellow-500 text-white";
       case "pendingAtSuperAdmin":
-        return <Badge className="bg-purple-500 hover:bg-purple-500">Pending at Super Admin</Badge>;
+        return "bg-purple-500 text-white";
+      case "approvedByAdmin":
+        return "bg-green-400 text-white";
       case "approvedBySuperAdmin":
-        return <Badge className="bg-green-500 hover:bg-green-500">Approved</Badge>;
-      case "rejected":
-        return <Badge className="bg-red-500 hover:bg-red-500">Rejected</Badge>;
+        return "bg-green-600 text-white";
+      case "rejectedByAdmin":
+        return "bg-red-400 text-white";
+      case "rejectedBySuperAdmin":
+        return "bg-red-600 text-white";
+      case "forwarded":
+        return "bg-blue-500 text-white";
       default:
-        return <Badge variant="outline">{status}</Badge>;
+        return "bg-gray-200 text-gray-700";
     }
   };
+
+
+  const getStatusBadgeText = (status) => {
+    switch (status) {
+      case "pendingAtAdmin":
+        return "Pending at Admin";
+      case "pendingAtSuperAdmin":
+        return "Pending at Super Admin";
+      case "approvedByAdmin":
+        return "Approved by Admin";
+      case "approvedBySuperAdmin":
+        return "Approved by Super Admin";
+      case "rejectedByAdmin":
+        return "Rejected by Admin";
+      case "rejectedBySuperAdmin":
+        return "Rejected by Super Admin";
+      case "forwarded":
+        return "Forwarded";
+      default:
+        return status;
+    }
+  };
+
+  const getStatusBadgeForTable = (status) => {
+      const className = getStatusBadgeClassName(status);
+      const text = getStatusBadgeText(status);
+      
+      return <Badge className={`${className} hover:${className.split(' ')[0]}`}>{text}</Badge>;
+    };
 
   const formatDate = (dateString) => {
     const options = {
@@ -86,10 +136,14 @@ const ApplicationStatus = () => {
     };
     return new Date(dateString).toLocaleString('en-US', options);
   };
-
+  const handleStatusFilterChange = (value) => {
+    setStatusFilter(value);
+    fetchApplications(value);
+  };
   const getTagDisplay = (tag) => {
     return tag.toLowerCase() === 'hostel-change' ? 'Change Hostel' : tag;
   };
+
 
   if (loading) {
     return (
@@ -116,28 +170,47 @@ const ApplicationStatus = () => {
       </div>
 
       <Card>
-        <div className="p-4 flex justify-end">
-          <Button onClick={handleRefresh} variant="outline" size="sm">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="mr-2"
-            >
-              <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-              <path d="M3 3v5h5" />
-              <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
-              <path d="M16 16h5v5" />
-            </svg>
-            Refresh
-          </Button>
-        </div>
+        <div className="p-4 flex justify-between items-center">
+                  <div className="flex items-center gap-4">
+                    <Select 
+                      value={statusFilter} 
+                      onValueChange={handleStatusFilterChange}
+                    >
+                      <SelectTrigger className="w-[250px]">
+                        <SelectValue placeholder="Filter by status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Applications</SelectItem>
+                        <SelectItem value="pendingAtAdmin">Pending at Admin</SelectItem>
+                        <SelectItem value="pendingAtSuperAdmin">Pending at Super Admin</SelectItem>
+                        <SelectItem value="approvedByAdmin">Approved by Admin</SelectItem>
+                        <SelectItem value="approvedBySuperAdmin">Approved by Super Admin</SelectItem>
+                        <SelectItem value="rejectedByAdmin">Rejected by Admin</SelectItem>
+                        <SelectItem value="rejectedBySuperAdmin">Rejected by Super Admin</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <Button onClick={handleRefresh} variant="outline" size="sm">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="mr-2"
+                      >
+                      <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                      <path d="M3 3v5h5" />
+                      <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
+                      <path d="M16 16h5v5" />
+                      </svg>
+                      Refresh
+                  </Button>
+                </div>
         <Table>
           <TableHeader>
             <TableRow>
@@ -168,7 +241,7 @@ const ApplicationStatus = () => {
                     <TableCell>
                       <Badge variant="secondary">{getTagDisplay(application.tag)}</Badge>
                     </TableCell>
-                    <TableCell>{getStatusBadge(application.status)}</TableCell>
+                    <TableCell>{getStatusBadgeForTable(application.status)}</TableCell>
                     <TableCell className="text-right">
                         <Button
                           variant="link"
