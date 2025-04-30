@@ -37,6 +37,7 @@ export default function SuperSidebar(){
     const [subRoom, setSubRoom] = useState(false);
     const [subSettings, setSubSettings] = useState(false);
     const [subHostel,setSubHostel] = useState(false);
+    const [subApplication,setsubApplication] = useState(false);
 
 
     const changeSubMenu = (value)=>{
@@ -47,12 +48,15 @@ export default function SuperSidebar(){
             setSubRoom(false);
             setSubSettings(false);
             setSubHostel(false);
+            setsubApplication(false);
+
         }else if(value ==='studentInfo'){
             setSubHome(false);
             setSubStudent(prev => !prev);
             setSubRoom(false);
             setSubSettings(false);
             setSubHostel(false);
+            setsubApplication(false);
 
         }else if(value === 'roomActions'){
             setSubHome(false);
@@ -60,6 +64,7 @@ export default function SuperSidebar(){
             setSubRoom(prev=>!prev);
             setSubSettings(false);
             setSubHostel(false);
+            setsubApplication(false);
 
         }else if(value === 'settings'){
             setSubHome(false);
@@ -67,6 +72,7 @@ export default function SuperSidebar(){
             setSubRoom(false);
             setSubSettings(prev=>!prev);
             setSubHostel(false);
+            setsubApplication(false);
 
         }else if(value=='hostels'){
             setSubHome(false);
@@ -74,7 +80,17 @@ export default function SuperSidebar(){
             setSubRoom(false);
             setSubSettings(false);
             setSubHostel(prev=>!prev);
+            setsubApplication(false);
         }
+        else if(value=='application'){
+            setSubHome(false);
+            setSubStudent(false);
+            setSubRoom(false);
+            setSubSettings(false);
+            setSubHostel(false);
+            setsubApplication(prev=>!prev);
+        }
+
 
     }
 
@@ -120,20 +136,26 @@ const handleLogout = ()=>{}
                 <div className={state?null:styles.hidden} style={{marginLeft:'8px',marginTop:'0px'}}><p>{userData?.email!==undefined?`${userData?.email.slice(0,9)}`:'NULL'}<br/><span className={styles.userRole} style={{fontSize:'12px'}}>{userData?.role!==undefined?`Role: ${userData?.role}`:'Role: Null'}</span></p></div>
             </div>
             <div className={styles.listContainer}>
+
+
+            {/* Home */}
             <div  className={(styles.item) +' '+' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
                         <p onClick={()=>{changeSubMenu('Home'); Navigator('/superAdminDashboard/main/home')}} className={(activeOption==='home'?styles.activeItem:null) + ' flex items-center gap-2'}><i><IoHome  size="20px"/></i> <span className={(state?null:styles.hidden)+' mt-1'}>Home</span></p>
                         <ul className={state&&subHome?null:styles.hidden} >
                         {/* <li onClick={()=>{Navigator('/superAdminDashboard/main/home')}} className={styles.subOptions+' ' + (activeSubOption==='home'?styles.activeSubOption:null)}>Home</li> */}
                         </ul>
             </div>
+
+            {/* Manage Courses */}
             <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
                         <p onClick={()=>{changeSubMenu('studentInfo');Navigator('/superAdminDashboard/studentActions/addCourses')}} className={(activeOption==='addCourses'?styles.activeItem:null)+ ' flex items-center gap-2'}><FaInfo /> <span className={(state?null:styles.hidden)+' mt-1'}>Manage Courses</span></p>
                         {/* <ul className={state&&subStudent?null:styles.hidden}> */}
                         {/* <li onClick={()=>{Navigator('/superAdminDashboard/studentActions/viewInfo')}} className={styles.subOptions+' ' + (activeSubOption==='viewInfo'?styles.activeSubOption:null)}>View Info</li> */}
                         {/* <li onClick={()=>{Navigator('/superAdminDashboard/studentActions/addCourses')}} className={styles.subOptions+' ' + (activeSubOption==='addCourses'?styles.activeSubOption:null)}>Add Courses</li> */}
                         {/* </ul> */}
-                    
             </div>
+
+            {/* Allocate Romms */}
             <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
                         <p onClick={()=>{changeSubMenu('roomActions');Navigator('/superAdminDashboard/roomActions/allocateRooms')}} className={(activeOption==='allocateRooms'?styles.activeItem:null)+ ' flex items-center gap-2'}><MdOutlineBedroomChild /> <span className={(state?null:styles.hidden)+' mt-1'}>Allocate Rooms</span></p>
                         {/* <ul className={state&&subRoom?null:styles.hidden}> */}
@@ -142,6 +164,8 @@ const handleLogout = ()=>{}
                         {/* </ul> */}
             </div>
 
+
+            {/* Manage Rooms */}
             <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
                         <p onClick={()=>{changeSubMenu('roomActions');Navigator('/superAdminDashboard/roomActions/manageRooms')}} className={(activeOption==='manageRooms'?styles.activeItem:null)+ ' flex items-center gap-2'}><MdOutlineBedroomChild /> <span className={(state?null:styles.hidden)+' mt-1'}>Manage Room</span></p>
                         {/* <ul className={state&&subRoom?null:styles.hidden}> */}
@@ -150,6 +174,8 @@ const handleLogout = ()=>{}
                         {/* </ul> */}
             </div>
 
+
+            {/* Manage Hostels */}
             <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
                         <p onClick={()=>{changeSubMenu('hostels');Navigator('/superAdminDashboard/hostels/manageHostels')}} className={(activeOption==='manageHostels'?styles.activeItem:null)+ ' flex items-center gap-2'}><BsHouses /> <span className={(state?null:styles.hidden)+' mt-1'}>Manage Hostels</span></p>
                         {/* <ul className={state&&subHostel?null:styles.hidden}> */}
@@ -158,8 +184,18 @@ const handleLogout = ()=>{}
                         {/* </ul> */}
             </div>
 
+            {/* Manage Admins */}
             <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
                         <p onClick={()=>{changeSubMenu('hostels');Navigator('/superAdminDashboard/hostels/manageAdmins')}} className={(activeOption==='manageAdmins'?styles.activeItem:null)+ ' flex items-center gap-2'}><BsHouses /> <span className={(state?null:styles.hidden)+' mt-1'}>Manage Admins</span></p>
+                        {/* <ul className={state&&subHostel?null:styles.hidden}> */}
+                        {/* <li onClick={()=>{Navigator('/superAdminDashboard/hostels/manageHostels')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='manageHostels'?styles.activeSubOption:null)}>Manage Hostels</li> */}
+                        {/* <li onClick={()=>{Navigator('/superAdminDashboard/hostels/manageAdmins')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='manageAdmins'?styles.activeSubOption:null)}>Manage Admins</li> */}
+                        {/* </ul> */}
+            </div>
+
+            {/* Manage Applications */}
+            <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
+                        <p onClick={()=>{changeSubMenu('application');Navigator('/superAdminDashboard/application/applicationStatus')}} className={(activeOption==='manageApplication'?styles.activeItem:null)+ ' flex items-center gap-2'}><FaRegFileAlt /> <span className={(state?null:styles.hidden)+' mt-1'}>Manage Applications</span></p>
                         {/* <ul className={state&&subHostel?null:styles.hidden}> */}
                         {/* <li onClick={()=>{Navigator('/superAdminDashboard/hostels/manageHostels')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='manageHostels'?styles.activeSubOption:null)}>Manage Hostels</li> */}
                         {/* <li onClick={()=>{Navigator('/superAdminDashboard/hostels/manageAdmins')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='manageAdmins'?styles.activeSubOption:null)}>Manage Admins</li> */}
@@ -191,25 +227,44 @@ const handleLogout = ()=>{}
             </div>
             <div className={`${state?'':'hidden'} absolute w-full h-full top-0 left-[0] flex justify-center items-center text-white`}>
                 <ul>
+
+                    {/* Home */}
                     <li className='cursor-pointer flex flex-col text-xl font-semibold'><div onClick={()=>{changeSubMenu('Home')}} className={`flex items-center gap-2 ${activeOption==='main'?'text-orange-400':'text-white'}`}><IoHome size='15px'/> Main </div>
                         <ul className={`${subHome?'':'hidden'} text-sm text-white  font-thin ml-8 transition-all`}>
                             <li onClick={()=>{Navigator('/superAdminDashboard/main/home');handleHamBurger()}} className={`text-xl hover:scale-110 transition-all rounded-md px-2 py-[2px] ${activeSubOption==='home'?'bg-blue-900 font-normal':''}`}> Home</li>
                         </ul>
                     </li>
+                    
 
+                    {/* Manage Course */}
+                    <li className='mt-4 cursor-pointer flex flex-col text-xl font-semibold'><div onClick={()=>{changeSubMenu('studentInfo')}} className={`flex items-center gap-2 ${activeOption==='studentInfo'?'text-orange-400':'text-white'}`}><FaInfo size="15px" /> Manage Courses</div>
+                        <ul className={`${subStudent?'':'hidden'} text-sm text-white  font-thin ml-8 transition-all`}>
+                            <li onClick={()=>{Navigator('/superAdminDashboard/studentActions/addCourses');handleHamBurger()}} className={`text-xl hover:scale-110 transition-all rounded-md px-2 py-[2px] ${activeSubOption==='addCourses'?'bg-blue-900 font-normal':''}`}>Add Courses</li>
+                        </ul>
+                    </li>
+
+                    {/* Allot Rooms */}
                     <li className='mt-4 cursor-pointer flex flex-col text-xl font-semibold'><div onClick={()=>{changeSubMenu('roomActions')}} className={`flex items-center gap-2 ${activeOption==='roomActions'?'text-orange-400':'text-white'}`}><MdOutlineBedroomChild size="15px" /> Rooms</div>
                         <ul className={`${subRoom?'':'hidden'} text-sm text-white  font-thin ml-8 transition-all`}>
                             <li onClick={()=>{Navigator('/superAdminDashboard/roomActions/allocateRooms');handleHamBurger()}} className={`text-xl hover:scale-110 transition-all rounded-md px-2 py-[2px] ${activeSubOption==='allocateRooms'?'bg-blue-900 font-normal':''}`}> Allot Rooms</li>
                         </ul>
                     </li>
 
-                    <li className='mt-4 cursor-pointer flex flex-col text-xl font-semibold'><div onClick={()=>{changeSubMenu('hostels')}} className={`flex items-center gap-2 ${activeOption==='studentInfo'?'text-orange-400':'text-white'}`}><FaInfo size='15px' />  Hostels</div>
+                    {/* Manage Hostels and Admin */}
+                    <li className='mt-4 cursor-pointer flex flex-col text-xl font-semibold'><div onClick={()=>{changeSubMenu('hostels')}} className={`flex items-center gap-2 ${activeOption==='studentInfo'?'text-orange-400':'text-white'}`}><FaInfo size='15px' /> Hostels and Admin</div>
                         <ul className={`${subHostel?'':'hidden'} text-sm text-white  font-thin ml-8 transition-all`}>
                             <li onClick={()=>{Navigator('/superAdminDashboard/hostels/manageHostels');handleHamBurger()}} className={`text-xl hover:scale-110 transition-all rounded-md px-2 py-[2px] ${activeSubOption==='manageHostels'?'bg-blue-900 font-normal':''}`}> Manage Hostels</li>
                             <li onClick={()=>{Navigator('/superAdminDashboard/hostels/manageAdmins');handleHamBurger()}} className={`text-xl hover:scale-110 transition-all rounded-md px-2 py-[2px] ${activeSubOption==='manageAdmin'?'bg-blue-900 font-normal':''}`}> Manage Admins</li>
                         </ul>
                     </li>
-
+                    
+                    {/* Applications */}
+                    <li className='mt-4 cursor-pointer flex flex-col text-xl font-semibold'><div onClick={()=>{changeSubMenu('application')}} className={`flex items-center gap-2 ${activeOption==='application'?'text-orange-400':'text-white'}`}><FaRegFileAlt size="15px" /> Applications</div>
+                        <ul className={`${subApplication?'':'hidden'} text-sm text-white  font-thin ml-8 transition-all`}>
+                            <li onClick={()=>{Navigator('/superAdminDashboard/application/applicationStatus');handleHamBurger()}} className={`text-xl hover:scale-110 transition-all rounded-md px-2 py-[2px] ${activeSubOption==='applicationStatus'?'bg-blue-900 font-normal':''}`}> View Applications</li>
+                        </ul>
+                    </li>
+                    
 
                 </ul>
                 <div onClick={handleLogout} className='absolute bottom-16 cursor-pointer left-[40%] text-white'>

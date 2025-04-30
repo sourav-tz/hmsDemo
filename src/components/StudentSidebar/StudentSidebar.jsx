@@ -171,6 +171,8 @@ const handleLogout = ()=>{}
                 </div>
                 <div className={state?null:styles.hidden} style={{marginLeft:'8px',marginTop:'0px'}}><p>{userData?.firstName!==undefined?userData?.firstName+' '+userData?.lastName:'Null'}<br/><span className={styles.userRole} style={{fontSize:'12px'}}>{userData?.roleType!==undefined?`Role: ${userData?.roleType}`:'Role: Null'}</span></p></div>
             </div>
+
+            {/* Main */}
             <div className={styles.listContainer}>
             <div  className={(styles.item) +' '+' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
                         <p onClick={()=>{changeSubMenu('Home')}} className={(activeOption==='main'?styles.activeItem:null) + ' flex items-center gap-2'}><i><IoHome  size="20px"/></i> <span className={(state?null:styles.hidden)+' mt-1'}>Main</span></p>
@@ -178,6 +180,8 @@ const handleLogout = ()=>{}
                         <li onClick={()=>{Navigator('/studentDashboard/main/home')}} className={styles.subOptions+' ' + (activeSubOption==='home'?styles.activeSubOption:null)}>Home</li>
                         </ul>
             </div>
+
+            {/* Complaints */}
             <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
                         <p onClick={()=>{changeSubMenu('complaints')}} className={(activeOption==='complaints'?styles.activeItem:null)+ ' flex items-center gap-2'}><SlSupport /> <span className={(state?null:styles.hidden)+' mt-1'}>Complaint</span></p>
                         <ul className={state&&subComplaint?null:styles.hidden}>
@@ -200,6 +204,9 @@ const handleLogout = ()=>{}
                         <li onClick={()=>{Navigator('/studentDashboard/notices/view')}} className={styles.subOptions+' ' + (activeSubOption==='view'?styles.activeSubOption:null)}>View Notices</li>
                         </ul>
             </div>
+
+
+            {/* Menu */}
             <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
                         <p onClick={()=>{changeSubMenu('mess')}} className={(activeOption==='mess'?styles.activeItem:null)+ ' flex items-center gap-2'}><MdFoodBank /> <span className={(state?null:styles.hidden)+' mt-1'}>Mess</span></p>
                         <ul className={state&&subMess?null:styles.hidden}>
@@ -214,21 +221,13 @@ const handleLogout = ()=>{}
                         <li onClick={()=>{Navigator('/studentDashboard/guest/referral')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='referral'?styles.activeSubOption:null)}>Verify Guest Referral</li>
                         </ul>
             </div>
-
-            {/* <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
-                        <p onClick={()=>{changeSubMenu('hostels')}} className={(activeOption==='hostels'?styles.activeItem:null)+ ' flex items-center gap-2'}><BsHouses /> <span className={(state?null:styles.hidden)+' mt-1'}>Hostels</span></p>
-                        <ul className={state&&subHostel?null:styles.hidden}>
-                        <li onClick={()=>{Navigator('/superAdminDashboard/hostels/manageHostels')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='manageHostels'?styles.activeSubOption:null)}>Manage Hostels</li>
-                        <li onClick={()=>{Navigator('/superAdminDashboard/hostels/manageAdmins')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='manageAdmins'?styles.activeSubOption:null)}>Manage Admins</li>
-                        </ul>
-            </div> */}
-            </div>
+          </div>
             </div>
         </div>
     </IconContext.Provider>
 
     <div className={`block w-full ${state?'h-full':'h-[60px]'} fixed transition-all top-0 left-0 backdrop-blur-md z-50 md:hidden`}>
-            <div className='h-full w-full bg-[#131133] absolute top-0 left-0 opacity-85 -z-1'></div>
+        <div className='h-full w-full bg-[#131133] absolute top-0 left-0 opacity-85 -z-1'></div>
             <div className='w-full h-[60px] absolute top-0 left-0 items-center p-4 flex z-50'>
                 <div className='flex-1'>
                     <h2 className='text-white'>NIT Hms</h2>
@@ -240,28 +239,59 @@ const handleLogout = ()=>{}
                 </div>
             </div>
             <div className={`${state?'':'hidden'} absolute w-full h-full top-0 left-[0] flex justify-center items-center text-white`}>
+
+            
                 <ul>
+
+                    {/* Main */}
                     <li className='cursor-pointer flex flex-col text-xl font-semibold'><div onClick={()=>{changeSubMenu('Home')}} className={`flex items-center gap-2 ${activeOption==='main'?'text-orange-400':'text-white'}`}><IoHome size='15px'/> Main </div>
                         <ul className={`${subHome?'':'hidden'} text-sm text-white  font-thin ml-8 transition-all`}>
                             <li onClick={()=>{Navigator('/studentDashboard/main/home');handleHamBurger()}} className={`text-xl hover:scale-110 transition-all rounded-md px-2 py-[2px] ${activeSubOption==='home'?'bg-blue-900 font-normal':''}`}> Home</li>
                         </ul>
                     </li>
 
-                    <li className='mt-4 cursor-pointer flex flex-col text-xl font-semibold'><div onClick={()=>{changeSubMenu('roomActions')}} className={`flex items-center gap-2 ${activeOption==='roomActions'?'text-orange-400':'text-white'}`}><MdOutlineBedroomChild size="15px" /> Rooms</div>
+                    {/* Complaints */}
+                    <li className='cursor-pointer flex flex-col text-xl font-semibold'><div onClick={()=>{changeSubMenu('complaints')}} className={`flex items-center gap-2 ${activeOption==='complaints'?'text-orange-400':'text-white'}`}><SlSupport size='15px'/> Complaints </div>
+                        <ul className={`${subComplaint?'':'hidden'} text-sm text-white  font-thin ml-8 transition-all`}>
+                            <li onClick={()=>{Navigator('/studentDashboard/complaints/register');handleHamBurger()}} className={`text-xl hover:scale-110 transition-all rounded-md px-2 py-[2px] ${activeSubOption==='register'?'bg-blue-900 font-normal':''}`}> Register complaints</li>
+                            <li onClick={()=>{Navigator('/studentDashboard/complaints/status');handleHamBurger()}} className={`text-xl hover:scale-110 transition-all rounded-md px-2 py-[2px] ${activeSubOption==='status'?'bg-blue-900 font-normal':''}`}> Check Status</li>
+                        </ul>
+                    </li>
+
+
+                    {/* Applications */}
+                    <li className='cursor-pointer flex flex-col text-xl font-semibold'><div onClick={()=>{changeSubMenu('request')}} className={`flex items-center gap-2 ${activeOption==='request'?'text-orange-400':'text-white'}`}><FaRegFileAlt size='15px'/> Applications </div>
+                        <ul className={`${subRequest?'':'hidden'} text-sm text-white  font-thin ml-8 transition-all`}>
+                            <li onClick={()=>{Navigator('/studentDashboard/student/application');handleHamBurger()}} className={`text-xl hover:scale-110 transition-all rounded-md px-2 py-[2px] ${activeSubOption==='application'?'bg-blue-900 font-normal':''}`}> New Application</li>
+                            <li onClick={()=>{Navigator('/studentDashboard/student/applicationstatus');handleHamBurger()}} className={`text-xl hover:scale-110 transition-all rounded-md px-2 py-[2px] ${activeSubOption==='applicationstatus'?'bg-blue-900 font-normal':''}`}> Application Status</li>
+                        </ul>
+                    </li>
+
+
+                    {/* Notices */}
+                    <li className='cursor-pointer flex flex-col text-xl font-semibold'><div onClick={()=>{changeSubMenu('notices')}} className={`flex items-center gap-2 ${activeOption==='notices'?'text-orange-400':'text-white'}`}><FaNoteSticky size='15px'/> Notices </div>
+                        <ul className={`${subNotice?'':'hidden'} text-sm text-white  font-thin ml-8 transition-all`}>
+                            <li onClick={()=>{Navigator('/studentDashboard/notices/view');handleHamBurger()}} className={`text-xl hover:scale-110 transition-all rounded-md px-2 py-[2px] ${activeSubOption==='view'?'bg-blue-900 font-normal':''}`}> View Notices</li>
+                        </ul>
+                    </li>
+
+
+                    {/* Mess Menu */}
+                    <li className='cursor-pointer flex flex-col text-xl font-semibold'><div onClick={()=>{changeSubMenu('mess')}} className={`flex items-center gap-2 ${activeOption==='mess'?'text-orange-400':'text-white'}`}><MdFoodBank size='15px'/> Mess </div>
                         <ul className={`${subMess?'':'hidden'} text-sm text-white  font-thin ml-8 transition-all`}>
-                            <li onClick={()=>{Navigator('/studentDashbaord/mess/menu');handleHamBurger()}} className={`text-xl hover:scale-110 transition-all rounded-md px-2 py-[2px] ${activeSubOption==='allocateRooms'?'bg-blue-900 font-normal':''}`}> Allot Rooms</li>
-                        </ul>
-                    </li>
-
-                    <li className='mt-4 cursor-pointer flex flex-col text-xl font-semibold'><div onClick={()=>{changeSubMenu('hostels')}} className={`flex items-center gap-2 ${activeOption==='studentInfo'?'text-orange-400':'text-white'}`}><FaInfo size='15px' />  Hostels</div>
-                        <ul className={`${subHostel?'':'hidden'} text-sm text-white  font-thin ml-8 transition-all`}>
-                            <li onClick={()=>{Navigator('/superAdminDashboard/hostels/manageHostels');handleHamBurger()}} className={`text-xl hover:scale-110 transition-all rounded-md px-2 py-[2px] ${activeSubOption==='manageHostels'?'bg-blue-900 font-normal':''}`}> Manage Hostels</li>
-                            <li onClick={()=>{Navigator('/superAdminDashboard/hostels/manageAdmins');handleHamBurger()}} className={`text-xl hover:scale-110 transition-all rounded-md px-2 py-[2px] ${activeSubOption==='manageAdmin'?'bg-blue-900 font-normal':''}`}> Manage Admins</li>
+                            <li onClick={()=>{Navigator('/studentDashboard/mess/menu');handleHamBurger()}} className={`text-xl hover:scale-110 transition-all rounded-md px-2 py-[2px] ${activeSubOption==='menu'?'bg-blue-900 font-normal':''}`}> Mess Menue</li>
                         </ul>
                     </li>
 
 
+                    {/* Guest */}
+                    <li className='cursor-pointer flex flex-col text-xl font-semibold'><div onClick={()=>{changeSubMenu('referral')}} className={`flex items-center gap-2 ${activeOption==='referral'?'text-orange-400':'text-white'}`}><MdLocalHotel size='15px'/> Guest Referral </div>
+                        <ul className={`${subReferral?'':'hidden'} text-sm text-white  font-thin ml-8 transition-all`}>
+                            <li onClick={()=>{Navigator('/studentDashboard/guest/referral');handleHamBurger()}} className={`text-xl hover:scale-110 transition-all rounded-md px-2 py-[2px] ${activeSubOption==='referral'?'bg-blue-900 font-normal':''}`}> Verify Guest Referral</li>
+                        </ul>
+                    </li>
                 </ul>
+
                 <div onClick={handleLogout} className='absolute bottom-16 cursor-pointer left-[40%] text-white'>
                 Logout
             </div>

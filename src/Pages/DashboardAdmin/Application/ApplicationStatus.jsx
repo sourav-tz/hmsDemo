@@ -398,8 +398,8 @@ const ApplicationStatus = () => {
         <DialogContent className="max-w-5xl overflow-y-auto max-h-[95vh]">
           <DialogHeader className="border-b pb-4">
             <div>
-              <DialogTitle className="text-2xl font-bold">Application Details</DialogTitle>
-              <DialogDescription className="text-gray-600">
+              <DialogTitle className="text-2xl font-bold md:text-3xl lg:text-4xl">Application Details</DialogTitle>
+              <DialogDescription className="text-gray-600 text-sm md:text-base">
                 {selectedApplication && `Submitted on ${formatDate(selectedApplication.createdAt)}`}
               </DialogDescription>
             </div>
