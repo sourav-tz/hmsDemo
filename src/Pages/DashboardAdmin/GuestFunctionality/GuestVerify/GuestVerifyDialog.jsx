@@ -17,7 +17,7 @@ const GuestVerifyDialog = ({ guest, removeRequest }) => {
                 
       })
       // printing data
-      console.log(res)
+      // console.log(res)
       if (res.data.success) {
         setAccept(true);
         // removes the request entry from the frontend
@@ -38,7 +38,7 @@ const GuestVerifyDialog = ({ guest, removeRequest }) => {
                 
       })
 
-      console.log(res)
+      // console.log(res)
       if (res.data.success) {
         setReject(true);
         removeRequest(guest.application_id)

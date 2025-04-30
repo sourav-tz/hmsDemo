@@ -1,15 +1,15 @@
 const db = require("../../../models");
 
 
-const getRoomsData = async (req, res) => {
+const getAllRoomsData = async (req, res) => {
 
     try {
 
+        console.log("REQ Query ->",req.query)
+        console.log("REQ Body ->",req.body)
+
         const filters = {};
-        const hostelNo = req.body.tokenHostelNo;
-        console.log("REQ ",req)
-        console.log("BODY ",req.body)
-        console.log("ROOM DATA FETCHED FOR HOSTEl ", hostelNo)
+        const hostelNo = req.query.tokenHostelNo;
 
         const allRoomsData = await db.rooms.findAll({where:{hostelNo: hostelNo}})
         // console.log('allRoomsData', allRoomsData);
@@ -116,4 +116,4 @@ const getRoomsData = async (req, res) => {
 }
 
 
-module.exports = getRoomsData
+module.exports = getAllRoomsData

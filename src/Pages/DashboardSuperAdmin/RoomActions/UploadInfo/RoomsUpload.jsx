@@ -70,7 +70,7 @@ const handleDragEnter = (e) => {
     // Process or upload the files as needed
     // You can perform additional logic here
 
-    console.log('Dropped files:', droppedFiles);
+    // console.log('Dropped files:', droppedFiles);
   };
 
 

@@ -24,7 +24,7 @@ const GuestAllotDialog = ({ guest, removeRequest, closeDialog }) => {
           roomNo: roomNo
         }
       });
-      console.log(res);
+      // console.log(res);
       if (res.data.success) {
         setAllot(true);
         removeRequest(guest.application_id);

@@ -70,7 +70,7 @@ const ManageHostels = () => {
         withCredentials:true
       }) 
       setRowData(res.data);
-      console.log(res);
+      // console.log(res);
     
     } catch(error) {
       console.log(error);
@@ -171,16 +171,16 @@ const ManageHostels = () => {
       const handleEditClick = (e) => {
         setEditMode(true);
         setHostelValues(e);
-        console.log(e);
+        // console.log(e);
       };
     
       const handleCellValueChanged = (event) => {
-        console.log("Cell value changed: ", event.data);
+        // console.log("Cell value changed: ", event.data);
       };
 
 
       const getAdminsAgainstHostel = async (e) => {
-        console.log(e.hostelNo);
+        // console.log(e.hostelNo);
         setShowAdmins(true);
         try{
           const res = await axios({
@@ -192,7 +192,7 @@ const ManageHostels = () => {
             },
             withCredentials:true
           })
-          console.log(res);
+          // console.log(res);
           setAdminsData(res.data);
 
         }catch(error){
@@ -220,13 +220,6 @@ const ManageHostels = () => {
         editable: editMode, 
         cellStyle: {textAlign: 'center'}
       },
-      {
-        field: "Edit",
-        headerClass: "font-bold border p-2 font-bold text-md",
-        cellRenderer:({data})=> <Button className='p-3 h-[40px] bg-blue-700 hover:bg-blue-500' onClick={()=>handleEditClick(data)}><FaRegEdit size={10}/></Button>,
-        cellStyle: {textAlign: 'center'}
-      },
-        
 
         // {field: "Edit", headerClass:"font-bold border p-2 font-bold text-md", cellRenderer:()=> <Button className='p-3' onClick={()=> handleHostelEdit}><FaRegEdit /></Button>},
 
@@ -242,14 +235,7 @@ const ManageHostels = () => {
         headerClass:"font-bold border p-2 font-bold text-md", 
         cellRenderer:({data})=> <Button onClick={()=>getAdminsAgainstHostel(data)} className='p-3 h-[40px] bg-orange-700 hover:bg-orange-500'><MdAccountCircle size={10}/></Button>, 
         cellStyle: {textAlign: 'center'}
-      },
-      {
-        field: "Delete", 
-        headerClass:"font-bold border p-2 font-bold text-md", 
-        cellRenderer:({ data }) => <Button className='p-3 h-[40px] bg-red-700 hover:bg-red-500' onClick={() => handleDeleteRow(data.hostelNo)}><ImBin size={10}/></Button>, 
-        cellStyle: {textAlign: 'center'}
-      },
-
+      }
     
    ])
 
@@ -296,8 +282,8 @@ const setEditHostelNo=(e)=>{
 
 const onSubmitEdit =async (data) => {
   setValue("type",hostelValues.type);
-  console.log(data);
-  console.log('clicked')
+  // console.log(data);
+  // console.log('clicked')
   setErrorMessage('');
 
   try{
@@ -310,7 +296,7 @@ const onSubmitEdit =async (data) => {
       },
       withCredentials:true
     })
-    console.log(res);
+    // console.log(res);
     toast.success("Hostel Updated Successfully",{
       position:'top-right'
     })
@@ -320,7 +306,7 @@ const onSubmitEdit =async (data) => {
     
       return prevData.map(row => {
         if (row.hostelNo == data.bodyHostelNo) {
-          console.log(row.hostelNo)
+          // console.log(row.hostelNo)
           
           return { ...row, ...data }; // Update the row with new data
         } else {
@@ -388,8 +374,9 @@ const onSubmitEdit =async (data) => {
 
       <div className='mt-4 mb-2 p-1 w-5/6 h-[380px] rounded-xl shadow-[0_3px_10px_rgb(0,0,0,0.2)] '>
 
-        <div className="ag-theme-quartz" style={{ height: '100%' , width: '100%'}}>
-            <AgGridReact 
+        <div className="ag-theme-quartz " style={{ height: '100%' , width: '100%'}}>
+            <AgGridReact
+              
               rowData={rowData} 
               columnDefs={colDefs}  
               defaultColDef={{ resizable: true }}

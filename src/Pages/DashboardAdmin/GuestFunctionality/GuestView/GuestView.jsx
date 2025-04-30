@@ -32,8 +32,8 @@ const GuestView = () => {
             withCredentials: true,
                   
         })
-        console.log("RES",res);
-        console.log(res.data.result);
+        // console.log("RES",res);
+        // console.log(res.data.result);
         setGuestsScheduleList(res.data.result);   
     } catch (err) {
         console.log(err);

@@ -70,7 +70,7 @@ const ManageAdmin = () => {
         withCredentials: true
       })
 
-      console.log(res);
+      // console.log(res);
       setRowData(res.data);
 
     } catch (error) {
@@ -107,14 +107,30 @@ const ManageAdmin = () => {
       return { ...prev, hostelNo: hostelNoForm };
 
     })
-    console.log("ADMIN_> ", admin);
+    // console.log("ADMIN_> ", admin);
   }
+
+
+  const handleEditHostelNoChange = (e) => {
+    setAdmin((prev) => {
+
+
+      // let hostelNoForm = e[1];
+      let hostelNoForm = e.target.value
+      // console.log("HOSTEL NO _>", hostelNoForm);
+      return { ...prev, hostelNo: hostelNoForm };
+
+    })
+    // console.log("ADMIN_> ", admin);
+  }
+
+
   // let {email,name,roleType,mobile,password,hostelNo} = admin;
 
   const handleAdmin = (e) => {
     e.preventDefault();
-    // setRowData([...rowData,{name,hostelNo,mobile}])
-    ; (async () => {
+    // setRowData([...rowData,{name,hostelNo,mobile}]); 
+    (async () => {
       try {
         const res = await axios({
           url: import.meta.env.VITE_BASE_URL + '/SA/adminReg',
@@ -125,7 +141,7 @@ const ManageAdmin = () => {
           },
           withCredentials: true
         })
-        console.log(res);
+        // console.log(res);
         toast.success("Hostel Admin Created Email Sent !", {
           position: "top-center"
         });
@@ -139,7 +155,7 @@ const ManageAdmin = () => {
       }
     })()
 
-    console.log(admin);
+    // console.log(admin);
     setPass("");
 
   }
@@ -153,49 +169,58 @@ const ManageAdmin = () => {
 
 
   const deleteConfirmation = () => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       setConfirmModal(true);
       yesRef.current.onclick = () => {
-        resolve(true);
-        setConfirmModal(false);
-      }
+        resolve(true); // Resolve as true when "Yes" is clicked
+        setConfirmModal(false); // Close the modal
+      };
       noRef.current.onclick = () => {
-        resolve(false);
-        setConfirmModal(false);
-      }
-    })
-  }
+        resolve(false); // Resolve as false when "No" is clicked
+        setConfirmModal(false); // Close the modal
+      };
+    });
+  };
+  
+
 
 
   const deleteAdmin = async (e) => {
-    console.log(e.data.email);
-    const deleteRes = await deleteConfirmation();
-
+    // console.log(e.data.email);
+  
+    const deleteRes = await deleteConfirmation(); // Wait for confirmation
+    if (!deleteRes) {
+      // If "No" is clicked, do nothing
+      // console.log("Deletion canceled by the user");
+      return;
+    }
+  
+    // Proceed with deletion only if deleteRes is true
     try {
       const res = await axios({
         url: import.meta.env.VITE_BASE_URL + '/SA/deleteAdmin',
         method: 'post',
         data: { email: e.data.email },
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        withCredentials: true
-      })
-      console.log(res);
+        withCredentials: true,
+      });
+      // console.log(res);
       toast.success("Admin Deleted Successfully", {
-        position: "top-center"
+        position: "top-center",
       });
       getAdmins();
     } catch (error) {
       console.log(error);
       toast.error("Error in Transaction !", {
-        position: "top-center"
+        position: "top-center",
       });
     }
-  }
+  };
 
   const handleEdit = (e) => {
-    console.log(e);
+    // console.log(e);
     setEditMode(true);
     setEditValues(e);
 
@@ -234,7 +259,7 @@ const ManageAdmin = () => {
   }
 
   const onSubmitEdit = async (data) => {
-    console.log(data);
+    // console.log(data);
     setEditMode(false);
     if (data.hostelNo !== '') {
       try {
@@ -247,7 +272,7 @@ const ManageAdmin = () => {
           },
           withCredentials: true
         })
-        console.log(res);
+        // console.log(res);
         toast.success("Admin Edited Successfully", {
           position: "top-center"
         });
@@ -397,8 +422,8 @@ const ManageAdmin = () => {
             <CardDescription>Do you really want to delete this hostel?</CardDescription>
           </CardContent>
           <CardFooter className='flex justify-between'>
-            <Button ref={noRef} onClick={() => { setConfirmModal(false) }} className="bg-green-700">No</Button>
-            <Button ref={yesRef} onClick={() => { }} className="bg-red-700">Yes</Button>
+            <Button ref={noRef} onClick={() => { setConfirmModal(false) }} className="bg-blue-500">Cancel</Button>
+            <Button ref={yesRef} onClick={() => { }} className="bg-red-700">Delete</Button>
           </CardFooter>
         </Card>
       </div>
@@ -416,11 +441,12 @@ const ManageAdmin = () => {
             <form onSubmit={handleSubmit(onSubmitEdit)}>
               <div className='w-full min-h-[150px] md:w-[600px]'>
                 <Input
+                  readOnly
                   defaultValue={editValues.name}
                   {...register("name")}
                   name="name"
                   onChange={handleName}
-                  className='w-full m-2 text-lg p-3 placeholder:text-black bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)]'
+                  className='w-full m-2 text-lg p-3 placeholder:text-black bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)] text-gray-400'
                   type="text"
                   placeholder='Name'
                 />
@@ -428,7 +454,7 @@ const ManageAdmin = () => {
                   defaultValue={editValues.hostelNo}
                   {...register("hostelNo")}
                   name="hostelNo"
-                  onChange={handleNoChange}
+                  onChange={handleEditHostelNoChange}
                   className='w-full m-2 text-lg p-3 placeholder:text-black bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)]'
                   type="number"
                   placeholder='Hostel No'
@@ -436,20 +462,22 @@ const ManageAdmin = () => {
                   max="11"
                 />
                 <Input
+                  readOnly
                   defaultValue={editValues.mobile}
                   {...register("mobile")}
                   name="mobile"
                   onChange={handleMobile}
-                  className='w-full m-2 text-lg p-3 placeholder:text-black bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)]'
+                  className='w-full m-2 text-lg p-3 placeholder:text-black bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)]  text-gray-400'
                   type="tel"
                   placeholder='Mobile No'
                 />
                 <Input
+                  readOnly
                   defaultValue={editValues.email}
                   {...register("email")}
                   name="email"
                   onChange={handleEmail}
-                  className='w-full m-2 text-lg p-3 placeholder:text-black bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)]'
+                  className='w-full m-2 text-lg p-3 placeholder:text-black bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)] text-gray-400'
                   type="text"
                   placeholder='Email'
                 />

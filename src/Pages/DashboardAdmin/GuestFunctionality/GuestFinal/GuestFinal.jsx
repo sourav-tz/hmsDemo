@@ -51,8 +51,8 @@ const GuestFinal = () => {
           withCredentials: true,
                 
       })
-      console.log("RES",res);
-      console.log(res.data.result);
+      // console.log("RES",res);
+      // console.log(res.data.result);
       setGuestsDetailList(res.data.result);   
   } catch (err) {
       console.log(err);

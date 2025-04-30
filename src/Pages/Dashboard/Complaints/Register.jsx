@@ -1,3 +1,4 @@
+
 import { Tag, Tags } from 'lucide-react';
 import React, { useState } from 'react';
 import { Textarea } from "@/components/ui/textarea";
@@ -32,7 +33,6 @@ const Register = () => {
 
   const cleanInput = (value) => value.trim().replace(/\s+/g, ' ');
 
-
   const handleTitle = (selectedValue) => {
     setShowOtherTitle(selectedValue === 'other');
   };
@@ -62,7 +62,6 @@ const Register = () => {
         withCredentials: true
       });
     
-      // Check for various success status codes
       if (res.status === 200) {
         toast.success("Complaint raised successfully");
         navigate('/studentDashboard/complaints/status');
@@ -70,37 +69,31 @@ const Register = () => {
         toast.error("Something went wrong. Please try again.");
       }
     } catch (err) {
-      console.error(err); // Log the error for debugging
-    
-      // Check if the error has a response from the server
+      console.error(err);
       if (err.response) {
         toast.error(`Error: ${err.response.data.message || 'Failed to raise complaint.'}`);
       } else {
         toast.error("Network error. Please try again.");
       }
     }
-    
   };
 
   return (
-    <div className='flex flex-col min-h-screen bg-gray-100 w-full justify-start py-10 items-center'>
-      <div>
-        <h1 className='text-3xl font-semibold'>Register Complaint</h1>
-        <p className='text-gray-500'>Please fill the form to register a complaint</p>
+    <div className="flex flex-col min-h-screen bg-gray-100 w-full justify-start py-10 items-center [@media(min-width:100px)]:pt-24 sm:py-16">
+      <div className="text-center mb-6">
+        <h1 className="text-3xl font-semibold">Register Complaint</h1>
+        <p className="text-gray-500">Please fill the form to register a complaint</p>
       </div>
-      <div>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className='flex flex-col w-[600px] gap-4 mt-6'>
+      <div className="w-full max-w-lg px-4 sm:px-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="bg-white shadow rounded-lg p-6 sm:p-8">
+          <div className="flex flex-col gap-6">
 
-            
-            <div className='flex flex-col gap-2'>
-              <label className='text-sm font-semibold'>
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-semibold">
                 Subject <span className="text-red-500">*</span>
               </label>
               <Input 
-                {...register('subject', { 
-                  required: 'Subject is required'
-                })}
+                {...register('subject', { required: 'Subject is required' })}
                 placeholder="Enter Subject"
               />
               {errors.subject && (
@@ -110,20 +103,19 @@ const Register = () => {
               )}
             </div>
 
-           
-            <div className='flex flex-col gap-2'>
-              <label className='text-sm font-semibold'>
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-semibold">
                 Tag <span className="text-red-500">*</span>
               </label>
               <Controller
-                name="tag" 
+                name="tag"
                 control={control}
                 rules={{ required: 'Please select a tag' }}
                 render={({ field }) => (
                   <Select
                     {...field}
                     onValueChange={(e) => {
-                      field.onChange(e); 
+                      field.onChange(e);
                       handleTitle(e);
                     }}
                     value={field.value}
@@ -151,14 +143,14 @@ const Register = () => {
             </div>
 
             {showOtherTitle && (
-              <div className='flex flex-col gap-2'>
-                <label className='text-sm font-semibold'>
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-semibold">
                   Other Tag Title <span className="text-red-500">*</span>
                 </label>
                 <Input 
                   {...register('otherTitle', {
                     required: 'Please provide a title for "Other"'
-                  })} 
+                  })}
                   placeholder="Enter other tag title"
                 />
                 {errors.otherTitle && (
@@ -169,36 +161,36 @@ const Register = () => {
               </div>
             )}
 
-            <div>
-              <label className='text-sm font-semibold'>
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-semibold">
                 Description <span className="text-red-500">*</span>
               </label>
               <Textarea
-                {...register('description', { required: 'Description is required' })} 
-                className='border p-2 w-full mt-2'
-                placeholder='Enter your description'
+                {...register('description', { required: 'Description is required' })}
+                className="border p-2 w-full mt-2"
+                placeholder="Enter your description"
               />
-              {errors.description && ( 
+              {errors.description && (
                 <p className="text-red-500 text-sm mt-1">
                   {errors.description.message}
                 </p>
               )}
             </div>
 
-           
             <Button 
               type="submit"
-              className="bg-blue-700 hover:bg-blue-500"
-              disabled={!isValid} 
+              className="bg-blue-700 hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded"
+              disabled={!isValid}
             >
               Register
             </Button>
           </div>
         </form>
       </div>
-      <DevTool control={control} placement='top-right' />
+      <DevTool control={control} placement="top-right" />
     </div>
   );
 };
 
 export default Register;
+

@@ -25,8 +25,6 @@ const Studentlogin = ()=>{
             return { ...prev, [key]: value }
         }
         )
-
-        console.log(data);
     }
     
 
@@ -40,7 +38,7 @@ const Studentlogin = ()=>{
                 data: data,
                 withCredentials: true
             })
-            console.log(res);
+            
             if (res.data.role === 'Student') {
                 Dispatcher(setUserData({...res.data.dataValues,roleType:'Student'}))
                 Navigator('/studentDashboard/main/home');

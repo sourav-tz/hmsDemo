@@ -55,8 +55,6 @@ const GuestReigster = () => {
         withCredentials: true
       });
 
-      console.log("RES",res);
-      console.log("RES STATUS",res.status)
 
       if(res.status === 201){
         toast.success("Guest information created successfully.")

@@ -32,7 +32,7 @@ const GuestVerify = () => {
           withCredentials: true,
                 
       })
-      console.log(res.data.result);
+      // console.log(res.data.result);
       setGuestsRequestList(res.data.result);   
   } catch (err) {
       console.log(err);

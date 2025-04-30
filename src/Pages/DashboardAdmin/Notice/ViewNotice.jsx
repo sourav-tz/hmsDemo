@@ -19,6 +19,7 @@ import { set } from 'date-fns';
 import { useSelector } from 'react-redux';
 import formdata from '../../../config/formdata';
 
+
 const ViewNotice = () => {
 
     const totalPages = 10;
@@ -32,6 +33,8 @@ const ViewNotice = () => {
                 url: import.meta.env.VITE_BASE_URL + '/HA/getNotices',
                 withCredentials: true,
                 params: { hostelNo: userData.dataValues.hostelNo }, // Send hostelNo as query parameter       
+                // withCredentials: true,
+                // params: { hostelNo: userData.dataValues.hostelNo }, // Send hostelNo as query parameter       
             })
             console.log("SENT HOSTEL NO_>", userData.dataValues.hostelNo);
             console.log(res);
@@ -61,7 +64,7 @@ const ViewNotice = () => {
                 data: { public_id },
                 withCredentials: true
             })
-            console.log(res);
+            // console.log(res);
             getNotices();
         } catch (err) {
             console.log(err);

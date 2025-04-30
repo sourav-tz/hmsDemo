@@ -28,14 +28,14 @@ export default function () {
     setData((prev) => {
       return { ...prev, email: e.target.value }
     })
-    console.log(data)
+    // console.log(data)
   }
 
   const handlePassword = (e) => {
     setData((prev) => {
       return { ...prev, password: e.target.value }
     })
-    console.log(data)
+    // console.log(data)
   }
 
   // GOOGLE OAuth
@@ -45,7 +45,7 @@ export default function () {
       const auth = getAuth(app)
 
       const result = await signInWithPopup(auth, provider)
-      console.log(result)
+      // console.log(result)
 
       const data = {
         name: result.user.displayName,
@@ -63,7 +63,7 @@ export default function () {
       axios
         .post(import.meta.env.VITE_BASE_URL  + '/HA/adminGoogleLogin', data, config)
         .then((res) => {
-          console.log(res)
+          // console.log(res)
           Dispatcher(setUserData(res.data));
           Navigator('/adminDashboard/main/home')
           setLoading(false)
@@ -91,7 +91,7 @@ export default function () {
     axios
       .post(import.meta.env.VITE_BASE_URL  + '/HA/adminLogin', data, config)
       .then((res) => {
-        console.log(res)
+        // console.log(res)
         Dispatcher(setUserData(res.data));
         Navigator('/adminDashboard/main/home')
         setLoading(false)

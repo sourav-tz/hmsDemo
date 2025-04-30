@@ -31,7 +31,11 @@ import AddCourses from './Pages/DashboardSuperAdmin/StudentActions/AddCourses.js
 import StudentProfileSettings from './Pages/Dashboard/Settings/StudentProfileSettings.jsx';
 import Register from './Pages/Dashboard/Complaints/Register.jsx';
 import ComplaintStatus from './Pages/Dashboard/Complaints/ComplaintStatus.jsx';
+import ApplicationStudent from './Pages/Dashboard/Application/Application.jsx';
+import ApplicationStatusStudent from './Pages/Dashboard/Application/ApplicationStatus.jsx';
 import Complaints from './Pages/DashboardAdmin/Complaints/Complaints.jsx';
+import ApplicationAdmin from './Pages/DashboardAdmin/Application/application.jsx';
+
 import SuperAdminOtp from './Pages/SuperAdminLogin/SuperAdminOtp';
 import UploadNotice from './Pages/DashboardAdmin/Notice/UploadNotice.jsx';
 import UploadNoticeSA from './Pages/DashboardSuperAdmin/Notice/UploadNoticeSA.jsx';
@@ -67,52 +71,53 @@ import GuestFinal from './Pages/DashboardAdmin/GuestFunctionality/GuestFinal/Gue
 
 
 
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; 
 
 
 function App() {
 
-  const [admin, setAdmin] = useState(false);
-  const [student, setStudent] = useState(false);
-  const [superAdmin, setSuperAdmin] = useState(false);
-  const [guest, setGuest] = useState(false);
-  const [loading, setLoadingPage] = useState(false);
+const [admin,setAdmin] = useState(false);
+const [student,setStudent] = useState(false);
+const [superAdmin,setSuperAdmin] = useState(false);
+const [guest,setGuest] = useState(false);
+const [loading,setLoadingPage] = useState(false);
 
-  const location = useLocation();
-  const Navigator = useNavigate();
-  const Dispatcher = useDispatch();
-  useEffect(() => {
-    if (location.pathname.split('/')[1] === 'adminDashboard') {
-      console.log(location.pathname.split('/')[1]);
-      setAdmin(true);
-      setStudent(false);
-      setSuperAdmin(false);
-      setGuest(false);
-    }
-    else if (location.pathname.split('/')[1] === 'superAdminDashboard') {
-      setAdmin(false);
-      setStudent(false);
-      setSuperAdmin(true);
-      setGuest(false);
-    }
-    else if (location.pathname.split('/')[1] === 'studentDashboard') {
-      setAdmin(false);
-      setStudent(true);
-      setSuperAdmin(false);
-      setGuest(false);
-    }
-    else if (location.pathname.split('/')[1] === 'guest') {
-      setAdmin(false);
-      setStudent(false);
-      setSuperAdmin(false);
-      setGuest(true);
-    }
-    else {
-      setAdmin(false);
-      setStudent(false);
-      setSuperAdmin(false);
-      setGuest(false);
-    }
+const location = useLocation();
+const Navigator = useNavigate();
+const Dispatcher = useDispatch();
+useEffect(()=>{
+  if(location.pathname.split('/')[1]==='adminDashboard'){
+    console.log(location.pathname.split('/')[1]);
+    setAdmin(true);
+    setStudent(false);
+    setSuperAdmin(false);
+    setGuest(false);
+  }
+  else if(location.pathname.split('/')[1]==='superAdminDashboard'){
+    setAdmin(false);
+    setStudent(false);
+    setSuperAdmin(true);
+    setGuest(false);
+  }
+  else if(location.pathname.split('/')[1]==='studentDashboard'){
+    setAdmin(false);
+    setStudent(true);
+    setSuperAdmin(false);
+    setGuest(false);
+  }
+  else if(location.pathname.split('/')[1]==='guest'){
+    setAdmin(false);
+    setStudent(false);
+    setSuperAdmin(false);
+    setGuest(true);
+  }
+  else{
+    setAdmin(false);
+    setStudent(false);
+    setSuperAdmin(false);
+    setGuest(false);
+  }
 
   }, [location]);
 
@@ -122,97 +127,97 @@ function App() {
     const config = {
       headers: {
         "Content-Type": "application/json"
-      },
-      withCredentials: true
-    }
-    axios.get(import.meta.env.VITE_BASE_URL + '/HA/adminLogout', config)
-      .then(res => {
-        setLoadingPage(false);
-        Dispatcher(removeUserData());
-        Navigator('/adminLogin', { replace: true });
+        },
+        withCredentials: true
+      }
+  axios.get(import.meta.env.VITE_BASE_URL + '/HA/adminLogout',config)
+  .then(res=>{
+      setLoadingPage(false);
+      Dispatcher(removeUserData());
+      Navigator('/adminLogin',{ replace: true });
 
-      })
-      .catch(err => {
-        setLoadingPage(false);
-        Dispatcher(removeUserData());
-        Navigator('/adminLogin', { replace: true });
-        console.log("error in admin logout");
-        console.log(err);
-        if (err.status === 401) {
-          Navigator('/adminLogin', { replace: true });
-        }
-      })
-  }
+  })
+  .catch(err=>{
+      setLoadingPage(false);
+      Dispatcher(removeUserData());
+      Navigator('/adminLogin',{ replace: true });
+      console.log("error in admin logout");
+      console.log(err);
+      if(err.status===401){
+          Navigator('/adminLogin',{ replace: true });
+      }
+  })
+}  
 
   const handleSuperAdminLogout = () => {
     setLoadingPage(true);
     const config = {
       headers: {
         "Content-Type": "application/json"
-      },
-      withCredentials: true
-    }
-    axios.get(import.meta.env.VITE_BASE_URL + '/SA/superAdminLogout', config)
-      .then(res => {
-        setLoadingPage(false);
-        Dispatcher(removeUserData());
-        Navigator('/superAdminLogin', { replace: true });
+        },
+        withCredentials: true
+      }
+  axios.get(import.meta.env.VITE_BASE_URL + '/SA/superAdminLogout',config)
+  .then(res=>{
+      setLoadingPage(false);
+      Dispatcher(removeUserData());
+      Navigator('/superAdminLogin',{ replace: true });
 
-      })
-      .catch(err => {
-        setLoadingPage(false);
-        Dispatcher(removeUserData());
-        Navigator('/superAdminLogin', { replace: true });
-        console.log(err);
-        if (err.status === 401) {
-          Navigator('/superAdminLogin', { replace: true });
-        }
-      })
-  }
+  })
+  .catch(err=>{
+      setLoadingPage(false);
+      Dispatcher(removeUserData());
+      Navigator('/superAdminLogin',{ replace: true });
+      console.log(err);
+      if(err.status===401){
+          Navigator('/superAdminLogin',{ replace: true });
+      }
+  })
+}
 
   const handleStudentLogout = () => {
     setLoadingPage(true);
     const config = {
       headers: {
         "Content-Type": "application/json"
-      },
-      withCredentials: true
-    }
-    axios.get(import.meta.env.VITE_BASE_URL + '/student/studentLogout', config)
-      .then(res => {
-        setLoadingPage(false);
-        Dispatcher(removeUserData());
-        Navigator('/studentLogin', { replace: true });
+        },
+        withCredentials: true
+      }
+  axios.get(import.meta.env.VITE_BASE_URL + '/student/studentLogout',config)
+  .then(res=>{
+      setLoadingPage(false);
+      Dispatcher(removeUserData());
+      Navigator('/studentLogin',{ replace: true });
 
-      })
-      .catch(err => {
-        setLoadingPage(false);
-        Navigator('/studentLogin', { replace: true });
-        console.log(err);
-        if (err.status === 401) {
-          Navigator('/studentLogin', { replace: true });
-        }
-      })
-  }
+  })
+  .catch(err=>{
+      setLoadingPage(false);
+      Navigator('/studentLogin',{ replace: true });
+      console.log(err);
+      if(err.status===401){
+          Navigator('/studentLogin',{ replace: true });
+      }
+  })
+}
 
 
   return (
     <>
-      {admin ? <Sidebar /> : null}
-      {superAdmin ? <SuperSidebar /> : null}
-      {student ? <StudentSidebar /> : null}
-      {guest ? <GuestSidebar /> : null}
+    {admin?<Sidebar />:null}
+    {superAdmin?<SuperSidebar />:null}
+    {student?<StudentSidebar />:null}
+    {guest?<GuestSidebar />:null}
 
-      {admin || superAdmin || student ? <div className='absolute top-4 right-20'>
-        <DropdownMenu>
-          <DropdownMenuTrigger><div className='text-gray-700 p-2 rounded-md border-2 hover:border-gray-700'><RxHamburgerMenu size={30} /></div></DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => {
-                admin ? Navigator('/adminDashboard/main/home',) : superAdmin ? Navigator('/superAdminDashboard/main/home') : Navigator('/studentDashboard/settings/profile')
-              }}
+    {admin||superAdmin||student?<div className='absolute top-4 right-20'>
+      <DropdownMenu>
+      <DropdownMenuTrigger><div className='text-gray-700 p-2 rounded-md border-2 hover:border-gray-700'><RxHamburgerMenu size={30}/></div></DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          onClick={() => {
+            admin?Navigator('/adminDashboard/main/home',):superAdmin?Navigator('/superAdminDashboard/main/home'):Navigator('/studentDashboard/settings/profile')
+          }}
 
             >Profile</DropdownMenuItem>
             <DropdownMenuItem onClick={() => {
@@ -234,20 +239,22 @@ function App() {
             <Route path='/studentLogin' element={<OpenRoute><Studentlogin /></OpenRoute>} />
             <Route path='/forgetPass' element={<OpenRoute><ForgetPassword /></OpenRoute>} />
             <Route path='/StudentSignUp' element={<OpenRoute><StudentSignUp /></OpenRoute>} />
-            <Route path='/VerifyOtp' element={<OpenRoute><VerifyOtp /></OpenRoute>} />
-            <Route path='/ResetPassword' element={<OpenRoute><ResetPassword /></OpenRoute>} />
+            <Route path='/VerifyOtp' element={<OpenRoute><VerifyOtp/></OpenRoute>} />
+            <Route path='/ResetPassword' element={<OpenRoute><ResetPassword/></OpenRoute>} />
 
             {/* Students */}
             <Route path='/studentDashboard/main/home' element={<CloseRoute><Dashboard /></CloseRoute>} />
             <Route path='/studentDashboard/settings/profile' element={<CloseRoute><StudentProfileSettings /></CloseRoute>} />
             <Route path='/studentDashboard/complaints/register' element={<CloseRoute><Register /></CloseRoute>} />
             <Route path='/studentDashboard/complaints/status' element={<CloseRoute><ComplaintStatus /></CloseRoute>} />
+            <Route path='/studentDashboard/student/application' element={<CloseRoute><ApplicationStudent /></CloseRoute>} />
+            <Route path='/studentDashboard/student/applicationstatus' element={<CloseRoute><ApplicationStatusStudent /></CloseRoute>} />
             <Route path='/studentDashboard/notices/view' element={<CloseRoute><ViewNotices /></CloseRoute>} />
             <Route path='/studentDashboard/mess/menu' element={<CloseRoute><NewMenu /></CloseRoute>} />
-
+            
             {/*Student Guest Verify Referral Page */}
             <Route path='/studentDashboard/guest/referral' element={<CloseRoute><GuestReferral /></CloseRoute>} />
-
+            
 
 
             {/* Admin Routes */}
@@ -260,10 +267,11 @@ function App() {
             <Route path='/adminDashboard/studentInfo/uploadInfo' element={<CloseRoute><UploadInfo /></CloseRoute>} />
             <Route path='/adminDashboard/roomInfo/allotRooms' element={<CloseRoute><AllotRooms /></CloseRoute>} />
             <Route path='/adminDashboard/complaints/complaints' element={<CloseRoute><Complaints /></CloseRoute>} />
+            <Route path='/adminDashboard/admin/application' element={<CloseRoute><ApplicationAdmin /></CloseRoute>} />
             <Route path='/adminDashboard/notice/uploadNotice' element={<CloseRoute><UploadNotice /></CloseRoute>} />
             <Route path='/adminDashboard/notice/viewNotice' element={<CloseRoute><ViewNotice /></CloseRoute>} />
             <Route path='/adminDashboard/settings/security' element={<CloseRoute><AdminSecuritysettings /></CloseRoute>} />
-
+            
             {/* Admin Guest Pages */}
             <Route path='/adminDashboard/guest/verify' element={<CloseRoute><GuestVerify /></CloseRoute>} />
             <Route path='/adminDashboard/guest/viewSchedule' element={<CloseRoute><GuestView /></CloseRoute>} />
@@ -280,11 +288,11 @@ function App() {
             <Route path='/superAdminDashboard/hostels/manageHostels' element={<CloseRoute><ManageHostels /></CloseRoute>} />
             <Route path='/superAdminDashboard/roomActions/allocateRooms' element={<CloseRoute><RoomsUpload /></CloseRoute>} />
             <Route path='/superAdminDashboard/roomActions/manageRooms' element={<CloseRoute><ManageRooms /></CloseRoute>} />
-            <Route path='/superAdminDashboard/settings/security' element={<CloseRoute><Securitysettings /></CloseRoute>} />
-            <Route path='/superAdminDashboard/studentActions/addCourses' element={<CloseRoute><AddCourses /></CloseRoute>} />
             <Route path='/superAdminDashboard/notice/uploadNotice' element={<CloseRoute><UploadNoticeSA /></CloseRoute>} />
             <Route path='/superAdminDashboard/notice/viewNotice' element={<CloseRoute><ViewNoticeSA /></CloseRoute>} />
-
+            <Route path='/superAdminDashboard/settings/security' element={<CloseRoute><Securitysettings /></CloseRoute>} />
+            <Route path='/superAdminDashboard/studentActions/addCourses' element={<CloseRoute><AddCourses /></CloseRoute>} />
+            
 
             {/* Guest Routes */}
             <Route path='/guest/home' element={<CloseRoute><GuestLanding /></CloseRoute>} />
@@ -292,9 +300,10 @@ function App() {
             <Route path='/guest/status' element={<CloseRoute><GuestStatus /></CloseRoute>} />
 
 
-          </Routes>
+        </Routes>    
+           </div>
         </div>
-      </div>
+        <ToastContainer />
     </>
   )
 }
