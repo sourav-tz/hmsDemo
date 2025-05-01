@@ -146,10 +146,13 @@ export default function StudentSelfProfiling() {
   const calculateFormProgress = useCallback((data) => {
     // Define required fields
     const requiredFields = [
-      'rollNo', 'firstName', 'dob', 'course', 'semester', 'branch',
-      'contactNumber_1', 'gender', 'fatherName', 'fatherContact',
-      'motherName', 'motherContact', 'address', 'city', 'state',
-      'pinCode', 'email','aadharCardDocument','photoLink'
+      'rollNo', 'firstName', 'lastName', 'dob', 'course', 'semester', 'branch',
+      'contactNumber_1', 'contactNumber_2', 'phoneNumber', 'email',
+      'identificationMark', 'gender', 'bloodGroup', 'fatherName',
+      'fatherContact', 'fatherOccupation', 'motherName', 'motherContact',
+      'motherOccupation', 'address', 'city', 'state', 'pinCode',
+      'localGuardian', 'localGuardianContact', 'localGuardianAddress',
+      'addharNumber', 'aadharCardDocument', 'photoLink'
     ];
 
     // Count filled required fields
@@ -184,10 +187,13 @@ export default function StudentSelfProfiling() {
 
     // Define required fields
     const requiredFields = [
-      'rollNo', 'firstName', 'dob', 'course', 'semester', 'branch',
-      'contactNumber_1', 'email', 'gender', 'fatherName', 'fatherContact',
-      'motherName', 'motherContact', 'address', 'city', 'state', 'pinCode',
-      'photoLink', 'aadharCardDocument', 'addharNumber', 'bloodGroup'
+      'rollNo', 'firstName', 'lastName', 'dob', 'course', 'semester', 'branch',
+      'contactNumber_1', 'contactNumber_2', 'phoneNumber', 'email',
+      'identificationMark', 'gender', 'bloodGroup', 'fatherName',
+      'fatherContact', 'fatherOccupation', 'motherName', 'motherContact',
+      'motherOccupation', 'address', 'city', 'state', 'pinCode',
+      'localGuardian', 'localGuardianContact', 'localGuardianAddress',
+      'addharNumber', 'aadharCardDocument', 'photoLink'
     ];
 
     // Skip validation for optional fields if they're empty
@@ -710,6 +716,8 @@ export default function StudentSelfProfiling() {
     }
 
     // Ensure data types match what backend expects
+    // NOTE: All fields are now required in the frontend to ensure clean data in the database
+    // This approach prevents validation errors from the backend for empty optional fields
     const submissionData = {
       ...formData,
       rollNo: parseInt(formData.rollNo, 10),
@@ -1153,7 +1161,7 @@ export default function StudentSelfProfiling() {
             {errors.contactNumber_1 && <p className="text-red-500 text-xs">{errors.contactNumber_1}</p>}
           </div>
           <div className="space-y-1">
-            <Label htmlFor="contactNumber_2">Contact Number 2</Label>
+            <Label htmlFor="contactNumber_2">Contact Number 2 <span className="text-red-500">*</span></Label>
             <Input
               id="contactNumber_2"
               type="tel"
@@ -1163,11 +1171,12 @@ export default function StudentSelfProfiling() {
               onChange={handleChange}
               className={`${errors.contactNumber_2 ? "border-red-500" : ""} ${readOnlyClass}`}
               disabled={isReadOnly}
+              required
             />
             {errors.contactNumber_2 && <p className="text-red-500 text-xs">{errors.contactNumber_2}</p>}
           </div>
           <div className="space-y-1">
-            <Label htmlFor="phoneNumber">Phone Number</Label>
+            <Label htmlFor="phoneNumber">Phone Number <span className="text-red-500">*</span></Label>
             <Input
               id="phoneNumber"
               type="tel"
@@ -1177,6 +1186,7 @@ export default function StudentSelfProfiling() {
               onChange={handleChange}
               className={`${errors.phoneNumber ? "border-red-500" : ""} ${readOnlyClass}`}
               disabled={isReadOnly}
+              required
             />
             {errors.phoneNumber && <p className="text-red-500 text-xs">{errors.phoneNumber}</p>}
           </div>
@@ -1194,15 +1204,17 @@ export default function StudentSelfProfiling() {
             {errors.email && <p className="text-red-500 text-xs">{errors.email}</p>}
           </div>
           <div className="space-y-1">
-            <Label htmlFor="identificationMark">Identification Mark</Label>
+            <Label htmlFor="identificationMark">Identification Mark <span className="text-red-500">*</span></Label>
             <Input
               id="identificationMark"
               type="text"
               value={formData.identificationMark}
               onChange={handleChange}
-              className={readOnlyClass}
+              className={`${errors.identificationMark ? "border-red-500" : ""} ${readOnlyClass}`}
               disabled={isReadOnly}
+              required
             />
+            {errors.identificationMark && <p className="text-red-500 text-xs">{errors.identificationMark}</p>}
           </div>
 
           <div className="flex space-x-4 col-span-1">
@@ -1285,15 +1297,17 @@ export default function StudentSelfProfiling() {
             {errors.fatherContact && <p className="text-red-500 text-xs">{errors.fatherContact}</p>}
           </div>
           <div className="space-y-1">
-            <Label htmlFor="fatherOccupation">Father&apos;s Occupation</Label>
+            <Label htmlFor="fatherOccupation">Father&apos;s Occupation <span className="text-red-500">*</span></Label>
             <Input
               id="fatherOccupation"
               type="text"
               value={formData.fatherOccupation}
               onChange={handleChange}
-              className={readOnlyClass}
+              className={`${errors.fatherOccupation ? "border-red-500" : ""} ${readOnlyClass}`}
               disabled={isReadOnly}
+              required
             />
+            {errors.fatherOccupation && <p className="text-red-500 text-xs">{errors.fatherOccupation}</p>}
           </div>
 
           <div className="space-y-1">
@@ -1323,15 +1337,17 @@ export default function StudentSelfProfiling() {
             {errors.motherContact && <p className="text-red-500 text-xs">{errors.motherContact}</p>}
           </div>
           <div className="space-y-1">
-            <Label htmlFor="motherOccupation">Mother&apos;s Occupation</Label>
+            <Label htmlFor="motherOccupation">Mother&apos;s Occupation <span className="text-red-500">*</span></Label>
             <Input
               id="motherOccupation"
               type="text"
               value={formData.motherOccupation}
               onChange={handleChange}
-              className={readOnlyClass}
+              className={`${errors.motherOccupation ? "border-red-500" : ""} ${readOnlyClass}`}
               disabled={isReadOnly}
+              required
             />
+            {errors.motherOccupation && <p className="text-red-500 text-xs">{errors.motherOccupation}</p>}
           </div>
 
 
@@ -1432,18 +1448,20 @@ export default function StudentSelfProfiling() {
             {errors.pinCode && <p className="text-red-500 text-xs">{errors.pinCode}</p>}
           </div>
           <div className="space-y-1">
-            <Label htmlFor="localGuardian">Local Guardian (if any)</Label>
+            <Label htmlFor="localGuardian">Local Guardian <span className="text-red-500">*</span></Label>
             <Input
               id="localGuardian"
               type="text"
               value={formData.localGuardian}
               onChange={handleChange}
-              className={readOnlyClass}
+              className={`${errors.localGuardian ? "border-red-500" : ""} ${readOnlyClass}`}
               disabled={isReadOnly}
+              required
             />
+            {errors.localGuardian && <p className="text-red-500 text-xs">{errors.localGuardian}</p>}
           </div>
           <div className="space-y-1">
-            <Label htmlFor="localGuardianContact">Guardian Contact</Label>
+            <Label htmlFor="localGuardianContact">Guardian Contact <span className="text-red-500">*</span></Label>
             <Input
               id="localGuardianContact"
               type="tel"
@@ -1451,19 +1469,22 @@ export default function StudentSelfProfiling() {
               onChange={handleChange}
               className={`${errors.localGuardianContact ? "border-red-500" : ""} ${readOnlyClass}`}
               disabled={isReadOnly}
+              required
             />
             {errors.localGuardianContact && <p className="text-red-500 text-xs">{errors.localGuardianContact}</p>}
           </div>
           <div className="space-y-1">
-            <Label htmlFor="localGuardianAddress">Guardian Address</Label>
+            <Label htmlFor="localGuardianAddress">Guardian Address <span className="text-red-500">*</span></Label>
             <textarea
               id="localGuardianAddress"
               rows={2}
-              className={`resize-none border border-gray-300 rounded-md w-full p-2 ${readOnlyClass}`}
+              className={`resize-none border ${errors.localGuardianAddress ? "border-red-500" : "border-gray-300"} rounded-md w-full p-2 ${readOnlyClass}`}
               value={formData.localGuardianAddress}
               onChange={handleChange}
               disabled={isReadOnly}
+              required
             />
+            {errors.localGuardianAddress && <p className="text-red-500 text-xs">{errors.localGuardianAddress}</p>}
           </div>
           <div className="space-y-1">
             <Label htmlFor="addharNumber">Aadhaar Number <span className="text-red-500">*</span></Label>

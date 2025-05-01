@@ -5,7 +5,7 @@ const { validationResult, checkSchema } = require('express-validator');
 const { uploadToCloudinary } = require('../../utils/cloudinary');
 
 // File size limits in bytes
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB
 const MIN_FILE_SIZE = 1 * 1024; // 1KB
 
 // Allowed file types
