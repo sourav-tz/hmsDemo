@@ -39,6 +39,8 @@ const {
 
 
 const getRoomTimeline = require('../../controllers/hostelAuthority/RoomModule/getRoomTimeline.js');
+const { studentTempAccCreate, getAllStudentTempAccounts } = require('../../controllers/hostelAuthority/studentModule/studentTempAccCreate.js');
+const { getPendingProfiles, getProfileByEmail, approveProfile, rejectProfile } = require('../../controllers/hostelAuthority/studentModule/studentVerifyProfile.js');
 
 var storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -76,8 +78,15 @@ router.post('/singleStudentUpload', auth,singleStudentUpload);
 router.patch('/updateSingleStudent', auth,updateSingleStudent);
 router.delete('/deleteStudent', auth,deleteStudent);
 
+//* Student Registration Routes
+router.post('/studentCreate', auth, studentTempAccCreate);
+router.get('/studentList', getAllStudentTempAccounts);
 
-
+//* Student Profile Verification Routes
+router.get('/pendingProfiles', auth, getPendingProfiles);
+router.get('/profile/:email', auth, getProfileByEmail);
+router.post('/approveProfile', auth, approveProfile);
+router.post('/rejectProfile', auth, rejectProfile);
 
 //Rooms Module routes
 

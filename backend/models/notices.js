@@ -18,7 +18,7 @@ module.exports = (sequelize, dataTypes) => {
         }
     },{
         updatedAt: 'last_updated_at',
-    })
+    });
     notices.associate = (models) => {
         notices.belongsTo(models.hostels, {
             foreignKey: {

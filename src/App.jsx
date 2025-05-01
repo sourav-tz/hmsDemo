@@ -51,6 +51,8 @@ import ManageRooms from './Pages/DashboardSuperAdmin/RoomActions/ManageRooms/Man
 import axios from 'axios';
 import CloseRoute from "./Auth/CloseRoute.jsx";
 import OpenRoute from "./Auth/OpenRoute.jsx";
+import { FiSettings } from 'react-icons/fi';
+
 import { removeUserData } from './Store/Reducers/userSlice.js'
 import {
   DropdownMenu,
@@ -70,6 +72,12 @@ import GuestView from './Pages/DashboardAdmin/GuestFunctionality/GuestView/Guest
 import GuestSidebar from './components/GuestSidebar/GuestSidebar.jsx';
 import GuestAllot from './Pages/DashboardAdmin/GuestFunctionality/GuestAllot/GuestAllot.jsx';
 import GuestFinal from './Pages/DashboardAdmin/GuestFunctionality/GuestFinal/GuestFinal.jsx';
+import StudentAccountCreate from './Pages/DashboardAdmin/StudentsInfo/RegisterStudent/StudentAccountCreate.jsx';
+import StudentVerifyProfile from './Pages/DashboardAdmin/StudentsInfo/RegisterStudent/StudentVerifyProfile.jsx';
+import StudentSelfProfiling from './Pages/Dashboard/SelfProfiling/StudentSelfProfiling.jsx';
+import ViewStudents from './Pages/DashboardSuperAdmin/StudentActions/ViewStudents.jsx';
+
+import Landing from './Pages/Landing/Landing.jsx'; 
 
 
 
@@ -89,6 +97,9 @@ const location = useLocation();
 const Navigator = useNavigate();
 const Dispatcher = useDispatch();
 useEffect(()=>{
+  // Log the current path for debugging
+  console.log("Current path:", location.pathname.split('/')[1]);
+
   if(location.pathname.split('/')[1]==='adminDashboard'){
     console.log(location.pathname.split('/')[1]);
     setAdmin(true);
@@ -149,7 +160,7 @@ useEffect(()=>{
           Navigator('/adminLogin',{ replace: true });
       }
   })
-}  
+}
 
   const handleSuperAdminLogout = () => {
     setLoadingPage(true);
@@ -177,9 +188,9 @@ useEffect(()=>{
   })
 }
 
-  const handleStudentLogout = () => {
-    setLoadingPage(true);
-    const config = {
+const handleStudentLogout = ()=>{
+  setLoadingPage(true);
+  const config = {
       headers: {
         "Content-Type": "application/json"
         },
@@ -210,15 +221,27 @@ useEffect(()=>{
     {student?<StudentSidebar />:null}
     {guest?<GuestSidebar />:null}
 
-    {admin||superAdmin||student?<div className='absolute top-4 right-20'>
+    {admin||superAdmin||student?<div className='absolute top-3 right-20'>
       <DropdownMenu>
-      <DropdownMenuTrigger><div className='text-gray-700 p-2 rounded-md border-2 hover:border-gray-700'><RxHamburgerMenu size={30}/></div></DropdownMenuTrigger>
+      <DropdownMenuTrigger><div className='bg-white relative text-[#131133] p-2 rounded-xl z-50 transition transform hover:scale-125 duration-300 ease-in-out shadow hover:shadow-md hover:backdrop-blur-2xl'><FiSettings size={25}/></div></DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={() => {
-            admin?Navigator('/adminDashboard/main/home',):superAdmin?Navigator('/superAdminDashboard/main/home'):Navigator('/studentDashboard/settings/profile')
+            if (admin) {
+              Navigator('/adminDashboard/main/home');
+            } else if (superAdmin) {
+              Navigator('/superAdminDashboard/main/home');
+            } else if (student) {
+              // Check if user is a TempStudent
+              const isTempStudent = localStorage.getItem('role') === 'TempStudent';
+              if (isTempStudent) {
+                Navigator('/studentDashboard/main/selfProfiling');
+              } else {
+                Navigator('/studentDashboard/settings/profile');
+              }
+            }
           }}
 
             >Profile</DropdownMenuItem>
@@ -237,7 +260,7 @@ useEffect(()=>{
 
             {/* <Route path='*' element={<Role />} /> */}
 
-            <Route path='/' element={<OpenRoute><Role /></OpenRoute>}></Route>
+            <Route path='/role' element={<OpenRoute><Role /></OpenRoute>}></Route>
             <Route path='/studentLogin' element={<OpenRoute><Studentlogin /></OpenRoute>} />
             <Route path='/forgetPass' element={<OpenRoute><ForgetPassword /></OpenRoute>} />
             <Route path='/StudentSignUp' element={<OpenRoute><StudentSignUp /></OpenRoute>} />
@@ -246,6 +269,7 @@ useEffect(()=>{
 
             {/* Students */}
             <Route path='/studentDashboard/main/home' element={<CloseRoute><Dashboard /></CloseRoute>} />
+            <Route path='/studentDashboard/main/selfProfiling' element={<CloseRoute><StudentSelfProfiling /></CloseRoute>} />
             <Route path='/studentDashboard/settings/profile' element={<CloseRoute><StudentProfileSettings /></CloseRoute>} />
             <Route path='/studentDashboard/complaints/register' element={<CloseRoute><Register /></CloseRoute>} />
             <Route path='/studentDashboard/complaints/status' element={<CloseRoute><ComplaintStatus /></CloseRoute>} />
@@ -253,18 +277,20 @@ useEffect(()=>{
             <Route path='/studentDashboard/student/applicationstatus' element={<CloseRoute><ApplicationStatusStudent /></CloseRoute>} />
             <Route path='/studentDashboard/notices/view' element={<CloseRoute><ViewNotices /></CloseRoute>} />
             <Route path='/studentDashboard/mess/menu' element={<CloseRoute><NewMenu /></CloseRoute>} />
-            
+
             {/*Student Guest Verify Referral Page */}
             <Route path='/studentDashboard/guest/referral' element={<CloseRoute><GuestReferral /></CloseRoute>} />
-            
+
 
 
             {/* Admin Routes */}
             <Route path='/adminLogin' element={<OpenRoute><Adminlogin /></OpenRoute>} />
             {/* <Route path='/sandbox' element={<Sandbox />} /> */}
             <Route path='/adminDashboard/main/home' element={<CloseRoute><AdminDashboard /></CloseRoute>} />
-            <Route path='/adminDashboard/studentInfo/register' element={<CloseRoute><RegisterStudent /></CloseRoute>} />
-            <Route path='/adminDashboard/studentInfo/update' element={<CloseRoute><UpdateStudent /></CloseRoute>} />
+            <Route path='/adminDashboard/studentInfo/studentCreateAccount' element={<CloseRoute><StudentAccountCreate/></CloseRoute>} />
+            <Route path='/adminDashboard/studentInfo/studentVerify' element={<CloseRoute><StudentVerifyProfile/></CloseRoute>} />
+            <Route path='/adminDashboard/studentInfo/register' element={<CloseRoute><RegisterStudent/></CloseRoute>} />
+            <Route path='/adminDashboard/studentInfo/update' element={<CloseRoute><UpdateStudent/></CloseRoute>} />
             <Route path='/adminDashboard/studentInfo/viewInfo' element={<CloseRoute><ViewInfo /></CloseRoute>} />
             <Route path='/adminDashboard/studentInfo/uploadInfo' element={<CloseRoute><UploadInfo /></CloseRoute>} />
             <Route path='/adminDashboard/roomInfo/allotRooms' element={<CloseRoute><AllotRooms /></CloseRoute>} />
@@ -274,7 +300,7 @@ useEffect(()=>{
             <Route path='/adminDashboard/notice/uploadNotice' element={<CloseRoute><UploadNotice /></CloseRoute>} />
             <Route path='/adminDashboard/notice/viewNotice' element={<CloseRoute><ViewNotice /></CloseRoute>} />
             <Route path='/adminDashboard/settings/security' element={<CloseRoute><AdminSecuritysettings /></CloseRoute>} />
-            
+
             {/* Admin Guest Pages */}
             <Route path='/adminDashboard/guest/verify' element={<CloseRoute><GuestVerify /></CloseRoute>} />
             <Route path='/adminDashboard/guest/viewSchedule' element={<CloseRoute><GuestView /></CloseRoute>} />
@@ -283,7 +309,7 @@ useEffect(()=>{
 
 
 
-            {/*super Admin Routes  */}
+            {/*super Admin Routes */}
             <Route path='/superAdminLogin' element={<OpenRoute><SuperAdminLogin /></OpenRoute>} />
             <Route path='/superAdminLogin/superAdminOtp' element={<OpenRoute><SuperAdminOtp /></OpenRoute>} />
             <Route path='/superAdminDashboard/main/home' element={<CloseRoute><Home /></CloseRoute>} />
@@ -297,7 +323,8 @@ useEffect(()=>{
             <Route path='/superAdminDashboard/studentActions/addCourses' element={<CloseRoute><AddCourses /></CloseRoute>} />
             <Route path='/superAdminDashboard/application/applicationStatus' element={<CloseRoute><ApplicationStatusSuperAdmin /></CloseRoute>} />
 
-            
+            <Route path='/superAdminDashboard/studentActions/viewStudents' element={<CloseRoute><ViewStudents /></CloseRoute>} />
+
 
             {/* Guest Routes */}
             <Route path='/guest/home' element={<CloseRoute><GuestLanding /></CloseRoute>} />
@@ -305,7 +332,12 @@ useEffect(()=>{
             <Route path='/guest/status' element={<CloseRoute><GuestStatus /></CloseRoute>} />
 
 
-        </Routes>    
+
+            {/* Landing Routes */}
+            <Route path='/' element={<OpenRoute><Landing /></OpenRoute>} />
+
+
+        </Routes>
            </div>
         </div>
         <ToastContainer />

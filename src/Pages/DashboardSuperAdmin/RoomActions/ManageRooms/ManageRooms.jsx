@@ -11,6 +11,7 @@ import "ag-grid-community/styles/ag-theme-quartz.css";
 import { useEffect, useState } from "react"
 import {Chart, ArcElement, Tooltip, Legend, Title} from 'chart.js';
 import { Doughnut } from "react-chartjs-2";
+import backgroundImage from '../../../../Assets/hostel11.jpg';
 
   
 import {
@@ -186,11 +187,15 @@ const data = {
 
 
   return (
-    <>
-    
-      <main className="bg-gray-100 py-8 px-6 min-h-screen">
-        <div className="container mx-auto">
-        <div className="mt-8 bg-white rounded-lg shadow-md p-6">
+    <div className="relative min-h-screen w-full flex flex-col justify-start py-10 items-center">
+          {/* Background Image Layer */}
+          <div
+            className="absolute top-0 left-0 w-full h-full bg-center bg-cover bg-no-repeat bg-fixed blur-sm opacity-50 z-[-1]"
+            style={{ backgroundImage: `url(${backgroundImage})` }}
+          />
+      <main className="bg-gray-100 w-[60%] py-8 px-6 min-h-screen rounded-[30px] shadow-[0_3px_10px_rgb(0,0,0,0)] bg-white/0">
+        <div className="container mx-auto ">
+        <div className="mt-8 bg-white p-6 rounded-[30px] shadow-[0_3px_10px_rgb(0,0,0,0.2)] bg-white/30">
             <h3 className="text-xl font-bold mb-4">Add New Room</h3>
             <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
@@ -209,12 +214,12 @@ const data = {
                 <Label htmlFor="capacity">Capacity</Label>
                 <Input {...register('maxOccupancy')} id="capacity" type="number" />
               </div>
-              <div className="space-y-2">
+              <div className="C">
                 <Label htmlFor="capacity">Hostel Number</Label>
                 <Input {...register('hostelNo')} id="capacity" type="number" />
               </div>
               <div className="col-span-2 flex justify-end">
-                <Button className="bg-blue-600 hover:bg-blue-500 text-white" variant="primary" size="sm">Add Room</Button>
+                <Button className="bg-[#5F57FF] hover:bg-blue-500 text-white" variant="primary" size="sm">Add Room</Button>
               </div>
             </form>
           </div>
@@ -259,6 +264,6 @@ const data = {
         pauseOnHover
         theme="light"
       />
-    </>
+    </div>
   )
 }

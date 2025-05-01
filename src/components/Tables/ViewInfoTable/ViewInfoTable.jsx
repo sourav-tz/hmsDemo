@@ -5,7 +5,7 @@ import { useState,useCallback, useEffect } from 'react';
 import './ViewInfoTable.css';
 import { Button } from "@/components/ui/button"
 import Modal from '../../Modals/Modal';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { changeModalState,setModalData } from '../../../Store/Reducers/viewInfoSlice';
 import PdfDownload from './PdfDownload';
 import { MdOutlineRemoveRedEye } from "react-icons/md";
@@ -41,6 +41,20 @@ const ViewInfoTable = ({data})=>{
   const [date,setDate] = useState(new Date());
   const [archiveLoading, setArchiveLoading] = useState(false);
 
+  // Get admin data from Redux store
+  const adminData = useSelector(state => state.userStorage.data);
+
+  // Extract admin data from the nested dataValues property if it exists
+  const adminDataValues = adminData?.dataValues || {};
+
+  // Determine the admin information to use
+  const adminInfo = {
+    name: adminDataValues?.name || adminData?.name || "Admin",
+    email: adminDataValues?.email || adminData?.email || "admin@example.com"
+  };
+
+  console.log("Admin info in ViewInfoTable:", adminInfo);
+
 
   useEffect(() => {
     if (data && data.length > 0) {
@@ -72,7 +86,7 @@ const ViewInfoTable = ({data})=>{
 
 
 
-  
+
   // Column Definitions: Defines & controls grid columns.
   const [colDefs, setColDefs] = useState([
         {field:'rollNo',pinned:'left',width:100},
@@ -84,7 +98,7 @@ const ViewInfoTable = ({data})=>{
         {field:'profile.contactNumber', headerName: 'Contact Number',width:150},
         {field:'viewInfo',width:110,cellRenderer:(params)=>{return <Button className="bg-blue-600 hover:bg-blue-500 transition-all" size="sm" onClick={()=>{Dispatcher(changeModalState(true));setModalData(params.data);}}><MdOutlineRemoveRedEye />
         </Button>}},
-        {field:'PDF',width:80,cellRenderer:(params)=>{ return<><PdfDownload myData={params.data}/></>}  },
+        {field:'PDF',width:80,cellRenderer:(params)=>{ return<><PdfDownload myData={params.data} adminInfo={adminInfo}/></>}  },
         {field:'edit',width:100,cellRenderer:(params)=>{return <Dialog>
           <DialogTrigger>
           <Button className="bg-green-600 hover:bg-green-500 transition-all" size="sm" ><CiEdit /></Button>
@@ -188,7 +202,7 @@ const ViewInfoTable = ({data})=>{
         <Modal data={modalData}/>
         <div className={`${edit?'translate-y-0':'-translate-y-full'} w-full h-screen fixed top-0 left-0 z-[1000] flex flex-col justify-center items-center overflow-y-scroll p-10`}>
           <div className="w-full h-full fixed top-0 left-0 bg-gray-900 bg-opacity-50"></div>
-          
+
         </div>
         </div>
     </>
@@ -205,9 +219,9 @@ export default ViewInfoTable;
 
 
 
-    
-    
-  
+
+
+
 
 
 

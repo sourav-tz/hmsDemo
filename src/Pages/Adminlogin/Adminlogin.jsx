@@ -121,7 +121,7 @@ export default function () {
           <div
 
             onClick={() => {
-              Navigator('/')
+              Navigator('/role')
               localStorage.removeItem('role')
             }}
             className={`cursor-pointer h-12 absolute top-8 left-4 px-4 py-2 flex justify-center items-center rounded-full bg-blue-600 hover:bg-blue-500 text-white`}

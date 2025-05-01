@@ -58,7 +58,7 @@ export const viewInfoSlice = createSlice({
       state.modalData = action.payload;
     },
     resetQuery:(state)=>{
-      state.searchQuery = {firstName:null,lastName:null,rollNo:null,courseId:null,state:null};
+      state.searchQuery = {firstName:'',lastName:'',rollNo:'',courseId:'',state:'',year:''};
     }
   },
 })

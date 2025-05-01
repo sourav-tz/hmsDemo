@@ -14,9 +14,7 @@ import { useRef } from 'react';
 import { ToastContainer, toast } from "react-toastify"
 import 'react-toastify/dist/ReactToastify.css'
 import { ImBin } from "react-icons/im";
-
-
-
+import backgroundImage from '../../../Assets/hostel11.jpg';
 
 export default function AddCourses() {
   const [courses, setCourses] = useState([
@@ -205,12 +203,18 @@ const deleteCourse = async (courseId) => {
 
 
   return (
+    <div className="relative min-h-screen w-full flex flex-col justify-start py-10 items-center">
+          {/* Background Image Layer */}
+          <div
+            className="absolute top-0 left-0 w-full h-full bg-center bg-cover bg-no-repeat bg-fixed blur-sm opacity-50 z-[-1]"
+            style={{ backgroundImage: `url(${backgroundImage})` }}
+          />
    <div className="container mx-auto py-8 px-4 sm:px-8">
   <div className="flex flex-col justify-center items-center gap-8">
     {/* Add New Course Section */}
-    <div className="w-full lg:w-[600px]">
+    <div className="w-full lg:w-[600px] ">
       <h1 className="text-2xl font-bold mb-4 text-center text-blue-700">Manage Courses</h1>
-      <Card>
+      <Card className="rounded-[30px] shadow-[0_3px_10px_rgb(0,0,0,0.2)] bg-white/30">
         <CardHeader>
           <CardTitle>Add New Course</CardTitle>
         </CardHeader>
@@ -221,7 +225,7 @@ const deleteCourse = async (courseId) => {
     </div>
 
     {/* Course List Section */}
-    <div className="w-full">
+    <div className="w-[90%]">
       <div className="flex flex-col sm:flex-row items-center justify-between mb-4">
         <h2 className="text-xl font-bold">Course List</h2>
         <Button size="sm" className="bg-blue-700 hover:bg-blue-500 mt-2 sm:mt-0">Export to CSV</Button>
@@ -458,7 +462,7 @@ const deleteCourse = async (courseId) => {
   </div>
   <DevTool control={control} />
 </div>
-
+</div>
   )
 }
 

@@ -18,14 +18,14 @@ const { guestInfo ,bookingInfo,guestRoomInfo} = require("../../models");
           message: "hostel no is required.",
         });
       }
-  
+
       const result = await guestInfo.findAll({
         where: {
             hostel_no:hostelNo,
           status: "pendingAtAdmin", // Filtering applications with 'pending' status
         },
       });
-  
+
       if (result.length === 0) {
         return res.status(404).json({
           success: false,
@@ -57,14 +57,14 @@ const { guestInfo ,bookingInfo,guestRoomInfo} = require("../../models");
           message: "hostel no is required.",
         });
       }
-  
+
       const result = await guestInfo.findAll({
         where: {
             hostel_no:hostelNo,
           status: "approvedByAdmin", // Filtering applications with 'pending' status
         },
       });
-  
+
       if (result.length === 0) {
         return res.status(404).json({
           success: false,
@@ -144,18 +144,18 @@ const { guestInfo ,bookingInfo,guestRoomInfo} = require("../../models");
           message: "You are not authorized to perform this request.",
         });
       }
-  
+
       if (!application_id || !hostelNo) {
         return res.status(400).json({
           success: false,
           message: "Application ID and hostel no. are required.",
         });
       }
-  
+
       const application = await guestInfo.findOne({
         where: { application_id ,status:"pendingAtAdmin"},
       });
-  
+
       if (!application) {
         return res.status(404).json({
           success: false,
@@ -169,7 +169,7 @@ const { guestInfo ,bookingInfo,guestRoomInfo} = require("../../models");
           message: "You are not authorized to reject this application.",
         });
       }
-  
+
       await guestInfo.update(
         { status: "rejectedByAdmin" },
         {
@@ -178,7 +178,7 @@ const { guestInfo ,bookingInfo,guestRoomInfo} = require("../../models");
           },
         }
       );
-  
+
       return res.status(200).json({
         success: true,
         message: "Application successfully rejected.",
@@ -242,7 +242,7 @@ const { guestInfo ,bookingInfo,guestRoomInfo} = require("../../models");
         await bookingInfo.create({
             application_id: application_id,
             roomId: room.roomId,
-            allocatedHostel:hostelNo
+            allocatedHostel: parseInt(hostelNo, 10) // Ensure hostelNo is an integer
         });
 
         return res.status(200).json({
@@ -274,7 +274,7 @@ const { guestInfo ,bookingInfo,guestRoomInfo} = require("../../models");
 
     const result = await bookingInfo.findAll({
       where: {
-          allocatedHostel:hostelNo,
+          allocatedHostel: parseInt(hostelNo, 10), // Ensure hostelNo is an integer
       },
     });
 
@@ -296,14 +296,14 @@ const { guestInfo ,bookingInfo,guestRoomInfo} = require("../../models");
       const hostelNo = req.body.tokenHostelNo;
       const role = req.body.TokenRole;
       const { application_id, roomId } = req.params;
-  
+
       if (role !== "Hostel-Authority") {
         return res.status(403).json({
           success: false,
           message: "You are not authorized to perform this request.",
         });
       }
-  
+
 
       if (!hostelNo) {
         return res.status(400).json({
@@ -317,37 +317,37 @@ const { guestInfo ,bookingInfo,guestRoomInfo} = require("../../models");
           message: "Application ID and Room ID are required.",
         });
       }
-  
+
       // Fetch guest info by application_id
       const guestData = await guestInfo.findOne({
         where: { application_id},
       });
-  
+
       if (!guestData) {
         return res.status(404).json({
           success: false,
           message: "No data found for the provided Application ID.",
         });
       }
-  
+
       // Fetch guest room info by room_id
       const roomData = await guestRoomInfo.findOne({
         where: { roomId},
       });
-  
+
       if (!roomData) {
         return res.status(404).json({
           success: false,
           message: "No data found for the provided Room ID.",
         });
       }
-  
+
       // Combine results
       const result = {
         guestInfo: guestData,
         roomInfo: roomData,
       };
-  
+
       // Respond with the combined result
       return res.status(200).json({ success: true, result });
     } catch (error) {
@@ -355,6 +355,6 @@ const { guestInfo ,bookingInfo,guestRoomInfo} = require("../../models");
       return res.status(500).json({ success: false, error: error.message });
     }
   };
-  
+
 module.exports = {getPendingApplicationAdmin,acceptApplicationAdmin,rejectApplicationAdmin,getApprovedApplicationAdmin,bookRoomAdmin,getSchedule,getDetails};
 

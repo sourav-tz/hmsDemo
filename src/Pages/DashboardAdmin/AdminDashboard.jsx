@@ -109,7 +109,7 @@ return <>
 
         {/* Home */}
         <div className={styles.contentSpace + ' flex justify-center'}>
-        <div className={styles.Header+ ' text-blue-600 text-center text-3xl mt-16 md:mt-0'}><h1>Welcome To Vivekanand Hostel</h1></div>
+        <div className={styles.Header+ ' text-blue-600 text-center text-3xl mt-16 md:mt-0'}><h1>Welcome To NIT HMS</h1></div>
         <div className="">
             <Card>
             <CardHeader>
