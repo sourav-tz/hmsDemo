@@ -85,6 +85,7 @@ const ViewNotice = () => {
                                 {/* <TableHead className="w-[100px]">Notice ID</TableHead> */}
                                 <TableHead>Title</TableHead>
                                 <TableHead>Date</TableHead>
+                                <TableHead>Role</TableHead>
                                 {/* <TableHead className="text-right">Actions</TableHead> */}
                                 <TableHead className="text-center">Actions</TableHead>
                             </TableRow>
@@ -111,6 +112,7 @@ const ViewNotice = () => {
                                         day: "numeric",
                                     })}
                                 </TableCell>
+                                <TableCell className="text-left">{d.isGlobal?"Super Admin":"Admin"}</TableCell>
                                 <TableCell className="text-center">
                                     <Dialog>
                                         <DialogTrigger>
@@ -123,7 +125,17 @@ const ViewNotice = () => {
                                             <a href={d.url} target="_blank">Open PDF</a>
                                         </DialogContent>
                                     </Dialog>
-                                    <Button disabled={d.isGlobal}  onClick={() => deleteNotice(d.public_id)} className="bg-red-700 hover:bg-red-500">Delete</Button>
+                                    {/* <Button disabled={d.isGlobal}  onClick={() => deleteNotice(d.public_id)} className="bg-red-700 hover:bg-red-500">Delete</Button> */}
+                                    <Button
+                                        disabled={d.isGlobal}
+                                        onClick={() => deleteNotice(d.public_id)}
+                                        className="bg-red-700 text-white px-4 py-2 rounded hover:bg-red-500 cursor-pointer disabled:cursor-not-allowed disabled:bg-red-400 disabled:hover:bg-red-400"
+                                    >
+                                        Delete
+                                    </Button>
+
+
+
                                 </TableCell>
                             </TableRow>) : null}
                         </TableBody>
