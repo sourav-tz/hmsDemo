@@ -22,6 +22,7 @@ import AllotRooms from './Pages/DashboardAdmin/RoomInfo/AllotRooms/AllotRooms';
 import Home from './Pages/DashboardSuperAdmin/Home/Home';
 import ManageAdmin from './Pages/DashboardSuperAdmin/Hostels/ManageAdmin/ManageAdmin';
 import ManageHostels from './Pages/DashboardSuperAdmin/Hostels/ManageHostels/ManageHostels';
+import ApplicationStatusSuperAdmin from './Pages/DashboardSuperAdmin/Application/ApplicationStatus.jsx';
 import RoomsUpload from './Pages/DashboardSuperAdmin/RoomActions/UploadInfo/RoomsUpload';
 import { RxHamburgerMenu } from "react-icons/rx";
 import Loadingpage from './components/Loadingpage/Loadingpage';
@@ -35,6 +36,7 @@ import ApplicationStudent from './Pages/Dashboard/Application/Application.jsx';
 import ApplicationStatusStudent from './Pages/Dashboard/Application/ApplicationStatus.jsx';
 import Complaints from './Pages/DashboardAdmin/Complaints/Complaints.jsx';
 import ApplicationAdmin from './Pages/DashboardAdmin/Application/application.jsx';
+import ApplicationStatusAdmin from './Pages/DashboardAdmin/Application/ApplicationStatus.jsx';
 
 import SuperAdminOtp from './Pages/SuperAdminLogin/SuperAdminOtp';
 import UploadNotice from './Pages/DashboardAdmin/Notice/UploadNotice.jsx';
@@ -268,6 +270,7 @@ useEffect(()=>{
             <Route path='/adminDashboard/roomInfo/allotRooms' element={<CloseRoute><AllotRooms /></CloseRoute>} />
             <Route path='/adminDashboard/complaints/complaints' element={<CloseRoute><Complaints /></CloseRoute>} />
             <Route path='/adminDashboard/admin/application' element={<CloseRoute><ApplicationAdmin /></CloseRoute>} />
+            <Route path='/adminDashboard/admin/applicationstatus' element={<CloseRoute><ApplicationStatusAdmin /></CloseRoute>} />
             <Route path='/adminDashboard/notice/uploadNotice' element={<CloseRoute><UploadNotice /></CloseRoute>} />
             <Route path='/adminDashboard/notice/viewNotice' element={<CloseRoute><ViewNotice /></CloseRoute>} />
             <Route path='/adminDashboard/settings/security' element={<CloseRoute><AdminSecuritysettings /></CloseRoute>} />
@@ -292,6 +295,8 @@ useEffect(()=>{
             <Route path='/superAdminDashboard/notice/viewNotice' element={<CloseRoute><ViewNoticeSA /></CloseRoute>} />
             <Route path='/superAdminDashboard/settings/security' element={<CloseRoute><Securitysettings /></CloseRoute>} />
             <Route path='/superAdminDashboard/studentActions/addCourses' element={<CloseRoute><AddCourses /></CloseRoute>} />
+            <Route path='/superAdminDashboard/application/applicationStatus' element={<CloseRoute><ApplicationStatusSuperAdmin /></CloseRoute>} />
+
             
 
             {/* Guest Routes */}

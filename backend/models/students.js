@@ -65,6 +65,9 @@ module.exports = (sequelize, dataTypes) => {
             foreignKey: 'referrer_email',
             as: 'referrals',
         });
+        students.hasMany(models.studentRemarks, {
+            foreignKey: 'rollNo', // Or whatever your foreign key is
+          });
     };
     return students;
 }

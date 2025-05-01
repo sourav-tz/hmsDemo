@@ -1,17 +1,26 @@
 const { Application , students,hostelauthoritys ,courses} = require('../../../models');
 const { NotifyNewHostelAdminEmail, NotifyOldHostelAdminEmail,NotifyStudentOnTransferEmail } = require('../../../MailTemplates/HostelTransfer');
 const mailSender = require('../../../utils/mailSender');
-// const { Sequelize } = require('sequelize');
-// or wherever your Sequelize instance is configured
-// Get all applications forwarded to super admin
+const { Op } = require('sequelize');
+
+
 exports.getAllForwardedApplications = async (req, res) => {
   try {
-    const { status } = req.query; // frontend can send ?status=resolved etc.
+    const { status } = req.query;
+
+    // Default: fetch all relevant statuses for super admin
+    let whereClause = {};
+
+    if (!status || status === 'all') {
+      whereClause.status = {
+        [Op.or]: ['pendingAtSuperAdmin', 'approvedBySuperAdmin', 'rejectedBySuperAdmin']
+      };
+    } else {
+      whereClause.status = status;
+    }
 
     const applications = await Application.findAll({
-      where: {
-        status: status || 'pendingAtSuperAdmin' // default to 'pendingAtSuperAdmin' if not provided
-      }
+      where: whereClause,
     });
 
     res.status(200).json({
@@ -28,8 +37,7 @@ exports.getAllForwardedApplications = async (req, res) => {
 exports.approveBySuperAdmin = async (req, res) => {
   try {
     const applicationId = req.params.id;
-    console.log("hello")
-    console.log(req.body);
+    const remark = req.body.remark
     const application = await Application.findOne({
       where: {
         applicationId,
@@ -42,6 +50,7 @@ exports.approveBySuperAdmin = async (req, res) => {
         error: 'Application not found or already processed'
       });
     }
+    
 
     const { forwardedTo: oldHostelNo, extraData, createdBy } = application.dataValues;
     const rollNos = extraData.rollNos || [createdBy];
@@ -119,7 +128,9 @@ exports.approveBySuperAdmin = async (req, res) => {
     ]);
 
     await Application.update(
-      { status: 'approvedBySuperAdmin' },
+      { status: 'approvedBySuperAdmin',
+        superAdminComment: remark,
+      },
       { where: { applicationId } }
     );
 
@@ -147,13 +158,16 @@ exports.approveBySuperAdmin = async (req, res) => {
 exports.rejectBySuperAdmin = async (req, res) => {
   try {
     const applicationId = req.params.id;
+    console.log("log from reject by super admin")
+    const remark = req.body.remark
 
     const [updatedCount] = await Application.update(
-      { status: 'rejectedBySuperAdmin' },
+      { status: 'rejectedBySuperAdmin',
+        superAdminComment : remark
+      },
       {
         where: {
           applicationId,
-          forwardedTo: 'superadmin',
           status: 'pendingAtSuperAdmin'
         }
       }

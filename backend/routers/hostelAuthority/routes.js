@@ -25,6 +25,7 @@ const {getComplaintsAdmin,rejectComplaint,resoleComplaint}=require('../../contro
 const  updatePassword  = require('../../controllers/hostelAuthority/user/user.controller.js');
 const {addnotice,getNotices,deleteNotices} =require("../../controllers/hostelAuthority/notices/notices.js")
 const singleUpload =  require("../../middlewares/multer.js");
+const {addStudentToArchive,getStudentArchiveByRollNo,getAllStudentArchives} = require("../../controllers/hostelAuthority/studentModule/studentArchive.js")
 
 const {
     getAllApplications,
@@ -106,11 +107,18 @@ router.post('/resolveComplaint',auth,resoleComplaint);
 
 router.get('/applications', auth, getAllApplications);
 router.get('/applications/:id', auth, getApplicationById);
-router.patch('/applications/approve/:id', auth, approveApplication);
-router.patch('/applications/reject/:id', auth, rejectApplication);
-router.patch('/applications/forward/:id', auth, forwardApplication); 
-router.patch('/applications/edit/:applicationId', auth, editApplication);
+router.post('/applications/approve/:id', auth, approveApplication);
+router.post('/applications/reject/:id', auth, rejectApplication);
+router.post('/applications/forward/:id', auth, forwardApplication); 
+router.post('/applications/edit/:applicationId', auth, editApplication);
 router.post("/applications/bulk-hostel-change", auth, raiseBulkHostelChangeByAdmin);
+
+// studentArchive
+
+router.post('/student-archive', addStudentToArchive);
+router.get('/student-archive/:rollNo', getStudentArchiveByRollNo);
+// Route to get all archives
+router.get('/student-archive', getAllStudentArchives);
 
 
 module.exports = router;

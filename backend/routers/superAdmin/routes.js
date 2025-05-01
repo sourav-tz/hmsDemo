@@ -104,8 +104,10 @@ router.post('/getAdminsAgainstHostel',auth,getAdminsAgainstHostel);
 
 // manage applications
 router.get('/applications', auth, getAllForwardedApplications);
-router.patch('/applications/approve/:id', auth, approveBySuperAdmin);
-router.patch('/applications/reject/:id', auth, rejectBySuperAdmin);
+// router.patch('/applications/approve/:id',auth,approveBySuperAdmin);
+router.post('/applications/approve/:id', auth, approveBySuperAdmin);
+
+router.post('/applications/reject/:id',auth,rejectBySuperAdmin);
 
 
 module.exports = router;
