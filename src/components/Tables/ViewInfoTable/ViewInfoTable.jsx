@@ -16,6 +16,9 @@ import { Dialog, DialogTrigger, DialogContent,DialogFooter,DialogTitle,DialogHea
 import {ScrollArea} from "@/components/ui/scroll-area";
 import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
+import axios from 'axios';
+import { toast, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import {
   Select,
   SelectContent,
@@ -28,7 +31,7 @@ import {Calendar} from "@/components/ui/calendar";
 import {useForm,Controller} from 'react-hook-form';
 
 const ViewInfoTable = ({data})=>{
-  console.log(data);
+
   // Row Data: The data to be displayed.
 
   const [rowData, setRowData] = useState([]);
@@ -36,6 +39,7 @@ const ViewInfoTable = ({data})=>{
   const [modalData,setModalData] = useState(null);
   const [edit,setEdit] = useState(false);
   const [date,setDate] = useState(new Date());
+  const [archiveLoading, setArchiveLoading] = useState(false);
 
 
   useEffect(() => {
@@ -43,6 +47,22 @@ const ViewInfoTable = ({data})=>{
       setRowData(data);
     }
   }, [data]);
+ 
+
+  const addToArchiveTable = async (rollNo) => {
+    try {
+      setArchiveLoading(true);
+      console.log(rollNo)
+      const { data } = await axios.post(import.meta.env.VITE_BASE_URL + '/HA/student-archive', { rollNo });
+      toast.success(data.message || 'Student archived successfully!');
+      setArchiveLoading(false);
+    } catch (error) {
+      setArchiveLoading(false);
+      const errorMessage = error.response?.data?.message || error.message || 'Failed to archive student';
+      toast.error(errorMessage);
+    }
+  };
+
 
 
 
@@ -62,12 +82,12 @@ const ViewInfoTable = ({data})=>{
         {field:'courseId',width:120},
         {field:'email'},
         {field:'profile.contactNumber', headerName: 'Contact Number',width:150},
-        {field:'viewInfo',width:110,cellRenderer:(params)=>{return <Button className="bg-blue-600 hover:bg-blue-500 transition-all" size="sm" onClick={()=>{Dispatcher(changeModalState(true));setModalData(params.data);console.log(params.data)}}><MdOutlineRemoveRedEye />
+        {field:'viewInfo',width:110,cellRenderer:(params)=>{return <Button className="bg-blue-600 hover:bg-blue-500 transition-all" size="sm" onClick={()=>{Dispatcher(changeModalState(true));setModalData(params.data);}}><MdOutlineRemoveRedEye />
         </Button>}},
         {field:'PDF',width:80,cellRenderer:(params)=>{ return<><PdfDownload myData={params.data}/></>}  },
         {field:'edit',width:100,cellRenderer:(params)=>{return <Dialog>
           <DialogTrigger>
-          <Button className="bg-green-600 hover:bg-green-500 transition-all" size="sm" onClick={()=>{console.log(params.data)}}><CiEdit /></Button>
+          <Button className="bg-green-600 hover:bg-green-500 transition-all" size="sm" ><CiEdit /></Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
@@ -138,7 +158,22 @@ const ViewInfoTable = ({data})=>{
           </ScrollArea>
           </DialogContent>
           </Dialog> }},
-        {field:'delete',width:100,cellRenderer:(params)=>{return <Button className="bg-red-600 hover:bg-red-500 transition-all" size="sm" onClick={()=>{console.log(params.data)}}><RiDeleteBin5Line /></Button>}},
+        {field:'delete',width:100,cellRenderer:(params)=>{return <Button className="bg-red-600 hover:bg-red-500 transition-all" size="sm" ><RiDeleteBin5Line /></Button>}},
+        {
+          field: 'archive',
+          width: 110,
+          cellRenderer: (params) => {
+            return (
+              <Button
+                className="bg-yellow-600 hover:bg-yellow-500 transition-all"
+                size="sm"
+                onClick={() => addToArchiveTable(params.data.rollNo)}
+              >
+                {archiveLoading ? 'Archiving...' : 'Archive'}
+              </Button>
+            );
+          }
+        },
          
   ]);
 
