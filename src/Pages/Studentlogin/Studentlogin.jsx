@@ -19,6 +19,7 @@ const Studentlogin = ()=>{
 
     const [data, setData] = useState({ email: null, password: null })
 
+
     const Navigator = useNavigate();
     const onSetMyData = (key, value) => {
         setData((prev) => {
@@ -28,7 +29,9 @@ const Studentlogin = ()=>{
     }
 
 
+
     const onSubmit = async (e) => {
+
 
         e.preventDefault();
         try {
@@ -58,16 +61,49 @@ const Studentlogin = ()=>{
                 console.log('Regular student login - setting roleType: Student');
 
                 // Ensure roleType is set to Student
-                const userData = {
-                    ...res.data,
-                    roleType: 'Student'
-                };
+                // const userData = {
+                //     ...res.data.dataValues,
+                //     roleType: 'Student'
+                // };
 
                 // Dispatch to Redux
-                Dispatcher(setUserData(userData));
+                Dispatcher(setUserData({
+                    ...res.data.dataValues,
+                    roleType: 'Student'
+                }));
 
                 // Navigate to student dashboard
                 Navigator('/studentDashboard/main/home');
+            } else if (res.data.roleType === 'TempStudent') {
+                // Temporary student login
+                console.log('Temp student login:', res.data);
+
+                // Store user data in Redux
+                Dispatcher(setUserData({
+                    email: res.data.email,
+                    roleType: 'TempStudent',
+                    status: res.data.status
+                }))
+
+                // Store role in localStorage for persistence
+                localStorage.setItem('role', 'TempStudent');
+                localStorage.setItem('tempStatus', res.data.status);
+
+                // Always redirect to self-profiling page
+                Navigator('/studentDashboard/main/selfProfiling');
+
+                // Show a toast message based on status
+                if (res.data.status === 'pending') {
+                    toast.info('Please complete your profile information', {
+                        position: "top-right",
+                        autoClose: 5000
+                    });
+                } else if (res.data.status === 'rejected') {
+                    toast.warning('Your profile was rejected. Please update and resubmit.', {
+                        position: "top-right",
+                        autoClose: 5000
+                    });
+                }
             } else if (res.data.roleType === 'TempStudent') {
                 // Temporary student login
                 console.log('Temp student login:', res.data);
@@ -127,6 +163,7 @@ const Studentlogin = ()=>{
         <div className={styles.logoSection}>
         <div className={styles.opacityCover}></div>
         <div onClick={()=>{Navigator("/role");localStorage.removeItem('role')}} 
+        <div onClick={()=>{Navigator("/role");localStorage.removeItem('role')}} 
         className={`cursor-pointer h-12 absolute top-8 left-4 px-4 py-2 flex justify-center items-center rounded-full bg-blue-600 hover:bg-blue-500 text-white`}>
         <IconContext.Provider value={{size:20}}>
             <p className='flex justify-center items-center gap-1 text-white'>
@@ -153,6 +190,7 @@ const Studentlogin = ()=>{
 
                 <div className='relative'>
                 <Textinput
+                <Textinput
                 onChange={
                     (e)=>{
                         onSetMyData('password',e.target.value);
@@ -162,8 +200,10 @@ const Studentlogin = ()=>{
                 style={{marginTop:'0px',minWidth:'300px'}} label="Password"/>
 
                 {visible?<FaEye className='absolute min-[300px]:top-[3.1rem] sm:top-9 md:top-8 right-3 cursor-pointer min-[300px]:size-6 sm:size-4 md:size-4' color='#5F57FF' onClick={handleShowPassword}></FaEye>:
+                {visible?<FaEye className='absolute min-[300px]:top-[3.1rem] sm:top-9 md:top-8 right-3 cursor-pointer min-[300px]:size-6 sm:size-4 md:size-4' color='#5F57FF' onClick={handleShowPassword}></FaEye>:
                 <FaEyeSlash className='absolute min-[300px]:top-[3.1rem] sm:top-9 md:top-8 right-3 cursor-pointer min-[300px]:size-6 sm:size-4 md:size-4' color='#5F57FF' onClick={handleShowPassword}></FaEyeSlash>}
                 </div>
+
 
                 <Button variant="contained" type="submit" className={`bg-indigo-500`} style={{marginTop:'0px',minWidth:'300px'}} text="login"/>
                 </form>
@@ -180,6 +220,7 @@ const Studentlogin = ()=>{
     </div>
     <ToastContainer />
 </>
+
 
 
 }
