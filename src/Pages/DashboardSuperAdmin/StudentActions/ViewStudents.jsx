@@ -36,7 +36,7 @@ const ViewInfo = ()=>{
   const [selectedCourse, setSelectedCourse] = useState('');
   const [selectedYear, setSelectedYear] = useState('');
   const [selectedHostel, setSelectedHostel] = useState('');
-  
+
 
   useEffect(()=>{
       axios.get(import.meta.env.VITE_BASE_URL + '/HA/studentsInfo?page=1&limit=10&total=0',config)
@@ -193,8 +193,7 @@ const ViewInfo = ()=>{
 const handleCourse = (e)=>{
 
 Dispatcher(setSearchQuery({...searchQuery,courseId:e}));
-
-;(async ()=>{
+(async ()=>{
   try{
     const res =await axios({
       url:import.meta.env.VITE_BASE_URL + '/HA/getSingleCourse',
@@ -337,19 +336,24 @@ setTableLoading(true);
                       <SelectValue placeholder="Select" />
                     </SelectTrigger>
                     <SelectContent>
-                      {indianStates.map(d=><SelectItem value={d}>{d}</SelectItem>)}
+                      {indianStates.map(d=><SelectItem key={d} value={d}>{d}</SelectItem>)}
                     </SelectContent>
                   </Select>
                 </div>
                 <div>
                   <p>Course:</p>
                   {/* <MultiSelect FOR="course" list={academicQualifications} onClick={handleMutivalueClick}/> */}
-                  <Select value={selectedCourse} onValueChange={handleCourse}>
+                  <Select
+                    value={selectedCourse}
+                    onValueChange={(value) => {
+                      setSelectedCourse(value);
+                      handleCourse(value);
+                    }}>
                     <SelectTrigger className="w-[250px]">
                       <SelectValue placeholder="Select" />
                     </SelectTrigger>
                     <SelectContent>
-                      {mycourses.map((d,id)=><SelectItem value={id+1}>{d}</SelectItem>)}
+                      {mycourses.map((d,id)=><SelectItem key={id} value={id+1}>{d}</SelectItem>)}
                     </SelectContent>
                   </Select>
                 </div>
@@ -366,7 +370,7 @@ setTableLoading(true);
                       <SelectValue placeholder="Select" />
                     </SelectTrigger>
                     <SelectContent>
-                      {years.map(d=><SelectItem value={d}>{d}</SelectItem>)}
+                      {years.map(d=><SelectItem key={d} value={d}>{d}</SelectItem>)}
                     </SelectContent>
                   </Select>
                 </div>

@@ -89,7 +89,7 @@ const handleChange = (e)=>{
     <IconContext.Provider value={{ color: "blue",size:"13"}}>
             <div className='flex'>
             <Select onValueChange={(e)=>{setQueryItem(e)}}>
-  <SelectTrigger className="w-[180px]">
+  <SelectTrigger className="w-[250px]">
     <SelectValue placeholder="first name" />
   </SelectTrigger>
   <SelectContent>
@@ -99,7 +99,7 @@ const handleChange = (e)=>{
     <SelectItem value="rollNo">Roll No</SelectItem>
   </SelectContent>
 </Select>
-  <Input onChange={handleChange} className='md:w-[250px]'/>
+  <Input onChange={handleChange} className='md:w-[250px] ml-4'/>
             </div>
     </IconContext.Provider>
     </>
