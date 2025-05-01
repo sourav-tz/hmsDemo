@@ -113,10 +113,7 @@ exports.profileValidationSchema = {
       isLength: {
         options: { min: 0, max: 50 },
         errorMessage: 'Last name must be between 1 and 50 characters.',
-      },
-      notEmpty: {
-        errorMessage: 'Last name is required.',
-      },
+      }
     },
     dob: {
       in: ['body'],
