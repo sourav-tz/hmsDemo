@@ -1,11 +1,9 @@
 import styles from "./Modal.module.scss";
-import Button from "../Button/Button";
 import { animated, useSpring } from "@react-spring/web";
 import { useEffect, useState } from "react";
 import { CgClose } from "react-icons/cg";
 import { useSelector, useDispatch } from "react-redux";
 import { changeModalState } from "../../Store/Reducers/viewInfoSlice";
-import LoadingPage from "../Loadingpage/Loadingpage";
 
 const Modal = ({ data }) => {
   const [loadingModal, setLoading] = useState(true);
@@ -23,21 +21,7 @@ const Modal = ({ data }) => {
   }, [data]);
   const Dispatcher = useDispatch();
 
-  const handleEscapeKey = (event) => {
-    if (event.key === "Escape") {
-      Dispatcher(changeModalState(false));
-    }
-  };
-
-  useEffect(() => {
-    // Add event listener when component mounts
-    window.addEventListener("keydown", handleEscapeKey);
-
-    // Remove event listener when component unmounts
-    return () => {
-      window.removeEventListener("keydown", handleEscapeKey);
-    };
-  }, []);
+  // Event handler moved to the useEffect below
 
   const props = useSpring({
     from: { opacity: "0", transform: "scale(0%)" },
@@ -50,147 +34,282 @@ const Modal = ({ data }) => {
     },
   });
 
+  // Fix for React Hook useEffect missing dependency warning
+  useEffect(() => {
+    const handleEscapeKeyPress = (event) => {
+      if (event.key === "Escape") {
+        Dispatcher(changeModalState(false));
+      }
+    };
+
+    window.addEventListener("keydown", handleEscapeKeyPress);
+    return () => {
+      window.removeEventListener("keydown", handleEscapeKeyPress);
+    };
+  }, [Dispatcher]);
+
   return (
     <>
       <animated.div
         style={props}
         className={styles.container + " " + (mopen ? null : styles.invisible)}
+        onClick={(e) => {
+          // Close modal when clicking outside content
+          if (e.target === e.currentTarget) {
+            Dispatcher(changeModalState(false));
+          }
+        }}
       >
-        <div className={styles.header}>
-          <div className={styles.title}>
-            <h1 className="font-bold text-2xl bg-#131133">Student Details</h1>
+
+        {loadingModal ? (
+          <div className={styles.content}>
+            <div className={styles.header}>
+              <div className={styles.title}>
+                <h1 className="font-bold text-2xl">Student Details</h1>
+              </div>
+              <div
+                onClick={() => {
+                  Dispatcher(changeModalState());
+                }}
+                className={styles.closeIcon}
+              >
+                <CgClose size="25" />
+              </div>
+            </div>
+            <div className={styles.scrollableContent}>
+              <div className="flex justify-center items-center py-20">
+                <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
+              </div>
+            </div>
           </div>
-          <div
-            onClick={() => {
-              Dispatcher(changeModalState());
-            }}
-            className={styles.closeIcon}
-          >
-            <CgClose size="25" />
-          </div>
-        </div>
+        ) : (
+          <div className={styles.content} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.header}>
+              <div className={styles.title}>
+                <h1 className="font-bold text-2xl">Student Details</h1>
+              </div>
+              <div
+                onClick={() => {
+                  Dispatcher(changeModalState());
+                }}
+                className={styles.closeIcon}
+              >
+                <CgClose size="25" />
+              </div>
+            </div>
+            <div className={styles.scrollableContent}>
+              <div className="max-w-6xl mx-auto px-4">
+              {/* Header with student photo */}
+              <div className="flex flex-col md:flex-row items-center justify-between mb-8 pb-4 border-b border-gray-200">
+                <div className="flex flex-col md:flex-row items-center">
+                  <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-blue-100 flex-shrink-0 mb-4 md:mb-0 md:mr-6">
+                    {mdata.profile && mdata.profile.photoLink ? (
+                      <img
+                        src={mdata.profile.photoLink}
+                        alt={`${mdata.firstName} ${mdata.lastName}`}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <h1 className="text-2xl font-bold text-gray-800">{mdata.firstName} {mdata.lastName}</h1>
+                    <p className="text-gray-600">Roll No: <span className="font-semibold">{mdata.rollNo}</span></p>
+                    <p className="text-gray-600">Hostel: <span className="font-semibold">{mdata.hostel?.hostelName ? `${mdata.hostel.hostelName} (Hostel ${mdata.hostelNo})` : `Hostel ${mdata.hostelNo}`}</span></p>
+                  </div>
+                </div>
+                <div className="bg-blue-50 px-4 py-2 rounded-lg mt-4 md:mt-0">
+                  <p className="text-blue-700 font-medium">Year: <span className="font-bold">{mdata.year}</span></p>
+                  <p className="text-blue-700 font-medium">Room: <span className="font-bold">{mdata.roomId || 'Not Assigned'}</span></p>
+                </div>
+              </div>
 
-        {loadingModal ? null : (
-          <div className={styles.content + " "}>
-
-            <div className="w-3/4 flex-wrap display-full p-8 bg-blue-white shadow-xl rounded-xl m-10 bg-gray-50 ">
-
-            <h1 className="text-2xl font-bold mb-6  text-[#5F57FF] text-center underline">Hostel Vivekanand</h1>
-            
-              <div className="max-w-5xl mx-auto">
-                <h1 className="text-xl font-bold mb-4  text-[#5F57FF] ">Personal Information</h1>
-
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 grid-cols-1 gap-3 text-lg">
-                  
-                  <div className="col-span-1 ">
-                    <div className=" p-1 flex ">
-                      <h2 className="text font-bold mb-2 ">Name: </h2>
-                      <div className="mx-1">{mdata.firstName} {mdata.lastName} </div>
-                    </div>
+              {/* Student Basic Information */}
+              <div className="mb-8 bg-white p-6 rounded-lg shadow border border-gray-200">
+                <h2 className="text-xl font-bold mb-4 text-blue-600 pb-2 border-b border-blue-100">
+                  Student Information
+                </h2>
+                <div className="grid md:grid-cols-3 gap-4 mt-4">
+                  <div>
+                    <p className="text-gray-500 text-sm">Roll Number</p>
+                    <p className="font-medium">{mdata.rollNo}</p>
                   </div>
-                  <div className="col-span-1">
-                    <div className="  p-1 flex">
-                      <h2 className="text font-bold mb-2">Email : </h2>
-                      <div className="  mx-1">{mdata.email} </div>
-                    </div>
+                  <div>
+                    <p className="text-gray-500 text-sm">Year</p>
+                    <p className="font-medium">{mdata.year || 'Not Available'}</p>
                   </div>
-                  <div className="col-span-1">
-                    <div className="  p-1 flex">
-                      <h2 className="text font-bold mb-2">Course : </h2>
-                      <div className="  mx-1">{mdata.courseId} </div>
-                    </div>
-                  </div>
-                  <div className="col-span-1">
-                    <div className="  p-1 flex">
-                      <h2 className="text font-bold mb-2">Year:  </h2>
-                      <div className="  mx-1">{mdata.year} </div>
-                    </div>
-                  </div>
-                  <div className="col-span-1">
-                    <div className="  p-1 flex">
-                      <h2 className="text font-bold mb-2">Room Id:  </h2>
-                      <div className="  mx-1">{mdata.roomId} </div>
-                    </div>
-                  </div>
-                  <div className="col-span-1">
-                    <div className="  p-1 flex">
-                      <h2 className="text font-bold mb-2">Contact Number:  </h2>
-                      <div className="  mx-1">{mdata.profile.contactNumber} </div>
-                    </div>
-                  </div>
-                  <div className="col-span-1">
-                    <div className="  p-1 flex">
-                      <h2 className="text font-bold mb-2">Secondary C:  </h2>
-                      <div className="  mx-1">{mdata.profile.secondaryContact} </div>
-                    </div>
-                  </div>
-                  <div className="col-span-1">
-                    <div className="  p-1 flex">
-                      <h2 className="text font-bold mb-2">Hostel No:  </h2>
-                      <div className="  mx-1">{mdata.hostelNo} </div>
-                    </div>
+                  <div>
+                    <p className="text-gray-500 text-sm">Status</p>
+                    <p className="font-medium text-green-600">Active</p>
                   </div>
                 </div>
               </div>
 
-              <div className="max-w-5xl mx-auto">
-                <h1 className="text-xl font-bold mt-5 mb-2 text-[#5F57FF] text-ul underline-offset-8">
-                  Additional Information
-                </h1>
-
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 grid-cols-1 gap-3 text-lg"> 
-            
-                  <div className="col-span-1">
-                    <div className="  p-1 flex">
-                      <h2 className="text-lg font-bold mb-2">Gender:  </h2>
-                      <div className="  mx-1">{mdata.profile.gender} </div>
-                    </div>
+              {/* Academic Information */}
+              <div className="mb-8 bg-white p-6 rounded-lg shadow border border-gray-200">
+                <h2 className="text-xl font-bold mb-4 text-blue-600 pb-2 border-b border-blue-100">
+                  Academic Information
+                </h2>
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+                  <div>
+                    <p className="text-gray-500 text-sm">Course Name</p>
+                    <p className="font-medium">{mdata.course?.courseName || 'Not Available'}</p>
                   </div>
-                  <div className="col-span-1">
-                    <div className="  p-1 flex">
-                      <h2 className="text-lg font-bold mb-2">Date of Birth:  </h2>
-                      <div className="  mx-1">{mdata.profile.dob} </div>
-                    </div>
+                  <div>
+                    <p className="text-gray-500 text-sm">Department</p>
+                    <p className="font-medium">{mdata.course?.department || 'Not Available'}</p>
                   </div>
-                  <div className="col-span-1">
-                    <div className="  p-1 flex">
-                      <h2 className="text-xl font-bold mb-2">P. Email :  </h2>
-                      <div className="  mx-1">{mdata.profile.pEmail} </div>
-                    </div>
+                  <div>
+                    <p className="text-gray-500 text-sm">Course ID</p>
+                    <p className="font-medium">{mdata.courseId || 'Not Available'}</p>
                   </div>
-                  <div className="col-span-1">
-                    <div className="  p-1 flex">
-                      <h2 className="text-lg font-bold mb-2">Father's Name: </h2>
-                      <div className="  mx-1">{mdata.profile.fatherName} </div>
-                    </div>
+                  <div>
+                    <p className="text-gray-500 text-sm">Email</p>
+                    <p className="font-medium">{mdata.email}</p>
                   </div>
-                  <div className="col-span-1">
-                    <div className="  p-1 flex">
-                      <h2 className="text-lg font-bold mb-2">Father's Contact:  </h2>
-                      <div className="  mx-1">{mdata.profile.fatherContact} </div>
-                    </div>
-                  </div>
-                  <div className="col-span-1">
-                    <div className="  p-1 flex">
-                      <h2 className="text-lg font-bold mb-2">Father's Occupation: </h2>
-                      <div className="  mx-1">{mdata.profile.fatherOccupation} </div>
-                    </div>
-                  </div>
-                  <div className="col-span-1">
-                    <div className="  p-1 flex">
-                      <h2 className="text-lg font-bold mb-2">Mother's Name:  </h2>
-                      <div className="  mx-1">{mdata.profile.motherName} </div>
-                    </div>
-                  </div>
-                  <div className="col-span-1">
-                    <div className="  p-1 flex">
-                      <h2 className="text-lg font-bold mb-2">Addhar Number: </h2>
-                      <div className="  mx-1">{mdata.profile.addharNumber} </div>
-                    </div>
+                  <div>
+                    <p className="text-gray-500 text-sm">Personal Email</p>
+                    <p className="font-medium">{mdata.profile?.pEmail || 'Not Available'}</p>
                   </div>
                 </div>
               </div>
-             
+
+              {/* Contact Information */}
+              <div className="mb-8 bg-white p-6 rounded-lg shadow border border-gray-200">
+                <h2 className="text-xl font-bold mb-4 text-blue-600 pb-2 border-b border-blue-100">
+                  Contact Information
+                </h2>
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+                  <div>
+                    <p className="text-gray-500 text-sm">Primary Contact</p>
+                    <p className="font-medium">{mdata.profile?.contactNumber || 'Not Available'}</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-500 text-sm">Secondary Contact</p>
+                    <p className="font-medium">{mdata.profile?.secondaryContact || 'Not Available'}</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-500 text-sm">Phone Number</p>
+                    <p className="font-medium">{mdata.profile?.phoneNumber || 'Not Available'}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Personal Details */}
+              <div className="mb-8 bg-white p-6 rounded-lg shadow border border-gray-200">
+                <h2 className="text-xl font-bold mb-4 text-blue-600 pb-2 border-b border-blue-100">
+                  Personal Details
+                </h2>
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+                  <div>
+                    <p className="text-gray-500 text-sm">Gender</p>
+                    <p className="font-medium">{mdata.profile?.gender || 'Not Available'}</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-500 text-sm">Date of Birth</p>
+                    <p className="font-medium">{mdata.profile?.dob || 'Not Available'}</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-500 text-sm">Blood Group</p>
+                    <p className="font-medium">{mdata.profile?.bloodGroup || 'Not Available'}</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-500 text-sm">Identification Mark</p>
+                    <p className="font-medium">{mdata.profile?.identificationMark || 'Not Available'}</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-500 text-sm">Aadhar Number</p>
+                    <p className="font-medium">{mdata.profile?.addharNumber || 'Not Available'}</p>
+                  </div>
+                </div>
+
+                {/* Documents Section */}
+                {mdata.profile?.aadharCardDocument && (
+                  <div className="mt-4 pt-4 border-t border-gray-200">
+                    <h3 className="font-semibold mb-2">Aadhar Card Document</h3>
+                    <div className="w-full max-w-xs overflow-hidden border-2 border-blue-100 rounded-md">
+                      <img
+                        src={mdata.profile.aadharCardDocument}
+                        alt="Aadhar Card"
+                        className="w-full object-contain"
+                        onError={(e) => {
+                          e.target.src = "https://via.placeholder.com/150?text=No+Document";
+                        }}
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Address Information */}
+              <div className="mb-8 bg-white p-6 rounded-lg shadow border border-gray-200">
+                <h2 className="text-xl font-bold mb-4 text-blue-600 pb-2 border-b border-blue-100">
+                  Address Information
+                </h2>
+                <div className="grid md:grid-cols-2 gap-4 mt-4">
+                  <div>
+                    <p className="text-gray-500 text-sm">Permanent Address</p>
+                    <p className="font-medium">{mdata.profile?.subAddress || 'Not Available'}</p>
+                    <p className="font-medium">{mdata.profile?.city && mdata.profile?.state ?
+                      `${mdata.profile.city}, ${mdata.profile.state}${mdata.profile.pinCode ? ` - ${mdata.profile.pinCode}` : ''}` :
+                      'Not Available'}</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-500 text-sm">Local Guardian Address</p>
+                    <p className="font-medium">{mdata.profile?.localGuardianAddress || 'Not Available'}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Family Information */}
+              <div className="mb-8 bg-white p-6 rounded-lg shadow border border-gray-200">
+                <h2 className="text-xl font-bold mb-4 text-blue-600 pb-2 border-b border-blue-100">
+                  Family Information
+                </h2>
+                <div className="grid md:grid-cols-2 gap-4 mt-4">
+                  <div>
+                    <h3 className="font-semibold mb-2">Father&apos;s Details</h3>
+                    <p className="text-gray-500 text-sm">Name</p>
+                    <p className="font-medium mb-2">{mdata.profile?.fatherName || 'Not Available'}</p>
+                    <p className="text-gray-500 text-sm">Contact</p>
+                    <p className="font-medium mb-2">{mdata.profile?.fatherContact || 'Not Available'}</p>
+                    <p className="text-gray-500 text-sm">Occupation</p>
+                    <p className="font-medium">{mdata.profile?.fatherOccupation || 'Not Available'}</p>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold mb-2">Mother&apos;s Details</h3>
+                    <p className="text-gray-500 text-sm">Name</p>
+                    <p className="font-medium mb-2">{mdata.profile?.motherName || 'Not Available'}</p>
+                    <p className="text-gray-500 text-sm">Contact</p>
+                    <p className="font-medium mb-2">{mdata.profile?.motherContact || 'Not Available'}</p>
+                    <p className="text-gray-500 text-sm">Occupation</p>
+                    <p className="font-medium">{mdata.profile?.motherOccupation || 'Not Available'}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Local Guardian Information */}
+              <div className="mb-4 bg-white p-6 rounded-lg shadow border border-gray-200">
+                <h2 className="text-xl font-bold mb-4 text-blue-600 pb-2 border-b border-blue-100">
+                  Local Guardian Information
+                </h2>
+                <div className="grid md:grid-cols-2 gap-4 mt-4">
+                  <div>
+                    <p className="text-gray-500 text-sm">Name</p>
+                    <p className="font-medium">{mdata.profile?.localGuardian || 'Not Available'}</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-500 text-sm">Contact</p>
+                    <p className="font-medium">{mdata.profile?.localGuardianContact || 'Not Available'}</p>
+                  </div>
+                </div>
+              </div>
+              </div>
             </div>
           </div>
         )}

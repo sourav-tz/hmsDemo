@@ -28,6 +28,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import backgroundImage from '../../../../Assets/hostel11.jpg';
 
 
 const ManageAdmin = () => {
@@ -321,11 +322,15 @@ const ManageAdmin = () => {
   }, [])
 
   return (
-
-    <>
-     <div className='flex flex-col items-center justify-center mt-[5rem] md:mt-[6rem] lg:mt-[8rem]'>
+    <div className="relative min-h-screen w-full flex flex-col justify-start py-10 items-center">
+      {/* Background Image Layer */}
+      <div
+        className="absolute top-0 left-0 w-full h-full bg-center bg-cover bg-no-repeat bg-fixed blur-sm opacity-50 z-[-1]"
+        style={{ backgroundImage: `url(${backgroundImage})` }}
+      />
+     <div className='flex flex-col items-center justify-center w-full'>
       {/* Added max-w-full to ensure the form doesn’t exceed screen width on small devices */}
-      <div className='m-6 p-5 max-w-full lg:max-w-max rounded-[30px] shadow-[0_3px_10px_rgb(0,0,0,0.2)]'>
+      <div className='m-6 p-5 max-w-full lg:max-w-max rounded-[30px] shadow-[0_3px_10px_rgb(0,0,0,0.2)] bg-white/30'>
         <form>
           <div>
             <h1 className='text-xl md:text-2xl m-2 font-bold'>Register Admin</h1> {/* Reduced heading size for smaller screens */}
@@ -492,7 +497,7 @@ const ManageAdmin = () => {
       </div>
     </div>
     <DevTool control={control} />
-  </>
+  </div>
   
 
 

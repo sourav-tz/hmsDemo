@@ -117,6 +117,7 @@ module.exports = (sequelize, DataTypes) => {
         });
         guestInfo.belongsTo(models.students, {
             foreignKey: 'referrer_email',
+            targetKey: 'email', // Reference the email column instead of the primary key
             as: 'referrer',
         });
     };

@@ -47,19 +47,41 @@ useEffect(() => {
       });
 
 const handleChange = (e)=>{
+  console.log("Search input changed:", e.target.value, "Search type:", queryItem);
+
   if(queryItem === 'firstName'){
-    Dispatcher(setSearchQuery({...previousQuery,firstName:e.target.value,lastName:'',rollNo:''}))
-  }else if(queryItem === 'lastName'){
-    Dispatcher(setSearchQuery({...previousQuery,firstName:'',lastName:e.target.value,rollNo:''}))
-  }else if(queryItem ==='rollNo'){
-    Dispatcher(setSearchQuery({...previousQuery,firstName:'',lastName:'',rollNo:e.target.value}))
-  }else if(queryItem ==='fullname'){
-    const myFirstName = e.target.value.split(' ')[0];
-    const myLastName = e.target.value.split(' ').slice(1).join(' ');
-    Dispatcher(setSearchQuery({...previousQuery,firstName:myFirstName,lastName:myLastName,rollNo:''}))
+    Dispatcher(setSearchQuery({
+      ...previousQuery,
+      firstName: e.target.value,
+      lastName: '',
+      rollNo: ''
+    }));
+  } else if(queryItem === 'lastName'){
+    Dispatcher(setSearchQuery({
+      ...previousQuery,
+      firstName: '',
+      lastName: e.target.value,
+      rollNo: ''
+    }));
+  } else if(queryItem === 'rollNo'){
+    Dispatcher(setSearchQuery({
+      ...previousQuery,
+      firstName: '',
+      lastName: '',
+      rollNo: e.target.value
+    }));
+  } else if(queryItem === 'fullname'){
+    const myFirstName = e.target.value.split(' ')[0] || '';
+    const myLastName = e.target.value.split(' ').slice(1).join(' ') || '';
+    Dispatcher(setSearchQuery({
+      ...previousQuery,
+      firstName: myFirstName,
+      lastName: myLastName,
+      rollNo: ''
+    }));
   }
 
-  console.log(previousQuery);
+  console.log("Updated search query:", previousQuery);
 }
 
 
@@ -67,7 +89,7 @@ const handleChange = (e)=>{
     <IconContext.Provider value={{ color: "blue",size:"13"}}>
             <div className='flex'>
             <Select onValueChange={(e)=>{setQueryItem(e)}}>
-  <SelectTrigger className="w-[180px]">
+  <SelectTrigger className="w-[250px]">
     <SelectValue placeholder="first name" />
   </SelectTrigger>
   <SelectContent>
@@ -77,7 +99,7 @@ const handleChange = (e)=>{
     <SelectItem value="rollNo">Roll No</SelectItem>
   </SelectContent>
 </Select>
-  <Input onChange={handleChange} className='md:w-[250px]'/>
+  <Input onChange={handleChange} className='md:w-[250px] ml-4'/>
             </div>
     </IconContext.Provider>
     </>

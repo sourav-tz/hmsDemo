@@ -3,6 +3,7 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
+    // Create the table
     await queryInterface.createTable('bookingInfos', {
       bookingId: {
         type: Sequelize.INTEGER,
@@ -14,19 +15,20 @@ module.exports = {
         allowNull: false,
         references: {
           model: 'guestInfos',
-          key: 'application_id', 
+          key: 'application_id',
         },
       },
-      roomID: {
+      roomId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
           model: 'guestRoomInfos',
-          key: 'roomID',
+          key: 'roomId',
         },
       },
       allocatedHostel:{
-        type:Sequelize.STRING
+        type:Sequelize.INTEGER,
+        allowNull: false
       },
       createdAt: {
         type: Sequelize.DATE,

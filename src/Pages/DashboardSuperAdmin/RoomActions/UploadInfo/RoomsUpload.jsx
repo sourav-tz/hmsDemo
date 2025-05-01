@@ -18,6 +18,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+import backgroundImage from '../../../../Assets/hostel11.jpg';
 
 const RoomsUpload = ()=>{
 
@@ -185,17 +186,22 @@ const handleDragEnter = (e) => {
 
 
     return<>
-    <div className="mt-8 flex flex-col justify-center items-center">
+    <div className="relative min-h-screen w-full flex flex-col justify-start py-10 items-center">
+          {/* Background Image Layer */}
+          <div
+            className="absolute top-0 left-0 w-full h-full bg-center bg-cover bg-no-repeat bg-fixed blur-sm opacity-50 z-[-1]"
+            style={{ backgroundImage: `url(${backgroundImage})` }}
+          />
       {/* Header section with responsive font size */}
       <div className="w-full">
-        <h1 className="text-2xl md:text-3xl lg:text-4xl text-center">Allocate Rooms</h1> 
+        <h1 className="text-2xl md:text-3xl lg:text-4xl text-center">Bulk Upload Rooms</h1> 
       </div>
   
       {/* File upload container, responsive width for different screens */}
-      <div className="w-full md:w-[80%] lg:w-[60%] px-4 mt-4">
+      <div className="w-full md:w-[80%] lg:w-[60%] px-4 mt-4 rounded-[30px] shadow-[0_3px_10px_rgb(0,0,0,0.2)] bg-white/30">
         {/* File upload area with responsive padding and border */}
         <div 
-          className={`p-4 border border-dashed rounded-lg bg-gray-50 ${dragging ? 'bg-blue-100' : ''}`} 
+          className={`p-4 border border-dashed rounded-[30px] shadow-[0_3px_10px_rgb(0,0,0,0)] bg-white/0 bg-gray-50 ${dragging ? 'bg-blue-100' : ''}`} 
           onDragEnter={handleDragEnter}
           onDragLeave={handleDragLeave}
           onDragOver={handleDragOver}

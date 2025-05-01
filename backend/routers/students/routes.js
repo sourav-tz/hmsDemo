@@ -7,16 +7,33 @@ const Login = require('../../controllers/Login/Login');
 const auth = require('../../middlewares/auth');
 const { getNotices } = require("../../controllers/hostelAuthority/notices/notices.js");
 const LogOut = require('../../controllers/LoggingOut/LogOut');
+const singleUpload = require('../../middlewares/multer.js');
 
-// Test route
+const { checkSchema } = require('express-validator');
+const {
+  studentSelfProfiling,
+  profileValidationSchema,
+  getProfile,
+  checkRollNumber,
+  getAvailableCourses,
+  uploadDocument
+} = require('../../controllers/student/studentSelfProfiling.js');
+
 router.get('/', (req, res) => {
     res.send('success');
 });
 
 // Authentication Routes
 router.post('/login', Login);
-router.get('/studentLogout', auth, LogOut);
-router.post('/studentReg', studentRegistration);
+router.get('/studentLogout',auth,LogOut);
+router.post('/studentReg' , studentRegistration);
+
+// self profiling page
+router.post('/studentSelfProfiling',auth,checkSchema(profileValidationSchema), studentSelfProfiling);
+router.get('/getProfile', auth, getProfile);
+router.get('/checkRollNumber/:rollNo', auth, checkRollNumber); // Added auth middleware for security
+router.get('/getAvailableCourses', auth, getAvailableCourses); // Get available courses and branches
+router.post('/uploadDocument', auth, singleUpload, uploadDocument); // Upload documents to Cloudinary
 
 // Complaints Module
 router.post("/raiseComplaint", auth, raiseComplaint);

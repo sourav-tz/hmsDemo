@@ -10,10 +10,11 @@ import { FaGear } from "react-icons/fa6";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { FaNoteSticky } from "react-icons/fa6";
 import { SlSupport } from "react-icons/sl";
 import { FaRegFileAlt } from 'react-icons/fa';
+import { removeUserData } from '../../Store/Reducers/userSlice';
 
 
 
@@ -36,6 +37,7 @@ export default function Sidebar(){
 
     const [state,changeState] = useState(false);
     const userData = useSelector(state=>state.userStorage.data);
+    const Dispatcher = useDispatch();
 
 
     const [subHome,setSubHome] = useState(false);
@@ -226,20 +228,33 @@ export default function Sidebar(){
            <div className={styles.itemsContainer}>
             <div className={styles.userItem}>
                 <div id="userIconSidebar" className={styles.userIcon}>
-                {userData?.avatar!=undefined?<img className={styles.avatarImage} src={userData?.avatar} />:<FaUserLarge size="1.5em" color="white"/>}
+                    {userData?.avatar!=undefined?<img className={styles.avatarImage} src={userData?.avatar} />:<FaUserLarge size="1.5em" color="white"/>}
                 </div>
-                <div className={state?null:styles.hidden} style={{marginLeft:'8px',marginTop:'0px'}}><p>{userData?.dataValues?.name!==undefined?`${userData?.dataValues?.name}`:"NULL"}<br/><span className={styles.userRole} style={{fontSize:'12px'}}>{userData?.role!==undefined?`Role: ${userData?.role}`:'Role: Null'}</span></p></div>
+                <div className={state?null:styles.hidden} style={{marginLeft:'8px',marginTop:'0px'}}>
+                    <p>
+                        {userData?.dataValues?.name!==undefined?`${userData?.dataValues?.name}`:"NULL"}<br/>
+                        <span className={styles.userRole} style={{fontSize:'12px'}}>
+                            {userData?.role!==undefined?`Role: ${userData?.role}`:'Role: Null'}
+                        </span>
+                    </p>
+                </div>
             </div>
             <div className={styles.listContainer}>
             <div  className={(styles.item) +' '+' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
-                        <p onClick={()=>{changeSubMenu('Home')}} className={(activeOption==='main'?styles.activeItem:null) + ' flex items-center gap-2'}><i><IoHome  size="20px"/></i> <span className={(state?null:styles.hidden)+' mt-1'}>Main</span></p>
-                        <ul className={state&&subHome?null:styles.hidden} >
+                        <p onClick={()=>{Navigator('/adminDashboard/main/home')}} className={(activeOption==='main'?styles.activeItem:styles.closeItem) + ' flex items-center gap-2'}><i><IoHome  size="20px"/></i> <span className={(state?null:styles.hidden)+' mt-1'}>Home</span></p>
+                        {/* <ul className={state&&subHome?null:styles.hidden} >
                         <li onClick={()=>{Navigator('/adminDashboard/main/home')}} className={styles.subOptions+' ' + (activeSubOption==='home'?styles.activeSubOption:null)}>Home</li>
-                        </ul>
+                        </ul> */}
             </div>
             <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
-                        <p onClick={()=>{changeSubMenu('studentInfo')}} className={(activeOption==='studentInfo'?styles.activeItem:null)+ ' flex items-center gap-2'}><FaInfo /> <span className={(state?null:styles.hidden)+' mt-1'}>Student Info</span></p>
+                        <p onClick={()=>{changeSubMenu('studentInfo')}} className={(activeOption==='studentInfo'?styles.activeItem:styles.closeItem)+ ' flex items-center gap-2'}><FaInfo /> <span className={(state?null:styles.hidden)+' mt-1'}>Student Info</span></p>
                         <ul className={state&&subStudent?null:styles.hidden}>
+                        {/* student account creation page */}
+                        <li onClick={()=>{navigator('/adminDashboard/studentInfo/studentCreateAccount')}} className={styles.subOptions+' ' + (activeSubOption==='studentCreateAccount'?styles.activeSubOption:null)}>Create Student Account</li>
+
+                        {/* student profile verification page */}
+                        <li onClick={()=>{navigator('/adminDashboard/studentInfo/studentVerify')}} className={styles.subOptions+' ' + (activeSubOption==='studentVerify'?styles.activeSubOption:null)}>Student Profile Verify</li>
+
                         <li onClick={()=>{navigator('/adminDashboard/studentInfo/viewInfo')}} className={styles.subOptions+' ' + (activeSubOption==='viewInfo'?styles.activeSubOption:null)}>View Info</li>
                         <li onClick={()=>{navigator('/adminDashboard/studentInfo/uploadInfo')}} className={styles.subOptions+' ' + (activeSubOption==='uploadInfo'?styles.activeSubOption:null)}>Upload Info</li>
                         <li onClick={()=>{navigator('/adminDashboard/studentInfo/register')}} className={styles.subOptions+' ' + (activeSubOption==='register'?styles.activeSubOption:null)}>Register Student</li>

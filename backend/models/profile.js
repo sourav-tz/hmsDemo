@@ -40,7 +40,7 @@ module.exports = (sequelize, dataTypes) => {
                 is: {
                     args:/^[0-9]{10}$/i,
                     msg:"contactNumber must be 10 digits"
-                  }, // Validates a 10-digit mobile number 
+                  }, // Validates a 10-digit mobile number
             },
         },
         secondaryContact:{
@@ -49,7 +49,16 @@ module.exports = (sequelize, dataTypes) => {
                 is: {
                     args:/^[0-9]{10}$/i,
                     msg:"secondaryContact must be 10 digits"
-                  }, // Validates a 10-digit mobile number 
+                  }, // Validates a 10-digit mobile number
+            },
+        },
+        phoneNumber:{
+            type: dataTypes.STRING,
+            validate: {
+                is: {
+                    args:/^[0-9]{10,12}$/i,
+                    msg:"phoneNumber must be 10-12 digits"
+                  }, // Validates a landline or other phone number
             },
         },
         fatherName: {
@@ -95,6 +104,9 @@ module.exports = (sequelize, dataTypes) => {
               },
         },
         photoLink: {
+            type: dataTypes.STRING,
+        },
+        aadharCardDocument: {
             type: dataTypes.STRING,
         }
     },{
