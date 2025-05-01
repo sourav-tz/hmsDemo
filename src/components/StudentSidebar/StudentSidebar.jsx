@@ -242,43 +242,14 @@ const handleLogout = ()=>{}
                         </>
                     )}
                 </ul>
-            {/* Main menu - always show but with different options for temp students */}
-            <div className={(styles.item) +' '+' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
-                <p onClick={()=>{changeSubMenu('Home')}} className={(activeOption==='main'?styles.activeItem:null) + ' flex items-center gap-2'}><i><IoHome size="20px"/></i> <span className={(state?null:styles.hidden)+' mt-1'}>Main</span></p>
-                <ul className={state&&subHome?null:styles.hidden}>
-                    {/* For temp students, only show self-profiling */}
-                    {isTempStudent ? (
-                        <li onClick={()=>{Navigator('/studentDashboard/main/selfProfiling')}}
-                            className={styles.subOptions+' ' + (activeSubOption==='selfProfiling'?styles.activeSubOption:null)}>
-                            Student Self Profiling
-                        </li>
-                    ) : (
-                        <>
-                            <li onClick={()=>{Navigator('/studentDashboard/main/home')}}
-                                className={styles.subOptions+' ' + (activeSubOption==='home'?styles.activeSubOption:null)}>
-                                Home
-                            </li>
-                            <li onClick={()=>{Navigator('/studentDashboard/main/selfProfiling')}}
-                                className={styles.subOptions+' ' + (activeSubOption==='selfProfiling'?styles.activeSubOption:null)}>
-                                Student Self Profiling
-                            </li>
-                        </>
-                    )}
-                </ul>
             </div>
 
             {/* Only show these menus for regular students */}
             {!isTempStudent && (
                 <>
                     <div className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
-            {/* Only show these menus for regular students */}
-            {!isTempStudent && (
-                <>
-                    <div className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
                         <p onClick={()=>{changeSubMenu('complaints')}} className={(activeOption==='complaints'?styles.activeItem:null)+ ' flex items-center gap-2'}><SlSupport /> <span className={(state?null:styles.hidden)+' mt-1'}>Complaint</span></p>
                         <ul className={state&&subComplaint?null:styles.hidden}>
-                            <li onClick={()=>{Navigator('/studentDashboard/complaints/register')}} className={styles.subOptions+' ' + (activeSubOption==='register'?styles.activeSubOption:null)}>Register</li>
-                            <li onClick={()=>{Navigator('/studentDashboard/complaints/status')}} className={styles.subOptions+' ' + (activeSubOption==='status'?styles.activeSubOption:null)}>Status</li>
                             <li onClick={()=>{Navigator('/studentDashboard/complaints/register')}} className={styles.subOptions+' ' + (activeSubOption==='register'?styles.activeSubOption:null)}>Register</li>
                             <li onClick={()=>{Navigator('/studentDashboard/complaints/status')}} className={styles.subOptions+' ' + (activeSubOption==='status'?styles.activeSubOption:null)}>Status</li>
                         </ul>
@@ -296,7 +267,6 @@ const handleLogout = ()=>{}
                         <p onClick={()=>{changeSubMenu('notices')}} className={(activeOption==='notices'?styles.activeItem:null)+ ' flex items-center gap-2'}><FaNoteSticky /> <span className={(state?null:styles.hidden)+' mt-1'}>Notices</span></p>
                         <ul className={state&&subNotice?null:styles.hidden}>
                             <li onClick={()=>{Navigator('/studentDashboard/notices/view')}} className={styles.subOptions+' ' + (activeSubOption==='view'?styles.activeSubOption:null)}>View Notices</li>
-                            <li onClick={()=>{Navigator('/studentDashboard/notices/view')}} className={styles.subOptions+' ' + (activeSubOption==='view'?styles.activeSubOption:null)}>View Notices</li>
                         </ul>
             </div>
 
@@ -306,34 +276,15 @@ const handleLogout = ()=>{}
                         <p onClick={()=>{changeSubMenu('mess')}} className={(activeOption==='mess'?styles.activeItem:null)+ ' flex items-center gap-2'}><MdFoodBank /> <span className={(state?null:styles.hidden)+' mt-1'}>Mess</span></p>
                         <ul className={state&&subMess?null:styles.hidden}>
                             <li onClick={()=>{Navigator('/studentDashboard/mess/menu')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='menu'?styles.activeSubOption:null)}>New Mess Menu</li>
-                            <li onClick={()=>{Navigator('/studentDashboard/mess/menu')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='menu'?styles.activeSubOption:null)}>New Mess Menu</li>
                         </ul>
                     </div>
-                    </div>
 
-                    {/* Verify Guest Referral */}
-                    <div className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
                     {/* Verify Guest Referral */}
                     <div className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
                         <p onClick={()=>{changeSubMenu('referral')}} className={(activeOption==='referral'?styles.activeItem:null)+ ' flex items-center gap-2'}><MdLocalHotel /><span className={(state?null:styles.hidden)+' mt-1'}>Guest Referral</span></p>
                         <ul className={state&&subReferral?null:styles.hidden}>
                             <li onClick={()=>{Navigator('/studentDashboard/guest/referral')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='referral'?styles.activeSubOption:null)}>Verify Guest Referral</li>
-                            <li onClick={()=>{Navigator('/studentDashboard/guest/referral')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='referral'?styles.activeSubOption:null)}>Verify Guest Referral</li>
                         </ul>
-                    </div>
-                </>
-            )}
-
-            {/* Remove the message from sidebar */}
-
-            {/* <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
-                        <p onClick={()=>{changeSubMenu('hostels')}} className={(activeOption==='hostels'?styles.activeItem:null)+ ' flex items-center gap-2'}><BsHouses /> <span className={(state?null:styles.hidden)+' mt-1'}>Hostels</span></p>
-                        <ul className={state&&subHostel?null:styles.hidden}>
-                        <li onClick={()=>{Navigator('/superAdminDashboard/hostels/manageHostels')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='manageHostels'?styles.activeSubOption:null)}>Manage Hostels</li>
-                        <li onClick={()=>{Navigator('/superAdminDashboard/hostels/manageAdmins')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='manageAdmins'?styles.activeSubOption:null)}>Manage Admins</li>
-                        </ul>
-            </div> */}
-            </div>
                     </div>
                 </>
             )}
@@ -368,29 +319,6 @@ const handleLogout = ()=>{}
 
             
                 <ul>
-                    <li className='cursor-pointer flex flex-col text-xl font-semibold'>
-                        <div onClick={()=>{changeSubMenu('Home')}} className={`flex items-center gap-2 ${activeOption==='main'?'text-orange-400':'text-white'}`}>
-                            <IoHome size='15px'/> Main
-                        </div>
-                        <ul className={`${subHome?'':'hidden'} text-sm text-white font-thin ml-8 transition-all`}>
-                            {/* For temp students, only show self-profiling */}
-                            {isTempStudent ? (
-                                <li onClick={()=>{Navigator('/studentDashboard/main/selfProfiling');handleHamBurger()}}
-                                    className={`text-xl hover:scale-110 transition-all rounded-md px-2 py-[2px] ${activeSubOption==='selfProfiling'?'bg-blue-900 font-normal':''}`}>
-                                    Self Profiling
-                                </li>
-                            ) : (
-                                <>
-                                    <li onClick={()=>{Navigator('/studentDashboard/main/home');handleHamBurger()}}
-                                        className={`text-xl hover:scale-110 transition-all rounded-md px-2 py-[2px] ${activeSubOption==='home'?'bg-blue-900 font-normal':''}`}>
-                                        Home
-                                    </li>
-                                    <li onClick={()=>{Navigator('/studentDashboard/main/selfProfiling');handleHamBurger()}}
-                                        className={`text-xl hover:scale-110 transition-all rounded-md px-2 py-[2px] ${activeSubOption==='selfProfiling'?'bg-blue-900 font-normal':''}`}>
-                                        Self Profiling
-                                    </li>
-                                </>
-                            )}
                     <li className='cursor-pointer flex flex-col text-xl font-semibold'>
                         <div onClick={()=>{changeSubMenu('Home')}} className={`flex items-center gap-2 ${activeOption==='main'?'text-orange-400':'text-white'}`}>
                             <IoHome size='15px'/> Main
@@ -460,8 +388,6 @@ const handleLogout = ()=>{}
                 </ul>
 
                 <div onClick={handleLogout} className='absolute bottom-16 cursor-pointer left-[40%] text-white'>
-                    Logout
-                </div>
                     Logout
                 </div>
             </div>
