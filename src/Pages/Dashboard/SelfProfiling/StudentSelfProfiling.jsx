@@ -25,6 +25,42 @@ import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import FileUpload from "@/components/FileUpload/FileUpload"
 
+// Create a debounced toast function to prevent duplicate toasts
+// We'll use a combination of message and timestamp to create unique IDs
+const toastTimers = {};
+function showToast(message, type = 'error') {
+  // Create a unique key for this message
+  const key = `${message}_${type}`;
+
+  // If we have a timer for this exact message+type, clear it
+  if (toastTimers[key]) {
+    clearTimeout(toastTimers[key].timer);
+
+    // If the toast is still visible, don't show another one
+    if (toast.isActive(toastTimers[key].id)) {
+      return;
+    }
+  }
+
+  // Show the toast based on type
+  let id;
+  if (type === 'error') {
+    id = toast.error(message, { autoClose: 5000 });
+  } else if (type === 'success') {
+    id = toast.success(message, { autoClose: 3000 });
+  } else {
+    id = toast.info(message, { autoClose: 3000 });
+  }
+
+  // Store the ID and set a timer to clear it
+  toastTimers[key] = {
+    id,
+    timer: setTimeout(() => {
+      delete toastTimers[key];
+    }, 6000) // Slightly longer than the autoClose time
+  };
+}
+
 export default function StudentSelfProfiling() {
   const userData = useSelector(state => state.userStorage.data);
   const [isTempStudent, setIsTempStudent] = useState(false);
@@ -34,35 +70,18 @@ export default function StudentSelfProfiling() {
   const [date, setDate] = useState();
   const [rejectionReason, setRejectionReason] = useState('');
 
-  // Track last save time
-  const [lastSaved, setLastSaved] = useState(null);
-
-  // Track saving status (for animation)
-  const [isSaving, setIsSaving] = useState(false);
-
   // Track form completion progress
   const [formProgress, setFormProgress] = useState(0);
 
-  // Reference for localStorage save timeout (debounce)
-  const saveTimeoutRef = useRef(null);
-
-  // Get saved form data from localStorage or use default values
-  const getSavedFormData = () => {
-    const savedData = localStorage.getItem('tempStudentFormData');
-    if (savedData) {
-      try {
-        return JSON.parse(savedData);
-      } catch (error) {
-        console.error('Error parsing saved form data:', error);
-      }
-    }
+  // Default form data values
+  const getDefaultFormData = () => {
     return {
       rollNo: "",
       firstName: "",
       lastName: "",
       dob: "",
       course: "",
-      semester: "",
+      semester: "1", // Always set to 1 for new students
       branch: "",
       contactNumber_1: "",
       contactNumber_2: "",
@@ -91,7 +110,7 @@ export default function StudentSelfProfiling() {
   };
 
   // Form state
-  const [formData, setFormData] = useState(getSavedFormData());
+  const [formData, setFormData] = useState(getDefaultFormData());
 
   // Available courses and branches from the database
   const [availableCourses, setAvailableCourses] = useState([]);
@@ -144,46 +163,15 @@ export default function StudentSelfProfiling() {
     return percentage;
   }, []);
 
-  // Custom setFormData function that also saves to localStorage with debounce
+  // Simple setFormData function without localStorage
   const updateFormData = useCallback((newData) => {
     setFormData(prevData => {
       const updatedData = { ...prevData, ...newData };
 
-      // Don't save to localStorage if profile is already submitted
+      // Calculate and update form progress
       if (status !== 'profile_submitted' && status !== 'approved') {
-        // Show saving indicator
-        setIsSaving(true);
-
-        // Calculate and update form progress
         const progress = calculateFormProgress(updatedData);
         setFormProgress(progress);
-
-        // Debounce localStorage save to prevent excessive writes
-        // Clear any existing timeout
-        if (saveTimeoutRef.current) {
-          clearTimeout(saveTimeoutRef.current);
-        }
-
-        // Set a new timeout (500ms debounce)
-        saveTimeoutRef.current = setTimeout(() => {
-          // Add timestamp to the data
-          const dataWithTimestamp = {
-            ...updatedData,
-            timestamp: new Date().getTime()
-          };
-
-          // Save to localStorage
-          localStorage.setItem('tempStudentFormData', JSON.stringify(dataWithTimestamp));
-          console.log("Saved complete form data to localStorage:", dataWithTimestamp);
-
-          // Update last saved time
-          setLastSaved(new Date());
-
-          // Hide saving indicator after a short delay (for visual feedback)
-          setTimeout(() => {
-            setIsSaving(false);
-          }, 300);
-        }, 500);
       }
 
       return updatedData;
@@ -194,10 +182,28 @@ export default function StudentSelfProfiling() {
   const validateField = useCallback((id, value) => {
     let error = null;
 
-    // Skip validation if field is empty (will be caught by required field validation on submit)
-    if (!value || value.trim() === '') {
+    // Define required fields
+    const requiredFields = [
+      'rollNo', 'firstName', 'dob', 'course', 'semester', 'branch',
+      'contactNumber_1', 'email', 'gender', 'fatherName', 'fatherContact',
+      'motherName', 'motherContact', 'address', 'city', 'state', 'pinCode',
+      'photoLink', 'aadharCardDocument', 'addharNumber', 'bloodGroup'
+    ];
+
+    // Skip validation for optional fields if they're empty
+    const isRequired = requiredFields.includes(id);
+    if (!value && !isRequired) {
       return null;
     }
+
+    // Convert to string if it's not already a string
+    const strValue = typeof value === 'string' ? value : String(value);
+    if (strValue.trim() === '' && !isRequired) {
+      return null;
+    }
+
+    // Use strValue for all subsequent validations
+    value = strValue;
 
     // Field-specific validation
     switch (id) {
@@ -226,11 +232,34 @@ export default function StudentSelfProfiling() {
         break;
 
       case 'contactNumber_1':
-      case 'contactNumber_2':
-      case 'phoneNumber':
       case 'fatherContact':
       case 'motherContact':
+        // Required contact numbers
+        // First check if contains non-digit characters (immediate feedback)
+        if (!/^\d*$/.test(value)) {
+          error = "Contact number must contain only digits";
+        }
+        // Then check full pattern if all digits
+        else if (value.length > 0 && !/^[6-9]\d{9}$/.test(value)) {
+          if (value.length !== 10) {
+            error = "Contact number must be exactly 10 digits";
+          } else if (!/^[6-9]/.test(value)) {
+            error = "Contact number must start with 6, 7, 8, or 9";
+          } else {
+            error = "Invalid contact number format";
+          }
+        }
+        break;
+
+      case 'contactNumber_2':
+      case 'phoneNumber':
       case 'localGuardianContact':
+        // Optional contact numbers - ONLY validate if they have a meaningful value
+        // If empty or just whitespace, skip validation completely
+        if (!value || value.trim() === '') {
+          return null; // Skip validation for empty values
+        }
+
         // First check if contains non-digit characters (immediate feedback)
         if (!/^\d*$/.test(value)) {
           error = "Contact number must contain only digits";
@@ -415,29 +444,7 @@ export default function StudentSelfProfiling() {
         return;
       }
 
-      // Check if we have localStorage data
-      const savedFormData = localStorage.getItem('tempStudentFormData');
-      const savedStatus = localStorage.getItem('tempStatus');
-      let useLocalData = false;
-      let parsedLocalData = null;
-
-      // Try to parse localStorage data if available
-      if (savedFormData) {
-        try {
-          parsedLocalData = JSON.parse(savedFormData);
-          console.log("Found saved form data in localStorage");
-        } catch (error) {
-          console.error('Error parsing saved form data:', error);
-        }
-      }
-
-      // Set initial status from localStorage if available
-      if (savedStatus) {
-        setStatus(savedStatus);
-        console.log("Setting initial status from localStorage:", savedStatus);
-      }
-
-      // Fetch profile data from API (we still need this for status updates)
+      // Fetch profile data from API
       try {
         const response = await axios.get(
           `${import.meta.env.VITE_BASE_URL}/student/getProfile`,
@@ -451,109 +458,18 @@ export default function StudentSelfProfiling() {
         );
 
         if (response.data.success) {
-          // Always update status from API
+          // Update status from API
           const apiStatus = response.data.status || 'pending';
           setStatus(apiStatus);
-          localStorage.setItem('tempStatus', apiStatus);
           console.log("Setting status from API to:", apiStatus);
 
           // Set rejection reason if applicable
           if (apiStatus === 'rejected' && response.data.rejectionReason) {
             setRejectionReason(response.data.rejectionReason);
-            localStorage.setItem('rejectionReason', response.data.rejectionReason);
-
-            // For rejected profiles, if we have API data but no localStorage data,
-            // immediately save the API data to localStorage so it's available on refresh
-            if (response.data.exists && !parsedLocalData && apiStatus === 'rejected') {
-              const profile = response.data.profile;
-              const formDataToSave = {
-                rollNo: profile.rollNo || "",
-                firstName: profile.firstName || "",
-                lastName: profile.lastName || "",
-                dob: profile.dob || "",
-                course: profile.course || "",
-                semester: profile.semester?.toString() || "",
-                branch: profile.branch || "",
-                contactNumber_1: profile.contactNumber_1 || "",
-                contactNumber_2: profile.contactNumber_2 || "",
-                phoneNumber: profile.phoneNumber || profile.contactNumber_1 || "",
-                email: profile.email || "",
-                identificationMark: profile.identificationMark || "",
-                bloodGroup: profile.bloodGroup || "",
-                gender: profile.gender || "",
-                fatherName: profile.fatherName || "",
-                fatherContact: profile.fatherContact || "",
-                fatherOccupation: profile.fatherOccupation || "",
-                motherName: profile.motherName || "",
-                motherContact: profile.motherContact || "",
-                motherOccupation: profile.motherOccupation || "",
-                address: profile.address || "",
-                city: profile.city || "",
-                state: profile.state || "",
-                pinCode: profile.pinCode || "",
-                localGuardian: profile.localGuardian || "",
-                localGuardianContact: profile.localGuardianContact || "",
-                localGuardianAddress: profile.localGuardianAddress || "",
-                addharNumber: profile.addharNumber || "",
-                aadharCardDocument: profile.aadharCardDocument || "",
-                photoLink: profile.photoLink || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrxb9rKS0KgjTtqrKPK8dodc0pEeaoC-pY_w&s",
-                timestamp: new Date().getTime()
-              };
-              localStorage.setItem('tempStudentFormData', JSON.stringify(formDataToSave));
-              console.log("Saved API data to localStorage for rejected profile");
-            }
           }
 
-          // Decide whether to use localStorage data or API data based on status
-          if (parsedLocalData) {
-            // Status-based decision logic
-            switch (apiStatus) {
-              case 'pending':
-                // For pending status, prefer localStorage data (user might be in the middle of filling the form)
-                useLocalData = true;
-                console.log("Using localStorage data for pending form");
-                break;
-
-              case 'rejected':
-                // For rejected status, prefer localStorage data (user might be correcting the form)
-                useLocalData = true;
-                console.log("Using localStorage data for rejected form");
-                break;
-
-              case 'profile_submitted':
-              case 'approved':
-                // For submitted or approved status, use API data (official submission)
-                useLocalData = false;
-                console.log(`Using API data for ${apiStatus} form`);
-
-                // Clear localStorage data for submitted/approved forms
-                // This prevents stale data from being used if status changes later
-                localStorage.removeItem('tempStudentFormData');
-                break;
-
-              default:
-                // For unknown status, prefer localStorage data
-                useLocalData = true;
-                console.log(`Unknown status: ${apiStatus}, using localStorage data`);
-            }
-          }
-
-          // Apply the selected data source
-          if (useLocalData && parsedLocalData) {
-            // Use localStorage data
-            setFormData(parsedLocalData);
-
-            // Set date if available in localStorage data
-            if (parsedLocalData.dob) {
-              try {
-                const dobDate = new Date(parsedLocalData.dob);
-                setDate(dobDate);
-              } catch (e) {
-                console.error("Error parsing date from localStorage:", e);
-              }
-            }
-          } else if (response.data.exists) {
-            // Use API data
+          // If profile data exists in the response, use it
+          if (response.data.exists) {
             const profile = response.data.profile;
 
             // Format date if it exists
@@ -562,8 +478,8 @@ export default function StudentSelfProfiling() {
               setDate(dobDate);
             }
 
-            // Create form data object from API
-            const apiFormData = {
+            // Set form data from API
+            setFormData({
               rollNo: profile.rollNo || "",
               firstName: profile.firstName || "",
               lastName: profile.lastName || "",
@@ -594,51 +510,25 @@ export default function StudentSelfProfiling() {
               addharNumber: profile.addharNumber || "",
               aadharCardDocument: profile.aadharCardDocument || "",
               photoLink: profile.photoLink || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrxb9rKS0KgjTtqrKPK8dodc0pEeaoC-pY_w&s"
-            };
-
-            // Set form data in state
-            setFormData(apiFormData);
-
-            // For rejected profiles, always save API data to localStorage
-            // This ensures the complete form data is available on refresh
-            if (apiStatus === 'rejected') {
-              const dataToSave = {
-                ...apiFormData,
-                timestamp: new Date().getTime()
-              };
-              localStorage.setItem('tempStudentFormData', JSON.stringify(dataToSave));
-              console.log("Saved API data to localStorage for rejected profile (from else-if block)");
-            }
-          } else if (parsedLocalData) {
-            // If API doesn't have profile data but we have localStorage data, use that
-            setFormData(parsedLocalData);
-
-            // Set date if available in localStorage data
-            if (parsedLocalData.dob) {
-              try {
-                const dobDate = new Date(parsedLocalData.dob);
-                setDate(dobDate);
-              } catch (e) {
-                console.error("Error parsing date from localStorage:", e);
-              }
-            }
+            });
+          } else {
+            // If no profile data exists, use default form data
+            // but keep the email from user data
+            const defaultData = getDefaultFormData();
+            setFormData({
+              ...defaultData,
+              email: userEmail
+            });
           }
         } else {
-          // If API call was successful but didn't return profile data
-          // Try to use localStorage data if available
-          if (parsedLocalData) {
-            setFormData(parsedLocalData);
-
-            // Set date if available in localStorage data
-            if (parsedLocalData.dob) {
-              try {
-                const dobDate = new Date(parsedLocalData.dob);
-                setDate(dobDate);
-              } catch (e) {
-                console.error("Error parsing date from localStorage:", e);
-              }
-            }
-          }
+          // If API call was successful but didn't return success status
+          toast.error(response.data.message || "Failed to load profile data");
+          // Use default form data but keep the email
+          const defaultData = getDefaultFormData();
+          setFormData({
+            ...defaultData,
+            email: userEmail
+          });
         }
       } catch (apiError) {
         console.error("Error fetching profile data from API:", apiError);
@@ -654,78 +544,27 @@ export default function StudentSelfProfiling() {
           // This is fine - just means they need to create a profile
           console.log("No profile found, user needs to create one");
           toast.info("Please complete your profile information");
+
+          // Use default form data but keep the email
+          const defaultData = getDefaultFormData();
+          setFormData({
+            ...defaultData,
+            email: userEmail
+          });
         } else {
           // For other errors, show the error message
           toast.error(errorMessage);
         }
-
-        // If API call failed but we have localStorage data, use that
-        if (parsedLocalData) {
-          setFormData(parsedLocalData);
-
-          // Set date if available in localStorage data
-          if (parsedLocalData.dob) {
-            try {
-              const dobDate = new Date(parsedLocalData.dob);
-              setDate(dobDate);
-            } catch (e) {
-              console.error("Error parsing date from localStorage:", e);
-            }
-          }
-        }
       }
     } catch (error) {
       console.error("Unexpected error in fetchProfileData:", error);
-
-      // Try to use localStorage data if available
-      tryUseLocalStorageData();
+      toast.error("An unexpected error occurred while loading your profile data.");
     } finally {
       setLoading(false);
     }
   }, [userData]);
 
-  // Helper function to try using localStorage data
-  const tryUseLocalStorageData = () => {
-    const savedFormData = localStorage.getItem('tempStudentFormData');
-    if (savedFormData) {
-      try {
-        const parsedData = JSON.parse(savedFormData);
-        setFormData(parsedData);
-        console.log("Using localStorage data after API error:", parsedData);
 
-        // Try to set date if dob exists
-        if (parsedData.dob) {
-          try {
-            const dobDate = new Date(parsedData.dob);
-            setDate(dobDate);
-            console.log("Set date from localStorage:", dobDate);
-          } catch (e) {
-            console.error("Error parsing date from localStorage:", e);
-          }
-        }
-
-        // Also try to get status from localStorage
-        const savedStatus = localStorage.getItem('tempStatus');
-        if (savedStatus) {
-          setStatus(savedStatus);
-          console.log("Using saved status from localStorage after error:", savedStatus);
-
-          // If status is rejected, check for saved rejection reason
-          if (savedStatus === 'rejected') {
-            const savedReason = localStorage.getItem('rejectionReason');
-            if (savedReason) {
-              setRejectionReason(savedReason);
-              console.log("Using saved rejection reason from localStorage");
-            }
-          }
-        }
-      } catch (error) {
-        console.error('Error parsing saved form data:', error);
-      }
-    } else {
-      console.log("No saved form data found in localStorage");
-    }
-  };
 
   // Handle form submission
   const handleSubmit = useCallback(async (e) => {
@@ -743,6 +582,7 @@ export default function StudentSelfProfiling() {
     if (!formData.branch) newErrors.branch = "Branch is required";
     if (!formData.contactNumber_1) newErrors.contactNumber_1 = "Contact number is required";
     if (!formData.gender) newErrors.gender = "Gender is required";
+    if (!formData.bloodGroup) newErrors.bloodGroup = "Blood Group is required";
     if (!formData.fatherName) newErrors.fatherName = "Father's name is required";
     if (!formData.fatherContact) newErrors.fatherContact = "Father's contact is required";
     if (!formData.motherName) newErrors.motherName = "Mother's name is required";
@@ -752,8 +592,15 @@ export default function StudentSelfProfiling() {
     if (!formData.state) newErrors.state = "State is required";
     if (!formData.pinCode) newErrors.pinCode = "Pin code is required";
     if (!formData.email) newErrors.email = "Email is required";
-    if (!formData.email) newErrors.photoLink = "Student Photo is required";
-    if (!formData.email) newErrors.aadharCardDocument = "Aadhar Card Photo is required";
+    if (!formData.photoLink || formData.photoLink === "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrxb9rKS0KgjTtqrKPK8dodc0pEeaoC-pY_w&s") {
+      newErrors.photoLink = "Student Photo is required";
+    }
+    if (!formData.aadharCardDocument) {
+      newErrors.aadharCardDocument = "Aadhar Card Photo is required";
+    }
+    if (!formData.addharNumber) {
+      newErrors.addharNumber = "Aadhaar Number is required";
+    }
 
     // Format validation using validateField function for consistency
     const fieldsToValidate = [
@@ -763,8 +610,29 @@ export default function StudentSelfProfiling() {
       'localGuardian', 'fatherOccupation', 'motherOccupation', 'photoLink','aadharCardDocument'
     ];
 
+    // Define required fields
+    const requiredFields = [
+      'rollNo', 'firstName', 'dob', 'course', 'semester', 'branch',
+      'contactNumber_1', 'email', 'gender', 'fatherName', 'fatherContact',
+      'motherName', 'motherContact', 'address', 'city', 'state', 'pinCode',
+      'photoLink', 'aadharCardDocument', 'addharNumber', 'bloodGroup'
+    ];
+
     // Validate each field that has a value
     fieldsToValidate.forEach(field => {
+      // Skip URL validation for document fields
+      if (field === 'photoLink' || field === 'aadharCardDocument') {
+        return;
+      }
+
+      // Skip validation for empty optional fields
+      const isRequired = requiredFields.includes(field);
+      const isEmpty = !formData[field] || (typeof formData[field] === 'string' && formData[field].trim() === '');
+
+      if (isEmpty && !isRequired) {
+        return;
+      }
+
       if (formData[field]) {
         const fieldError = validateField(field, formData[field]);
         if (fieldError) {
@@ -776,7 +644,50 @@ export default function StudentSelfProfiling() {
     // Check if there are any errors
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
-      toast.error("Please correct the errors in the form");
+
+      // Create a more specific error message
+      const requiredFieldsMissing = Object.entries(newErrors)
+        .filter((entry) => entry[1].includes('required') || entry[1].includes('Required'));
+
+      // Map field keys to user-friendly names
+      const fieldLabels = {
+        rollNo: "Roll Number",
+        firstName: "First Name",
+        lastName: "Last Name",
+        dob: "Date of Birth",
+        course: "Course",
+        semester: "Semester",
+        branch: "Branch",
+        contactNumber_1: "Contact Number",
+        contactNumber_2: "Contact Number 2",
+        phoneNumber: "Phone Number",
+        email: "Email",
+        gender: "Gender",
+        fatherName: "Father's Name",
+        fatherContact: "Father's Contact",
+        motherName: "Mother's Name",
+        motherContact: "Mother's Contact",
+        address: "Address",
+        city: "City",
+        state: "State",
+        pinCode: "Pin Code",
+        photoLink: "Profile Photo",
+        aadharCardDocument: "Aadhar Card Document",
+        addharNumber: "Aadhaar Number",
+        localGuardianContact: "Guardian Contact",
+        localGuardianAddress: "Guardian Address"
+      };
+
+      // Get user-friendly field names
+      const missingFieldLabels = requiredFieldsMissing
+        .map((entry) => fieldLabels[entry[0]] || entry[0]);
+
+      if (missingFieldLabels.length > 0) {
+        toast.error(`Please fill in all required fields: ${missingFieldLabels.join(', ')}`);
+      } else {
+        toast.error("Please correct the validation errors in the form");
+      }
+
       return;
     }
 
@@ -789,7 +700,7 @@ export default function StudentSelfProfiling() {
           ...prev,
           rollNo: 'This roll number already exists in the system. Please verify your roll number.'
         }));
-        toast.error("Roll number already exists in the system");
+        showToast("Roll number already exists in the system", "error");
         setSubmitting(false);
         return;
       }
@@ -816,34 +727,80 @@ export default function StudentSelfProfiling() {
       );
 
       if (response.data.success) {
-        toast.success("Profile submitted successfully");
+        showToast("Profile submitted successfully", "success");
         setStatus('profile_submitted');
-        localStorage.setItem('tempStatus', 'profile_submitted');
-
-        // Clear localStorage form data after successful submission
-        // This ensures that if the status changes later, we don't have stale data
-        localStorage.removeItem('tempStudentFormData');
 
         // If this was a resubmission after rejection, clear the rejection reason
         if (status === 'rejected') {
           setRejectionReason('');
-          localStorage.removeItem('rejectionReason');
         }
       } else {
-        toast.error(response.data.message || "Failed to submit profile");
+        showToast(response.data.message || "Failed to submit profile", "error");
       }
     } catch (error) {
       console.error("Error submitting profile:", error);
       if (error.response?.data?.errors) {
         // Handle validation errors from the server
         const serverErrors = {};
-        error.response.data.errors.forEach(err => {
+        const fieldLabels = {
+          rollNo: "Roll Number",
+          firstName: "First Name",
+          lastName: "Last Name",
+          dob: "Date of Birth",
+          course: "Course",
+          semester: "Semester",
+          branch: "Branch",
+          contactNumber_1: "Contact Number",
+          contactNumber_2: "Contact Number 2",
+          phoneNumber: "Phone Number",
+          email: "Email",
+          gender: "Gender",
+          fatherName: "Father's Name",
+          fatherContact: "Father's Contact",
+          motherName: "Mother's Name",
+          motherContact: "Mother's Contact",
+          address: "Address",
+          city: "City",
+          state: "State",
+          pinCode: "Pin Code",
+          photoLink: "Profile Photo",
+          aadharCardDocument: "Aadhar Card Document",
+          addharNumber: "Aadhaar Number",
+          localGuardianContact: "Guardian Contact",
+          localGuardianAddress: "Guardian Address"
+        };
+
+        // Define optional fields that should be ignored if empty
+        const optionalFields = ['contactNumber_2', 'phoneNumber', 'localGuardianContact', 'localGuardianAddress'];
+
+        // Filter out errors for empty optional fields
+        const relevantErrors = error.response.data.errors.filter(err => {
+          // If it's an optional field, check if it's empty
+          if (optionalFields.includes(err.path)) {
+            const value = formData[err.path];
+            return value && value.trim() !== ''; // Only include if field has a value
+          }
+          return true; // Include all other errors
+        });
+
+        // Process the filtered errors
+        relevantErrors.forEach(err => {
           serverErrors[err.path] = err.msg;
         });
         setErrors(serverErrors);
-        toast.error("Please correct the errors in the form");
+
+        // Create a more user-friendly error message with only relevant fields
+        const errorFields = relevantErrors.map(err =>
+          fieldLabels[err.path] || err.path
+        );
+
+        if (errorFields.length > 0) {
+          showToast(`Please correct these fields: ${errorFields.join(', ')}`, "error");
+        } else {
+          showToast("Please review your form for any errors", "error");
+        }
       } else {
-        toast.error("Failed to submit profile. Please try again.");
+        showToast("Failed to submit profile. Please try again.", "error");
       }
     } finally {
       setSubmitting(false);
@@ -863,51 +820,24 @@ export default function StudentSelfProfiling() {
 
   // Clear form data
   const handleClear = () => {
-    const defaultFormData = {
-      rollNo: "",
-      firstName: "",
-      lastName: "",
-      dob: "",
-      course: "",
-      semester: "",
-      branch: "",
-      contactNumber_1: "",
-      contactNumber_2: "",
-      phoneNumber: "",
-      email: "",
-      identificationMark: "",
-      bloodGroup: "",
-      gender: "",
-      fatherName: "",
-      fatherContact: "",
-      fatherOccupation: "",
-      motherName: "",
-      motherContact: "",
-      motherOccupation: "",
-      address: "",
-      city: "",
-      state: "",
-      pinCode: "",
-      localGuardian: "",
-      localGuardianContact: "",
-      localGuardianAddress: "",
-      addharNumber: "",
-      aadharCardDocument: "",
-      photoLink: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrxb9rKS0KgjTtqrKPK8dodc0pEeaoC-pY_w&s"
-    };
+    // Get default form data
+    const defaultData = getDefaultFormData();
 
-    // Clear form data in state
-    setFormData(defaultFormData);
+    // Preserve the email from current form data
+    const userEmail = formData.email;
 
-    // Clear form data in localStorage
-    localStorage.removeItem('tempStudentFormData');
+    // Clear form data in state but keep the email
+    setFormData({
+      ...defaultData,
+      email: userEmail
+    });
 
     // Reset other state
     setDate(null);
     setErrors({});
 
     // Show success message
-    toast.success("Form data cleared successfully");
+    showToast("Form data cleared successfully", "success");
   };
 
   // Calculate initial form progress when component mounts
@@ -934,29 +864,7 @@ export default function StudentSelfProfiling() {
         updateFormData({ email: userEmail });
       }
 
-      // Try to load data from localStorage first for immediate display
-      const savedFormData = localStorage.getItem('tempStudentFormData');
-      if (savedFormData) {
-        try {
-          const parsedData = JSON.parse(savedFormData);
-          setFormData(parsedData);
-          console.log("Loaded initial form data from localStorage");
-
-          // Set date if available
-          if (parsedData.dob) {
-            try {
-              const dobDate = new Date(parsedData.dob);
-              setDate(dobDate);
-            } catch (e) {
-              console.error("Error parsing date from localStorage:", e);
-            }
-          }
-        } catch (error) {
-          console.error('Error parsing saved form data:', error);
-        }
-      }
-
-      // Fetch profile data from API (may override localStorage data based on status)
+      // Fetch profile data from API
       fetchProfileData();
     }
   }, [userData, fetchProfileData, fetchAvailableCourses, updateFormData]);
@@ -1057,34 +965,7 @@ export default function StudentSelfProfiling() {
             </div>
           )}
 
-          {/* Auto-save Indicator */}
-          {status !== 'profile_submitted' && status !== 'approved' && (
-            <div className="text-xs text-gray-500 mt-1 mb-3 flex items-center justify-center">
-              {isSaving ? (
-                <div className="flex items-center">
-                  <svg className="animate-spin -ml-1 mr-2 h-3 w-3 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  <span>Saving changes...</span>
-                </div>
-              ) : lastSaved ? (
-                <div className="flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  <span>Last saved: {lastSaved.toLocaleTimeString()}</span>
-                </div>
-              ) : (
-                <div className="flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
-                  </svg>
-                  <span>Changes will be saved automatically</span>
-                </div>
-              )}
-            </div>
-          )}
+
 
           {(status === 'profile_submitted' || status === 'approved') && (
             <div className="mt-2 text-sm font-medium px-4 py-2 rounded-md bg-blue-50 text-blue-700 border border-blue-200">
@@ -1100,9 +981,14 @@ export default function StudentSelfProfiling() {
       </div>
 
       <div className="grid gap-8 rounded-md border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+        <div className="bg-blue-50 p-3 rounded-md border border-blue-200 mb-4">
+          <p className="text-sm text-blue-800">
+            <span className="font-semibold">Note:</span> Fields marked with <span className="text-red-500">*</span> are required. All data will be saved to the database when you submit the form.
+          </p>
+        </div>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           <div className="space-y-1">
-            <Label htmlFor="rollNo">Roll Number</Label>
+            <Label htmlFor="rollNo">Roll Number <span className="text-red-500">*</span></Label>
             <Input
               id="rollNo"
               required
@@ -1120,7 +1006,7 @@ export default function StudentSelfProfiling() {
             {errors.rollNo && <p className="text-red-500 text-xs">{errors.rollNo}</p>}
           </div>
           <div className="space-y-1">
-            <Label htmlFor="firstName">First Name</Label>
+            <Label htmlFor="firstName">First Name <span className="text-red-500">*</span></Label>
             <Input
               id="firstName"
               required
@@ -1144,7 +1030,7 @@ export default function StudentSelfProfiling() {
             />
           </div>
           <div className="space-y-1">
-            <Label htmlFor="dob">Date of Birth</Label>
+            <Label htmlFor="dob">Date of Birth <span className="text-red-500">*</span></Label>
             <Popover>
               <PopoverTrigger asChild>
                 <Button
@@ -1175,7 +1061,7 @@ export default function StudentSelfProfiling() {
 
           <div className="flex space-x-4 col-span-1 ">
             <div className="space-y-1 w-1/2">
-              <Label htmlFor="course">Course</Label>
+              <Label htmlFor="course">Course <span className="text-red-500">*</span></Label>
               <Select
                 value={formData.course}
                 onValueChange={(value) => handleSelectChange(value, 'course')}
@@ -1205,33 +1091,24 @@ export default function StudentSelfProfiling() {
               {errors.course && <p className="text-red-500 text-xs">{errors.course}</p>}
             </div>
             <div className="space-y-1 w-1/2">
-              <Label htmlFor="semester">Semester</Label>
+              <Label htmlFor="semester">Semester <span className="text-red-500">*</span></Label>
               <Select
-                value={formData.semester}
-                onValueChange={(value) => handleSelectChange(value, 'semester')}
-                required
-                disabled={isReadOnly}
+                value="1"
+                disabled={true} // Always disabled since it's fixed to 1
               >
-                <SelectTrigger id="semester" className={`${errors.semester ? "border-red-500" : ""} ${readOnlyClass}`}>
-                  <SelectValue placeholder="Select Semester" />
+                <SelectTrigger id="semester" className={readOnlyClass}>
+                  <SelectValue>1st</SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="1">1st</SelectItem>
-                  <SelectItem value="2">2nd</SelectItem>
-                  <SelectItem value="3">3rd</SelectItem>
-                  <SelectItem value="4">4th</SelectItem>
-                  <SelectItem value="5">5th</SelectItem>
-                  <SelectItem value="6">6th</SelectItem>
-                  <SelectItem value="7">7th</SelectItem>
-                  <SelectItem value="8">8th</SelectItem>
                 </SelectContent>
               </Select>
-              {errors.semester && <p className="text-red-500 text-xs">{errors.semester}</p>}
+
             </div>
           </div>
 
           <div className="space-y-1">
-            <Label htmlFor="branch">Branch</Label>
+            <Label htmlFor="branch">Branch <span className="text-red-500">*</span></Label>
             <Select
               value={formData.branch}
               onValueChange={(value) => handleSelectChange(value, 'branch')}
@@ -1261,7 +1138,7 @@ export default function StudentSelfProfiling() {
             {errors.branch && <p className="text-red-500 text-xs">{errors.branch}</p>}
           </div>
           <div className="space-y-1">
-            <Label htmlFor="contactNumber_1">Contact Number*</Label>
+            <Label htmlFor="contactNumber_1">Contact Number <span className="text-red-500">*</span></Label>
             <Input
               id="contactNumber_1"
               required
@@ -1304,7 +1181,7 @@ export default function StudentSelfProfiling() {
             {errors.phoneNumber && <p className="text-red-500 text-xs">{errors.phoneNumber}</p>}
           </div>
           <div className="space-y-1">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">Email <span className="text-red-500">*</span></Label>
             <Input
               id="email"
               type="email"
@@ -1331,13 +1208,14 @@ export default function StudentSelfProfiling() {
           <div className="flex space-x-4 col-span-1">
             {/* Blood Group */}
             <div className="w-1/2 space-y-1">
-              <Label htmlFor="bloodGroup">Blood Group</Label>
+              <Label htmlFor="bloodGroup">Blood Group <span className="text-red-500">*</span></Label>
               <Select
                 value={formData.bloodGroup}
                 onValueChange={(value) => handleSelectChange(value, 'bloodGroup')}
+                required
                 disabled={isReadOnly}
               >
-                <SelectTrigger id="bloodGroup" className={readOnlyClass}>
+                <SelectTrigger id="bloodGroup" className={`${errors.bloodGroup ? "border-red-500" : ""} ${readOnlyClass}`}>
                   <SelectValue placeholder="Select blood group" />
                 </SelectTrigger>
                 <SelectContent>
@@ -1351,11 +1229,12 @@ export default function StudentSelfProfiling() {
                   <SelectItem value="O-">O-</SelectItem>
                 </SelectContent>
               </Select>
+              {errors.bloodGroup && <p className="text-red-500 text-xs">{errors.bloodGroup}</p>}
             </div>
 
             {/* Gender */}
             <div className="w-1/2 space-y-1">
-              <Label htmlFor="gender">Gender</Label>
+              <Label htmlFor="gender">Gender <span className="text-red-500">*</span></Label>
               <Select
                 value={formData.gender}
                 onValueChange={(value) => handleSelectChange(value, 'gender')}
@@ -1380,7 +1259,7 @@ export default function StudentSelfProfiling() {
 
 
           <div className="space-y-1">
-            <Label htmlFor="fatherName">Father&apos;s Name</Label>
+            <Label htmlFor="fatherName">Father&apos;s Name <span className="text-red-500">*</span></Label>
             <Input
               id="fatherName"
               required
@@ -1393,7 +1272,7 @@ export default function StudentSelfProfiling() {
             {errors.fatherName && <p className="text-red-500 text-xs">{errors.fatherName}</p>}
           </div>
           <div className="space-y-1">
-            <Label htmlFor="fatherContact">Father&apos;s Contact</Label>
+            <Label htmlFor="fatherContact">Father&apos;s Contact <span className="text-red-500">*</span></Label>
             <Input
               id="fatherContact"
               required
@@ -1418,7 +1297,7 @@ export default function StudentSelfProfiling() {
           </div>
 
           <div className="space-y-1">
-            <Label htmlFor="motherName">Mother&apos;s Name</Label>
+            <Label htmlFor="motherName">Mother&apos;s Name <span className="text-red-500">*</span></Label>
             <Input
               id="motherName"
               required
@@ -1431,7 +1310,7 @@ export default function StudentSelfProfiling() {
             {errors.motherName && <p className="text-red-500 text-xs">{errors.motherName}</p>}
           </div>
           <div className="space-y-1">
-            <Label htmlFor="motherContact">Mother&apos;s Contact</Label>
+            <Label htmlFor="motherContact">Mother&apos;s Contact <span className="text-red-500">*</span></Label>
             <Input
               id="motherContact"
               required
@@ -1458,7 +1337,7 @@ export default function StudentSelfProfiling() {
 
 
           <div className="space-y-1">
-            <Label htmlFor="address">Address</Label>
+            <Label htmlFor="address">Address <span className="text-red-500">*</span></Label>
             <textarea
               id="address"
               rows={2}
@@ -1472,7 +1351,7 @@ export default function StudentSelfProfiling() {
           </div>
 
           <div className="space-y-1">
-            <Label htmlFor="city">City</Label>
+            <Label htmlFor="city">City <span className="text-red-500">*</span></Label>
             <Input
               id="city"
               type="text"
@@ -1485,7 +1364,7 @@ export default function StudentSelfProfiling() {
             {errors.city && <p className="text-red-500 text-xs">{errors.city}</p>}
           </div>
           <div className="space-y-1">
-            <Label htmlFor="state">State</Label>
+            <Label htmlFor="state">State <span className="text-red-500">*</span></Label>
             <Select
               value={formData.state}
               onValueChange={(value) => handleSelectChange(value, 'state')}
@@ -1540,7 +1419,7 @@ export default function StudentSelfProfiling() {
             {errors.state && <p className="text-red-500 text-xs">{errors.state}</p>}
           </div>
           <div className="space-y-1">
-            <Label htmlFor="pinCode">Pin Code</Label>
+            <Label htmlFor="pinCode">Pin Code <span className="text-red-500">*</span></Label>
             <Input
               id="pinCode"
               type="text"
@@ -1587,7 +1466,7 @@ export default function StudentSelfProfiling() {
             />
           </div>
           <div className="space-y-1">
-            <Label htmlFor="addharNumber">Aadhaar Number</Label>
+            <Label htmlFor="addharNumber">Aadhaar Number <span className="text-red-500">*</span></Label>
             <Input
               id="addharNumber"
               type="text"
@@ -1608,7 +1487,7 @@ export default function StudentSelfProfiling() {
         <div className="flex flex-col gap-6">
           {/* Photo Upload Section */}
           <div className="border rounded-lg p-4 bg-white">
-            <h3 className="font-medium mb-2">Profile Photo</h3>
+            <h3 className="font-medium mb-2">Profile Photo <span className="text-red-500">*</span></h3>
             <FileUpload
               label="Upload Photo (Passport size)"
               accept="image/*"
@@ -1619,6 +1498,7 @@ export default function StudentSelfProfiling() {
               }}
               disabled={isReadOnly}
             />
+            {errors.photoLink && <p className="text-red-500 text-xs mt-1">{errors.photoLink}</p>}
             {formData.photoLink && formData.photoLink !== "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrxb9rKS0KgjTtqrKPK8dodc0pEeaoC-pY_w&s" && (
               <div className="mt-3 flex items-center">
                 <div className="w-12 h-12 mr-3 overflow-hidden rounded border">
@@ -1645,7 +1525,7 @@ export default function StudentSelfProfiling() {
 
           {/* Aadhar Card Document Upload Section */}
           <div className="border rounded-lg p-4 bg-white">
-            <h3 className="font-medium mb-2">Aadhar Card Document</h3>
+            <h3 className="font-medium mb-2">Aadhar Card Document <span className="text-red-500">*</span></h3>
             <FileUpload
               label="Upload Aadhar Card"
               accept="image/*,.pdf"
@@ -1656,6 +1536,7 @@ export default function StudentSelfProfiling() {
               }}
               disabled={isReadOnly}
             />
+            {errors.aadharCardDocument && <p className="text-red-500 text-xs mt-1">{errors.aadharCardDocument}</p>}
             {formData.aadharCardDocument && (
               <div className="mt-3 flex items-center">
                 {formData.aadharCardDocument.includes('.pdf') ? (
