@@ -19,8 +19,7 @@ import { set } from 'date-fns';
 import { useSelector } from 'react-redux';
 import formdata from '../../../config/formdata';
 
-
-const ViewNotice = () => {
+const ViewNoticeSA = () => {
 
     const totalPages = 10;
     const [notices, setNotices] = useState([]);
@@ -30,13 +29,11 @@ const ViewNotice = () => {
         try {
             const res = await axios({
                 method: 'get',
-                url: import.meta.env.VITE_BASE_URL + '/HA/getNotices',
+                url: import.meta.env.VITE_BASE_URL + '/SA/getNotices',
                 withCredentials: true,
-                params: { hostelNo: userData.dataValues.hostelNo }, // Send hostelNo as query parameter       
-                // withCredentials: true,
                 // params: { hostelNo: userData.dataValues.hostelNo }, // Send hostelNo as query parameter       
             })
-            console.log("SENT HOSTEL NO_>", userData.dataValues.hostelNo);
+
             console.log(res);
             // printing data
             console.log("DATA_>", res.data);
@@ -49,6 +46,7 @@ const ViewNotice = () => {
 
     useEffect(() => {
         getNotices();
+        // console.log("userdata: ",userData);
     }, [])
 
     const handlePageClick = (data) => {
@@ -60,11 +58,11 @@ const ViewNotice = () => {
             console.log("TRYING DELETE_>", public_id)
             const res = await axios({
                 method: 'delete',
-                url: import.meta.env.VITE_BASE_URL + '/HA/deleteNotices',
+                url: import.meta.env.VITE_BASE_URL + '/SA/deleteNotices',
                 data: { public_id },
                 withCredentials: true
             })
-            // console.log(res);
+            console.log(res);
             getNotices();
         } catch (err) {
             console.log(err);
@@ -76,7 +74,7 @@ const ViewNotice = () => {
         <>
             <div className='flex flex-col items-center w-full bg-gray-100 min-h-screen mx-auto item-center'>
                 <h1 className='text-3xl font-semibold mt-10 max-md:mt-24 '>Notice</h1>
-                <p className='text-gray-500'>View Notices</p>
+                <p className='text-gray-500'> Super Admin View Notices</p>
                 <Card className="w-3/4 mt-10 ml-2 max-lg:ml-16 min-lg:ml-16 ">
                     <Table>
                         <TableHeader>
@@ -123,14 +121,14 @@ const ViewNotice = () => {
                                             <a href={d.url} target="_blank">Open PDF</a>
                                         </DialogContent>
                                     </Dialog>
-                                    <Button disabled={d.isGlobal}  onClick={() => deleteNotice(d.public_id)} className="bg-red-700 hover:bg-red-500">Delete</Button>
+                                    <Button onClick={() => deleteNotice(d.public_id)} className="bg-red-700 hover:bg-red-500">Delete</Button>
                                 </TableCell>
                             </TableRow>) : null}
                         </TableBody>
                     </Table>
                 </Card>
                 {/* {notices.length!==0?{notices.map(data=>{
-            // 
+            
         })}} */}
                 {/* {notices.length !== 0 ? notices.map(data=>{
           <div>  {data}      <div>  data </div> </div>
@@ -158,7 +156,7 @@ const ViewNotice = () => {
     )
 }
 
-export default ViewNotice;
+export default ViewNoticeSA;
 
 // make table with the following columns:
 // noticeId

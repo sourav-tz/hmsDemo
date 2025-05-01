@@ -2,7 +2,6 @@ const db = require('../../../models/index')
 const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
 const path = require('path');
-const { Op } = require('sequelize');
 // Function to handle adding a notice
 const addnotice = async (req, res) => {
     try {
@@ -20,7 +19,8 @@ const addnotice = async (req, res) => {
             title: title,
             url: fileUrl,
             public_id: uuidv4(),
-            hostelNo: hostelNo
+            hostelNo: null,
+            isGlobal: true
         });
 
         // Remove the file from the local storage
@@ -46,18 +46,9 @@ const getNotices = async (req, res) => {
         if (hostelNo == undefined) hostelNo = null;
         console.log(hostelNo);
 
-        //   const result = await db.notices.findAll({
-        //     where: { hostelNo ,isGlobal: true },
-        //     attributes: ['title', 'url','public_id','createdAt']
-        // });
         const result = await db.notices.findAll({
-            where: {
-                [Op.or]: [
-                    { hostelNo },              // matches the provided hostel number
-                    { isGlobal: true }         // OR global notices
-                ]
-            },
-            attributes: ['title', 'url', 'public_id', 'createdAt', 'isGlobal']
+            where: { isGlobal: true },
+            attributes: ['title', 'url', 'public_id', 'createdAt']
         });
         return res.status(200).json({
             success: true,
@@ -75,17 +66,12 @@ const getNotices = async (req, res) => {
 const deleteNotices = async (req, res) => {
     try {
         const public_id = req.body.public_id;
-        const {TokenRole}=req.body;
-        // console.log(req);
+
 
         // Fetch the notice from the database
         const notice = await db.notices.findByPk(public_id);
         if (!notice) {
             return res.status(404).json({ success: false, message: 'Notice not found' });
-        }
-        
-        if(notice.isGlobal === true){
-            return res.status(403).json({ success: false, message: 'Unauthorized' });
         }
 
         // Extract the file path from the URL (e.g., 'http://localhost:3000/public/uploads/file.pdf')
@@ -111,6 +97,7 @@ const deleteNotices = async (req, res) => {
         await db.notices.destroy({ where: { public_id } });
 
         return res.status(200).json({ success: true, message: 'Notice and file deleted successfully' });
+
     } catch (error) {
         console.error(error);
         return res.status(500).json({ success: false, message: 'Failed to delete notice' });

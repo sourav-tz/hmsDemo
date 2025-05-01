@@ -100,9 +100,7 @@ const ViewNotices = () => {
                             </a>
                           </DialogContent>
                         </Dialog>
-                        <Button className="bg-red-700 hover:bg-red-500 text-white">
-                          Delete
-                        </Button>
+                       
                       </TableCell>
                     </TableRow>
                   ))

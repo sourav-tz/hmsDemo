@@ -23,6 +23,7 @@ const { downloadFile } = require('../../controllers/hostelAuthority/studentModul
 
 const superAdminLoginToken = require('../../controllers/Login/superAdminLoginToken.js');
 const LogOut = require('../../controllers/LoggingOut/LogOut.js');
+const { addnotice, getNotices, deleteNotices } = require('../../controllers/superAdmin/Manage_Notices/notices.js');
 
 const getAllRoomsData = require('../../controllers/superAdmin/ManageRooms/getAllRoomsData.js')
 
@@ -37,7 +38,8 @@ var storage = multer.diskStorage({
         cb(null, path.join(__dirname, '../../public/uploads'))
     },
     filename: (req, file, cb) => {
-        cb(null, file.originalname);
+        // cb(null, file.originalname);
+        cb(null, `${Date.now()}-${file.originalname}`);
     }
 });
 var upload = multer({ storage: storage });
@@ -68,6 +70,11 @@ router.post('/addHostel',auth, addHostel);
 router.delete('/removeHostel',auth, removeHostel);
 router.post('/enableHostel',auth, enableHostel);
 router.patch('/updateHostel',auth, updateHostel);
+
+// Notice Routes
+router.post('/addNotice', auth, upload.single('file'), addnotice);
+router.get('/getNotices', auth, getNotices);
+router.delete('/deleteNotices', auth, deleteNotices);
 
 
 // RoomsTypes Api's

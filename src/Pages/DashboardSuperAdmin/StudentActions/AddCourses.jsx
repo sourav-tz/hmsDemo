@@ -8,10 +8,10 @@ import { useEffect, useState } from "react"
 import axios from "axios"
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
 import { Switch } from "@/components/ui/switch"
-import {useForm,Controller} from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { DevTool } from "@hookform/devtools"
-import {useRef} from 'react';
-import { ToastContainer,toast } from "react-toastify"
+import { useRef } from 'react';
+import { ToastContainer, toast } from "react-toastify"
 import 'react-toastify/dist/ReactToastify.css'
 import { ImBin } from "react-icons/im";
 
@@ -19,57 +19,57 @@ import { ImBin } from "react-icons/im";
 
 
 export default function AddCourses() {
-    const [courses,setCourses] = useState([
-        {
-            "courseId": 1,
-            "courseName": "B.Tech",
-            "department": "CSE",
-            "specialization": "",
-            "courseDuration": 4,
-            "lastUpdatedBy": "Admin",
-            "createdAt": "2022-10-10",
-            "updatedAt": "2022-10-10",
-            "deletedAt": null,
-            "active": true
-        },
-    ]);
-    const {register,control,handleSubmit,formState:{errors},reset} = useForm(
-        {
-            mode: "all",
+  const [courses, setCourses] = useState([
+    {
+      "courseId": 1,
+      "courseName": "B.Tech",
+      "department": "CSE",
+      "specialization": "",
+      "courseDuration": 4,
+      "lastUpdatedBy": "Admin",
+      "createdAt": "2022-10-10",
+      "updatedAt": "2022-10-10",
+      "deletedAt": null,
+      "active": true
+    },
+  ]);
+  const { register, control, handleSubmit, formState: { errors }, reset } = useForm(
+    {
+      mode: "all",
 
-        }
-    );
-
-
-    const editForm = useRef(null);
-
-    const initialLoad = async ()=>{
-      try{
-          const res = await axios({
-              method: 'get',
-              url:import.meta.env.VITE_BASE_URL  + '/SA/getCourses',
-              headers: {
-                  "Content-Type": "application/json"
-                  },
-                  withCredentials: true
-    
-              });
-              console.log(res);
-              setCourses(res.data);
-      }catch(err){
-          console.log(err);
-      }
     }
+  );
 
-useEffect(()=>{
+
+  const editForm = useRef(null);
+
+  const initialLoad = async () => {
+    try {
+      const res = await axios({
+        method: 'get',
+        url: import.meta.env.VITE_BASE_URL + '/SA/getCourses',
+        headers: {
+          "Content-Type": "application/json"
+        },
+        withCredentials: true
+
+      });
+      console.log(res);
+      setCourses(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  useEffect(() => {
     initialLoad();
-}
-,[])
+  }
+    , [])
 
 
 
 
-const onSubmitEdit = async (data) => {
+  const onSubmitEdit = async (data) => {
     console.log(data);
     const checkCourseExists = (data) => {
       const { courseName, department, specialization, isActive } = data;
@@ -84,30 +84,30 @@ const onSubmitEdit = async (data) => {
     };
 
     const exists = checkCourseExists(data);
-    if(exists === true){
+    if (exists === true) {
       toast.error("Course with same specialization exist already");
       return;
     }
-    
-    else{
+
+    else {
 
     
     try{
       // if we change the data
         const res = await axios({
-            method: 'patch',
-            url:import.meta.env.VITE_BASE_URL  + '/SA/updateCourse',
-            data: {
-                "courseId":data.courseId,
-                "courseName":data.courseName,
-                "department":data.department,
-                "specialization":data.specialization,
-                "courseDuration":data.courseDuration,
-            },
-            headers: {
-                "Content-Type": "application/json"
-                },
-                withCredentials: true
+          method: 'patch',
+          url: import.meta.env.VITE_BASE_URL + '/SA/updateCourse',
+          data: {
+            "courseId": data.courseId,
+            "courseName": data.courseName,
+            "department": data.department,
+            "specialization": data.specialization,
+            "courseDuration": data.courseDuration,
+          },
+          headers: {
+            "Content-Type": "application/json"
+          },
+          withCredentials: true
 
             });
             console.log("Update result from the dataBase")
@@ -152,16 +152,16 @@ const onSubmitEdit = async (data) => {
         }
 }
 
-const setDefaultValues = (course) => {
+  const setDefaultValues = (course) => {
     reset({
-        courseId: course.courseId,
-        courseName: course.courseName,
-        department: course.department,
-        specialization: course.specialization,
-        courseDuration: course.courseDuration,
-        isActive: course.active
+      courseId: course.courseId,
+      courseName: course.courseName,
+      department: course.department,
+      specialization: course.specialization,
+      courseDuration: course.courseDuration,
+      isActive: course.active
     });
-}
+  }
 
 const recalculateSerialNumbers = (updatedCourses) => {
   return updatedCourses.map((course, index) => ({
@@ -465,21 +465,21 @@ const deleteCourse = async (courseId) => {
 
 const MyForm = () => {
 
-  const initialLoad = async ()=>{
-    try{
-        const res = await axios({
-            method: 'get',
-            url:import.meta.env.VITE_BASE_URL  + '/SA/getCourses',
-            headers: {
-                "Content-Type": "application/json"
-                },
-                withCredentials: true
-  
-            });
-            console.log(res);
-            setCourses(res.data);
-    }catch(err){
-        console.log(err);
+  const initialLoad = async () => {
+    try {
+      const res = await axios({
+        method: 'get',
+        url: import.meta.env.VITE_BASE_URL + '/SA/getCourses',
+        headers: {
+          "Content-Type": "application/json"
+        },
+        withCredentials: true
+
+      });
+      console.log(res);
+      setCourses(res.data);
+    } catch (err) {
+      console.log(err);
     }
   }
 
@@ -490,18 +490,18 @@ const MyForm = () => {
     };
   }, []);
 
-    const {register,control,handleSubmit,formState:{errors},reset} = useForm(
-        {
-            mode: "all",
+  const { register, control, handleSubmit, formState: { errors }, reset } = useForm(
+    {
+      mode: "all",
 
-        }
-    );
-
-    const handlePress = (e) => {
-      if (e.key === "Escape") {
-        reset();
-      }
     }
+  );
+
+  const handlePress = (e) => {
+    if (e.key === "Escape") {
+      reset();
+    }
+  }
 
     const onSubmit = async (data) => {
       console.log(data);
@@ -535,8 +535,8 @@ const MyForm = () => {
   };
   
 
-    return (
-      <>
+  return (
+    <>
       <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
         {/* Grid layout for input fields */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

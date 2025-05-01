@@ -9,7 +9,9 @@ import { MdOutlineBedroomChild } from "react-icons/md";
 import { FaGear } from "react-icons/fa6";
 import { useSelector } from 'react-redux';
 import { BsHouses } from "react-icons/bs";
-import { useLocation,useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { FaNoteSticky } from "react-icons/fa6";
+
 import storage from 'redux-persist/lib/storage';
 import { FaRegFileAlt } from 'react-icons/fa';
 
@@ -36,7 +38,9 @@ export default function SuperSidebar(){
     const [subStudent, setSubStudent] = useState(false);
     const [subRoom, setSubRoom] = useState(false);
     const [subSettings, setSubSettings] = useState(false);
-    const [subHostel,setSubHostel] = useState(false);
+    const [subHostel, setSubHostel] = useState(false);
+    const [subNotice, setSubNotice] = useState(false);
+
     const [subApplication,setsubApplication] = useState(false);
 
 
@@ -56,9 +60,16 @@ export default function SuperSidebar(){
             setSubRoom(false);
             setSubSettings(false);
             setSubHostel(false);
-            setsubApplication(false);
 
-        }else if(value === 'roomActions'){
+        } else if (value === 'notice') {
+            setSubHome(false);
+            setSubStudent(false);
+            setSubRoom(false);
+            setSubSettings(false);
+            setSubNotice(prev => !prev);
+            setSubHostel(false);
+
+        }else if (value === 'roomActions') {
             setSubHome(false);
             setSubStudent(false);
             setSubRoom(prev=>!prev);
@@ -156,6 +167,33 @@ const handleLogout = ()=>{}
             </div>
 
             {/* Allocate Romms */}
+                       
+                        
+
+
+                        {/* <div className={styles.item + ' ' + (state ? styles.ItemOpenMenu : styles.ItemCloseMenu)}>
+                            <p onClick={() => { changeSubMenu('notice') }} className={(activeOption === 'notice' ? styles.activeItem : null) + ' flex items-center gap-2'}><FaNoteSticky /> <span className={(state ? null : styles.hidden) + ' mt-1'}>Notice</span></p>
+                            <ul className={state && subNotice ? null : styles.hidden}>
+                                <li onClick={() => { navigator('/superAdminDashboard/notice/uploadNotice') }} className={(state ? null : styles.hidden) + ' ' + styles.subOptions + ' ' + (activeSubOption === 'uploadNotice' ? styles.activeSubOption : null)}>Upload Notice</li>
+                                <li onClick={() => { navigator('/superAdminDashboard/notice/viewNotice') }} className={(state ? null : styles.hidden) + ' ' + styles.subOptions + ' ' + (activeSubOption === 'viewNotice' ? styles.activeSubOption : null)}>View Notice</li>
+                            </ul>
+                        </div> */}
+            <div className={styles.item + ' ' + (state ? styles.ItemOpenMenu : styles.ItemCloseMenu)}>
+                            <p onClick={() => { changeSubMenu('notice'); Navigator('/superAdminDashboard/notice/uploadNotice') }} className={(activeOption === 'uploadnotice' ? styles.activeItem : null) + ' flex items-center gap-2'}><FaNoteSticky /> <span className={(state ? null : styles.hidden) + ' mt-1'}>Upload Notice</span></p>
+                        {/* <ul className={state && subNotice ? null : styles.hidden}>
+                        <li onClick={()=>{}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='uploadNotice'?styles.activeSubOption:null)}>Upload Notice</li>
+                       
+                        </ul> */}
+                        </div>
+                        <div className={styles.item + ' ' + (state ? styles.ItemOpenMenu : styles.ItemCloseMenu)}>
+                            <p onClick={() => { changeSubMenu('notice'); Navigator('/superAdminDashboard/notice/viewNotice') }} className={(activeOption === 'viewnotice' ? styles.activeItem : null) + ' flex items-center gap-2'}><FaNoteSticky /> <span className={(state ? null : styles.hidden) + ' mt-1'}> View Notice</span></p>
+                            {/* <ul className={state && subNotice ? null : styles.hidden}>
+                                
+                                <li onClick={() => {  }} className={(state ? null : styles.hidden) + ' ' + styles.subOptions + ' ' + (activeSubOption === 'viewNotice' ? styles.activeSubOption : null)}>View Notice</li>
+                            </ul> */}
+                        </div>
+
+
             <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
                         <p onClick={()=>{changeSubMenu('roomActions');Navigator('/superAdminDashboard/roomActions/allocateRooms')}} className={(activeOption==='allocateRooms'?styles.activeItem:null)+ ' flex items-center gap-2'}><MdOutlineBedroomChild /> <span className={(state?null:styles.hidden)+' mt-1'}>Allocate Rooms</span></p>
                         {/* <ul className={state&&subRoom?null:styles.hidden}> */}
@@ -201,13 +239,7 @@ const handleLogout = ()=>{}
                         {/* <li onClick={()=>{Navigator('/superAdminDashboard/hostels/manageAdmins')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='manageAdmins'?styles.activeSubOption:null)}>Manage Admins</li> */}
                         {/* </ul> */}
             </div>
-            <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
-                        <p onClick={()=>{changeSubMenu('applicatoin');Navigator('/superAdminDashboard/application/applicationStatus')}} className={(activeOption==='manageApplication'?styles.activeItem:null)+ ' flex items-center gap-2'}><FaRegFileAlt /> <span className={(state?null:styles.hidden)+' mt-1'}>Manage Applications</span></p>
-                        {/* <ul className={state&&subHostel?null:styles.hidden}> */}
-                        {/* <li onClick={()=>{Navigator('/superAdminDashboard/hostels/manageHostels')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='manageHostels'?styles.activeSubOption:null)}>Manage Hostels</li> */}
-                        {/* <li onClick={()=>{Navigator('/superAdminDashboard/hostels/manageAdmins')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='manageAdmins'?styles.activeSubOption:null)}>Manage Admins</li> */}
-                        {/* </ul> */}
-            </div>
+          
             </div>
             </div>
         </div>
@@ -249,6 +281,7 @@ const handleLogout = ()=>{}
                             <li onClick={()=>{Navigator('/superAdminDashboard/roomActions/allocateRooms');handleHamBurger()}} className={`text-xl hover:scale-110 transition-all rounded-md px-2 py-[2px] ${activeSubOption==='allocateRooms'?'bg-blue-900 font-normal':''}`}> Allot Rooms</li>
                         </ul>
                     </li>
+                  
 
                     {/* Manage Hostels and Admin */}
                     <li className='mt-4 cursor-pointer flex flex-col text-xl font-semibold'><div onClick={()=>{changeSubMenu('hostels')}} className={`flex items-center gap-2 ${activeOption==='studentInfo'?'text-orange-400':'text-white'}`}><FaInfo size='15px' /> Hostels and Admin</div>

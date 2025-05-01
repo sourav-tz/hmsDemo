@@ -11,6 +11,11 @@ module.exports = (sequelize, dataTypes) => {
         url: {
             type: dataTypes.STRING,
         },
+        isGlobal: {
+            type: dataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: false
+        }
     },{
         updatedAt: 'last_updated_at',
     })
