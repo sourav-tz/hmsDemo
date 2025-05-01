@@ -146,7 +146,7 @@ export default function StudentSelfProfiling() {
   const calculateFormProgress = useCallback((data) => {
     // Define required fields
     const requiredFields = [
-      'rollNo', 'firstName', 'lastName', 'dob', 'course', 'semester', 'branch',
+      'rollNo', 'firstName', 'dob', 'course', 'semester', 'branch',
       'contactNumber_1', 'contactNumber_2', 'phoneNumber', 'email',
       'identificationMark', 'gender', 'bloodGroup', 'fatherName',
       'fatherContact', 'fatherOccupation', 'motherName', 'motherContact',
@@ -187,7 +187,7 @@ export default function StudentSelfProfiling() {
 
     // Define required fields
     const requiredFields = [
-      'rollNo', 'firstName', 'lastName', 'dob', 'course', 'semester', 'branch',
+      'rollNo', 'firstName', 'dob', 'course', 'semester', 'branch',
       'contactNumber_1', 'contactNumber_2', 'phoneNumber', 'email',
       'identificationMark', 'gender', 'bloodGroup', 'fatherName',
       'fatherContact', 'fatherOccupation', 'motherName', 'motherContact',
@@ -779,7 +779,7 @@ export default function StudentSelfProfiling() {
         };
 
         // Define optional fields that should be ignored if empty
-        const optionalFields = ['contactNumber_2', 'phoneNumber', 'localGuardianContact', 'localGuardianAddress'];
+        const optionalFields = ['lastName','contactNumber_2', 'phoneNumber', 'localGuardianContact', 'localGuardianAddress'];
 
         // Filter out errors for empty optional fields
         const relevantErrors = error.response.data.errors.filter(err => {
