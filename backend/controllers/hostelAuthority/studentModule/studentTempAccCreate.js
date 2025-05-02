@@ -1,9 +1,11 @@
 const db = require('../../../models/index');
 const bcrypt = require('bcrypt');
+const mailSender = require('../../../utils/mailSender');
+const AccountCreation = require('../../../MailTemplates/StudentRegistrationTemplates/AccountCreation');
 
 exports.studentTempAccCreate = async (req, res) => {
   try {
-    const { email, tokenEmail } = req.body;
+    const { email, tokenEmail, sendEmail } = req.body;
     const adminEmail = tokenEmail; // Get admin email from tokenEmail set by auth middleware
 
     if (!email) {
@@ -54,12 +56,25 @@ exports.studentTempAccCreate = async (req, res) => {
       hostelNo: hostelNo
     });
 
+    // Send email to student if sendEmail flag is true
+    if (sendEmail) {
+      try {
+        const title = 'Your Temporary Account - NIT Hostel Management System';
+        await mailSender(email, title, AccountCreation(email, plainPassword));
+        console.log('Account creation email sent successfully to', email);
+      } catch (emailError) {
+        console.error('Error sending account creation email:', emailError);
+        // Continue execution even if email fails
+      }
+    }
+
     // Return the plain password in the response (not the hashed one)
     return res.status(201).json({
       message: 'Temporary student account created successfully',
       email: tempAccount.email,
       password: plainPassword, // Return plain password for display
-      expiresAt: tempAccount.expiresAt
+      expiresAt: tempAccount.expiresAt,
+      emailSent: sendEmail ? true : false
     });
 
   } catch (error) {

@@ -84,8 +84,8 @@ export default function StudentSelfProfiling() {
       semester: "1", // Always set to 1 for new students
       branch: "",
       contactNumber_1: "",
-      contactNumber_2: "",
-      phoneNumber: "", // Added phoneNumber field
+      // contactNumber_2: "",
+      // phoneNumber: "", // Added phoneNumber field
       email: "",
       identificationMark: "",
       bloodGroup: "",
@@ -101,7 +101,7 @@ export default function StudentSelfProfiling() {
       state: "",
       pinCode: "",
       localGuardian: "",
-      localGuardianContact: "",
+      // localGuardianContact: "",
       localGuardianAddress: "",
       addharNumber: "",
       aadharCardDocument: "",
@@ -147,11 +147,9 @@ export default function StudentSelfProfiling() {
     // Define required fields
     const requiredFields = [
       'rollNo', 'firstName', 'dob', 'course', 'semester', 'branch',
-      'contactNumber_1', 'contactNumber_2', 'phoneNumber', 'email',
-      'identificationMark', 'gender', 'bloodGroup', 'fatherName',
-      'fatherContact', 'fatherOccupation', 'motherName', 'motherContact',
-      'motherOccupation', 'address', 'city', 'state', 'pinCode',
-      'localGuardian', 'localGuardianContact', 'localGuardianAddress',
+      'contactNumber_1', 'email', 'gender', 'bloodGroup', 'fatherName',
+      'fatherContact', 'motherName', 'motherContact',
+      'address', 'city', 'state', 'pinCode',
       'addharNumber', 'aadharCardDocument', 'photoLink'
     ];
 
@@ -188,11 +186,9 @@ export default function StudentSelfProfiling() {
     // Define required fields
     const requiredFields = [
       'rollNo', 'firstName', 'dob', 'course', 'semester', 'branch',
-      'contactNumber_1', 'contactNumber_2', 'phoneNumber', 'email',
-      'identificationMark', 'gender', 'bloodGroup', 'fatherName',
-      'fatherContact', 'fatherOccupation', 'motherName', 'motherContact',
-      'motherOccupation', 'address', 'city', 'state', 'pinCode',
-      'localGuardian', 'localGuardianContact', 'localGuardianAddress',
+      'contactNumber_1', 'email', 'gender', 'bloodGroup', 'fatherName',
+      'fatherContact', 'motherName', 'motherContact',
+      'address', 'city', 'state', 'pinCode',
       'addharNumber', 'aadharCardDocument', 'photoLink'
     ];
 
@@ -494,8 +490,8 @@ export default function StudentSelfProfiling() {
               semester: profile.semester?.toString() || "",
               branch: profile.branch || "",
               contactNumber_1: profile.contactNumber_1 || "",
-              contactNumber_2: profile.contactNumber_2 || "",
-              phoneNumber: profile.phoneNumber || profile.contactNumber_1 || "", // Use contactNumber_1 as fallback
+              contactNumber_2: profile.contactNumber_2,
+              phoneNumber: profile.phoneNumber || profile.contactNumber_1, // Use contactNumber_1 as fallback
               email: profile.email || "",
               identificationMark: profile.identificationMark || "",
               bloodGroup: profile.bloodGroup || "",
@@ -511,7 +507,7 @@ export default function StudentSelfProfiling() {
               state: profile.state || "",
               pinCode: profile.pinCode || "",
               localGuardian: profile.localGuardian || "",
-              localGuardianContact: profile.localGuardianContact || "",
+              localGuardianContact: profile.localGuardianContact,
               localGuardianAddress: profile.localGuardianAddress || "",
               addharNumber: profile.addharNumber || "",
               aadharCardDocument: profile.aadharCardDocument || "",
@@ -779,7 +775,9 @@ export default function StudentSelfProfiling() {
         };
 
         // Define optional fields that should be ignored if empty
-        const optionalFields = ['lastName','contactNumber_2', 'phoneNumber', 'localGuardianContact', 'localGuardianAddress'];
+        const optionalFields = ['lastName', 'contactNumber_2', 'phoneNumber', 'identificationMark',
+                               'fatherOccupation', 'motherOccupation', 'localGuardian',
+                               'localGuardianContact', 'localGuardianAddress'];
 
         // Filter out errors for empty optional fields
         const relevantErrors = error.response.data.errors.filter(err => {
@@ -1161,7 +1159,7 @@ export default function StudentSelfProfiling() {
             {errors.contactNumber_1 && <p className="text-red-500 text-xs">{errors.contactNumber_1}</p>}
           </div>
           <div className="space-y-1">
-            <Label htmlFor="contactNumber_2">Contact Number 2 <span className="text-red-500">*</span></Label>
+            <Label htmlFor="contactNumber_2">Contact Number 2</Label>
             <Input
               id="contactNumber_2"
               type="tel"
@@ -1171,12 +1169,11 @@ export default function StudentSelfProfiling() {
               onChange={handleChange}
               className={`${errors.contactNumber_2 ? "border-red-500" : ""} ${readOnlyClass}`}
               disabled={isReadOnly}
-              required
             />
             {errors.contactNumber_2 && <p className="text-red-500 text-xs">{errors.contactNumber_2}</p>}
           </div>
           <div className="space-y-1">
-            <Label htmlFor="phoneNumber">Phone Number <span className="text-red-500">*</span></Label>
+            <Label htmlFor="phoneNumber">Phone Number</Label>
             <Input
               id="phoneNumber"
               type="tel"
@@ -1186,7 +1183,6 @@ export default function StudentSelfProfiling() {
               onChange={handleChange}
               className={`${errors.phoneNumber ? "border-red-500" : ""} ${readOnlyClass}`}
               disabled={isReadOnly}
-              required
             />
             {errors.phoneNumber && <p className="text-red-500 text-xs">{errors.phoneNumber}</p>}
           </div>
@@ -1204,7 +1200,7 @@ export default function StudentSelfProfiling() {
             {errors.email && <p className="text-red-500 text-xs">{errors.email}</p>}
           </div>
           <div className="space-y-1">
-            <Label htmlFor="identificationMark">Identification Mark <span className="text-red-500">*</span></Label>
+            <Label htmlFor="identificationMark">Identification Mark</Label>
             <Input
               id="identificationMark"
               type="text"
@@ -1212,7 +1208,6 @@ export default function StudentSelfProfiling() {
               onChange={handleChange}
               className={`${errors.identificationMark ? "border-red-500" : ""} ${readOnlyClass}`}
               disabled={isReadOnly}
-              required
             />
             {errors.identificationMark && <p className="text-red-500 text-xs">{errors.identificationMark}</p>}
           </div>
@@ -1297,7 +1292,7 @@ export default function StudentSelfProfiling() {
             {errors.fatherContact && <p className="text-red-500 text-xs">{errors.fatherContact}</p>}
           </div>
           <div className="space-y-1">
-            <Label htmlFor="fatherOccupation">Father&apos;s Occupation <span className="text-red-500">*</span></Label>
+            <Label htmlFor="fatherOccupation">Father&apos;s Occupation</Label>
             <Input
               id="fatherOccupation"
               type="text"
@@ -1305,7 +1300,6 @@ export default function StudentSelfProfiling() {
               onChange={handleChange}
               className={`${errors.fatherOccupation ? "border-red-500" : ""} ${readOnlyClass}`}
               disabled={isReadOnly}
-              required
             />
             {errors.fatherOccupation && <p className="text-red-500 text-xs">{errors.fatherOccupation}</p>}
           </div>
@@ -1337,7 +1331,7 @@ export default function StudentSelfProfiling() {
             {errors.motherContact && <p className="text-red-500 text-xs">{errors.motherContact}</p>}
           </div>
           <div className="space-y-1">
-            <Label htmlFor="motherOccupation">Mother&apos;s Occupation <span className="text-red-500">*</span></Label>
+            <Label htmlFor="motherOccupation">Mother&apos;s Occupation</Label>
             <Input
               id="motherOccupation"
               type="text"
@@ -1345,7 +1339,6 @@ export default function StudentSelfProfiling() {
               onChange={handleChange}
               className={`${errors.motherOccupation ? "border-red-500" : ""} ${readOnlyClass}`}
               disabled={isReadOnly}
-              required
             />
             {errors.motherOccupation && <p className="text-red-500 text-xs">{errors.motherOccupation}</p>}
           </div>
@@ -1448,7 +1441,7 @@ export default function StudentSelfProfiling() {
             {errors.pinCode && <p className="text-red-500 text-xs">{errors.pinCode}</p>}
           </div>
           <div className="space-y-1">
-            <Label htmlFor="localGuardian">Local Guardian <span className="text-red-500">*</span></Label>
+            <Label htmlFor="localGuardian">Local Guardian</Label>
             <Input
               id="localGuardian"
               type="text"
@@ -1456,12 +1449,11 @@ export default function StudentSelfProfiling() {
               onChange={handleChange}
               className={`${errors.localGuardian ? "border-red-500" : ""} ${readOnlyClass}`}
               disabled={isReadOnly}
-              required
             />
             {errors.localGuardian && <p className="text-red-500 text-xs">{errors.localGuardian}</p>}
           </div>
           <div className="space-y-1">
-            <Label htmlFor="localGuardianContact">Guardian Contact <span className="text-red-500">*</span></Label>
+            <Label htmlFor="localGuardianContact">Guardian Contact</Label>
             <Input
               id="localGuardianContact"
               type="tel"
@@ -1469,12 +1461,11 @@ export default function StudentSelfProfiling() {
               onChange={handleChange}
               className={`${errors.localGuardianContact ? "border-red-500" : ""} ${readOnlyClass}`}
               disabled={isReadOnly}
-              required
             />
             {errors.localGuardianContact && <p className="text-red-500 text-xs">{errors.localGuardianContact}</p>}
           </div>
           <div className="space-y-1">
-            <Label htmlFor="localGuardianAddress">Guardian Address <span className="text-red-500">*</span></Label>
+            <Label htmlFor="localGuardianAddress">Guardian Address</Label>
             <textarea
               id="localGuardianAddress"
               rows={2}
@@ -1482,7 +1473,6 @@ export default function StudentSelfProfiling() {
               value={formData.localGuardianAddress}
               onChange={handleChange}
               disabled={isReadOnly}
-              required
             />
             {errors.localGuardianAddress && <p className="text-red-500 text-xs">{errors.localGuardianAddress}</p>}
           </div>

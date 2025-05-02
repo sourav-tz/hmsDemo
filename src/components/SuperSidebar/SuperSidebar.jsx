@@ -195,7 +195,7 @@ const handleLogout = ()=>{}
 
 
             <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
-                        <p onClick={()=>{changeSubMenu('roomActions');Navigator('/superAdminDashboard/roomActions/allocateRooms')}} className={(activeOption==='allocateRooms'?styles.activeItem:null)+ ' flex items-center gap-2'}><MdOutlineBedroomChild /> <span className={(state?null:styles.hidden)+' mt-1'}>Allocate Rooms</span></p>
+                        <p onClick={()=>{changeSubMenu('roomActions');Navigator('/superAdminDashboard/roomActions/allocateRooms')}} className={(activeOption==='allocateRooms'?styles.activeItem:null)+ ' flex items-center gap-2'}><MdOutlineBedroomChild /> <span className={(state?null:styles.hidden)+' mt-1'}>Upload Rooms</span></p>
                         {/* <ul className={state&&subRoom?null:styles.hidden}> */}
                         {/* <li onClick={()=>{Navigator('/superAdminDashboard/roomActions/allocateRooms')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='allocateRooms'?styles.activeSubOption:null)}>Allocate</li> */}
                         {/* <li onClick={()=>{Navigator('/superAdminDashboard/roomActions/manageRooms')}} className={(state?null:styles.hidden)+' '+styles.subOptions+' ' + (activeSubOption==='manageRooms'?styles.activeSubOption:null)}>Manage Rooms</li> */}

@@ -3,6 +3,8 @@
 const db = require('../../models/index');
 const { validationResult, checkSchema } = require('express-validator');
 const { uploadToCloudinary } = require('../../utils/cloudinary');
+const mailSender = require('../../utils/mailSender');
+const ProfileSubmission = require('../../MailTemplates/StudentRegistrationTemplates/ProfileSubmission');
 
 // File size limits in bytes
 const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB
@@ -172,18 +174,24 @@ exports.profileValidationSchema = {
     },
     contactNumber_2: {
       in: ['body'],
-      optional: true,
-      matches: {
-        options: [/^\d{10}$/],
-        errorMessage: 'Secondary contact number must be exactly 10 digits.',
+      optional: { options: { nullable: true } },
+      custom: {
+        options: (value) => {
+          if (value === null || value === '') return true;
+          return /^\d{10}$/.test(value);
+        },
+        errorMessage: 'Secondary contact number must be exactly 10 digits, or empty/null.',
       },
     },
     phoneNumber: {
       in: ['body'],
-      optional: true,
-      matches: {
-        options: [/^[6-9]\d{9}$/],
-        errorMessage: 'Phone number must be exactly 10 digits starting with 6-9.',
+      optional: { options: { nullable: true } },
+      custom: {
+        options: (value) => {
+          if (value === null || value === '') return true;
+          return /^[6-9]\d{9}$/.test(value);
+        },
+        errorMessage: 'Phone number must be exactly 10 digits starting with 6-9, or empty/null.',
       },
     },
     gender: {
@@ -198,10 +206,12 @@ exports.profileValidationSchema = {
     },
     bloodGroup: {
       in: ['body'],
-      optional: true,
       isIn: {
         options: [['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-']],
         errorMessage: 'Invalid blood group.',
+      },
+      notEmpty: {
+        errorMessage: 'Blood group is required.',
       },
     },
     pinCode: {
@@ -320,10 +330,13 @@ exports.profileValidationSchema = {
     },
     localGuardianContact: {
       in: ['body'],
-      optional: true,
-      matches: {
-        options: [/^\d{10}$/],
-        errorMessage: 'Local guardian’s contact number must be exactly 10 digits.',
+      optional: { options: { nullable: true } },
+      custom: {
+        options: (value) => {
+          if (value === null || value === '') return true;
+          return /^\d{10}$/.test(value);
+        },
+        errorMessage: 'Local guardian’s contact number must be exactly 10 digits, or empty/null.',
       },
     },
     localGuardianAddress: {
@@ -613,30 +626,30 @@ exports.studentSelfProfiling = async (req, res) => {
         email: tokenEmail,
         rollNo: req.body.rollNo,
         firstName: req.body.firstName,
-        lastName: req.body.lastName,
+        lastName: req.body.lastName || null,
         dob: req.body.dob,
         course: req.body.course,
         semester: req.body.semester,
         branch: req.body.branch,
         contactNumber_1: req.body.contactNumber_1,
-        contactNumber_2: req.body.contactNumber_2,
-        phoneNumber: req.body.phoneNumber || req.body.contactNumber_1, // Use contactNumber_1 as fallback
-        identificationMark: req.body.identificationMark,
+        contactNumber_2: req.body.contactNumber_2 || null,
+        phoneNumber: req.body.phoneNumber || null,
+        identificationMark: req.body.identificationMark || null,
         bloodGroup: req.body.bloodGroup,
         gender: req.body.gender,
         fatherName: req.body.fatherName,
         fatherContact: req.body.fatherContact,
-        fatherOccupation: req.body.fatherOccupation,
+        fatherOccupation: req.body.fatherOccupation || null,
         motherName: req.body.motherName,
         motherContact: req.body.motherContact,
-        motherOccupation: req.body.motherOccupation,
+        motherOccupation: req.body.motherOccupation || null,
         address: req.body.address,
         city: req.body.city,
         state: req.body.state,
         pinCode: req.body.pinCode,
-        localGuardian: req.body.localGuardian,
-        localGuardianContact: req.body.localGuardianContact,
-        localGuardianAddress: req.body.localGuardianAddress,
+        localGuardian: req.body.localGuardian || null,
+        localGuardianContact: req.body.localGuardianContact || null,
+        localGuardianAddress: req.body.localGuardianAddress || null,
         addharNumber: req.body.addharNumber,
         // Use the provided photoLink or the default one
         photoLink: req.body.photoLink || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrxb9rKS0KgjTtqrKPK8dodc0pEeaoC-pY_w&s',
@@ -652,6 +665,16 @@ exports.studentSelfProfiling = async (req, res) => {
 
       // Commit transaction
       await transaction.commit();
+
+      // Send email notification to the student
+      try {
+        const title = 'Profile Submitted - NIT Hostel Management System';
+        await mailSender(tokenEmail, title, ProfileSubmission(req.body.firstName));
+        console.log('Profile submission email sent successfully to', tokenEmail);
+      } catch (emailError) {
+        console.error('Error sending profile submission email:', emailError);
+        // Continue execution even if email fails
+      }
 
       return res.status(200).json({
         success: true,
@@ -672,17 +695,24 @@ exports.studentSelfProfiling = async (req, res) => {
       // Update student record
       await student.update({
         firstName: req.body.firstName,
-        lastName: req.body.lastName,
+        lastName: req.body.lastName || null,
         dob: req.body.dob,
         course: req.body.course,
         semester: req.body.semester,
         branch: req.body.branch,
         contactNumber_1: req.body.contactNumber_1,
-        contactNumber_2: req.body.contactNumber_2,
+        contactNumber_2: req.body.contactNumber_2 || null,
+        phoneNumber: req.body.phoneNumber || null,
+        identificationMark: req.body.identificationMark || null,
+        fatherOccupation: req.body.fatherOccupation || null,
+        motherOccupation: req.body.motherOccupation || null,
         address: req.body.address,
         city: req.body.city,
         state: req.body.state,
         pinCode: req.body.pinCode,
+        localGuardian: req.body.localGuardian || null,
+        localGuardianContact: req.body.localGuardianContact || null,
+        localGuardianAddress: req.body.localGuardianAddress || null,
       }, { transaction });
 
       // Commit transaction

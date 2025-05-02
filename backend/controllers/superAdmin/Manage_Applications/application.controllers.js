@@ -96,7 +96,7 @@ exports.approveBySuperAdmin = async (req, res) => {
     );
 
     const emailTasks = studentsList.map(student => {
-      const name = `${student.firstName} ${student.lastName}`;
+      const name = `${student.firstName} ${student.lastName || ''}`;
       const courseName = student.course?.courseName || 'Unknown Course';
 
       return {

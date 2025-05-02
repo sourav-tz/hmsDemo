@@ -108,6 +108,21 @@ module.exports = (sequelize, dataTypes) => {
         },
         aadharCardDocument: {
             type: dataTypes.STRING,
+        },
+        localGuardian: {
+            type: dataTypes.STRING,
+        },
+        localGuardianContact: {
+            type: dataTypes.STRING,
+            validate: {
+                is: {
+                    args:/^[6-9]\d{9}$/,
+                    msg:"localGuardianContact must be 10 digits starting with 6-9"
+                  },
+            },
+        },
+        localGuardianAddress: {
+            type: dataTypes.STRING,
         }
     },{
         updatedAt: 'last_updated_at'

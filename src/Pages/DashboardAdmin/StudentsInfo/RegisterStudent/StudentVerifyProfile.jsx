@@ -80,7 +80,7 @@ function StudentVerifyProfile() {
         const updatedStudents = students.filter(s => s.email !== student.email)
         setStudents(updatedStudents)
 
-        toast.success(`${student.firstName} ${student.lastName}'s profile has been approved`)
+        toast.success(`${student.firstName} ${student.lastName || ''}'s profile has been approved`)
       } else {
         toast.error(response.data.error || 'Failed to approve profile')
       }
@@ -162,7 +162,7 @@ function StudentVerifyProfile() {
         const updatedStudents = students.filter(s => s.email !== selectedStudent.email)
         setStudents(updatedStudents)
 
-        toast.success(`${selectedStudent.firstName} ${selectedStudent.lastName}'s profile has been rejected`)
+        toast.success(`${selectedStudent.firstName} ${selectedStudent.lastName || ''}'s profile has been rejected`)
         setShowRejectionDialog(false)
       } else {
         toast.error(response.data.error || 'Failed to reject profile')
@@ -209,7 +209,7 @@ function StudentVerifyProfile() {
                     currentItems.map((student) => (
                       <TableRow key={student.rollNo}>
                         <TableCell className="text-center">{student.rollNo}</TableCell>
-                        <TableCell className="text-center">{`${student.firstName} ${student.lastName}`}</TableCell>
+                        <TableCell className="text-center">{`${student.firstName} ${student.lastName || ''}`}</TableCell>
                         <TableCell className="text-center">{student.email}</TableCell>
                         <TableCell className="text-center">{student.course}</TableCell>
                         <TableCell className="text-center">{student.semester}</TableCell>
@@ -220,7 +220,7 @@ function StudentVerifyProfile() {
                             </DialogTrigger>
                             <DialogContent className="min-w-fit max-w-4xl max-h-[90vh] overflow-y-auto">
                               <DialogHeader>
-                                <DialogTitle className="text-xl">{`Student ID: ${student.rollNo} - ${student.firstName} ${student.lastName}`}</DialogTitle>
+                                <DialogTitle className="text-xl">{`Student ID: ${student.rollNo} - ${student.firstName} ${student.lastName || ''}`}</DialogTitle>
                               </DialogHeader>
 
                               <div className="grid gap-8 p-6">
@@ -232,7 +232,7 @@ function StudentVerifyProfile() {
                                     <div className="w-32 h-32 rounded-full overflow-hidden border-2 border-purple-500">
                                       <img
                                         src={student.photoLink}
-                                        alt={`${student.firstName} ${student.lastName}`}
+                                        alt={`${student.firstName} ${student.lastName || ''}`}
                                         className="w-full h-full object-cover"
                                         onError={(e) => {
                                           e.target.src = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrxb9rKS0KgjTtqrKPK8dodc0pEeaoC-pY_w&s";
@@ -268,7 +268,7 @@ function StudentVerifyProfile() {
                                       <div>{student.rollNo}</div>
 
                                       <Label className="text-gray-600">Name:</Label>
-                                      <div>{`${student.firstName} ${student.lastName}`}</div>
+                                      <div>{`${student.firstName} ${student.lastName || ''}`}</div>
 
                                       <Label className="text-gray-600">Email:</Label>
                                       <div>{student.email}</div>
@@ -306,7 +306,7 @@ function StudentVerifyProfile() {
                                       <div>{student.phoneNumber || 'N/A'}</div>
 
                                       <Label className="text-gray-600">Identification Mark:</Label>
-                                      <div>{student.identificationMark}</div>
+                                      <div>{student.identificationMark || 'N/A'}</div>
 
                                       <Label className="text-gray-600">Aadhar Number:</Label>
                                       <div>{student.addharNumber}</div>
@@ -326,7 +326,7 @@ function StudentVerifyProfile() {
                                       <div>{student.fatherContact}</div>
 
                                       <Label className="text-gray-600">Occupation:</Label>
-                                      <div>{student.fatherOccupation}</div>
+                                      <div>{student.fatherOccupation || 'N/A'}</div>
                                     </div>
                                   </div>
 
@@ -340,7 +340,7 @@ function StudentVerifyProfile() {
                                       <div>{student.motherContact}</div>
 
                                       <Label className="text-gray-600">Occupation:</Label>
-                                      <div>{student.motherOccupation}</div>
+                                      <div>{student.motherOccupation || 'N/A'}</div>
                                     </div>
                                   </div>
                                 </div>
@@ -453,7 +453,7 @@ function StudentVerifyProfile() {
             <DialogHeader>
               <DialogTitle>Reject Student Profile</DialogTitle>
               <DialogDescription>
-                Please provide a reason for rejecting {selectedStudent.firstName} {selectedStudent.lastName}&apos;s profile.
+                Please provide a reason for rejecting {selectedStudent.firstName} {selectedStudent.lastName || ''}&apos;s profile.
                 This will be sent to the student.
               </DialogDescription>
             </DialogHeader>

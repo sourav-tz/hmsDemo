@@ -3,6 +3,8 @@ import axios from "axios";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import backgroundImage from '../../../../Assets/hostel11.jpg';
 import {
   Table,
@@ -61,12 +63,19 @@ const filteredItems = items.filter(item =>
         method: 'post',
         url: import.meta.env.VITE_BASE_URL + '/HA/studentCreate',
         withCredentials: true,
-        data: { email },
+        data: { email, sendEmail: true }, // Add sendEmail flag to request
       });
 
-      const { email: returnedEmail, password, expiresAt } = response.data;
+      const { email: returnedEmail, password, expiresAt, emailSent } = response.data;
       setItems([...items, { email: returnedEmail, password, expiresAt }]);
       setEmail("");
+
+      // Show success message with email status
+      if (emailSent) {
+        toast.success(`Account created and email sent to ${returnedEmail}`);
+      } else {
+        toast.success(`Account created for ${returnedEmail}`);
+      }
     } catch (error) {
       console.error("Failed to create temporary student account:", error);
       setEmailError(error.response?.data?.error || "Something went wrong!");
@@ -77,6 +86,7 @@ const filteredItems = items.filter(item =>
 
 
   return (
+    <>
     <div className="relative min-h-screen w-full flex flex-col justify-start py-10 items-center">
       {/* Background Image Layer */}
       <div
@@ -184,6 +194,8 @@ const filteredItems = items.filter(item =>
       </Card>
 
     </div>
+    <ToastContainer />
+    </>
   );
 };
 

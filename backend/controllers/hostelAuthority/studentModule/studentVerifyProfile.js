@@ -248,25 +248,25 @@ exports.approveProfile = async (req, res) => {
       lastName: tempProfile.lastName,
       dob: tempProfile.dob,
       contactNumber: tempProfile.contactNumber_1,
-      secondaryContact: tempProfile.contactNumber_2,
-      phoneNumber: tempProfile.phoneNumber, // Add phoneNumber field
+      secondaryContact: tempProfile.contactNumber_2 && tempProfile.contactNumber_2.trim() !== '' ? tempProfile.contactNumber_2 : null,
+      phoneNumber: tempProfile.phoneNumber && tempProfile.phoneNumber.trim() !== '' ? tempProfile.phoneNumber : null, // Add phoneNumber field
       pEmail: tempProfile.email, // Use email as pEmail
-      identificationMark: tempProfile.identificationMark,
+      identificationMark: tempProfile.identificationMark && tempProfile.identificationMark.trim() !== '' ? tempProfile.identificationMark : null,
       bloodGroup: tempProfile.bloodGroup,
       gender: tempProfile.gender,
       fatherName: tempProfile.fatherName,
       fatherContact: tempProfile.fatherContact,
-      fatherOccupation: tempProfile.fatherOccupation,
+      fatherOccupation: tempProfile.fatherOccupation && tempProfile.fatherOccupation.trim() !== '' ? tempProfile.fatherOccupation : null,
       motherName: tempProfile.motherName,
       motherContact: tempProfile.motherContact,
-      motherOccupation: tempProfile.motherOccupation,
+      motherOccupation: tempProfile.motherOccupation && tempProfile.motherOccupation.trim() !== '' ? tempProfile.motherOccupation : null,
       subAddress: tempProfile.address, // Map address to subAddress
       city: tempProfile.city,
       state: tempProfile.state,
       pinCode: tempProfile.pinCode,
-      localGuardian: tempProfile.localGuardian,
-      localGuardianContact: tempProfile.localGuardianContact,
-      localGuardianAddress: tempProfile.localGuardianAddress,
+      localGuardian: tempProfile.localGuardian && tempProfile.localGuardian.trim() !== '' ? tempProfile.localGuardian : null,
+      localGuardianContact: tempProfile.localGuardianContact && tempProfile.localGuardianContact.trim() !== '' ? tempProfile.localGuardianContact : null,
+      localGuardianAddress: tempProfile.localGuardianAddress && tempProfile.localGuardianAddress.trim() !== '' ? tempProfile.localGuardianAddress : null,
       addharNumber: tempProfile.addharNumber,
       photoLink: tempProfile.photoLink,
       aadharCardDocument: tempProfile.aadharCardDocument // Transfer Aadhar Card document

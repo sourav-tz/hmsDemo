@@ -206,16 +206,28 @@ export default function StudentSidebar() {
 
 
 
-    return <>
-        <IconContext.Provider value={{ size: "20px" }} >
-            <div id="Sidebar" onMouseOver={() => (openMenu())} onMouseLeave={() => (closeMenu())} className={'hidden md:block ' + (styles.sidebarContainer) + ' ' + (state ? styles.active : styles.inActive)}>
-                <div className={styles.itemsContainer}>
-                    <div className={styles.userItem}>
-                        <div id="userIconSidebar" className={styles.userIcon}>
-                            {userData?.avatar != undefined ? <img className={styles.avatarImage} src={userData?.avatar} /> : <FaUserLarge size="1.5em" color="white" />}
-                        </div>
-                        <div className={state ? null : styles.hidden} style={{ marginLeft: '8px', marginTop: '0px' }}><p>{userData?.firstName !== undefined ? userData?.firstName + ' ' + userData?.lastName : 'Null'}<br /><span className={styles.userRole} style={{ fontSize: '12px' }}>{userData?.roleType !== undefined ? `Role: ${userData?.roleType}` : 'Role: Null'}</span></p></div>
-                    </div>
+    return<>
+    <IconContext.Provider value={{size:"20px"}} >
+        <div id="Sidebar" onMouseOver={()=>(openMenu())} onMouseLeave={()=>(closeMenu())} className={'hidden md:block ' + (styles.sidebarContainer)+' '+(state?styles.active:styles.inActive)}>
+           <div className={styles.itemsContainer}>
+            <div className={styles.userItem}>
+                <div id="userIconSidebar" className={styles.userIcon}>
+                {userData?.avatar!=undefined?<img className={styles.avatarImage} src={userData?.avatar} />:<FaUserLarge size="1.5em" color="white"/>}
+                </div>
+                {/* <div className={state?null:styles.hidden} style={{marginLeft:'8px',marginTop:'0px'}}><p>{userData?.firstName!==undefined?userData?.firstName+' '+userData?.lastName:' '}<br/><span className={styles.userRole} style={{fontSize:'12px'}}>{userData?.roleType!==undefined?`Role: ${userData?.roleType}`:'Role: Null'}</span></p></div> */}
+                <div
+                className={state ? null : styles.hidden}
+                style={{ marginLeft: '8px', marginTop: '0px' }}
+                >
+                <p>
+                    {userData?.firstName ? userData.firstName : ''} {userData?.lastName ?? ''}
+                    <br />
+                    <span className={styles.userRole} style={{ fontSize: '12px' }}>
+                    {userData?.roleType ? `Role: ${userData.roleType}` : 'Role: Null'}
+                    </span>
+                </p>
+                </div>
+            </div>
 
             {/* Main */}
             <div className={styles.listContainer}>

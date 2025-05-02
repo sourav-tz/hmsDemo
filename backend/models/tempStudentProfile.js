@@ -78,6 +78,7 @@ module.exports = (sequelize, dataTypes) => {
       },
       contactNumber_2: {
         type: dataTypes.STRING,
+        allowNull: true,
         validate: {
           is: {
             args: /^[6-9]\d{9}$/,
@@ -87,6 +88,7 @@ module.exports = (sequelize, dataTypes) => {
       },
       phoneNumber: {
         type: dataTypes.STRING,
+        allowNull: true,
         validate: {
           is: {
             args: /^[6-9]\d{9}$/,
@@ -96,6 +98,7 @@ module.exports = (sequelize, dataTypes) => {
       },
       identificationMark: {
         type: dataTypes.STRING,
+        allowNull: true,
         validate: {
           len: [0, 255],
         },
@@ -130,6 +133,7 @@ module.exports = (sequelize, dataTypes) => {
       },
       fatherOccupation: {
         type: dataTypes.STRING,
+        allowNull: true,
         validate: {
           len: [0, 100],
         },
@@ -152,6 +156,7 @@ module.exports = (sequelize, dataTypes) => {
       },
       motherOccupation: {
         type: dataTypes.STRING,
+        allowNull: true,
         validate: {
           len: [0, 100],
         },
@@ -186,12 +191,14 @@ module.exports = (sequelize, dataTypes) => {
       },
       localGuardian: {
         type: dataTypes.STRING,
+        allowNull: true,
         validate: {
           len: [0, 100],
         },
       },
       localGuardianContact: {
         type: dataTypes.STRING,
+        allowNull: true,
         validate: {
           is: {
             args: /^[6-9]\d{9}$/,
@@ -201,6 +208,7 @@ module.exports = (sequelize, dataTypes) => {
       },
       localGuardianAddress: {
         type: dataTypes.STRING,
+        allowNull: true,
         validate: {
           len: [0, 255],
         },
