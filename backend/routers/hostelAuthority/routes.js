@@ -25,7 +25,22 @@ const {getComplaintsAdmin,rejectComplaint,resoleComplaint}=require('../../contro
 const  updatePassword  = require('../../controllers/hostelAuthority/user/user.controller.js');
 const {addnotice,getNotices,deleteNotices} =require("../../controllers/hostelAuthority/notices/notices.js")
 const singleUpload =  require("../../middlewares/multer.js");
+const {addStudentToArchive,getStudentArchiveByRollNo,getAllStudentArchives} = require("../../controllers/hostelAuthority/studentModule/studentArchive.js")
+
+const {
+    getAllApplications,
+    getApplicationById,
+    approveApplication,
+    rejectApplication,
+    forwardApplication,
+    editApplication,
+    raiseBulkHostelChangeByAdmin
+} = require('../../controllers/hostelAuthority/application/applicationControllers.js');
+
+
 const getRoomTimeline = require('../../controllers/hostelAuthority/RoomModule/getRoomTimeline.js');
+const { studentTempAccCreate, getAllStudentTempAccounts } = require('../../controllers/hostelAuthority/studentModule/studentTempAccCreate.js');
+const { getPendingProfiles, getProfileByEmail, approveProfile, rejectProfile } = require('../../controllers/hostelAuthority/studentModule/studentVerifyProfile.js');
 
 var storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -63,8 +78,15 @@ router.post('/singleStudentUpload', auth,singleStudentUpload);
 router.patch('/updateSingleStudent', auth,updateSingleStudent);
 router.delete('/deleteStudent', auth,deleteStudent);
 
+//* Student Registration Routes
+router.post('/studentCreate', auth, studentTempAccCreate);
+router.get('/studentList', getAllStudentTempAccounts);
 
-
+//* Student Profile Verification Routes
+router.get('/pendingProfiles', auth, getPendingProfiles);
+router.get('/profile/:email', auth, getProfileByEmail);
+router.post('/approveProfile', auth, approveProfile);
+router.post('/rejectProfile', auth, rejectProfile);
 
 //Rooms Module routes
 
@@ -88,5 +110,24 @@ router.get('/getComplaints',auth,getComplaintsAdmin);
 // can include rejected by /getComplaints?rejcomp=true
 router.post('/rejectComplaint',auth,rejectComplaint);
 router.post('/resolveComplaint',auth,resoleComplaint);
+
+
+//application api
+
+router.get('/applications', auth, getAllApplications);
+router.get('/applications/:id', auth, getApplicationById);
+router.post('/applications/approve/:id', auth, approveApplication);
+router.post('/applications/reject/:id', auth, rejectApplication);
+router.post('/applications/forward/:id', auth, forwardApplication); 
+router.post('/applications/edit/:applicationId', auth, editApplication);
+router.post("/applications/bulk-hostel-change", auth, raiseBulkHostelChangeByAdmin);
+
+// studentArchive
+
+router.post('/student-archive', addStudentToArchive);
+router.get('/student-archive/:rollNo', getStudentArchiveByRollNo);
+// Route to get all archives
+router.get('/student-archive', getAllStudentArchives);
+
 
 module.exports = router;

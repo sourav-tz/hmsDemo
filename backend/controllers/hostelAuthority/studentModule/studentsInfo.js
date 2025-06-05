@@ -3,34 +3,47 @@ const {Op} = require('sequelize');
 
 exports.studentsInfo = async (req, res) => {
   try {
-    // console.log(req.body.hostelNo);
-    let page = parseInt(req.query.page);
-    const limit = parseInt(req.query.limit);
-    let totalpages = parseInt(req.query.total);
-    let currHostelOnly = req.query.currHostel == 'true';
+    // console.log("studentsInfo API called with query params:", req.query);
+    // console.log("Admin token info:", { email: req.body.tokenEmail, hostelNo: req.body.tokenHostelNo });
+    // console.log("checking the request body:", req.body);
+
+    const userRole = req.body.TokenRole; // e.g., 'Hostel-Authority' or 'SuperAdmin'
+
+    let page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    let totalpages = parseInt(req.query.total) || 0;
+    // let currHostelOnly = req.query.currHostel == 'true';
     // Define filters based on query parameters
-    
+
+    // console.log("REquest Query=", req.query);
     const filtersProfile = {};
     let myQuery = {};
-    // we are going to fetch only those students who are resident into that hostel
-    if(currHostelOnly)
-       myQuery.hostelNo = req.body.tokenHostelNo;
+ 
+    if (userRole === 'Hostel-Authority') {
+      // Admins can *only* see their hostel's students
+      myQuery.hostelNo = req.body.tokenHostelNo;
+    } else if (userRole === 'SuperAdmin') {
+      // Super admin can filter by hostel using query param
+      if (req.query.hostel) {
+        myQuery.hostelNo = parseInt(req.query.hostel); // Convert to number
+      }
+    }
 
     if (req.query.rollNo) {
-      
+
       myQuery.rollNo={ [Op.startsWith]: `${req.query.rollNo}` };
 
     }
     if (req.query.firstName) {
-      
+
       myQuery.firstName={ [Op.startsWith]: `${req.query.firstName}` };
     }
     if (req.query.lastName) {
-     
+
       myQuery.lastName={ [Op.startsWith]: `${req.query.lastName}` };
     }
     if (req.query.courseId) {
-      
+
       myQuery.courseId={ [Op.startsWith]: `${req.query.courseId}` };
     }
     if (req.query.year) {
@@ -41,24 +54,50 @@ exports.studentsInfo = async (req, res) => {
       filtersProfile.state = req.query.state;
     }
     if (totalpages == 0) {
-      totalpages = Math.ceil((await db.students.count({
+      const count = await db.students.count({
         where: myQuery,
         include: [
           {
             model: db.profiles,
             where: filtersProfile
+          },
+          {
+            model: db.courses
+          },
+          {
+            model: db.hostels
           }
         ]
-      })) / limit);
+      });
+
+      // console.log("Student count:", count);
+
+      totalpages = Math.ceil(count / limit);
+
       if (totalpages == 0) {
-        return res.json({ totalpages: 0, msg: "no pages to show" });
+        return res.status(200).json([
+          { previous: { page: 1, limit: limit, totalpages: 0 } },
+          { next: { page: 1, limit: limit, totalpages: 0 } }
+        ]);
       }
+
       if (page > totalpages || page < 1) {
-        return res.json({ msg: `page value out of range, total pages are ${totalpages}` });
+        page = 1; // Reset to first page if out of range
       }
     }
-    
+
     const startIndex = (page - 1) * limit;
+    console.log("Query parameters:", {
+      where: myQuery,
+      offset: startIndex,
+      limit: limit,
+      include: [
+        { model: db.profiles, where: filtersProfile },
+        { model: db.courses, attributes: ['courseName', 'department', 'specialization'] },
+        { model: db.hostels, attributes: ['hostelName', 'type'] }
+      ]
+    });
+
     // Fetch data from the student table based on filters
     const students = await db.students.findAll({
       where: myQuery,
@@ -68,13 +107,23 @@ exports.studentsInfo = async (req, res) => {
         {
           model: db.profiles,
           where: filtersProfile,
-
         },
-      
+        {
+          model: db.courses,
+          attributes: ['courseName', 'department', 'specialization']
+        },
+        {
+          model: db.hostels,
+          attributes: ['hostelName', 'type']
+        }
       ]
     });
+
+    // console.log("STUDENTS DATA_>",students)
+
+    // console.log(`Found ${students.length} students`);
     // Return the result
-    nextPage = page >= totalpages ? totalpages : page + 1
+    let nextPage = page >= totalpages ? totalpages : page + 1;
     students.unshift({
       next: {
         page: nextPage,
@@ -82,7 +131,7 @@ exports.studentsInfo = async (req, res) => {
         totalpages: totalpages
       }
     });
-    prevPage = page > 1 ? page - 1 : 1
+    let prevPage = page > 1 ? page - 1 : 1;
     students.unshift({
       previous: {
         page: prevPage,

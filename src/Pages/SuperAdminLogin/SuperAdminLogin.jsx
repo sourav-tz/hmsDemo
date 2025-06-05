@@ -173,7 +173,7 @@ export default function SuperAdminLogin() {
             <div className={styles.opacityCover}></div>
             <div
               onClick={() => {
-                Navigator('/')
+                Navigator('/role')
                 localStorage.removeItem('role')
               }}
               className={`cursor-pointer h-12 absolute top-8 left-4 px-4 py-2 

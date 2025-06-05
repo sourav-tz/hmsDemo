@@ -36,7 +36,7 @@ const GuestLanding = () => {
         
 
           <div className={styles.buttons} style={{ display: 'flex', justifyContent: 'space-between', width: '100%', backgroundColor:'#5757FF' }}>
-            <Link className={styles.button} to="/">
+            <Link className={styles.button} to="/role">
                 Home
             </Link>
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -69,6 +69,33 @@ const GuestLanding = () => {
            
           </div>
         </div>
+
+
+
+
+
+
+        {/* ------------------------------------ */}
+         {/* Buttons Section */}
+         <div className='w-full bg-[#e7e6e6]'>
+          <div className={styles.buttons}>
+            <h2 className='text-xl font-bold'> NEW</h2>
+              <Link className={styles.button} to="/guest/landing">
+                Register
+              </Link>
+
+           
+          </div>
+        </div>
+
+
+
+
+
+
+
+
+
         
 
         {/* Content Section */}

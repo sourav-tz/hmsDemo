@@ -38,7 +38,7 @@ const Dashboard = () => {
         console.log("User data missing.");
       }
 
-      console.log("STUDENT DATA_>", userData);
+      // console.log("STUDENT DATA_>", userData);
       if (userData.hostelNo) {
         const res = await axios({
           method: "get",

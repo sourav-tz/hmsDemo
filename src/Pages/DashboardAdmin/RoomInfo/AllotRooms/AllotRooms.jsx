@@ -164,14 +164,14 @@ const AllotRooms = ()=>{
                                 title:checkin,
                                 cardTitle:'Room Entry',
                                 cardSubtitle:`Rollno:${d.rollNo}`,
-                                cardDetailedText:`${d.student.firstName} ${d.student.lastName} Occupied this Room`
+                                cardDetailedText:`${d.student.firstName} ${d.student.lastName || ''} Occupied this Room`
                         }
                         )
                             makeMydata.unshift({
                                 title:checkout,
                                 cardTitle:'Room Leave',
                                 cardSubtitle:`Rollno:${d.rollNo}`,
-                                cardDetailedText:`${d.student.firstName} ${d.student.lastName} --  comment: ${d.comment}`
+                                cardDetailedText:`${d.student.firstName} ${d.student.lastName || ''} --  comment: ${d.comment}`
                             })
 
                         }else{
@@ -188,7 +188,7 @@ const AllotRooms = ()=>{
                                 title:checkin,
                                 cardTitle:'Room Entry',
                                 cardSubtitle:`Rollno:${d.rollNo}`,
-                                cardDetailedText:`${d.student.firstName} ${d.student.lastName} Occupied this Room`
+                                cardDetailedText:`${d.student.firstName} ${d.student.lastName || ''} Occupied this Room`
                         }
                         )
                     }
@@ -565,7 +565,7 @@ const handleStudentInfo =(rollNo)=>{
                             {roomData.roomsStudentMappings.map(d=><div className='flex gap-4'>
                                 <div className='bg-gray-500 w-[100px] h-[100px] rounded-full'></div>
                                 <div className='flex flex-col'>
-                                    <p><span className='font-bold'>Name: </span>{d.student.firstName} {d.student.lastName}</p>
+                                    <p><span className='font-bold'>Name: </span>{d.student.firstName} {d.student.lastName || ''}</p>
                                     <p><span className='font-bold'>Roll no: </span>{d.rollNo}</p>
                                     <p><span className='font-bold'>email: </span>{d.student.email}</p>
                                     <div className='flex gap-2'><Button onClick={()=>handleStudentInfo(d.rollNo)} text="View Details" />

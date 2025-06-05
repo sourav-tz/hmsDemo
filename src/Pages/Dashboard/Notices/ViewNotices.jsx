@@ -19,11 +19,13 @@ import {
 import { useSelector } from "react-redux";
 import axios from "axios";
 
+
 const ViewNotices = () => {
   const [notices, setNotices] = useState([]);
   const userData = useSelector((state) => state.userStorage.data);
 
   const getNotices = async () => {
+    
     try {
       if (userData?.hostelNo) {
         const res = await axios({
@@ -36,7 +38,10 @@ const ViewNotices = () => {
           (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
         );
         setNotices(sortedNotices);
+        console.log("resData =>", res.data.result);
       }
+      
+      console.log("userDara =>", userData);
     } catch (err) {
       console.error(err);
     }
@@ -62,7 +67,8 @@ const ViewNotices = () => {
                 <TableRow>
                   <TableHead className="text-left">Notice ID</TableHead>
                   <TableHead className="text-left">Title</TableHead>
-                  <TableHead className="text-left">Date</TableHead>
+                    <TableHead className="text-left">Date</TableHead>
+                    <TableHead className="text-left">Role</TableHead>
                   <TableHead className="text-center">Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -79,6 +85,7 @@ const ViewNotices = () => {
                           day: "numeric",
                         })}
                       </TableCell>
+                      <TableCell>{d.isGlobal ? "Super Admin" : "Admin"}</TableCell>
                       <TableCell className="text-center space-x-2">
                         <Dialog>
                           <DialogTrigger>
@@ -100,9 +107,7 @@ const ViewNotices = () => {
                             </a>
                           </DialogContent>
                         </Dialog>
-                        <Button className="bg-red-700 hover:bg-red-500 text-white">
-                          Delete
-                        </Button>
+                       
                       </TableCell>
                     </TableRow>
                   ))
