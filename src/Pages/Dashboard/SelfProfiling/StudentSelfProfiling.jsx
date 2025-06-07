@@ -22,6 +22,7 @@ import { useState, useEffect, useCallback, useRef } from "react"
 import axios from "axios"
 import { format } from "date-fns"
 import { toast, ToastContainer } from 'react-toastify'
+import { useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css'
 import FileUpload from "@/components/FileUpload/FileUpload"
 
@@ -69,6 +70,8 @@ export default function StudentSelfProfiling() {
   const [submitting, setSubmitting] = useState(false);
   const [date, setDate] = useState();
   const [rejectionReason, setRejectionReason] = useState('');
+  
+  const Navigator = useNavigate();
 
   // Track form completion progress
   const [formProgress, setFormProgress] = useState(0);
@@ -859,6 +862,12 @@ export default function StudentSelfProfiling() {
   useEffect(() => {
     // Fetch available courses and branches
     fetchAvailableCourses();
+
+    // restricts approved student to see the self profiling page
+    // (can be modified/removed in future)
+    if(userData?.roleType === 'Student' || localStorage.getItem('role') === 'Student'){
+      Navigator('/studentDashboard/main/home');
+    }
 
     // Check if user is a temporary student
     if (userData?.roleType === 'TempStudent' || localStorage.getItem('role') === 'TempStudent') {
