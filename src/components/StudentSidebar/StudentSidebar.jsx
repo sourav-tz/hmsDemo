@@ -31,13 +31,12 @@ export default function StudentSidebar() {
 
     // This effect runs when userData changes (e.g., after login or when Redux store updates)
     useEffect(() => {
-        // Enhanced debug logging
-        console.log("==================== SIDEBAR DEBUG ====================");
-        console.log("User data in sidebar:", userData);
-        console.log("localStorage role:", localStorage.getItem('role'));
-        console.log("localStorage email:", localStorage.getItem('email'));
-        console.log("localStorage tempStatus:", localStorage.getItem('tempStatus'));
-        console.log("======================================================");
+        // console.log("==================== SIDEBAR DEBUG ====================");
+        // console.log("User data in sidebar:", userData);
+        // console.log("localStorage role:", localStorage.getItem('role'));
+        // console.log("localStorage email:", localStorage.getItem('email'));
+        // console.log("localStorage tempStatus:", localStorage.getItem('tempStatus'));
+        // console.log("======================================================");
 
         // Determine if the user is a temporary student based on userData (from Redux)
         let tempStudentStatus = false;
@@ -247,10 +246,10 @@ export default function StudentSidebar() {
                                 className={styles.subOptions+' ' + (activeSubOption==='home'?styles.activeSubOption:null)}>
                                 Home
                             </li>
-                            <li onClick={()=>{Navigator('/studentDashboard/main/selfProfiling')}}
+                            {/* <li onClick={()=>{Navigator('/studentDashboard/main/selfProfiling')}}
                                 className={styles.subOptions+' ' + (activeSubOption==='selfProfiling'?styles.activeSubOption:null)}>
                                 Student Self Profiling
-                            </li>
+                            </li> */}
                         </>
                     )}
                 </ul>
@@ -348,10 +347,10 @@ export default function StudentSidebar() {
                                         className={`text-xl hover:scale-110 transition-all rounded-md px-2 py-[2px] ${activeSubOption==='home'?'bg-blue-900 font-normal':''}`}>
                                         Home
                                     </li>
-                                    <li onClick={()=>{Navigator('/studentDashboard/main/selfProfiling');handleHamBurger()}}
+                                    {/* <li onClick={()=>{Navigator('/studentDashboard/main/selfProfiling');handleHamBurger()}}
                                         className={`text-xl hover:scale-110 transition-all rounded-md px-2 py-[2px] ${activeSubOption==='selfProfiling'?'bg-blue-900 font-normal':''}`}>
                                         Self Profiling
-                                    </li>
+                                    </li> */}
                                 </>
                             )}
                         </ul>

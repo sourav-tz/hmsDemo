@@ -239,7 +239,7 @@ const handleStudentLogout = ()=>{
               if (isTempStudent) {
                 Navigator('/studentDashboard/main/selfProfiling');
               } else {
-                Navigator('/studentDashboard/settings/profile');
+                Navigator('/studentDashboard/main/home');
               }
             }
           }}
