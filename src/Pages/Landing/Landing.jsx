@@ -61,9 +61,6 @@ const HostelDetails = ({ hostel, onClose }) => {
           className="absolute top-3 right-3 bg-white/20 hover:bg-white/30 rounded-full p-1 transition-colors duration-200"
           onClick={handleClose}
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 sm:h-6 sm:w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
         </button>
 
         <div className="p-4 sm:p-6">
@@ -104,9 +101,7 @@ const HostelDetails = ({ hostel, onClose }) => {
                 <div className="bg-yellow-50 border-l-4 border-yellow-400 p-3 sm:p-4 rounded">
                   <div className="flex">
                     <div className="flex-shrink-0">
-                      <svg className="h-4 w-4 sm:h-5 sm:w-5 text-yellow-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                      </svg>
+                      
                     </div>
                     <div className="ml-3">
                       <p className="text-xs sm:text-sm text-yellow-700">
@@ -343,9 +338,7 @@ const Landing = () => {
                     {faq.question}
                   </span>
                   <span className={`transform transition-transform duration-300 ${activeAccordion === index ? 'rotate-180' : ''}`}>
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd"></path>
-                    </svg>
+                   
                   </span>
                 </button>
                 <div
@@ -374,13 +367,9 @@ return (
       <div className="bg-gradient-to-r from-yellow-200 to-yellow-300 py-2 px-4 text-center overflow-hidden">
         <div className="inline-block whitespace-nowrap animate-marquee">
           <h3 className="text-base sm:text-lg font-semibold text-red-600 inline-flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
+            
             Disclaimer: This is for testing purposes only.
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
+            
           </h3>
         </div>
       </div>
@@ -438,9 +427,7 @@ return (
               <div className="p-4 hover:bg-gray-50 transition-colors duration-200">
                 <div className="flex items-start">
                   <div className="bg-blue-100 text-blue-800 rounded-full p-2 mr-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
+
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-gray-800">April 17, 2025</p>
@@ -454,9 +441,7 @@ return (
               <div className="p-4 hover:bg-gray-50 transition-colors duration-200">
                 <div className="flex items-start">
                   <div className="bg-blue-100 text-blue-800 rounded-full p-2 mr-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
+                    
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-gray-800">April 4, 2025</p>
@@ -471,9 +456,7 @@ return (
               <div className="p-4 hover:bg-gray-50 transition-colors duration-200">
                 <div className="flex items-start">
                   <div className="bg-blue-100 text-blue-800 rounded-full p-2 mr-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
+                    
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-gray-800">March 5, 2025</p>
@@ -487,9 +470,7 @@ return (
               <div className="p-4 hover:bg-gray-50 transition-colors duration-200">
                 <div className="flex items-start">
                   <div className="bg-blue-100 text-blue-800 rounded-full p-2 mr-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
+                    
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-gray-800">January 6, 2025</p>
@@ -505,9 +486,7 @@ return (
             <div className="bg-gray-50 py-3 px-6 text-right border-t border-gray-100">
               <Link to="/" className="text-blue-600 hover:text-blue-800 font-medium text-sm inline-flex items-center transition-colors duration-200">
                 View all notifications
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
+               
               </Link>
             </div>
           </div>
@@ -613,9 +592,7 @@ return (
                   <div className="flex justify-end mt-auto pt-2">
                     <button className="bg-blue-50 hover:bg-blue-100 text-blue-600 hover:text-blue-800 text-xs sm:text-sm font-medium flex items-center py-1.5 px-3 rounded-md group-hover:shadow-md transition-all duration-300 border border-blue-100">
                       View Details
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 sm:h-4 sm:w-4 ml-1 group-hover:translate-x-1 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
+                      
                     </button>
                   </div>
                 </div>
@@ -656,9 +633,7 @@ return (
                   <div className="flex justify-end mt-auto pt-2">
                     <button className="bg-pink-50 hover:bg-pink-100 text-pink-500 hover:text-pink-700 text-xs sm:text-sm font-medium flex items-center py-1.5 px-3 rounded-md group-hover:shadow-md transition-all duration-300 border border-pink-100">
                       View Details
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 sm:h-4 sm:w-4 ml-1 group-hover:translate-x-1 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
+                      
                     </button>
                   </div>
                 </div>
