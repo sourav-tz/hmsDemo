@@ -17,6 +17,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import backgroundImage from '../../../../Assets/hostel11.jpg';
 
 
 import { ToastContainer,toast } from 'react-toastify';
@@ -70,7 +71,7 @@ const ManageHostels = () => {
         withCredentials:true
       }) 
       setRowData(res.data);
-      console.log(res);
+      // console.log(res);
     
     } catch(error) {
       console.log(error);
@@ -171,16 +172,16 @@ const ManageHostels = () => {
       const handleEditClick = (e) => {
         setEditMode(true);
         setHostelValues(e);
-        console.log(e);
+        // console.log(e);
       };
     
       const handleCellValueChanged = (event) => {
-        console.log("Cell value changed: ", event.data);
+        // console.log("Cell value changed: ", event.data);
       };
 
 
       const getAdminsAgainstHostel = async (e) => {
-        console.log(e.hostelNo);
+        // console.log(e.hostelNo);
         setShowAdmins(true);
         try{
           const res = await axios({
@@ -192,7 +193,7 @@ const ManageHostels = () => {
             },
             withCredentials:true
           })
-          console.log(res);
+          // console.log(res);
           setAdminsData(res.data);
 
         }catch(error){
@@ -220,13 +221,6 @@ const ManageHostels = () => {
         editable: editMode, 
         cellStyle: {textAlign: 'center'}
       },
-      {
-        field: "Edit",
-        headerClass: "font-bold border p-2 font-bold text-md",
-        cellRenderer:({data})=> <Button className='p-3 h-[40px] bg-blue-700 hover:bg-blue-500' onClick={()=>handleEditClick(data)}><FaRegEdit size={10}/></Button>,
-        cellStyle: {textAlign: 'center'}
-      },
-        
 
         // {field: "Edit", headerClass:"font-bold border p-2 font-bold text-md", cellRenderer:()=> <Button className='p-3' onClick={()=> handleHostelEdit}><FaRegEdit /></Button>},
 
@@ -242,14 +236,7 @@ const ManageHostels = () => {
         headerClass:"font-bold border p-2 font-bold text-md", 
         cellRenderer:({data})=> <Button onClick={()=>getAdminsAgainstHostel(data)} className='p-3 h-[40px] bg-orange-700 hover:bg-orange-500'><MdAccountCircle size={10}/></Button>, 
         cellStyle: {textAlign: 'center'}
-      },
-      {
-        field: "Delete", 
-        headerClass:"font-bold border p-2 font-bold text-md", 
-        cellRenderer:({ data }) => <Button className='p-3 h-[40px] bg-red-700 hover:bg-red-500' onClick={() => handleDeleteRow(data.hostelNo)}><ImBin size={10}/></Button>, 
-        cellStyle: {textAlign: 'center'}
-      },
-
+      }
     
    ])
 
@@ -296,8 +283,8 @@ const setEditHostelNo=(e)=>{
 
 const onSubmitEdit =async (data) => {
   setValue("type",hostelValues.type);
-  console.log(data);
-  console.log('clicked')
+  // console.log(data);
+  // console.log('clicked')
   setErrorMessage('');
 
   try{
@@ -310,7 +297,7 @@ const onSubmitEdit =async (data) => {
       },
       withCredentials:true
     })
-    console.log(res);
+    // console.log(res);
     toast.success("Hostel Updated Successfully",{
       position:'top-right'
     })
@@ -320,7 +307,7 @@ const onSubmitEdit =async (data) => {
     
       return prevData.map(row => {
         if (row.hostelNo == data.bodyHostelNo) {
-          console.log(row.hostelNo)
+          // console.log(row.hostelNo)
           
           return { ...row, ...data }; // Update the row with new data
         } else {
@@ -341,16 +328,21 @@ const onSubmitEdit =async (data) => {
 
 
   return (
-  <>
-    <div className='mt-20 p-4 md:mt-0 flex flex-col justify-center items-center'>
-      <div className= 'm-6 p-5 w-full md:min-w-[300px] md:max-w-[600px] rounded-[30px] shadow-[0_3px_10px_rgb(0,0,0,0.2)]'>
+  <div className="relative min-h-screen w-full flex flex-col justify-start py-10 items-center">
+        {/* Background Image Layer */}
+        <div
+          className="absolute top-0 left-0 w-full h-full bg-center bg-cover bg-no-repeat bg-fixed blur-sm opacity-50 z-[-1]"
+          style={{ backgroundImage: `url(${backgroundImage})` }}
+        />
+    <div className='mt-20 p-4 md:mt-0 flex flex-col justify-center items-center w-[60%]'>
+      <div className= 'm-6 p-5 md:min-w-[300px] md:max-w-[600px] rounded-[30px] shadow-[0_3px_10px_rgb(0,0,0,0.2)] bg-white/30'>
         <form>
           <div>
             <h1 className='text-2xl m-2 font-bold'>Add Hostel</h1>
           </div> 
           <div className='flex gap-2'>
             <div className='flex-col'>
-              <Input name="HostelName" className='m-2 text-md p-3 placeholder:text-black bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)]' type="text" onChange={setName} placeholder='Hostel name' />
+              <Input name="HostelName" className='m-2 text-md p-3 placeholder:text-black bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)] w-40' type="text" onChange={setName} placeholder='Hostel name' />
               {/* {FormErrors.HostelName && <div className='px-4 text-red-600'>{FormErrors.HostelName}</div>} */}
             </div>
             <Select name="HostelType" onValueChange={handleSelectChange}>
@@ -365,31 +357,29 @@ const onSubmitEdit =async (data) => {
                     Boys
                 </SelectItem>
                 <SelectItem value="Co-Head">
-                    Co-head
+                    Co-ed
                 </SelectItem>
               </SelectContent>
 
             </Select>
           </div>
 
-          <div className='flex'>
+          <div className='flex gap-2'>
             <div className='flex-col'>
-              <Input name="HostelNo" onChange={setHostelNumber} className='w-40 m-2  text-md p-3 placeholder:text-black bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)]' type="number"  placeholder='Hostel No.'/>
+                <Input name="HostelNo" onChange={setHostelNumber} className='w-40 m-2  text-md p-3 placeholder:text-black bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)]' type="number" placeholder='Hostel No.' min="0" />
               {/* {FormErrors.HostelNo && <div className='px-4 text-red-600'>{FormErrors.HostelNo}</div>} */}
             </div>
-          </div>
-
-          <div className='flex'>
-          <Button onClick={handleHostel} className='flex-1  m-2 px-10 bg-[#5F57FF] text-white rounded-lg  text-md shadow-[0_3px_10px_rgb(0,0,0,0.2)]' >ADD</Button>
+          <Button onClick={handleHostel} className='m-2 px-10 bg-[#5F57FF] text-white rounded-lg w-40  text-md shadow-[0_3px_10px_rgb(0,0,0,0.2)]' >ADD</Button>
           </div>
         </form>
 
       </div>
 
-      <div className='mt-4 mb-2 p-1 w-5/6 h-[380px] rounded-xl shadow-[0_3px_10px_rgb(0,0,0,0.2)] '>
+      <div className='mt-4 mb-2 p-1 w-full h-[380px] rounded-xl shadow-[0_3px_10px_rgb(0,0,0,0.2)] '>
 
-        <div className="ag-theme-quartz" style={{ height: '100%' , width: '100%'}}>
-            <AgGridReact 
+        <div className="ag-theme-quartz " style={{ height: '100%' , width: '100%'}}>
+            <AgGridReact
+              
               rowData={rowData} 
               columnDefs={colDefs}  
               defaultColDef={{ resizable: true }}
@@ -497,7 +487,7 @@ const onSubmitEdit =async (data) => {
 
         </div>  
       </div>
-  </>
+  </div>
 
   )
 };

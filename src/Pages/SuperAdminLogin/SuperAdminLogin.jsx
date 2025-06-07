@@ -73,14 +73,12 @@ export default function SuperAdminLogin() {
     setData((prev) => {
       return { ...prev, email: e.target.value }
     })
-    console.log(data)
   }
 
   const handlePassword = (e) => {
     setData((prev) => {
       return { ...prev, password: e.target.value }
     })
-    console.log(data)
   }
 
   const takeOTP = (e) => {
@@ -102,7 +100,6 @@ export default function SuperAdminLogin() {
         },
         withCredentials: true,
       })
-      console.log(res)
       if (res.data.userData.role !== 'SuperAdmin') {
         toast.error('Invalid Credentials')
         setLoading(false)
@@ -131,10 +128,7 @@ export default function SuperAdminLogin() {
         },
         withCredentials: true,
       })
-      console.log(res)
       if (res.data.message === 'OTP verified Successfully') {
-        console.log("added user data to redux");
-        console.log(res.data);
         Dispatcher(setUserData(res.data));
         Navigator('/superAdminDashboard/main/home');
       }
@@ -154,7 +148,6 @@ export default function SuperAdminLogin() {
         },
         withCredentials: true,
       })
-      console.log(res)
       if (res.data.message === 'Otp sent successfully') {
         
         Dispatcher(setUserData(res.data));
@@ -180,7 +173,7 @@ export default function SuperAdminLogin() {
             <div className={styles.opacityCover}></div>
             <div
               onClick={() => {
-                Navigator('/')
+                Navigator('/role')
                 localStorage.removeItem('role')
               }}
               className={`cursor-pointer h-12 absolute top-8 left-4 px-4 py-2 

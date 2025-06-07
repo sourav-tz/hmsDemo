@@ -38,7 +38,7 @@ const Dashboard = () => {
         console.log("User data missing.");
       }
 
-      console.log("STUDENT DATA_>", userData);
+      // console.log("STUDENT DATA_>", userData);
       if (userData.hostelNo) {
         const res = await axios({
           method: "get",
@@ -67,10 +67,10 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <div className="flex">
-      <div className="flex flex-wrap min-h-screen w-full justify-center items-start gap-6 bg-gray-100 p-6  md:grid-cols-2 md:gap-8 lg:p-8">
-        <div className="rounded-lg w-[600px] bg-white p-6 shadow-sm dark:bg-gray-950">
-          <div className="flex items-center justify-between">
+    <div className="flex ">
+      <div className="flex flex-wrap min-h-screen w-full  justify-center items-start  bg-gray-100 [@media(min-width:100px)]:pt-24 [@media(min-width:100px)]:p-8  sm:gap-1    md:grid-cols-2   lg:pr-14 lg:p-24   xl:pl-6  xl:p-20 ">
+        <div className="rounded-lg w-[600px] bg-white p-6 shadow-sm dark:bg-gray-950 ">
+          <div className="flex items-center justify-between ">
             <h2 className="text-xl font-semibold">Notices</h2>
             <Link
               className="text-sm font-medium text-blue-500 hover:underline"

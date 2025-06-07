@@ -11,9 +11,14 @@ module.exports = (sequelize, dataTypes) => {
         url: {
             type: dataTypes.STRING,
         },
+        isGlobal: {
+            type: dataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: false
+        }
     },{
         updatedAt: 'last_updated_at',
-    })
+    });
     notices.associate = (models) => {
         notices.belongsTo(models.hostels, {
             foreignKey: {

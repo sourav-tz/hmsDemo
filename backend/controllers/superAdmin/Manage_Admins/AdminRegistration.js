@@ -2,7 +2,7 @@ const db = require('../../../models/index')
 const bcrypt = require('bcrypt')
 const nodeMailer = require('nodemailer')
 const mailSender = require('../../../utils/mailSender')
-
+const AdminRegistrationEmail = require("../../../MailTemplates/AdminRegistrationEmail")
 const AdminRegistration = async (req, res) => {
 
     try {
@@ -33,10 +33,7 @@ const AdminRegistration = async (req, res) => {
             let title = 'Hostel Authority Registration || NIT KURUKSHETRA'
 
            
-
-            let body = `Dear ${name},\n\nYour password is: ${password} \n\nYou Have been registered as Hostel-Authority of Hostel No:
-             ${hostelNo}.\nPlease change your password after login.
-            \nThank you for registering with us.\n\nRegards,\nNIT Hostel Management System`
+            await mailSender(email,title,AdminRegistrationEmail(name,password,hostelNo));
 
             await mailSender(email,title,body)
 

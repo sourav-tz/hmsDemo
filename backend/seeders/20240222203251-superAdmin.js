@@ -45,7 +45,7 @@ module.exports = {
       },
       {
         email:"523110035@nitkkr.ac.in",
-        // password:"asdfghjkl",
+        // password:"mohit@1114",
         password:"$2a$10$9JulqYDSuPv8qzb8mAEB6eBLYRjKzX/3uA4zzTi/Pzw8v0S69eJ96",
         role:"SuperAdmin",
         createdAt: new Date(),

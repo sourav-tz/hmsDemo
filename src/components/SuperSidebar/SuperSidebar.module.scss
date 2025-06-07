@@ -18,9 +18,7 @@ ul{
     left:0;
     height: 100vh;
     background-color: $primary;
-
     color: white;
-
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -29,14 +27,13 @@ ul{
 
 .inActive{
    width: 6%;
-//    max-width: 75px;
    transition: 0.52s;
 
 }
 
 .active{
     min-width: 220px;
-    transition: 0.2s;
+    transition: 0.52s;
 }
 
 .hidden{
@@ -82,29 +79,26 @@ ul{
 
 
 
-.item{
+.item {
     display: flex;
     flex-direction: column;
     padding: 0.3rem;
-    border-radius: 0px;
+    border-radius: 10px;
     margin: 20px 0px;
     cursor: pointer;
-    // li{
-    //     padding:10px 5px;
-    //     margin-left: 25px;
-    // }   
-
-}
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease; // ✨ added
+  }
+  
 
 .item:hover{
-    background-color: $nav-active;
-    border-radius: 5px;
-    color:$medium-grey;
-
+    // background-color: $nav-active;
+    border-radius: 10px;
+    color:$tertiary-active;
+    transform: scale(1.03); 
 }
 .activeItem{
     padding: 5px;
-    border-radius: 5px;
+    border-radius: 10px;
     color:$medium-grey;
     background-color: $nav-active;
 }
@@ -117,15 +111,14 @@ ul{
 
 .ItemOpenMenu{
     justify-content: flex-start;
+    p{
+        transition: transform 300ms ease-in-out;
+    }
+    p:hover{
+        transform: scale(1.02);
+        border-radius: 10px;
+    }
 }
-
-// .subOptions{
-//     margin-top: 5px;
-//     &:hover{
-//         background-color: $secondary;
-//         border-radius: 5px;
-//     }
-// }
 
 .activeSubOption{
     background-color: $secondary;
@@ -136,3 +129,15 @@ ul{
     margin-bottom: 50px;
     padding: 5px;
 }
+
+@keyframes slideInLeft {
+    0% {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  

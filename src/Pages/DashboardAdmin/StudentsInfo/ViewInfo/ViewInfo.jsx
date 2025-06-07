@@ -11,6 +11,7 @@ import ReactPaginate from 'react-paginate';
 import { setSearchQuery } from '../../../../Store/Reducers/viewInfoSlice';
 import { useNavigate } from 'react-router-dom';
 import './Pagination.css';
+import backgroundImage from '../../../../Assets/hostel11.jpg';
 
 import {
   Select,
@@ -19,10 +20,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-
-
-
-
 
 const ViewInfo = ()=>{
     const [data,setData] = useState([]);
@@ -33,14 +30,29 @@ const ViewInfo = ()=>{
     const [mycourses,setMyCourses] = useState([]);
     const [noOfYears,setNoOfYears] = useState(8);
     const [years,setMyYears] = useState([1,2,3,4]);
-    const [currHostelOnly, setCurrHostelOnly] = useState(false);
+    // const [currHostelOnly, setCurrHostelOnly] = useState(false);
     const Navigator = useNavigate();
-
+    const [selectedState, setSelectedState] = useState('');
+    const [selectedCourse, setSelectedCourse] = useState('');
+    const [selectedYear, setSelectedYear] = useState('');
+    // const [selectedHostel, setSelectedHostel] = useState('');
 
     useEffect(()=>{
         axios.get(import.meta.env.VITE_BASE_URL + '/HA/studentsInfo?page=1&limit=10&total=0',config)
-        .then(res=>{setTotalPages(res.data[0].previous.totalpages);  res.data.length>2?setData(res.data.slice(2)):setData([]);setTableLoading(false)})
-        .catch(err=>{console.log(err);setTableLoading(false)});
+        .then(res=>{
+          console.log("API Response:", res.data);
+          if (res.data && Array.isArray(res.data) && res.data.length > 0 && res.data[0].previous) {
+            setTotalPages(res.data[0].previous.totalpages);
+            const studentData = res.data.length > 2 ? res.data.slice(2) : [];
+            console.log("Student data:", studentData);
+            setData(studentData);
+          } else {
+            console.log("No student data found or invalid response format");
+            setData([]);
+          }
+          setTableLoading(false);
+        })
+        .catch(err=>{console.log("API Error:", err);setTableLoading(false)});
 
         ;(async ()=>{
 
@@ -118,7 +130,7 @@ const ViewInfo = ()=>{
         'Puducherry',
         'None'
       ];
-      
+
       const repeatedArray = Array(6).fill().map((_, index) => index + 1);
       repeatedArray.push('None')
 
@@ -138,29 +150,35 @@ const ViewInfo = ()=>{
           page:1,
           limit:10,
           total:0,
-          currHostel:currHostelOnly,
-          ...((searchQuery.firstName !== '') && { firstName: searchQuery.firstName }),
-          ...((searchQuery.lastName !== '') && { lastName: searchQuery.lastName}),
-          ...((searchQuery.rollNo !== '') && { rollNo: searchQuery.rollNo}),
-          ...((searchQuery.state !== '') && { state: searchQuery.state}),
-          ...((searchQuery.cousreId !== '') && { courseId: searchQuery.courseId}),
-          ...((searchQuery.year !== '') && { year: searchQuery.year}),
+          // currHostel:currHostelOnly,
+          ...((searchQuery.firstName !== '' && searchQuery.firstName !== null) && { firstName: searchQuery.firstName }),
+          ...((searchQuery.lastName !== '' && searchQuery.lastName !== null) && { lastName: searchQuery.lastName}),
+          ...((searchQuery.rollNo !== '' && searchQuery.rollNo !== null) && { rollNo: searchQuery.rollNo}),
+          ...((searchQuery.state !== '' && searchQuery.state !== null) && { state: searchQuery.state}),
+          ...((searchQuery.courseId !== '' && searchQuery.courseId !== null) && { courseId: searchQuery.courseId}),
+          ...((searchQuery.year !== '' && searchQuery.year !== null) && { year: searchQuery.year}),
         },
       })
       .then((res) => {
-        const newData = res.data.length > 2 ? res.data.slice(2) : [];
-        setData(newData);
-        setTotalPages(res.data[0].previous.totalpages);
-        console.log(res.data);
+        console.log("Search API Response:", res.data);
+        if (res.data && Array.isArray(res.data) && res.data.length > 0 && res.data[0].previous) {
+          setTotalPages(res.data[0].previous.totalpages);
+          const studentData = res.data.length > 2 ? res.data.slice(2) : [];
+          console.log("Search Student data:", studentData);
+          setData(studentData);
+        } else {
+          console.log("No student data found or invalid response format on search");
+          setData([]);
+          setTotalPages(0);
+        }
         setTableLoading(false);
       })
       .catch((err) => {
-        console.log(err);
+        console.log("Search API Error:", err);
         setTableLoading(false);
-        if(err.response.status===401){
+        if(err.response && err.response.status===401){
           Navigator('/adminLogin');
         }
-        
       });
 
       setTimeout(() => {
@@ -168,7 +186,7 @@ const ViewInfo = ()=>{
     }, 100)
 
       };
-      
+
 
 const handleCourse = (e)=>{
 
@@ -195,19 +213,45 @@ const handleCourse = (e)=>{
 
 }
 
-  const handleReset = ()=>{
-    axios.get(import.meta.env.VITE_BASE_URL + '/HA/studentsInfo?page=1&limit=10&total=0',config)
-    .then(res=>{setTotalPages(res.data[0].previous.totalpages);  res.data.length>2?setData(res.data.slice(2)):setData([]);setTableLoading(false)})
-    .catch(err=>{
-      console.log(err);
-      setTableLoading(false)
-      if(err.response.status===401){
-        Navigator('/adminLogin');
-      }
-    });
-    Dispatcher(setSearchQuery({firstName:null,lastName:null,rollNo:null,year:null,courseId:null,department:null,state:null}));
+  
+const handleReset = ()=>{
+  setTableLoading(true);
+  axios.get(import.meta.env.VITE_BASE_URL + '/HA/studentsInfo?page=1&limit=10&total=0',config)
+  .then(res=>{
+    console.log("Reset API Response:", res.data);
+    if (res.data && Array.isArray(res.data) && res.data.length > 0 && res.data[0].previous) {
+      setTotalPages(res.data[0].previous.totalpages);
+      const studentData = res.data.length > 2 ? res.data.slice(2) : [];
+      console.log("Reset Student data:", studentData);
+      setData(studentData);
+    } else {
+      console.log("No student data found or invalid response format on reset");
+      setData([]);
+    }
+    setTableLoading(false);
+  })
+  .catch(err=>{
+    console.log("Reset API Error:", err);
+    setTableLoading(false)
+    if(err.response && err.response.status===401){
+      Navigator('/adminLogin');
+    }
+  });
+  Dispatcher(setSearchQuery({
+    firstName:'',
+    lastName:'',
+    rollNo:'',
+    year:'',
+    courseId:'',
+    department:'',
+    state:''}));
 
-  }
+    // Reset local state for dropdowns
+  // setSelectedHostel('');
+  setSelectedCourse('');
+  setSelectedYear('');
+  setSelectedState('');
+}
 
 
   const handlePageClick = (e)=>{
@@ -222,12 +266,12 @@ const handleCourse = (e)=>{
         limit:10,
         currHostel:currHostelOnly,
         total:0,
-          ...((searchQuery.firstName !== '') && { firstName: searchQuery.firstName }),
-          ...((searchQuery.lastName !== '') && { lastName: searchQuery.lastName}),
-          ...((searchQuery.rollNo !== '') && { rollNo: searchQuery.rollNo}),
-          ...((searchQuery.state !== '') && { state: searchQuery.state}),
-          ...((searchQuery.courseId !== '') && { courseId: searchQuery.courseId}),
-          ...((searchQuery.year !== '') && { year: searchQuery.year}),
+          ...((searchQuery.firstName !== '' && searchQuery.firstName !== null) && { firstName: searchQuery.firstName }),
+          ...((searchQuery.lastName !== '' && searchQuery.lastName !== null) && { lastName: searchQuery.lastName}),
+          ...((searchQuery.rollNo !== '' && searchQuery.rollNo !== null) && { rollNo: searchQuery.rollNo}),
+          ...((searchQuery.state !== '' && searchQuery.state !== null) && { state: searchQuery.state}),
+          ...((searchQuery.courseId !== '' && searchQuery.courseId !== null) && { courseId: searchQuery.courseId}),
+          ...((searchQuery.year !== '' && searchQuery.year !== null) && { year: searchQuery.year}),
       },
       headers: {
         "Content-Type": "application/json"
@@ -235,15 +279,23 @@ const handleCourse = (e)=>{
         withCredentials: true
     })
       .then((res) => {
-        const newData = res.data.length > 2 ? res.data.slice(2) : [];
-        setData(newData);
-        setTotalPages(res.data[0].previous.totalpages);
+        console.log("Pagination API Response:", res.data);
+        if (res.data && Array.isArray(res.data) && res.data.length > 0 && res.data[0].previous) {
+          setTotalPages(res.data[0].previous.totalpages);
+          const studentData = res.data.length > 2 ? res.data.slice(2) : [];
+          console.log("Pagination Student data:", studentData);
+          setData(studentData);
+        } else {
+          console.log("No student data found or invalid response format on pagination");
+          setData([]);
+          setTotalPages(0);
+        }
         setTableLoading(false);
       })
       .catch((err) => {
-        console.log(err);
+        console.log("Pagination API Error:", err);
         setTableLoading(false);
-        if(err.response.status===401){
+        if(err.response && err.response.status===401){
           Navigator('/adminLogin');
         }
       }); // Return the newLink to update the state
@@ -251,90 +303,108 @@ const handleCourse = (e)=>{
 
       }
   // Function to handle checkbox change
-  const handleCheckboxChange = (event) => {
-    setCurrHostelOnly(event.target.checked);  // Update state with checkbox value
-  };
+  // const handleCheckboxChange = (event) => {
+  //   setCurrHostelOnly(event.target.checked);  // Update state with checkbox value
+  // };
 
     return <>
-        <div className="w-full flex flex-col items-center justify-center mt-16 md:mt-0 p-4">
-        <h1 className='text-3xl p-4 mb-4 text-blue-600'>Search Students Records</h1>
-        <div className="w-full md:w-[700px] rounded-md p-12 flex gap-2 flex-1 flex-wrap border-[1px] border-gray-200 shadow-sm">
-            <ComplexSearch />
-            <div>
-            <p>State:</p>
-            {/* <MultiSelect FOR="state" list={indianStates} onClick={handleMutivalueClick}/> */}
-            <Select>
-  <SelectTrigger className="w-[180px]">
-    <SelectValue placeholder="Select" />
-  </SelectTrigger>
-  <SelectContent>
-    {indianStates.map(d=><SelectItem value={d}>{d}</SelectItem>)}
-  </SelectContent>
-</Select>
-            </div>
-            <div>
-            <p>Course:</p>
-            {/* <MultiSelect FOR="course" list={academicQualifications} onClick={handleMutivalueClick}/> */}
-            <Select onValueChange={handleCourse}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Select" />
-            </SelectTrigger>
-            <SelectContent>
-              {mycourses.map((d,id)=><SelectItem value={id+1}>{d}</SelectItem>)}
-            </SelectContent>
-          </Select>
-            </div>
-            <div>
-            <p>Year:</p>
-            {/* <MultiSelect FOR="year" list={repeatedArray} onClick={handleMutivalueClick}/> */}
-            <Select>
-  
-  <SelectTrigger className="w-[180px]">
-    <SelectValue placeholder="Select" />
-  </SelectTrigger>
-  <SelectContent>
-    {years.map(d=><SelectItem value={d}>{d}</SelectItem>)}
-  </SelectContent>
-</Select>
-            </div>
-<div> <label>
-        <input
-          type="checkbox"
-          checked={currHostelOnly}          // Bind the checked state to checkbox
-          onChange={handleCheckboxChange} // Handle changes on checkbox
-          className='mr-2'
-        />
-        Current Hostel Only
-      </label></div>
-            <div className={styles.buttonArea+' mt-4'}>
-                <div>
-                    <Button onClick={handleReset} text="Reset" style={{marginRight:'15px'}}/>
-                    <Button onClick={handleSearch} variant="contained" text="Search" />
-                </div>
-            </div>
-        </div>
-        </div>
-        <div className={' w-full flex justify-center items-center flex-col md:p-4 '}>
-        {tableLoading?<TableLoader />:null}
-        {tableLoading===false?<div className='w-[80%] '><ViewInfoTable data={data} /></div>:null}
-        <ReactPaginate
-        breakLabel="..."
-        nextLabel="next >"
-        onPageChange={handlePageClick}
-        pageRangeDisplayed={3}
-        pageCount={totalPages}
-        previousLabel="< previous"
-        renderOnZeroPageCount={null}
-        containerClassName="pagination justify-content-center"
-            pageClassName="page-item"
-            pageLinkClassName="page-link"
-            previousClassName="page-item"
-            previousLinkClassName="page-link"
-            nextClassName="page-item"
-            nextLinkClassName="page-link"
-            activeLinkClassName="active-page"
+    <div className="relative min-h-screen w-full flex flex-col justify-start py-10 items-center">
+      {/* Background Image Layer */}
+      <div
+        className="absolute top-0 left-0 w-full h-full bg-center bg-cover bg-no-repeat bg-fixed blur-sm opacity-50 z-[-1]"
+        style={{ backgroundImage: `url(${backgroundImage})` }}
       />
-        </div>
+      <div className="w-800px flex flex-col items-center justify-center mt-16 md:mt-0 rounded-[30px] shadow-[0_3px_10px_rgb(0,0,0,0.2)] bg-white/30">
+      <h1 className='text-3xl p-4 mb-4 text-[#5F57FF]'>Search Students Records</h1>
+      <div className="w-full md:w-[700px] rounded-md p-12 flex gap-2 flex-1 flex-wrap border-gray-200 shadow-sm justify-center">
+            <ComplexSearch />
+            <div className="grid grid-cols-2 grid-rows-2 gap-4">
+                <div>
+                  <p>State:</p>
+                  {/* <MultiSelect FOR="state" list={indianStates} onClick={handleMutivalueClick}/> */}
+                  <Select
+                    value={selectedState}
+                    onValueChange={(value) => {
+                      setSelectedState(value);
+                      Dispatcher(setSearchQuery({ ...searchQuery, state: value }));
+                    }}
+>
+                    <SelectTrigger className="w-[250px]">
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {indianStates.map(d=><SelectItem value={d}>{d}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <p>Course:</p>
+                  {/* <MultiSelect FOR="course" list={academicQualifications} onClick={handleMutivalueClick}/> */}
+                  <Select value={selectedCourse} onValueChange={handleCourse}>
+                    <SelectTrigger className="w-[250px]">
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {mycourses.map((d,id)=><SelectItem value={id+1}>{d}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <p>Year:</p>
+                  {/* <MultiSelect FOR="year" list={repeatedArray} onClick={handleMutivalueClick}/> */}
+                  <Select
+                  value={selectedYear}
+                  onValueChange={(value) => {
+                    setSelectedYear(value);
+                    Dispatcher(setSearchQuery({ ...searchQuery, year: value }));
+                  }}>
+                    <SelectTrigger className="w-[250px]">
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {years.map(d=><SelectItem value={d}>{d}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+            {/* <div> <label>
+                    <input
+                      type="checkbox"
+                      checked={currHostelOnly}          // Bind the checked state to checkbox
+                      onChange={handleCheckboxChange} // Handle changes on checkbox
+                      className='mr-2'
+                    />
+                    Current Hostel Only
+                  </label></div> */}
+              
+              <div className={styles.buttonArea+' mt-4'}>
+                      <Button onClick={handleReset} text="Reset" style={{marginRight:'20px', width:'110px'}}/>
+                      <Button onClick={handleSearch} variant="contained" text="Search" style={{marginRight:'5px', width:'110px'}}/>
+              </div>
+          </div>
+      </div>
+      </div>
+      <div className={' w-full flex justify-center items-center flex-col md:p-4 '}>
+      {tableLoading?<TableLoader />:null}
+      {tableLoading===false?<div className='w-full '><ViewInfoTable data={data} /></div>:null}
+      <ReactPaginate
+      breakLabel="..."
+      nextLabel="next >"
+      onPageChange={handlePageClick}
+      pageRangeDisplayed={3}
+      pageCount={totalPages}
+      previousLabel="< previous"
+      renderOnZeroPageCount={null}
+      containerClassName="pagination justify-content-center"
+          pageClassName="page-item"
+          pageLinkClassName="page-link"
+          previousClassName="page-item"
+          previousLinkClassName="page-link"
+          nextClassName="page-item"
+          nextLinkClassName="page-link"
+          activeLinkClassName="active-page"
+    />
+      </div>
+    </div>
     </>
 }
 

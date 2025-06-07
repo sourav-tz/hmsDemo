@@ -110,13 +110,13 @@ const AllotRooms = ()=>{
     const [comment,setComment] = useState('');
     const [loadHistory,setLoadHistory] = useState(false);
     useEffect(()=>{
-        console.log(allotData);
+        // console.log(allotData);
     },[allotData]);
 
     const [myItems,setMyItems] = useState([]);
 
     useEffect(()=>{
-        console.log(myItems);
+        // console.log(myItems);
     },[myItems])
 
 
@@ -136,7 +136,7 @@ const AllotRooms = ()=>{
             res.then((data)=>{
                     let makeMydata=[];
 
-                    console.log(data.data.roomData);
+                    // console.log(data.data.roomData);
                     data.data.roomData.forEach(d=>{
 
                         if(d.checkOutDate){
@@ -164,14 +164,14 @@ const AllotRooms = ()=>{
                                 title:checkin,
                                 cardTitle:'Room Entry',
                                 cardSubtitle:`Rollno:${d.rollNo}`,
-                                cardDetailedText:`${d.student.firstName} ${d.student.lastName} Occupied this Room`
+                                cardDetailedText:`${d.student.firstName} ${d.student.lastName || ''} Occupied this Room`
                         }
                         )
                             makeMydata.unshift({
                                 title:checkout,
                                 cardTitle:'Room Leave',
                                 cardSubtitle:`Rollno:${d.rollNo}`,
-                                cardDetailedText:`${d.student.firstName} ${d.student.lastName} --  comment: ${d.comment}`
+                                cardDetailedText:`${d.student.firstName} ${d.student.lastName || ''} --  comment: ${d.comment}`
                             })
 
                         }else{
@@ -188,7 +188,7 @@ const AllotRooms = ()=>{
                                 title:checkin,
                                 cardTitle:'Room Entry',
                                 cardSubtitle:`Rollno:${d.rollNo}`,
-                                cardDetailedText:`${d.student.firstName} ${d.student.lastName} Occupied this Room`
+                                cardDetailedText:`${d.student.firstName} ${d.student.lastName || ''} Occupied this Room`
                         }
                         )
                     }
@@ -202,7 +202,7 @@ const AllotRooms = ()=>{
                 })
     
     }catch(err){
-            console.log(err);
+            // console.log(err);
         }   
     }
 
@@ -235,7 +235,7 @@ const AllotRooms = ()=>{
               setFullyFilled(res.data.fullyFilledCount);
               setTotalPage(res.data.roomsData[0].previous.totalpages);
         }catch(err){
-            console.log(err);
+            // console.log(err);
             if(err.status === 401){
                 navigator('/adminLogin');
             }
@@ -287,7 +287,7 @@ const roomAlloted = ()=>{
             Dispatcher(setAllot(false));
 
             initialLoad();
-            console.log(res);
+            // console.log(res);
         
         }catch(err){
             roomFailed(err);
@@ -305,10 +305,10 @@ const roomAlloted = ()=>{
 
 const handlePageClick = (e)=>{
     
-console.log(e)
+// console.log(e)
 
 
-        ;(async ()=>{
+        (async ()=>{
         try{
             const res = await axios({
                 url:import.meta.env.VITE_BASE_URL + '/HA/getRoomsData',
@@ -337,7 +337,7 @@ const handleRooms = (e)=>{
 }
 
 const handleStatus = (e)=>{
-    console.log(e);
+    // console.log(e);
     setStatus(e);
 }
 
@@ -565,7 +565,7 @@ const handleStudentInfo =(rollNo)=>{
                             {roomData.roomsStudentMappings.map(d=><div className='flex gap-4'>
                                 <div className='bg-gray-500 w-[100px] h-[100px] rounded-full'></div>
                                 <div className='flex flex-col'>
-                                    <p><span className='font-bold'>Name: </span>{d.student.firstName} {d.student.lastName}</p>
+                                    <p><span className='font-bold'>Name: </span>{d.student.firstName} {d.student.lastName || ''}</p>
                                     <p><span className='font-bold'>Roll no: </span>{d.rollNo}</p>
                                     <p><span className='font-bold'>email: </span>{d.student.email}</p>
                                     <div className='flex gap-2'><Button onClick={()=>handleStudentInfo(d.rollNo)} text="View Details" />

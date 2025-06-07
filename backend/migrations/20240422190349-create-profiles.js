@@ -43,6 +43,9 @@ module.exports = {
       secondaryContact: {
         type: Sequelize.STRING
       },
+      phoneNumber: {
+        type: Sequelize.STRING
+      },
       fatherName: {
         type: Sequelize.STRING
       },
@@ -68,6 +71,18 @@ module.exports = {
         type: Sequelize.STRING
       },
       photoLink: {
+        type: Sequelize.STRING
+      },
+      aadharCardDocument: {
+        type: Sequelize.STRING
+      },
+      localGuardian: {
+        type: Sequelize.STRING
+      },
+      localGuardianContact: {
+        type: Sequelize.STRING
+      },
+      localGuardianAddress: {
         type: Sequelize.STRING
       },
       last_updated_at: {

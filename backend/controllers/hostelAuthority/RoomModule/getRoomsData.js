@@ -7,6 +7,9 @@ const getRoomsData = async (req, res) => {
 
         const filters = {};
         const hostelNo = req.body.tokenHostelNo;
+        console.log("REQ ",req)
+        console.log("BODY ",req.body)
+        console.log("ROOM DATA FETCHED FOR HOSTEl ", hostelNo)
 
         const allRoomsData = await db.rooms.findAll({where:{hostelNo: hostelNo}})
         // console.log('allRoomsData', allRoomsData);

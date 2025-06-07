@@ -23,14 +23,23 @@ const { downloadFile } = require('../../controllers/hostelAuthority/studentModul
 
 const superAdminLoginToken = require('../../controllers/Login/superAdminLoginToken.js');
 const LogOut = require('../../controllers/LoggingOut/LogOut.js');
+const { addnotice, getNotices, deleteNotices } = require('../../controllers/superAdmin/Manage_Notices/notices.js');
 
+const getAllRoomsData = require('../../controllers/superAdmin/ManageRooms/getAllRoomsData.js')
+
+const {
+    getAllForwardedApplications,
+    approveBySuperAdmin,
+    rejectBySuperAdmin
+  } = require('../../controllers/superAdmin/Manage_Applications/application.controllers.js')
 
 var storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, path.join(__dirname, '../../public/uploads'))
     },
     filename: (req, file, cb) => {
-        cb(null, file.originalname);
+        // cb(null, file.originalname);
+        cb(null, `${Date.now()}-${file.originalname}`);
     }
 });
 var upload = multer({ storage: storage });
@@ -62,6 +71,11 @@ router.delete('/removeHostel',auth, removeHostel);
 router.post('/enableHostel',auth, enableHostel);
 router.patch('/updateHostel',auth, updateHostel);
 
+// Notice Routes
+router.post('/addNotice', auth, upload.single('file'), addnotice);
+router.get('/getNotices', auth, getNotices);
+router.delete('/deleteNotices', auth, deleteNotices);
+
 
 // RoomsTypes Api's
 router.post('/bulkCreate',auth, upload.single('file'), csvToJsonConverter, addRoomsToHostels)  //add rooms to hostels 
@@ -73,6 +87,7 @@ router.get('/downloadfile',auth, downloadFile);
 
 // Manage rooms                   admin will do update(occupancy,roomtype)
 router.get('/getrooms',auth,getrooms);
+router.get('/getAllRoomsData',auth,getAllRoomsData);
 router.post('/addroom',auth,addroom);
 router.patch('/updateroom',auth,updateroom);
 router.delete('/deleteroom',auth,deleteroom);
@@ -86,6 +101,13 @@ router.post('/changeHostel',auth,changeHostel);
 router.post('/deleteAdmin',auth,deleteAdmin);
 router.post('/getAdminsAgainstHostel',auth,getAdminsAgainstHostel);
 
+
+// manage applications
+router.get('/applications', auth, getAllForwardedApplications);
+// router.patch('/applications/approve/:id',auth,approveBySuperAdmin);
+router.post('/applications/approve/:id', auth, approveBySuperAdmin);
+
+router.post('/applications/reject/:id',auth,rejectBySuperAdmin);
 
 
 module.exports = router;
