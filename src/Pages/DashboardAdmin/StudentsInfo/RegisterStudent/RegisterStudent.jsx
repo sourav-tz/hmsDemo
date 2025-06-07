@@ -89,7 +89,7 @@ export default function RegisterStudent() {
 
   return (
     <div className="w-full bg-gray-100">
-      <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8">
+      {/* <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8">
         <div className="space-y-8">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">
@@ -716,7 +716,7 @@ export default function RegisterStudent() {
             </div>
           </form>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }
