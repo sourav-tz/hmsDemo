@@ -1,20 +1,32 @@
 const db = require('../../../models/index')
 const bcrypt = require('bcrypt')
+
 function filterDuplicates(array) {
   const duplicates = [];
-  const unique = array.filter((student) => {
-    const isDuplicate = array.filter(
-      (existingStudent) =>
-        existingStudent.email === student.email || existingStudent.rollNo === student.rollNo
-    ).length;
-    if (isDuplicate>1) {
-      duplicates.push({message:"Email or rollNo common with other entry in CSV",...student});
+  const unique = [];
+
+  const seenEmails = {};
+  const seenRollNos = {};
+
+  // First pass: count frequency
+  array.forEach((student) => {
+    seenEmails[student.email] = (seenEmails[student.email] || 0) + 1;
+    seenRollNos[student.rollNo] = (seenRollNos[student.rollNo] || 0) + 1;
+  });
+
+  // Second pass: separate unique and duplicates
+  array.forEach((student) => {
+    const isDuplicate = seenEmails[student.email] > 1 || seenRollNos[student.rollNo] > 1;
+    if (isDuplicate) {
+      duplicates.push({ message: "Email or rollNo common with other entry in CSV", ...student });
+    } else {
+      unique.push(student);
     }
-    return isDuplicate <= 1;
   });
 
   return { duplicates, unique };
 }
+
 async function uploadStudents(data){
   try {
     const transaction = await db.sequelize.transaction();
@@ -67,39 +79,38 @@ async function uploadStudents(data){
 }
 function validateJsonData(jsonData, requiredAttributes) {
   const item = jsonData[0];
-  let jsonKeys = Object.keys(item);
-  jsonKeys = jsonKeys.slice(0, requiredAttributes.length);
-  console.log(jsonKeys);
-  console.log(jsonKeys.length);
-  console.log(' '+requiredAttributes.length);
-    // Convert the requiredAttributes array to a set
-  const attributeSet = new Set(requiredAttributes);
+  const jsonKeys = Object.keys(item);
 
-    // Check if the sizes of the sets are equal
-    if (jsonKeys.length !== attributeSet.size) {
-      throw new Error(`CSV did not match with given Template`);
-      
-    }
-    
-    // Check if all keys in jsonData are also in attributes
-    for (const key of jsonKeys) {
-      if (!attributeSet.has(key)) {
-        throw new Error(`CSV did not match with given Template. wrong attribute is ${key}`);
-        }
-    }
+  const missingKeys = requiredAttributes.filter(attr => !jsonKeys.includes(attr));
+  if (missingKeys.length > 0) {
+    throw new Error(`CSV did not match with given template. Missing: ${missingKeys.join(", ")}`);
+  }
+
+  const extraKeys = jsonKeys.filter(attr => !requiredAttributes.includes(attr));
+  if (extraKeys.length > 0) {
+    throw new Error(`CSV did not match with given template. Unexpected: ${extraKeys.join(", ")}`);
+  }
 }
+
 
 exports.bulkCreateController = async (req, res) => {
     try {
       //? get json data from body
         const jsonObj = req.body.data;
         const emailAdmin=req.body.email;
-        const requiredAttributes = ["rollNo","firstName","lastName","year","email",
-                                  "bloodGroup","identificationMark","gender","pEmail","subAddress",
-                                  "city","state","pinCode","contactNumber","secondaryContact","fatherName",
-                                  "fatherContact","fatherOccupation","motherName","motherContact","motherOccupation",
-                                   "dob","addharNumber","accHolderName","bankName","accNumber","IFSC","courseId"];
-
+        const requiredAttributes = [
+          "rollNo", "firstName", "lastName", "year", "email",
+          "bloodGroup", "identificationMark", "gender", "pEmail", "subAddress",
+          "city", "state", "pinCode", "contactNumber", "secondaryContact",
+          "phoneNumber", "fatherName", "fatherContact", "fatherOccupation",
+          "motherName", "motherContact", "motherOccupation",
+          "dob", "addharNumber",
+          "photoLink", "aadharCardDocument", // <- new
+          "localGuardian", "localGuardianContact", "localGuardianAddress", // <- new
+          "accHolderName", "bankName", "accNumber", "IFSC",
+          "courseId"
+        ];
+        
         // Validate JSON data
         validateJsonData(jsonObj, requiredAttributes);
         let finalWithErrors=[];
