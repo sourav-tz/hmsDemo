@@ -27,56 +27,55 @@ function filterDuplicates(array) {
   return { duplicates, unique };
 }
 
-async function uploadStudents(data){
+async function uploadStudents(data, hostelNo){
   try {
     const transaction = await db.sequelize.transaction();
     try {
-      //*it have been allready checked that user exits or not in previous step
-      //* so no need to check again here
-      const salt = await bcrypt.genSalt(10)
-      const password=data.contactNumber !== undefined ? String(data.contactNumber) : String(data.rollNo);
-      const securePassword = await bcrypt.hash(password, salt)
+      const salt = await bcrypt.genSalt(10);
+      const password = data.contactNumber !== undefined ? String(data.contactNumber) : String(data.rollNo);
+      const securePassword = await bcrypt.hash(password, salt);
+
       await db.users.create({
         email: data.email,
         password: securePassword,
         role: 'Student',
-      },{transaction,validate:true});
+      }, { transaction, validate: true });
 
       await db.students.create({
-              rollNo: data.rollNo,
-              firstName: data.firstName,
-              lastName: data.lastName,
-              year: data.year,
-              email: data.email,
-              courseId: data.courseId,
-       }, { transaction, validate: true });
-       
-       await db.profiles.create({
+        rollNo: data.rollNo,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        year: data.year,
+        email: data.email,
+        courseId: data.courseId,
+        hostelNo: hostelNo,    // Now this works without ReferenceError
+      }, { transaction, validate: true });
+
+      await db.profiles.create({
         ...data,
         rollNo: data.rollNo,
-        // lastUpdatedBy: emailAdmin,
-       },{transaction,validate: true});
+      }, { transaction, validate: true });
 
-       await db.bankdetails.create({
-              rollNo:data.rollNo,
-              accHolderName: data.accHolderName,
-              bankName: data.bankName,
-              accNumber: data.accNumber,
-              IFSC: data.IFSC,
-       },{transaction,validate: true});
+      await db.bankdetails.create({
+        rollNo: data.rollNo,
+        accHolderName: data.accHolderName,
+        bankName: data.bankName,
+        accNumber: data.accNumber,
+        IFSC: data.IFSC,
+      }, { transaction, validate: true });
 
       await transaction.commit();
-      return {message:"success",...data};
+      return { message: "success", ...data };
     } catch (error) {
-      // Rollback the transaction on error
       await transaction.rollback();
       console.error("Error in transaction:", error);
-      throw error; // Rethrow the error to handle it in the outer catch block
+      throw error;
     }
-   } catch (err) {
-    return {message:err.message,...data};
-   }
+  } catch (err) {
+    return { message: err.message, ...data };
+  }
 }
+
 function validateJsonData(jsonData, requiredAttributes) {
   const item = jsonData[0];
   const jsonKeys = Object.keys(item);
@@ -95,9 +94,11 @@ function validateJsonData(jsonData, requiredAttributes) {
 
 exports.bulkCreateController = async (req, res) => {
     try {
+      // console.log("THis is request body : ", req.body.hostelNo);
       //? get json data from body
         const jsonObj = req.body.data;
         const emailAdmin=req.body.email;
+        const hostelNo = req.body.hostelNo;
         const requiredAttributes = [
           "rollNo", "firstName", "lastName", "year", "email",
           "bloodGroup", "identificationMark", "gender", "pEmail", "subAddress",
@@ -146,7 +147,7 @@ exports.bulkCreateController = async (req, res) => {
          //*transaction
          try {
           const results = await Promise.all(
-            inputData.map((entry) => uploadStudents(entry,emailAdmin))
+            inputData.map((entry) => uploadStudents(entry,emailAdmin, hostelNo))
           );
 
           results.forEach((result) => {
