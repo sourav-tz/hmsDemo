@@ -269,7 +269,7 @@ const handleLogout = ()=>{}
                 <ul>
 
                     {/* Home */}
-                    <li className='cursor-pointer flex flex-col text-xl font-semibold'><div onClick={()=>{changeSubMenu('Home')}} className={`flex items-center gap-2 ${activeOption==='main'?'text-orange-400':'text-white'}`}><IoHome size='15px'/> Main </div>
+                    <li className='cursor-pointer flex flex-col text-xs font-semibold'><div onClick={()=>{changeSubMenu('Home')}} className={`flex items-center gap-2 ${activeOption==='main'?'text-orange-400':'text-white'}`}><IoHome size='15px'/> Main </div>
                         <ul className={`${subHome?'':'hidden'} text-sm text-white  font-thin ml-8 transition-all`}>
                             <li onClick={()=>{Navigator('/superAdminDashboard/main/home');handleHamBurger()}} className={`text-xl hover:scale-110 transition-all rounded-md px-2 py-[2px] ${activeSubOption==='home'?'bg-blue-900 font-normal':''}`}> Home</li>
                         </ul>
