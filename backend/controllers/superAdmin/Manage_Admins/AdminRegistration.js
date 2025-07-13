@@ -1,60 +1,64 @@
-const db = require('../../../models/index')
-const bcrypt = require('bcrypt')
-const nodeMailer = require('nodemailer')
-const mailSender = require('../../../utils/mailSender')
-const AdminRegistrationEmail = require("../../../MailTemplates/AdminRegistrationEmail")
+// controllers/hostelAuthorityController.js
+
+const db = require('../../../models/index');
+const bcrypt = require('bcrypt');
+const mailSender = require('../../../utils/mailSender');
+const AdminRegistrationEmail = require('../../../MailTemplates/AdminRegistrationEmail');
+
+/**
+ * Registers a new Hostel Authority user and sends a confirmation email.
+ * @route POST /api/hostel-authority/register
+ * @body { email, name, roleType, mobile, password, hostelNo }
+ */
 const AdminRegistration = async (req, res) => {
+  // start a transaction
+  const transaction = await db.sequelize.transaction();
 
-    try {
+  try {
+    const { email, name, roleType, mobile, password, hostelNo } = req.body;
 
-        const transaction = await db.sequelize.transaction();
-
-
-        try {
-            const { email, name, roleType, mobile, password, hostelNo } = req.body;
-
-            const isExist = await db.users.findOne({where: {email: email}})
-
-            if(isExist) return res.status(400).json({message:"User already exists"});
-
-            
-            const salt = await bcrypt.genSalt(10)
-            const securePassword = await bcrypt.hash(password, salt)
-
-            const data = { email: email, name: name, roleType: roleType, mobile: mobile, hostelNo: hostelNo };
-            const user = { email: email, password: securePassword, role: 'Hostel-Authority' };
-
-            await db.users.create(user, { transaction, validate: true })
-            await db.hostelauthoritys.create(data, { transaction, validate: true })
-
-            await transaction.commit();
-
-
-            let title = 'Hostel Authority Registration || NIT KURUKSHETRA'
-
-           
-            await mailSender(email,title,AdminRegistrationEmail(name,password,hostelNo));
-
-            await mailSender(email,title,body)
-
-            res.status(200).json({ success: 'Hostel-Authority(Member) Register into db Successfully' })
-        } catch (error) {
-            // Rollback the transaction on error
-            await transaction.rollback();
-            console.log("Error in transaction: " + error);
-            throw error;
-        }
-
-
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ error: error }) 
-
+    // check if user already exists
+    const isExist = await db.users.findOne({ where: { email } });
+    if (isExist) {
+      await transaction.rollback();
+      return res.status(400).json({ message: 'User already exists' });
     }
-}
 
+    // hash the password
+    const salt = await bcrypt.genSalt(10);
+    const securePassword = await bcrypt.hash(password, salt);
 
+    // prepare payloads
+    const userPayload = { email, password: securePassword, role: 'Hostel-Authority' };
+    const authorityPayload = { email, name, roleType, mobile, hostelNo };
 
+    // create records
+    const newUser = await db.users.create(userPayload, { transaction, validate: true });
+    await db.hostelauthoritys.create(authorityPayload, { transaction, validate: true });
 
+    // commit transaction
+    await transaction.commit();
 
-module.exports = AdminRegistration; 
+    // send confirmation email (mail failures do not rollback DB)
+    const subject = 'Hostel Authority Registration || NIT KURUKSHETRA';
+    const emailBody = AdminRegistrationEmail(name, password, hostelNo);
+    try {
+      await mailSender(email, subject, emailBody);
+    } catch (mailErr) {
+      console.error('Email send error:', mailErr);
+    }
+
+    // respond success
+    return res.status(201).json({
+      success: 'Hostel-Authority registered successfully',
+      user: { id: newUser.id, email: newUser.email }
+    });
+  } catch (error) {
+    // rollback on any error
+    await transaction.rollback();
+    console.error('Error in AdminRegistration:', error);
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+module.exports = AdminRegistration;
