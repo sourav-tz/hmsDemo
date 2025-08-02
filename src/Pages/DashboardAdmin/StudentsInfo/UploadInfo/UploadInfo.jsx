@@ -144,16 +144,13 @@ const handleDragEnter = (e) => {
         return new Promise((resolve, reject) => {
           const bodyForData = new FormData();
           bodyForData.append("file", file);
-          bodyForData.append("hostelNo",userData.dataValues.hostelNo);
-          console.log(userData.dataValues.hostelNo);
-          console.log(file);
+          // hostelNo comes from auth token, no need to send it
+          console.log("Uploading file:", file);
       
           axios
             .post(import.meta.env.VITE_BASE_URL + '/HA/bulkCreate', bodyForData, {
               headers: {
-                "Content-Type": "multipart/form-data; boundary=${formData.getBoundary()}",
-                "x-rapidapi-host": "file-upload8.p.rapidapi.com",
-                "x-rapidapi-key": "af582c969cmshc0186c63f1e9d28p10fbf5jsn1a1c05604d94",
+                "Content-Type": "multipart/form-data"
               },
               withCredentials: true,
             })
@@ -173,16 +170,14 @@ const handleDragEnter = (e) => {
                 setFailedData(res.data[1]);
                 reject("Something Wrong in data!!!");
               }
-
-              
             })
             .catch(err => {
               setLoading(false);
               console.log(err);
-              if(err.response.status===401){
+              if(err.response?.status === 401){
                 Navigator('/adminLogin');
               }
-              reject(err.response.data); // Reject the Promise in case of an error
+              reject(err.response?.data || "Upload failed"); // Reject the Promise in case of an error
             });
         });
       };
@@ -269,25 +264,27 @@ const handleDragEnter = (e) => {
                   pending: 'Uploading Data',
                   success: {
                     render({data}){
-                      // When the promise reject, data will contains the error
-                      return data;}
-                    },
+                      // Clear file input safely
+                      if (inputElement.current) {
+                        inputElement.current.value = '';
+                      }
+                      setFiles(null);
+                      return data;
+                    }
+                  },
                   error: {
                     render({data}){
-                      // When the promise reject, data will contains the error
-                      return data;}
-                    },
-                },
-              )
-                .then(() => {
-                  // Additional code to execute after the promise is resolved
-                  inputElement.current.value = '';
-                })
-                .catch(error => {
-                  // Handle errors here if needed
-                  console.error(error);
-                  inputElement.current.value = '';
-                });
+                      // Clear file input safely
+                      if (inputElement.current) {
+                        inputElement.current.value = '';
+                      }
+                      setFiles(null);
+                      // Show the actual validation error
+                      return data?.toString() || 'Upload failed';
+                    }
+                  },
+                }
+            );
         }
       }
       
