@@ -1,7 +1,6 @@
-const { Rewind } = require('lucide-react');
 const { Application } = require('../../../models');
 
-// fill by those values by which admin can approve directly 
+// fill by those values by which admin can approve directly
 const directlyApprovableTags = [];
 
 // Get all applications forwarded to the admin's hostel
@@ -12,10 +11,10 @@ exports.getAllApplications = async (req, res) => {
     const hostelNo = req.body.tokenHostelNo;
     const { status } = req.query; // e.g., ?status=resolved or ?status=all
     // Build the where clause dynamically
-    
+
     const whereClause = {
       forwardedTo: hostelNo,
-      ...(status && status !== 'all' ? { status } : {}) 
+      ...(status && status !== 'all' ? { status } : {})
     };
 
     const applications = await Application.findAll({
@@ -171,7 +170,7 @@ exports.editApplication = async (req, res) => {
           status: 'pendingAtAdmin'
         }
       });
-  
+
       if (!application) {
         return res.status(404).json({ error: 'Application not found or not accessible' });
       }
@@ -179,16 +178,16 @@ exports.editApplication = async (req, res) => {
       if (tag === 'hostel-change') {
         application.extraData = {
           ...application.extraData,
-          hostelNo: hostelChangeTo 
+          hostelNo: hostelChangeTo
         };
         await application.save();
-        
+
       console.log("done")
 
         return res.status(200).json({ message: 'Application updated successfully', application });
       }
       return res.status(400).json({ error: 'Editing not allowed for this tag' });
-  
+
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Failed to update application' });
