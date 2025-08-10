@@ -142,21 +142,21 @@ const ManageAdmin = () => {
           },
           withCredentials: true
         })
-        // console.log(res);
-        toast.success("Hostel Admin Created Email Sent !", {
+        console.log(res);
+       
+          toast.success("Hostel Admin Created Email Sent !", {
           position: "top-center"
         });
         getAdmins();
-
+      
       } catch (error) {
         console.log(error);
-        toast.error("Error in Transaction !", {
+        toast.error(error.response.data.message, {
           position: "top-center"
         });
       }
     })()
 
-    // console.log(admin);
     setPass("");
 
   }

@@ -257,7 +257,7 @@ export default function Sidebar(){
 
                         <li onClick={()=>{navigator('/adminDashboard/studentInfo/viewInfo')}} className={styles.subOptions+' ' + (activeSubOption==='viewInfo'?styles.activeSubOption:null)}>View Info</li>
                         <li onClick={()=>{navigator('/adminDashboard/studentInfo/uploadInfo')}} className={styles.subOptions+' ' + (activeSubOption==='uploadInfo'?styles.activeSubOption:null)}>Upload Info</li>
-                        <li onClick={()=>{navigator('/adminDashboard/studentInfo/register')}} className={styles.subOptions+' ' + (activeSubOption==='register'?styles.activeSubOption:null)}>Register Student</li>
+                        {/* <li onClick={()=>{navigator('/adminDashboard/studentInfo/register')}} className={styles.subOptions+' ' + (activeSubOption==='register'?styles.activeSubOption:null)}>Register Student</li> */}
                         </ul>
 
                         {/* heere */}

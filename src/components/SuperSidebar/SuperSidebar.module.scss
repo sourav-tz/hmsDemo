@@ -23,6 +23,7 @@ ul{
     flex-direction: column;
     justify-content: space-between;
     z-index: 100;
+    height: 100vh;
 }
 
 .inActive{
@@ -44,6 +45,8 @@ ul{
 .itemsContainer{
     margin-top: 1.5rem;
     padding:0px 15px;
+    height: calc(100% - 60px); 
+    overflow-y: auto;
 }
 
 
@@ -140,4 +143,3 @@ ul{
       opacity: 1;
     }
   }
-  

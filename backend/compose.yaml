@@ -1,39 +1,20 @@
-services:
-  
-  mysql:
-    image: mysql:5.7
-    restart: unless-stopped
-    env_file:
-      - .env
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${DB_DATABASE}
-      MYSQL_USER: ${DB_USERNAME}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
-    volumes:
-      - db_data:/var/lib/mysql
-    ports:
-      - "3306:3306"
+version: '3.8'
 
-  # nginx:
-  #   image: nginx:latest
-  #   container_name: nginx
-  #   ports:
-  #     - "80:80"
-  #     - "443:443"
-  #   volumes:
-  #     - ./nginx.conf:/etc/nginx/nginx.conf:ro
-  #     - /etc/ssl/certificate.crt:/etc/ssl/certificate.crt
-  #     - /etc/ssl/primary.key:/etc/ssl/primary.key   
-  #     # Add any additional volumes if needed, like SSL certificates
-  #   depends_on:
-  #     - app
-  #   restart: unless-stopped
+services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "40:80"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - app
+    restart: unless-stopped
 
   app:
     build: .
-    depends_on:
-      - db
+      #    container_name: app
     restart: unless-stopped
     env_file:
       - .env
@@ -42,6 +23,7 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       DB_DATABASE: ${DB_DATABASE}
       DB_HOST: mysql
+      DB_PORT: ${DB_PORT}
       DB_DIALECT: ${DB_DIALECT}
       NODE_ENV: ${NODE_ENV}
       FRONTEND_URL: ${FRONTEND_URL}
@@ -51,10 +33,27 @@ services:
       MAIL_USER: ${MAIL_USER}
       MAIL_PASS: ${MAIL_PASS}
     ports:
-      - "3000:8000"
+      - "3000:3000"
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      # Standard MySQL variables:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE:     ${DB_DATABASE}
+      MYSQL_USER:         ${DB_USERNAME}
+      MYSQL_PASSWORD:     ${DB_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "4317:3306"
 
 volumes:
-  db_data:    
-
-
-
+  mysql_data:
+    driver: local

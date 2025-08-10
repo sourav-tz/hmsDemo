@@ -1,60 +1,62 @@
-const db = require('../../../models/index')
-const bcrypt = require('bcrypt')
-const nodeMailer = require('nodemailer')
-const mailSender = require('../../../utils/mailSender')
-const AdminRegistrationEmail = require("../../../MailTemplates/AdminRegistrationEmail")
+const db = require('../../../models/index');
+const bcrypt = require('bcrypt');
+const mailSender = require('../../../utils/mailSender');
+const AdminRegistrationEmail = require('../../../MailTemplates/AdminRegistrationEmail');
+
 const AdminRegistration = async (req, res) => {
+  const { email, name, roleType, mobile, password, hostelNo } = req.body;
 
+  try {
+    // 1. Check if user already exists (no transaction yet)
+    const isExist = await db.users.findOne({ where: { email } });
+    if (isExist) {
+      return res.status(400).json({ message: 'User already exists' });
+    }
+
+    console.log("works fine");
+
+    // 2. Start transaction only when needed
+    const transaction = await db.sequelize.transaction();
     try {
+      // hash password
+      const salt = await bcrypt.genSalt(10);
+      const securePassword = await bcrypt.hash(password, salt);
 
-        const transaction = await db.sequelize.transaction();
+      // payloads
+      const userPayload = { email, password: securePassword, role: 'Hostel-Authority' };
+      const authorityPayload = { email, name, roleType, mobile, hostelNo };
 
+      // create records in transaction
+      const newUser = await db.users.create(userPayload, { transaction });
+      await db.hostelauthoritys.create(authorityPayload, { transaction });
 
-        try {
-            const { email, name, roleType, mobile, password, hostelNo } = req.body;
+      // commit transaction
+      await transaction.commit();
 
-            const isExist = await db.users.findOne({where: {email: email}})
+      // send confirmation email
+      const subject = 'Hostel Authority Registration || NIT KURUKSHETRA';
+      const emailBody = AdminRegistrationEmail(name, password, hostelNo);
+      try {
+        await mailSender(email, subject, emailBody);
+      } catch (mailErr) {
+        console.error('Email send error:', mailErr);
+      }
 
-            if(isExist) return res.status(400).json({message:"User already exists"});
-
-            
-            const salt = await bcrypt.genSalt(10)
-            const securePassword = await bcrypt.hash(password, salt)
-
-            const data = { email: email, name: name, roleType: roleType, mobile: mobile, hostelNo: hostelNo };
-            const user = { email: email, password: securePassword, role: 'Hostel-Authority' };
-
-            await db.users.create(user, { transaction, validate: true })
-            await db.hostelauthoritys.create(data, { transaction, validate: true })
-
-            await transaction.commit();
-
-
-            let title = 'Hostel Authority Registration || NIT KURUKSHETRA'
-
-           
-            await mailSender(email,title,AdminRegistrationEmail(name,password,hostelNo));
-
-            await mailSender(email,title,body)
-
-            res.status(200).json({ success: 'Hostel-Authority(Member) Register into db Successfully' })
-        } catch (error) {
-            // Rollback the transaction on error
-            await transaction.rollback();
-            console.log("Error in transaction: " + error);
-            throw error;
-        }
-
+      return res.status(201).json({
+        success: 'Hostel-Authority registered successfully',
+        user: { id: newUser.id, email: newUser.email }
+      });
 
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ error: error }) 
-
+      await transaction.rollback();
+      console.error('Transaction error in AdminRegistration:', error);
+      return res.status(500).json({ error: error.message });
     }
-}
 
+  } catch (error) {
+    console.error('Error in AdminRegistration:', error);
+    return res.status(500).json({ error: error.message });
+  }
+};
 
-
-
-
-module.exports = AdminRegistration; 
+module.exports = AdminRegistration;
