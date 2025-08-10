@@ -127,7 +127,8 @@ const Modal = ({ data }) => {
               {/* Header with student photo */}
               <div className="flex flex-col md:flex-row items-center justify-between mb-8 pb-4 border-b border-gray-200">
                 <div className="flex flex-col md:flex-row items-center">
-                  <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-blue-100 flex-shrink-0 mb-4 md:mb-0 md:mr-6">
+                    <div className="flex flex-col justify-center items-center">
+<div className="w-32 h-32 rounded-md overflow-hidden border-4 border-blue-100 flex-shrink-0 mb-4 md:mb-0 md:mr-6">
                     {mdata.profile && mdata.profile.photoLink ? (
                       <img
                         src={mdata.profile.photoLink}
@@ -142,6 +143,16 @@ const Modal = ({ data }) => {
                       </div>
                     )}
                   </div>
+                          <a
+                    href={mdata.profile.photoLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-md mr-5 font-bold text-blue-600 hover:underline"
+                  >
+                    View Profile Photo
+                  </a>
+                  </div>
+      
                   <div>
                     <h1 className="text-2xl font-bold text-gray-800">{mdata.firstName} {mdata.lastName}</h1>
                     <p className="text-gray-600">Roll No: <span className="font-semibold">{mdata.rollNo}</span></p>
@@ -171,6 +182,7 @@ const Modal = ({ data }) => {
                   <p className="text-blue-700 font-medium">Year: <span className="font-bold">{mdata.year}</span></p>
                   <p className="text-blue-700 font-medium">Room: <span className="font-bold">{mdata.roomId || 'Not Assigned'}</span></p>
                 </div>
+
               </div>
 
               {/* Student Basic Information */}
@@ -276,15 +288,24 @@ const Modal = ({ data }) => {
                 {mdata.profile?.aadharCardDocument && (
                   <div className="mt-4 pt-4 border-t border-gray-200">
                     <h3 className="font-semibold mb-2">Aadhar Card Document</h3>
-                    <div className="w-full max-w-xs overflow-hidden border-2 border-blue-100 rounded-md">
-                      <img
+                    <div className="w-full max-w-xs overflow-hidden rounded-md">
+                      {/* <img
                         src={mdata.profile.aadharCardDocument}
                         alt="Aadhar Card"
-                        className="w-full object-contain"
+                        className="w-full object-contain "
                         onError={(e) => {
                           e.target.src = "https://via.placeholder.com/150?text=No+Document";
                         }}
-                      />
+                      /> */}
+
+                           <a
+                    href={mdata.profile.aadharCardDocument}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-lg font-bold text-blue-600 hover:underline"
+                  >
+                    View uploaded document
+                  </a>
                     </div>
                   </div>
                 )}

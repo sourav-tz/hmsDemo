@@ -6,7 +6,7 @@ import axios from 'axios';
 import { AlertCircle } from 'lucide-react';
 
 // File size limits in bytes
-const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB
+const MAX_FILE_SIZE = 1 * 100 * 1024; // 100KB
 const MIN_FILE_SIZE = 1 * 1024; // 1KB
 
 const FileUpload = ({
@@ -31,7 +31,7 @@ const FileUpload = ({
   // Get accepted file types as an array for display
   const getAcceptedFileTypes = () => {
     return accept.split(',').map(type => {
-      if (type === 'image/*') return 'Images';
+      if (type === 'image/*') return 'Images: JPEG, PNG, JPG, WEBP';
       if (type === '.pdf') return 'PDF';
       return type.replace('.', '').toUpperCase();
     }).join(', ');
