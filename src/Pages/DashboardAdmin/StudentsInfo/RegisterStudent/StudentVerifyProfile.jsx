@@ -235,10 +235,20 @@ function StudentVerifyProfile() {
                                         alt={`${student.firstName} ${student.lastName || ''}`}
                                         className="w-full h-full object-cover"
                                         onError={(e) => {
-                                          e.target.src = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrxb9rKS0KgjTtqrKPK8dodc0pEeaoC-pY_w&s";
+                                          e.target.src = "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png";
                                         }}
+                                        
                                       />
+                                      
                                     </div>
+                                    <a
+                    href={student.photoLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs text-blue-600 hover:underline"
+                  >
+                    View uploaded photo
+                  </a>
                                   </div>
 
                                   {/* Aadhar Card Document */}
@@ -251,10 +261,19 @@ function StudentVerifyProfile() {
                                           alt="Aadhar Card"
                                           className="w-full h-full object-contain"
                                           onError={(e) => {
-                                            e.target.src = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrxb9rKS0KgjTtqrKPK8dodc0pEeaoC-pY_w&s";
+                                            e.target.src = "https://banner2.cleanpng.com/20180618/oti/kisspng-public-domain-encapsulated-postscript-clip-art-mime-5b278bfc564795.1619805915293183963534.jpg";
                                           }}
                                         />
+                                        
                                       </div>
+                                      <a
+                    href={student.aadharCardDocument}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs text-blue-600 hover:underline"
+                  >
+                    View uploaded document
+                  </a>
                                     </div>
                                   )}
                                 </div>

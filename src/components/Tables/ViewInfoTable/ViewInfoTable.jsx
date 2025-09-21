@@ -80,13 +80,6 @@ const ViewInfoTable = ({data})=>{
 
 
 
-
-
-
-
-
-
-
   // Column Definitions: Defines & controls grid columns.
   const [colDefs, setColDefs] = useState([
         {field:'rollNo',pinned:'left',width:100},
@@ -98,7 +91,6 @@ const ViewInfoTable = ({data})=>{
         {field:'profile.contactNumber', headerName: 'Contact Number',width:150},
         {field:'viewInfo',width:110,cellRenderer:(params)=>{return <Button className="bg-blue-600 hover:bg-blue-500 transition-all" size="sm" onClick={()=>{Dispatcher(changeModalState(true));setModalData(params.data);}}><MdOutlineRemoveRedEye />
         </Button>}},
-        {field:'PDF',width:80,cellRenderer:(params)=>{ return<><PdfDownload myData={params.data} adminInfo={adminInfo}/></>}  },
         {field:'edit',width:100,cellRenderer:(params)=>{return <Dialog>
           <DialogTrigger>
           <Button className="bg-green-600 hover:bg-green-500 transition-all" size="sm" ><CiEdit /></Button>
@@ -172,22 +164,7 @@ const ViewInfoTable = ({data})=>{
           </ScrollArea>
           </DialogContent>
           </Dialog> }},
-        {field:'delete',width:100,cellRenderer:(params)=>{return <Button className="bg-red-600 hover:bg-red-500 transition-all" size="sm" ><RiDeleteBin5Line /></Button>}},
-        {
-          field: 'archive',
-          width: 110,
-          cellRenderer: (params) => {
-            return (
-              <Button
-                className="bg-yellow-600 hover:bg-yellow-500 transition-all"
-                size="sm"
-                onClick={() => addToArchiveTable(params.data.rollNo)}
-              >
-                {archiveLoading ? 'Archiving...' : 'Archive'}
-              </Button>
-            );
-          }
-        },
+        {field:'delete',width:100,cellRenderer:(params)=>{return <Button className="bg-red-600 hover:bg-red-500 transition-all" size="sm" ><RiDeleteBin5Line /></Button>}}
          
   ]);
 
@@ -196,14 +173,15 @@ const ViewInfoTable = ({data})=>{
 
 
     return<>
-        <div className="ag-theme-quartz" style={{ height: 475 }}>
+       <div className="ag-theme-quartz" style={{ height: 475, paddingRight:0, marginRight:0 }}>
+
         {/* The AG Grid component */}
         <AgGridReact  rowData={rowData} columnDefs={colDefs}  rowSelection='single' rowMultiSelectWithClick={true}/>
         <Modal data={modalData}/>
-        <div className={`${edit?'translate-y-0':'-translate-y-full'} w-full h-screen fixed top-0 left-0 z-[1000] flex flex-col justify-center items-center overflow-y-scroll p-10`}>
+        {/* <div className={`${edit?'translate-y-0':'-translate-y-full'} w-full h-screen fixed top-0 left-0 z-[1000] flex flex-col justify-center items-center overflow-y-scroll p-10`}>
           <div className="w-full h-full fixed top-0 left-0 bg-gray-900 bg-opacity-50"></div>
 
-        </div>
+        </div> */}
         </div>
     </>
 

@@ -1,13 +1,24 @@
 import styles from "./Modal.module.scss";
+import axios from 'axios';
+
 import { animated, useSpring } from "@react-spring/web";
 import { useEffect, useState } from "react";
 import { CgClose } from "react-icons/cg";
 import { useSelector, useDispatch } from "react-redux";
 import { changeModalState } from "../../Store/Reducers/viewInfoSlice";
+import PdfDownload from "../Tables/ViewInfoTable/PdfDownload";
+import { toast } from 'react-toastify'
+
+
 
 const Modal = ({ data }) => {
   const [loadingModal, setLoading] = useState(true);
   const mopen = useSelector((state) => state.viewInfoStates.modalState);
+
+  const adminInfo = useSelector((state) => state.adminInfo);
+  const [archiveLoading, setArchiveLoading] = useState(false);
+
+
   const [mdata, setMData] = useState({});
 
   useEffect(() => {
@@ -47,6 +58,20 @@ const Modal = ({ data }) => {
       window.removeEventListener("keydown", handleEscapeKeyPress);
     };
   }, [Dispatcher]);
+
+  const addToArchiveTable = async (rollNo) => {
+    try {
+      setArchiveLoading(true);
+      console.log(rollNo)
+      const { data } = await axios.post(import.meta.env.VITE_BASE_URL + '/HA/student-archive', { rollNo });
+      toast.success(data.message || 'Student archived successfully!');
+      setArchiveLoading(false);
+    } catch (error) {
+      setArchiveLoading(false);
+      const errorMessage = error.response?.data?.message || error.message || 'Failed to archive student';
+      toast.error(errorMessage);
+    }
+  };
 
   return (
     <>
@@ -102,7 +127,8 @@ const Modal = ({ data }) => {
               {/* Header with student photo */}
               <div className="flex flex-col md:flex-row items-center justify-between mb-8 pb-4 border-b border-gray-200">
                 <div className="flex flex-col md:flex-row items-center">
-                  <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-blue-100 flex-shrink-0 mb-4 md:mb-0 md:mr-6">
+                    <div className="flex flex-col justify-center items-center">
+<div className="w-32 h-32 rounded-md overflow-hidden border-4 border-blue-100 flex-shrink-0 mb-4 md:mb-0 md:mr-6">
                     {mdata.profile && mdata.profile.photoLink ? (
                       <img
                         src={mdata.profile.photoLink}
@@ -117,16 +143,46 @@ const Modal = ({ data }) => {
                       </div>
                     )}
                   </div>
+                          <a
+                    href={mdata.profile.photoLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-md mr-5 font-bold text-blue-600 hover:underline"
+                  >
+                    View Profile Photo
+                  </a>
+                  </div>
+      
                   <div>
                     <h1 className="text-2xl font-bold text-gray-800">{mdata.firstName} {mdata.lastName}</h1>
                     <p className="text-gray-600">Roll No: <span className="font-semibold">{mdata.rollNo}</span></p>
                     <p className="text-gray-600">Hostel: <span className="font-semibold">{mdata.hostel?.hostelName ? `${mdata.hostel.hostelName} (Hostel ${mdata.hostelNo})` : `Hostel ${mdata.hostelNo}`}</span></p>
-                  </div>
+                  </div> 
+
                 </div>
+                <div className="flex items-center gap-4" style={{marginLeft:"300px"}}>
+                  <PdfDownload myData={mdata} adminInfo={adminInfo} />
+                  <button
+                    onClick={() => {
+                      console.log("Archiving rollNo:", mdata.rollNo);
+                      addToArchiveTable(mdata.rollNo);
+                    }}
+                    disabled={archiveLoading}
+                    className={`px-4 py-2.5 rounded-lg text-white transition-all ${
+                      archiveLoading ? 'bg-yellow-400 cursor-not-allowed' : 'bg-yellow-600 hover:bg-yellow-500'
+                    }`}
+                    size="sm"
+                  >
+                    {archiveLoading ? 'Archiving...' : 'Archive'}
+                  </button>
+                </div>
+
                 <div className="bg-blue-50 px-4 py-2 rounded-lg mt-4 md:mt-0">
+                  
                   <p className="text-blue-700 font-medium">Year: <span className="font-bold">{mdata.year}</span></p>
                   <p className="text-blue-700 font-medium">Room: <span className="font-bold">{mdata.roomId || 'Not Assigned'}</span></p>
                 </div>
+
               </div>
 
               {/* Student Basic Information */}
@@ -232,15 +288,24 @@ const Modal = ({ data }) => {
                 {mdata.profile?.aadharCardDocument && (
                   <div className="mt-4 pt-4 border-t border-gray-200">
                     <h3 className="font-semibold mb-2">Aadhar Card Document</h3>
-                    <div className="w-full max-w-xs overflow-hidden border-2 border-blue-100 rounded-md">
-                      <img
+                    <div className="w-full max-w-xs overflow-hidden rounded-md">
+                      {/* <img
                         src={mdata.profile.aadharCardDocument}
                         alt="Aadhar Card"
-                        className="w-full object-contain"
+                        className="w-full object-contain "
                         onError={(e) => {
                           e.target.src = "https://via.placeholder.com/150?text=No+Document";
                         }}
-                      />
+                      /> */}
+
+                           <a
+                    href={mdata.profile.aadharCardDocument}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-lg font-bold text-blue-600 hover:underline"
+                  >
+                    View uploaded document
+                  </a>
                     </div>
                   </div>
                 )}
@@ -313,6 +378,7 @@ const Modal = ({ data }) => {
             </div>
           </div>
         )}
+        
       </animated.div>
     </>
   );

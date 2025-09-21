@@ -172,10 +172,10 @@ const Studentlogin = ()=>{
                 </form>
                 <p onClick={()=>{Navigator('/forgetPass')}} className='cursor-pointer' style={{ marginTop: '0px' }}>Forgot Password?</p>
                 <div style={{display:'flex', flexDirection: 'row'}}>
-                <p style={{marginTop:'10px',marginRight:'10px',fontSize:'14px'}}>Don't Have an Account?</p>
+                {/* <p style={{marginTop:'10px',marginRight:'10px',fontSize:'14px'}}>Don't Have an Account?</p>
                 <div>
                     <Button onClick={()=>{Navigator('/StudentSignUp')}} style={{padding:'5px 20px'}} variant="contained" text="Sign Up" />
-                </div>
+                </div> */}
                 </div>
             </div>
             </div>

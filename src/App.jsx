@@ -9,7 +9,7 @@ import Studentlogin from "./Pages/Studentlogin/Studentlogin";
 import AdminDashboard from "./Pages/DashboardAdmin/AdminDashboard";
 import SuperAdminLogin from "./Pages/SuperAdminLogin/SuperAdminLogin";
 import ForgetPassword from "./Pages/ForgetPassword/ForgetPassword";
-import StudentSignUp from "./Pages/StudentSignUp/StudentSignUp";
+// import StudentSignUp from "./Pages/StudentSignUp/StudentSignUp";
 import VerifyOtp from "./Pages/ForgetPassword/VerifyOtp";
 import ResetPassword from "./Pages/ForgetPassword/ResetPassword";
 import Dashboard from "./Pages/Dashboard/Dashboard";
@@ -263,7 +263,7 @@ const handleStudentLogout = ()=>{
             <Route path='/role' element={<OpenRoute><Role /></OpenRoute>}></Route>
             <Route path='/studentLogin' element={<OpenRoute><Studentlogin /></OpenRoute>} />
             <Route path='/forgetPass' element={<OpenRoute><ForgetPassword /></OpenRoute>} />
-            <Route path='/StudentSignUp' element={<OpenRoute><StudentSignUp /></OpenRoute>} />
+            {/* <Route path='/StudentSignUp' element={<OpenRoute><StudentSignUp /></OpenRoute>} /> */}
             <Route path='/VerifyOtp' element={<OpenRoute><VerifyOtp/></OpenRoute>} />
             <Route path='/ResetPassword' element={<OpenRoute><ResetPassword/></OpenRoute>} />
 
