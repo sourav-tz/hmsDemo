@@ -1,21 +1,18 @@
 import { AgGridReact } from 'ag-grid-react';
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
-import { useState,useCallback, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import './ViewInfoTable.css';
 import { Button } from "@/components/ui/button"
 import Modal from '../../Modals/Modal';
 import { useDispatch, useSelector } from 'react-redux';
-import { changeModalState,setModalData } from '../../../Store/Reducers/viewInfoSlice';
-import PdfDownload from './PdfDownload';
+import { changeModalState } from '../../../Store/Reducers/viewInfoSlice';
 import { MdOutlineRemoveRedEye } from "react-icons/md";
-import { RiDeleteBin5Line } from "react-icons/ri";
 import { CiEdit } from "react-icons/ci";
-import { Card } from "@/components/ui/card";
-import { Dialog, DialogTrigger, DialogContent,DialogFooter,DialogTitle,DialogHeader,DialogDescription } from "@/components/ui/dialog";
-import {ScrollArea} from "@/components/ui/scroll-area";
-import {Label} from "@/components/ui/label";
-import {Input} from "@/components/ui/input";
+import { Dialog, DialogTrigger, DialogContent, DialogFooter, DialogTitle, DialogHeader, DialogDescription } from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -26,28 +23,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import {Textarea} from "@/components/ui/textarea";
-import {Calendar} from "@/components/ui/calendar";
-import {useForm,Controller} from 'react-hook-form';
+import { Textarea } from "@/components/ui/textarea";
 
-const ViewInfoTable = ({data})=>{
-
-  // Row Data: The data to be displayed.
+const ViewInfoTable = ({ data }) => {
 
   const [rowData, setRowData] = useState([]);
   const Dispatcher = useDispatch();
-  const [modalData,setModalData] = useState(null);
-  const [edit,setEdit] = useState(false);
-  const [date,setDate] = useState(new Date());
+  const [modalData, setModalData] = useState(null);
   const [archiveLoading, setArchiveLoading] = useState(false);
 
-  // Get admin data from Redux store
   const adminData = useSelector(state => state.userStorage.data);
-
-  // Extract admin data from the nested dataValues property if it exists
   const adminDataValues = adminData?.dataValues || {};
-
-  // Determine the admin information to use
   const adminInfo = {
     name: adminDataValues?.name || adminData?.name || "Admin",
     email: adminDataValues?.email || adminData?.email || "admin@example.com"
@@ -55,13 +41,11 @@ const ViewInfoTable = ({data})=>{
 
   console.log("Admin info in ViewInfoTable:", adminInfo);
 
-
   useEffect(() => {
     if (data && data.length > 0) {
       setRowData(data);
     }
   }, [data]);
- 
 
   const addToArchiveTable = async (rollNo) => {
     try {
@@ -77,43 +61,49 @@ const ViewInfoTable = ({data})=>{
     }
   };
 
-
-
-
-  // Column Definitions: Defines & controls grid columns.
-  const [colDefs, setColDefs] = useState([
-        {field:'rollNo',pinned:'left',width:100},
-        {field:'firstName', pinned:'left',width:120},
-        {field:'lastName',pinned:'left',width:120},
-        {field:'year',width:80},
-        {field:'courseId',width:120},
-        {field:'email'},
-        {field:'profile.contactNumber', headerName: 'Contact Number',width:150},
-        {field:'viewInfo',width:110,cellRenderer:(params)=>{return <Button className="bg-blue-600 hover:bg-blue-500 transition-all" size="sm" onClick={()=>{Dispatcher(changeModalState(true));setModalData(params.data);}}><MdOutlineRemoveRedEye />
-        </Button>}},
-        {field:'edit',width:100,cellRenderer:(params)=>{return <Dialog>
-          <DialogTrigger>
-          <Button className="bg-green-600 hover:bg-green-500 transition-all" size="sm" ><CiEdit /></Button>
+  const [colDefs] = useState([
+    { field: 'rollNo', pinned: 'left', width: 110 },
+    { field: 'firstName', pinned: 'left', width: 120 },
+    { field: 'lastName', pinned: 'left', width: 120 },
+    { field: 'year', width: 80 },
+    { field: 'courseId', width: 120, headerName: 'Course ID' },
+    { field: 'email' },
+    { field: 'profile.contactNumber', headerName: 'Contact', width: 140 },
+    {
+      field: 'viewInfo',
+      headerName: 'View',
+      width: 100,
+      cellRenderer: (params) => {
+        return <Button className="bg-blue-600 hover:bg-blue-500 transition-all" size="sm" onClick={() => { Dispatcher(changeModalState(true)); setModalData(params.data); }}><MdOutlineRemoveRedEye />
+        </Button>
+      }
+    },
+    {
+      field: 'edit',
+      headerName: 'Edit',
+      width: 100,
+      cellRenderer: (params) => {
+        return <Dialog>
+          <DialogTrigger asChild>
+            <Button className="bg-green-600 hover:bg-green-500 transition-all" size="sm" ><CiEdit /></Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Edit Student</DialogTitle>
-            <DialogDescription>Edit the details of the student</DialogDescription>
+              <DialogDescription>Edit the details of the student</DialogDescription>
             </DialogHeader>
-          <ScrollArea>
-          <div className='w-full h-[400px] overflow-y-scroll bg-white rounded-md z-[50]'>
-
-                  <div className="flex flex-col gap-4 p-2">
-                  <Label>Roll No</Label>
-                  <Input placeholder="Roll No" defaultValue={params.data.rollNo} />
-                  <Label>First Name</Label>
-                  <Input placeholder="First Name" value={params.data.firstName} />
-                  <Label>Last Name</Label>
-                  <Input placeholder="Last Name" value={params.data.lastName} />
-                  <Label>Year</Label>
-                  <Select>
+            <ScrollArea className="h-[400px] rounded-md border p-4">
+              <div className="flex flex-col gap-4">
+                <Label>Roll No</Label>
+                <Input placeholder="Roll No" defaultValue={params.data.rollNo} />
+                <Label>First Name</Label>
+                <Input placeholder="First Name" defaultValue={params.data.firstName} />
+                <Label>Last Name</Label>
+                <Input placeholder="Last Name" defaultValue={params.data.lastName} />
+                <Label>Year</Label>
+                <Select defaultValue={String(params.data.year)}>
                   <SelectTrigger>
-                    <SelectValue placeholder={params.data.year} />
+                    <SelectValue placeholder="Select Year" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="1">1st Year</SelectItem>
@@ -122,22 +112,22 @@ const ViewInfoTable = ({data})=>{
                     <SelectItem value="4">4th Year</SelectItem>
                   </SelectContent>
                 </Select>
-                  <Label>Email</Label>
-                  <Input placeholder="Email" value={params.data.email} />
-                  <Label>Contact Number</Label>
-                  <Input placeholder="Contact Number" value={params.data.profile.contactNumber} />
-                  <Label>Course ID</Label>
-                  <Input placeholder="Course ID" value={params.data.courseId} />
-                  <Label>DOB</Label>
-                  <Input placeholder="DOB" value={params.data.profile.dob} />
-                  <Label>Blood Group</Label>
-                  <Input placeholder="Blood Group" value={params.data.profile.bloodGroup} />
-                  <Label>Identification Mark</Label>
-                  <Input placeholder="Identification Mark" value={params.data.profile.identificationMark} />
-                  <Label>Gender</Label>
-                  <Select>
+                <Label>Email</Label>
+                <Input placeholder="Email" defaultValue={params.data.email} />
+                <Label>Contact Number</Label>
+                <Input placeholder="Contact Number" defaultValue={params.data.profile.contactNumber} />
+                <Label>Course ID</Label>
+                <Input placeholder="Course ID" defaultValue={params.data.courseId} />
+                <Label>DOB</Label>
+                <Input placeholder="DOB" defaultValue={params.data.profile.dob} />
+                <Label>Blood Group</Label>
+                <Input placeholder="Blood Group" defaultValue={params.data.profile.bloodGroup} />
+                <Label>Identification Mark</Label>
+                <Input placeholder="Identification Mark" defaultValue={params.data.profile.identificationMark} />
+                <Label>Gender</Label>
+                <Select defaultValue={params.data.profile.gender}>
                   <SelectTrigger>
-                    <SelectValue placeholder={params.data.profile.gender} />
+                    <SelectValue placeholder="Select Gender" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="M">Male</SelectItem>
@@ -145,61 +135,47 @@ const ViewInfoTable = ({data})=>{
                     <SelectItem value="O">Other</SelectItem>
                   </SelectContent>
                 </Select>
-                  <Label>Personal Email</Label>
-                  <Input placeholder="Personal Email" value={params.data.profile.pEmail} />
-                  <Label>Address</Label>
-                  <Textarea placeholder="Address" value={params.data.profile.subAddress} />
-                  <Label>City</Label>
-                  <Input placeholder="City" value={params.data.profile.city} />
-                  <Label>State</Label>
-                  <Input placeholder="State" value={params.data.profile.state} />
-                  <Label>Pincode</Label>
-                  <Input placeholder="Pincode" value={params.data.profile.pinCode} />
-                  </div>
-          </div>
-          <DialogFooter className="mt-4">
-          <Button className="bg-green-600 hover:bg-green-500 transition-all" size="sm">Save</Button>
-          <Button className="bg-red-600 hover:bg-red-500 transition-all" size="sm" onClick={()=>{}}>Cancel</Button>
-          </DialogFooter>
-          </ScrollArea>
+                <Label>Personal Email</Label>
+                <Input placeholder="Personal Email" defaultValue={params.data.profile.pEmail} />
+                <Label>Address</Label>
+                <Textarea placeholder="Address" defaultValue={params.data.profile.subAddress} />
+                <Label>City</Label>
+                <Input placeholder="City" defaultValue={params.data.profile.city} />
+                <Label>State</Label>
+                <Input placeholder="State" defaultValue={params.data.profile.state} />
+                <Label>Pincode</Label>
+                <Input placeholder="Pincode" defaultValue={params.data.profile.pinCode} />
+              </div>
+            </ScrollArea>
+            <DialogFooter className="mt-4">
+              <Button className="bg-green-600 hover:bg-green-500 transition-all" size="sm">Save</Button>
+            </DialogFooter>
           </DialogContent>
-          </Dialog> }},
-        {field:'delete',width:100,cellRenderer:(params)=>{return <Button className="bg-red-600 hover:bg-red-500 transition-all" size="sm" ><RiDeleteBin5Line /></Button>}}
-         
+        </Dialog>
+      }
+    },
   ]);
 
+  // This strategy tells the grid to resize columns to fit the available width.
+  const autoSizeStrategy = {
+    type: 'fitGridWidth'
+  };
 
+  return <>
+    {/* I've set the width to 100% to ensure the container takes up full space */}
+    <div className="ag-theme-quartz" style={{ height: 475, width: '100%' }}>
 
-
-
-    return<>
-       <div className="ag-theme-quartz" style={{ height: 475, paddingRight:0, marginRight:0 }}>
-
-        {/* The AG Grid component */}
-        <AgGridReact  rowData={rowData} columnDefs={colDefs}  rowSelection='single' rowMultiSelectWithClick={true}/>
-        <Modal data={modalData}/>
-        {/* <div className={`${edit?'translate-y-0':'-translate-y-full'} w-full h-screen fixed top-0 left-0 z-[1000] flex flex-col justify-center items-center overflow-y-scroll p-10`}>
-          <div className="w-full h-full fixed top-0 left-0 bg-gray-900 bg-opacity-50"></div>
-
-        </div> */}
-        </div>
-    </>
-
-
+      {/* The autoSizeStrategy prop is added here to enable auto-resizing */}
+      <AgGridReact
+        rowData={rowData}
+        columnDefs={colDefs}
+        rowSelection='single'
+        autoSizeStrategy={autoSizeStrategy}
+      />
+      <Modal data={modalData} />
+      <ToastContainer position="bottom-right" autoClose={5000} hideProgressBar={false} />
+    </div>
+  </>
 };
 
-
-
 export default ViewInfoTable;
-
-
-
-
-
-
-
-
-
-
-
-
