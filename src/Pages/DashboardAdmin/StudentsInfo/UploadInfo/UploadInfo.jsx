@@ -14,6 +14,7 @@ import { useSelector } from 'react-redux';
 import FileCheckLoading from '../../../../components/Loadingpage/FileCheckLoading';
 import { FaFileCsv } from "react-icons/fa6";
 import { IoWarningOutline } from "react-icons/io5";
+import backgroundImage from '../../../../Assets/hostel11.jpg';
 import {
   Accordion,
   AccordionContent,
@@ -294,11 +295,16 @@ const handleDragEnter = (e) => {
     }
 
     return<>
-        <div className={styles.container + ' flex flex-col items-center w-full'}>
-            <div className={styles.Header}><h1 className=' text-3xl mt-28 md:mt-4 text-blue-600'>Upload Student Info</h1></div>
+        <div className="relative min-h-screen w-full flex flex-col justify-start py-10 items-center">
+              {/* Background Image Layer */}
+              <div
+                className="absolute top-0 left-0 w-full h-full bg-center bg-cover bg-no-repeat bg-fixed blur-sm opacity-50 z-[-1]"
+                style={{ backgroundImage: `url(${backgroundImage})` }}
+              />
+            <div className={styles.Header}><h1 className=' text-3xl mt-28 md:mt-4 text-[#5F57FF]'>Upload Student Info</h1></div>
             {updateProcess==false&&mainSteps===0&&loading===false?<div className={styles.uploadContainer + ' p-4 flex flex-col items-center w-full'}>
 
-                <div  className={styles.uploadArea + ' p-4 min-h-[300px] w-full md:w-[600px]' +' '+(dragging?styles.drag:null)}
+                <div  className={styles.uploadArea + ' p-4 min-h-[300px] w-full md:w-[600px] rounded-[30px] shadow-[0_3px_10px_rgb(0,0,0,0.2)] bg-white/30' +' '+(dragging?styles.drag:null)} 
                     onDragEnter={handleDragEnter}
                     onDragLeave={handleDragLeave}
                     onDragOver={handleDragOver}
@@ -308,7 +314,7 @@ const handleDragEnter = (e) => {
               {step===1?<><input className={styles.myFile} type="file" ref={inputElement} onChange={handleFile}/>
                     <IoIosCloudUpload size="60"/>
                     <p>Drag and Drop Files <br/>Or</p>
-                    <Button onClick={handleButtonClick} variant="contained" style={{marginTop:'10px'}} text="Browser Files" /></>:null}
+                    <Button onClick={handleButtonClick} variant="contained" style={{marginTop:'10px'}} text="Browse Files" /></>:null}
                     {step===0?<FileCheckLoading/>:null}
                     {step===2?<><div className='flex items-center'>
                       <FaFileCsv size="60"/><p className='ml-4'>{file.name}</p>

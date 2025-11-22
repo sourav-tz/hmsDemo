@@ -4,6 +4,7 @@ import TableLoader from '../../../../components/TableLoader/TableLoader';
 import RoomTable from '../../../../components/Tables/RoomTable/RoomTable';
 import Modal from '../../../../components/Modals/Modal';
 import { changeModalState } from '../../../../Store/Reducers/viewInfoSlice';
+import backgroundImage from '../../../../Assets/hostel11.jpg';
 import {
     Dialog,
     DialogContent,
@@ -438,12 +439,18 @@ const handleStudentInfo =(rollNo)=>{
 
 
     return<>
-    <h1 className='text-3xl mt-16 md:mt-4 text-blue-600 p-8 md:p-8 text-center max-sm:pt-16'>Rooms Allotement</h1>
+    <div className="relative min-h-screen w-full flex flex-col justify-start py-10 items-center">
+          {/* Background Image Layer */}
+          <div
+            className="absolute top-0 left-0 w-full h-full bg-center bg-cover bg-no-repeat bg-fixed blur-sm opacity-50 z-[-1]"
+            style={{ backgroundImage: `url(${backgroundImage})` }}
+          />
+    <h1 className='text-3xl mt-16 md:mt-4 text-[#5F57FF] p-8 md:p-8 text-center max-sm:pt-16'>Rooms Allotement</h1>
     <div className={styles.container + ' flex flex-col items-center'}>
 
 <div className='flex flex-col md:flex-row'>
      <div className='md:min-w-[350px] p-4'>  
-    <Card>
+    <Card className="rounded-[30px] shadow-[0_3px_10px_rgb(0,0,0,0.2)] bg-white/30">
     <CardHeader>
         <CardTitle>Rooms Status</CardTitle>
         <CardDescription>Check the Rooms Status of whole hostel</CardDescription>
@@ -457,7 +464,7 @@ const handleStudentInfo =(rollNo)=>{
 
 {/* //Search query */}
     <div className='mt-4 md:mt-0 md:p-4 p-4 min-w-[350px] max-lg:w-[230px] '>
-        <Card>
+        <Card className="rounded-[30px] shadow-[0_3px_10px_rgb(0,0,0,0.2)] bg-white/30">
         <CardHeader>
             <CardTitle>Search Queries</CardTitle>
             <CardDescription>Search Rooms according to queries</CardDescription>
@@ -641,6 +648,7 @@ const handleStudentInfo =(rollNo)=>{
       />
       <ToastContainer />
       <div className='mt-4'></div>
+    </div>
     </div>
     </>
 }

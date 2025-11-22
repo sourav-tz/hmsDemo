@@ -12,7 +12,7 @@ import config from '../../config/config';
 import { removeUserData } from '../../Store/Reducers/userSlice';
 import {Chart, ArcElement, Tooltip, Legend, Title} from 'chart.js';
 import { Doughnut } from "react-chartjs-2";
-
+import backgroundImage from '../../Assets/hostel11.jpg';
   
 import {
     Card,
@@ -109,12 +109,17 @@ return <>
 
         {/* Home */}
         <div className={styles.contentSpace + ' flex justify-center'}>
-        <div className={styles.Header+ ' text-blue-600 text-center text-3xl mt-16 md:mt-0'}><h1>Welcome To NIT HMS</h1></div>
+            {/* Background Image Layer */}
+                  <div
+                    className="absolute top-0 left-0 w-full h-full bg-center bg-cover bg-no-repeat bg-fixed blur-sm opacity-50 z-[-1]"
+                    style={{ backgroundImage: `url(${backgroundImage})` }}
+                  />
+        <div className={styles.Header+ ' text-[#5F57FF] text-center text-3xl mt-16 md:mt-0'}><h1>Welcome To NIT HMS</h1></div>
         <div className="">
-            <Card>
-            <CardHeader>
-                <CardTitle>Rooms Status</CardTitle>
-                <CardDescription>Check the Rooms Status of whole hostel</CardDescription>
+            <Card className="rounded-[30px] shadow-[0_3px_10px_rgb(0,0,0,0.2)] bg-white/30">
+            <CardHeader> 
+                <CardTitle className="text-[#5F57FF]">Rooms Status</CardTitle>
+                <CardDescription className="text-[#131133]">Check the Rooms Status of whole hostel</CardDescription>
             </CardHeader>
             <CardContent>
                 <Doughnut type="doughnut" data={data} />
@@ -122,10 +127,10 @@ return <>
             </Card>
         </div>
         <div className={styles.complaintBox}>
-            <Card>
+            <Card className="rounded-[30px] shadow-[0_3px_10px_rgb(0,0,0,0.2)] bg-white/30">
             <CardHeader>
-                <CardTitle>Complaint Box</CardTitle>
-                <CardDescription>Check the Complaints of whole hostel</CardDescription>
+                <CardTitle className="text-[#5F57FF]">Complaint Box</CardTitle>
+                <CardDescription className="text-[#131133]">Check the Complaints of whole hostel</CardDescription>
                 <CardContent>
                     <p>No Complaints</p>
                 </CardContent>

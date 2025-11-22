@@ -24,6 +24,8 @@ import { toast } from "react-toastify";
 import { Loader2 } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import backgroundImage from '../../../Assets/hostel11.jpg';
+
 import {
   Select,
   SelectContent,
@@ -306,13 +308,18 @@ const ApplicationStatus = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold">My Applications</h1>
+    <div className="relative min-h-screen w-full flex flex-col justify-start py-10 items-center">
+          {/* Background Image Layer */}
+          <div
+            className="absolute top-0 left-0 w-full h-full bg-center bg-cover bg-no-repeat bg-fixed blur-sm opacity-50 z-[-1]"
+            style={{ backgroundImage: `url(${backgroundImage})` }}
+          />
+      <div className="text-center mb-6">
+        <h1 className="text-3xl text-[#5F57FF]">My Applications</h1>
         <p className="text-gray-600">Track the status of your submitted applications</p>
       </div>
 
-      <Card>
+      <Card className="rounded-[30px] shadow-[0_3px_10px_rgb(0,0,0,0.2)] bg-white/30">
         <div className="p-4 flex justify-between items-center">
           <div className="flex items-center gap-4">
             <Select 

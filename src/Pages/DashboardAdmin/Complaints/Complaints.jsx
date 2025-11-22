@@ -6,6 +6,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import axios from 'axios';
+import backgroundImage from '../../../Assets/hostel11.jpg';
+
 
 const Complaints = () => {
   const [complaints, setComplaints] = useState([]);
@@ -99,8 +101,13 @@ const Complaints = () => {
   };
 
   return (
-    <div className='flex flex-col items-center w-full bg-gray-100 min-h-screen mx-auto'>
-      <h1 className='text-3xl font-semibold mt-10'>Complaint Management</h1>
+    <div className="relative min-h-screen w-full flex flex-col justify-start py-10 items-center">
+          {/* Background Image Layer */}
+          <div
+            className="absolute top-0 left-0 w-full h-full bg-center bg-cover bg-no-repeat bg-fixed blur-sm opacity-50 z-[-1]"
+            style={{ backgroundImage: `url(${backgroundImage})` }}
+          />
+      <h1 className='text-3xl mt-10 text-[#5F57FF]'>Complaint Management</h1>
       <p className='text-gray-500'>Complaints From Students</p>
 
       <Card className="w-[900px] mt-10">

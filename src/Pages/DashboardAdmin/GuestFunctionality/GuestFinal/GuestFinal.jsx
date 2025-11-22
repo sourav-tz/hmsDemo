@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import backgroundImage from '../../../../Assets/hostel11.jpg';
+
 import {
   Table,
   TableBody,
@@ -65,8 +67,13 @@ const GuestFinal = () => {
 
   return (
     <>
-      <div className="flex flex-col items-center w-full bg-gray-100 min-h-screen mx-auto item-center">
-        <h1 className="text-3xl font-semibold mt-10 max-md:mt-24 ">
+      <div className="relative min-h-screen w-full flex flex-col justify-start py-10 items-center">
+                    {/* Background Image Layer */}
+                    <div
+                      className="absolute top-0 left-0 w-full h-full bg-center bg-cover bg-no-repeat bg-fixed blur-sm opacity-50 z-[-1]"
+                      style={{ backgroundImage: `url(${backgroundImage})` }}
+                    />
+        <h1 className="text-3xl text-[#5F57FF] mt-10 max-md:mt-24 ">
           View Guest Applications
         </h1>
         <Card className="w-3/4 mt-10 ml-2 max-lg:ml-16 min-lg:ml-16 w-4/5">

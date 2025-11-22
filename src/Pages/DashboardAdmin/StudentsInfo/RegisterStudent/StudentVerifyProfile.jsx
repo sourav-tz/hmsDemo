@@ -11,6 +11,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import ReactPaginate from 'react-paginate'
 import '../../../../MainStyles/Pagination.css'
 import { Loader2, CheckCircle, XCircle } from 'lucide-react'
+import backgroundImage from '../../../../Assets/hostel11.jpg';
 
 function StudentVerifyProfile() {
   const [students, setStudents] = useState([])
@@ -176,9 +177,14 @@ function StudentVerifyProfile() {
   }
 
   return (
-    <div className='flex flex-col items-center w-full bg-gray-100 min-h-screen mx-auto'>
+    <div className="relative min-h-screen w-full flex flex-col justify-start py-10 items-center">
+      {/* Background Image Layer */}
+      <div
+        className="absolute top-0 left-0 w-full h-full bg-center bg-cover bg-no-repeat bg-fixed blur-sm opacity-50 z-[-1]"
+        style={{ backgroundImage: `url(${backgroundImage})` }}
+      />
       <ToastContainer />
-      <h1 className='text-3xl font-semibold mt-10 max-md:mt-24'>Verify Student Profiles</h1>
+      <h1 className='text-3xl mt-28 md:mt-4 text-[#5F57FF]'>Verify Student Profiles</h1>
 
       {/* Student List */}
       <Card className="w-4/5 mt-10">
@@ -512,6 +518,7 @@ function StudentVerifyProfile() {
           </DialogContent>
         </Dialog>
       )}
+      
     </div>
   )
 }

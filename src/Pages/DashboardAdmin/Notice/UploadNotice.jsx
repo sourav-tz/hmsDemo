@@ -10,6 +10,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useForm,Controller } from "react-hook-form";
 import { DevTool } from "@hookform/devtools";
 import axios from 'axios';
+import backgroundImage from '../../../Assets/hostel11.jpg';
 import { useSelector } from "react-redux";
 
 const UploadNotice = ()=>{
@@ -71,9 +72,14 @@ const UploadNotice = ()=>{
 
     return(
         <>
-        <div className='flex flex-col min-h-screen  bg-gray-100 w-full justify-start py-10 items-center'>
+        <div className="relative min-h-screen w-full flex flex-col justify-start py-10 items-center">
+          {/* Background Image Layer */}
+          <div
+            className="absolute top-0 left-0 w-full h-full bg-center bg-cover bg-no-repeat bg-fixed blur-sm opacity-50 z-[-1]"
+            style={{ backgroundImage: `url(${backgroundImage})` }}
+          />
             <div className=''>
-              <h1 className='text-3xl font-semibold max-md:mt-16' >Upload Notice</h1>
+              <h1 className='text-3xl text-[#5F57FF] max-md:mt-16' >Upload Notice</h1>
               <p className='text-gray-500'>Please upload the notice in pdf format</p>
             </div>
             <div className="max-sm:pl-72 max-md:pl-40">
