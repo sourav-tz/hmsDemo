@@ -1,13 +1,24 @@
 import styles from "./Modal.module.scss";
+import axios from 'axios';
+
 import { animated, useSpring } from "@react-spring/web";
 import { useEffect, useState } from "react";
 import { CgClose } from "react-icons/cg";
 import { useSelector, useDispatch } from "react-redux";
 import { changeModalState } from "../../Store/Reducers/viewInfoSlice";
+import PdfDownload from "../Tables/ViewInfoTable/PdfDownload";
+import { toast } from 'react-toastify'
+
+
 
 const Modal = ({ data }) => {
   const [loadingModal, setLoading] = useState(true);
   const mopen = useSelector((state) => state.viewInfoStates.modalState);
+
+  const adminInfo = useSelector((state) => state.adminInfo);
+  const [archiveLoading, setArchiveLoading] = useState(false);
+
+
   const [mdata, setMData] = useState({});
 
   useEffect(() => {
@@ -47,6 +58,20 @@ const Modal = ({ data }) => {
       window.removeEventListener("keydown", handleEscapeKeyPress);
     };
   }, [Dispatcher]);
+
+  const addToArchiveTable = async (rollNo) => {
+    try {
+      setArchiveLoading(true);
+      console.log(rollNo)
+      const { data } = await axios.post(import.meta.env.VITE_BASE_URL + '/HA/student-archive', { rollNo });
+      toast.success(data.message || 'Student archived successfully!');
+      setArchiveLoading(false);
+    } catch (error) {
+      setArchiveLoading(false);
+      const errorMessage = error.response?.data?.message || error.message || 'Failed to archive student';
+      toast.error(errorMessage);
+    }
+  };
 
   return (
     <>
@@ -132,9 +157,28 @@ const Modal = ({ data }) => {
                     <h1 className="text-2xl font-bold text-gray-800">{mdata.firstName} {mdata.lastName}</h1>
                     <p className="text-gray-600">Roll No: <span className="font-semibold">{mdata.rollNo}</span></p>
                     <p className="text-gray-600">Hostel: <span className="font-semibold">{mdata.hostel?.hostelName ? `${mdata.hostel.hostelName} (Hostel ${mdata.hostelNo})` : `Hostel ${mdata.hostelNo}`}</span></p>
-                  </div>
+                  </div> 
+
                 </div>
+                <div className="flex items-center gap-4" style={{marginLeft:"300px"}}>
+                  <PdfDownload myData={mdata} adminInfo={adminInfo} />
+                  <button
+                    onClick={() => {
+                      console.log("Archiving rollNo:", mdata.rollNo);
+                      addToArchiveTable(mdata.rollNo);
+                    }}
+                    disabled={archiveLoading}
+                    className={`px-4 py-2.5 rounded-lg text-white transition-all ${
+                      archiveLoading ? 'bg-yellow-400 cursor-not-allowed' : 'bg-yellow-600 hover:bg-yellow-500'
+                    }`}
+                    size="sm"
+                  >
+                    {archiveLoading ? 'Archiving...' : 'Archive'}
+                  </button>
+                </div>
+
                 <div className="bg-blue-50 px-4 py-2 rounded-lg mt-4 md:mt-0">
+                  
                   <p className="text-blue-700 font-medium">Year: <span className="font-bold">{mdata.year}</span></p>
                   <p className="text-blue-700 font-medium">Room: <span className="font-bold">{mdata.roomId || 'Not Assigned'}</span></p>
                 </div>
@@ -334,6 +378,7 @@ const Modal = ({ data }) => {
             </div>
           </div>
         )}
+        
       </animated.div>
     </>
   );
