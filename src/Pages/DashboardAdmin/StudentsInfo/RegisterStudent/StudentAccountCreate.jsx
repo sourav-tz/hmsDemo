@@ -96,10 +96,10 @@ const filteredItems = items.filter(item =>
 
 
       {/* Input Section */}
-      <div className="w-3/5 max-h-[400px] overflow-auto p-12 rounded-[30px] shadow-[0_3px_10px_rgb(0,0,0,0.2)] bg-white/30 flex gap-2 flex-wrap items-center justify-center">
+      <div className="w-3/5 max-h-[400px] overflow-auto rounded-2xl p-12 bg-[#5F57FF] flex gap-2 flex-wrap shadow-sm items-center justify-center">
         <div className="text-center w-full">
-          <h1 className="text-3xl mt-28 md:mt-4 text-[#5F57FF]">Student Account Creation</h1>
-          <p className="text-[#5F57FF] font-semibold mt-6 mb-6">Enter Student E-mail</p>
+          <h1 className="text-3xl font-semibold text-white">Student Account Creation</h1>
+          <p className="text-white font-semibold mt-6 mb-6">Enter Student E-mail</p>
         </div>
 
         <div className="flex items-center gap-4 mt-4 w-full">

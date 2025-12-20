@@ -1,6 +1,6 @@
 'use strict';
 
-// const { Primary } = require('@storybook/blocks');
+const { Primary } = require('@storybook/blocks');
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {

@@ -8,8 +8,6 @@ import Papa from 'papaparse';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
-import backgroundImage from '../../../Assets/hostel11.jpg';
-
 
 const Application = () => {
   const { register, handleSubmit,reset, formState: { errors, isValid }, control, setValue } = useForm({
@@ -96,19 +94,14 @@ const Application = () => {
   };
 
   return (
-    <div className="relative min-h-screen w-full flex flex-col justify-start py-10 items-center">
-          {/* Background Image Layer */}
-          <div
-            className="absolute top-0 left-0 w-full h-full bg-center bg-cover bg-no-repeat bg-fixed blur-sm opacity-50 z-[-1]"
-            style={{ backgroundImage: `url(${backgroundImage})` }}
-          />
+    <div className="flex flex-col min-h-screen bg-gray-100 w-full justify-start py-10 items-center sm:py-16">
       <div className="text-center mb-6">
-        <h1 className="text-3xl text-[#5F57FF]">Application</h1>
+        <h1 className="text-3xl font-semibold">Application</h1>
         <p className="text-gray-500">Please fill out the form below.</p>
       </div>
 
-      <div className="w-full max-w-lg px-4 sm:px-6 rounded-[30px] shadow-[0_3px_10px_rgb(0,0,0,0.2)] bg-white/30">
-        <form onSubmit={handleSubmit(onSubmit)} className="rounded-lg p-6 sm:p-8">
+      <div className="w-full max-w-lg px-4 sm:px-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="bg-white shadow rounded-lg p-6 sm:p-8">
           <div className="flex flex-col gap-6">
             
             {/* Subject */}
@@ -218,7 +211,7 @@ const Application = () => {
             {/* Submit Button */}
             <Button
               type="submit"
-              className="bg-[#131133] rounded-xl hover:bg-blue-500 w-[30%] transition transform hover:scale-105 duration-300 ease-in-out"
+              className="bg-blue-700 hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded"
               disabled={!isValid}
             >
               Submit
