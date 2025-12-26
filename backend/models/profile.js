@@ -94,15 +94,31 @@ module.exports = (sequelize, dataTypes) => {
         dob: {
             type: dataTypes.DATEONLY,
         },
+        // addharNumber: {
+        //     type: dataTypes.STRING,
+        //     validate: {
+        //         is: {
+        //             args:/^[0-9]{12}$/i,
+        //             msg:"addharNumber must be 12 digits"
+        //           },
+        //       },
+        // },
+
         addharNumber: {
             type: dataTypes.STRING,
+            allowNull: false,
             validate: {
-                is: {
-                    args:/^[0-9]{12}$/i,
-                    msg:"addharNumber must be 12 digits"
-                  },
-              },
+                isNumeric: {
+                    msg: "Aadhaar number must contain only digits"
+                },
+                isValidLength(value) {
+                    if (value.length !== 12 && value.length !== 16) {
+                        throw new Error("Aadhaar number must be 12 or 16 digits");
+                    }
+                }
+            }
         },
+
         photoLink: {
             type: dataTypes.STRING,
         },

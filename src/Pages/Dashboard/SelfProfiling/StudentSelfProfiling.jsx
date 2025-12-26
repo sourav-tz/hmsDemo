@@ -1,13 +1,3 @@
-// import React from 'react'
-
-// const StudentSelfProfiling = () => {
-//   return (
-//     <div>StudentSelfProfiling</div>
-//   )
-// }
-
-// export default StudentSelfProfiling
-
 
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -75,6 +65,8 @@ export default function StudentSelfProfiling() {
   const [dontShowAgain, setDontShowAgain] = useState(false);
   const [date, setDate] = useState();
   const [rejectionReason, setRejectionReason] = useState('');
+  const [inlineError, setInlineError] = useState("");
+
   
   const Navigator = useNavigate();
 
@@ -112,6 +104,7 @@ export default function StudentSelfProfiling() {
       // localGuardianContact: "",
       localGuardianAddress: "",
       addharNumber: "",
+      virtualAadhar: "",
       aadharCardDocument: "",
       photoLink: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrxb9rKS0KgjTtqrKPK8dodc0pEeaoC-pY_w&s"
     };
@@ -158,7 +151,8 @@ export default function StudentSelfProfiling() {
       'contactNumber_1', 'email', 'gender', 'bloodGroup', 'fatherName',
       'fatherContact', 'motherName', 'motherContact',
       'address', 'city', 'state', 'pinCode',
-      'addharNumber', 'aadharCardDocument', 'photoLink'
+      // 'addharNumber', 
+      'aadharCardDocument', 'photoLink'
     ];
 
     // Count filled required fields
@@ -197,7 +191,8 @@ export default function StudentSelfProfiling() {
       'contactNumber_1', 'email', 'gender', 'bloodGroup', 'fatherName',
       'fatherContact', 'motherName', 'motherContact',
       'address', 'city', 'state', 'pinCode',
-      'addharNumber', 'aadharCardDocument', 'photoLink'
+      // 'addharNumber', 
+      'aadharCardDocument', 'photoLink'
     ];
 
     // Skip validation for optional fields if they're empty
@@ -297,16 +292,16 @@ export default function StudentSelfProfiling() {
         }
         break;
 
-      case 'addharNumber':
-        // First check if contains non-digit characters
-        if (!/^\d*$/.test(value)) {
-          error = "Aadhaar number must contain only digits";
-        }
-        // Then check length if all digits
-        else if (value.length > 0 && value.length !== 12) {
-          error = "Aadhaar number must be exactly 12 digits";
-        }
-        break;
+      // case 'addharNumber':
+      //   // First check if contains non-digit characters
+      //   if (!/^\d*$/.test(value)) {
+      //     error = "Aadhaar number must contain only digits";
+      //   }
+      //   // Then check length if all digits
+      //   else if (value.length > 0 && value.length !== 12) {
+      //     error = "Aadhaar number must be exactly 12 digits";
+      //   }
+      //   break;
 
       case 'identificationMark':
       case 'fatherOccupation':
@@ -580,6 +575,21 @@ export default function StudentSelfProfiling() {
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
 
+    const virtualAadhaar = formData.virtualAadhar?.trim();
+
+    if (!virtualAadhaar) {
+      setErrors({ virtualAadhar: "Virtual Aadhaar Number is required" });
+      toast.error("Please enter your 16-digit Virtual Aadhaar number");
+      return;
+    }
+
+    if (!/^\d{16}$/.test(virtualAadhaar)) {
+      setErrors({ virtualAadhaar: "Virtual Aadhaar must be exactly 16 digits" });
+      toast.error("Virtual Aadhaar must be exactly 16 digits");
+      return;
+    }
+
+
     // Basic validation
     const newErrors = {};
 
@@ -608,15 +618,17 @@ export default function StudentSelfProfiling() {
     if (!formData.aadharCardDocument) {
       newErrors.aadharCardDocument = "Aadhar Card Photo is required";
     }
-    if (!formData.addharNumber) {
-      newErrors.addharNumber = "Aadhaar Number is required";
-    }
+    // if (!formData.addharNumber) {
+    //   newErrors.addharNumber = "Aadhaar Number is required";
+    // }
 
     // Format validation using validateField function for consistency
     const fieldsToValidate = [
       'rollNo', 'email', 'firstName', 'lastName', 'contactNumber_1', 'contactNumber_2',
       'phoneNumber', 'fatherContact', 'motherContact', 'localGuardianContact',
-      'pinCode', 'addharNumber', 'identificationMark', 'fatherName', 'motherName',
+      'pinCode',
+      // 'addharNumber', 
+      'identificationMark', 'fatherName', 'motherName',
       'localGuardian', 'fatherOccupation', 'motherOccupation', 'photoLink','aadharCardDocument'
     ];
 
@@ -625,7 +637,9 @@ export default function StudentSelfProfiling() {
       'rollNo', 'firstName', 'dob', 'course', 'semester', 'branch',
       'contactNumber_1', 'email', 'gender', 'fatherName', 'fatherContact',
       'motherName', 'motherContact', 'address', 'city', 'state', 'pinCode',
-      'photoLink', 'aadharCardDocument', 'addharNumber', 'bloodGroup'
+      'photoLink', 'aadharCardDocument',
+      //  'addharNumber', 
+      'bloodGroup'
     ];
 
     // Validate each field that has a value
@@ -724,6 +738,7 @@ export default function StudentSelfProfiling() {
     // This approach prevents validation errors from the backend for empty optional fields
     const submissionData = {
       ...formData,
+      addharNumber: virtualAadhaar,
       rollNo: parseInt(formData.rollNo, 10),
       semester: parseInt(formData.semester, 10),
       tokenEmail: formData.email, // Add tokenEmail for the backend
@@ -890,12 +905,25 @@ export default function StudentSelfProfiling() {
   }, [userData, fetchProfileData, fetchAvailableCourses, updateFormData]);
 
     // Show masked Aadhaar info popup once per user
-  useEffect(() => {
-    const hasSeenInfo = localStorage.getItem("seenMaskedAadharInfo");
-    if (!hasSeenInfo) {
-      setShowAadharInfoModal(true);
-    }
-  }, []);
+  // useEffect(() => {
+  //   const hasSeenInfo = localStorage.getItem("seenMaskedAadharInfo");
+  //   if (!hasSeenInfo) {
+  //     setShowAadharInfoModal(true);
+  //   }
+  // }, []);
+
+    useEffect(() => {
+      const userEmail = userData?.email || localStorage.getItem("email");
+      if (!userEmail) return;
+
+      const key = `seenMaskedAadharInfo_${userEmail}`;
+      const hasSeenInfo = localStorage.getItem(key);
+
+      if (!hasSeenInfo) {
+        setShowAadharInfoModal(true);
+      }
+    }, [userData]);
+
 
 
 
@@ -1498,7 +1526,7 @@ export default function StudentSelfProfiling() {
             />
             {errors.localGuardianAddress && <p className="text-red-500 text-xs">{errors.localGuardianAddress}</p>}
           </div>
-          <div className="space-y-1">
+          {/* <div className="space-y-1">
             <Label htmlFor="addharNumber">Aadhaar Number <span className="text-red-500">*</span></Label>
             <Input
               id="addharNumber"
@@ -1509,6 +1537,63 @@ export default function StudentSelfProfiling() {
               disabled={isReadOnly}
             />
             {errors.addharNumber && <p className="text-red-500 text-xs">{errors.addharNumber}</p>}
+          </div> */}
+          {/* Virtual Aadhaar Number Section */}
+          {/* Virtual Aadhaar Number Section */}
+          <div className="border rounded-lg p-4 bg-white">
+            <label htmlFor="virtualAadhar" className="block font-medium mb-2">
+              Virtual Aadhaar Number <span className="text-red-500">*</span>
+            </label>
+
+            <input
+              type="text"
+              id="virtualAadhar"
+              name="virtualAadhar"
+              placeholder="Enter your 16-digit Virtual Aadhaar ID"
+              value={formData.virtualAadhar || ""}
+              onChange={(e) => {
+                const value = e.target.value.trim();
+                if (/[^0-9]/.test(value)) return; // allow digits only
+                updateFormData({ virtualAadhar: value });
+              }}
+              onBlur={(e) => {
+                const value = e.target.value.trim();
+                if (!value) return;
+
+                if (value.length === 12) {
+                  setInlineError(
+                    <>
+                      A Virtual Aadhaar is more secure and is of 16 digits. You can obtain it from{" "}
+                      <a
+                        href="https://myaadhaar.uidai.gov.in/genericGenerateOrRetriveVID/en"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 underline"
+                      >
+                        here
+                      </a>.
+                    </>
+                  );
+                } else if (value.length !== 16) {
+                  setInlineError("Please enter a valid 16-digit Virtual Aadhaar ID.");
+                } else {
+                  setInlineError(""); // clear if valid
+                }
+              }}
+              maxLength={16}
+              className="border px-3 py-2 rounded w-full"
+              disabled={isReadOnly}
+            />
+
+            {/* Inline error message */}
+            {inlineError && (
+              <p className="text-sm text-red-500 mt-1">{inlineError}</p>
+            )}
+
+            {/* Help note below input */}
+            <p className="text-sm text-gray-600 mt-2">
+              💡 You can find your 16-digit <strong>Virtual Aadhaar ID</strong> on your masked Aadhaar card (usually printed below the Aadhaar number on the PDF or physical copy).
+            </p>
           </div>
 
 
@@ -1665,14 +1750,17 @@ export default function StudentSelfProfiling() {
 
       <Button
         onClick={() => {
-          if (dontShowAgain) {
-            localStorage.setItem("seenMaskedAadharInfo", "true");
+          const userEmail = userData?.email || localStorage.getItem("email");
+          if (dontShowAgain && userEmail) {
+            const key = `seenMaskedAadharInfo_${userEmail}`;
+            localStorage.setItem(key, "true");
           }
           setShowAadharInfoModal(false);
         }}
       >
         Got it
       </Button>
+
     </DialogFooter>
   </DialogContent>
 </Dialog>
@@ -1756,6 +1844,8 @@ function CalendarDaysIcon(props) {
     </svg>
   )
 }
+
+
 
 
 
