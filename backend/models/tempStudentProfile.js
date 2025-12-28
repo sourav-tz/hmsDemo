@@ -213,13 +213,29 @@ module.exports = (sequelize, dataTypes) => {
           len: [0, 255],
         },
       },
+      // addharNumber: {
+      //   type: dataTypes.STRING,
+      //   validate: {
+      //     isNumeric: true,
+      //     len: [12, 12],
+      //   },
+      // },
       addharNumber: {
         type: dataTypes.STRING,
+        allowNull: false,
         validate: {
-          isNumeric: true,
-          len: [12, 12],
+          isNumeric: {
+            msg: "Aadhaar number must contain only digits",
+          },
+          isValidLength(value) {
+            if (value.length !== 12 && value.length !== 16) {
+              throw new Error("Aadhaar number must be 12 or 16 digits");
+            }
+          },
         },
       },
+
+
       photoLink: {
         type: dataTypes.STRING,
         validate: {

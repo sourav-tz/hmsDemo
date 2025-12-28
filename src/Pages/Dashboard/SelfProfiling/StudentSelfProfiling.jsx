@@ -1,13 +1,3 @@
-// import React from 'react'
-
-// const StudentSelfProfiling = () => {
-//   return (
-//     <div>StudentSelfProfiling</div>
-//   )
-// }
-
-// export default StudentSelfProfiling
-
 
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -25,6 +15,9 @@ import { toast, ToastContainer } from 'react-toastify'
 import { useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css'
 import FileUpload from "@/components/FileUpload/FileUpload"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Checkbox } from "@/components/ui/checkbox";
+
 
 // Create a debounced toast function to prevent duplicate toasts
 // We'll use a combination of message and timestamp to create unique IDs
@@ -68,8 +61,12 @@ export default function StudentSelfProfiling() {
   const [status, setStatus] = useState('pending');
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [showAadharInfoModal, setShowAadharInfoModal] = useState(false);
+  const [dontShowAgain, setDontShowAgain] = useState(false);
   const [date, setDate] = useState();
   const [rejectionReason, setRejectionReason] = useState('');
+  const [inlineError, setInlineError] = useState("");
+
   
   const Navigator = useNavigate();
 
@@ -107,6 +104,7 @@ export default function StudentSelfProfiling() {
       // localGuardianContact: "",
       localGuardianAddress: "",
       addharNumber: "",
+      virtualAadhar: "",
       aadharCardDocument: "",
       photoLink: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrxb9rKS0KgjTtqrKPK8dodc0pEeaoC-pY_w&s"
     };
@@ -153,7 +151,8 @@ export default function StudentSelfProfiling() {
       'contactNumber_1', 'email', 'gender', 'bloodGroup', 'fatherName',
       'fatherContact', 'motherName', 'motherContact',
       'address', 'city', 'state', 'pinCode',
-      'addharNumber', 'aadharCardDocument', 'photoLink'
+      // 'addharNumber', 
+      'aadharCardDocument', 'photoLink'
     ];
 
     // Count filled required fields
@@ -192,7 +191,8 @@ export default function StudentSelfProfiling() {
       'contactNumber_1', 'email', 'gender', 'bloodGroup', 'fatherName',
       'fatherContact', 'motherName', 'motherContact',
       'address', 'city', 'state', 'pinCode',
-      'addharNumber', 'aadharCardDocument', 'photoLink'
+      // 'addharNumber', 
+      'aadharCardDocument', 'photoLink'
     ];
 
     // Skip validation for optional fields if they're empty
@@ -292,16 +292,16 @@ export default function StudentSelfProfiling() {
         }
         break;
 
-      case 'addharNumber':
-        // First check if contains non-digit characters
-        if (!/^\d*$/.test(value)) {
-          error = "Aadhaar number must contain only digits";
-        }
-        // Then check length if all digits
-        else if (value.length > 0 && value.length !== 12) {
-          error = "Aadhaar number must be exactly 12 digits";
-        }
-        break;
+      // case 'addharNumber':
+      //   // First check if contains non-digit characters
+      //   if (!/^\d*$/.test(value)) {
+      //     error = "Aadhaar number must contain only digits";
+      //   }
+      //   // Then check length if all digits
+      //   else if (value.length > 0 && value.length !== 12) {
+      //     error = "Aadhaar number must be exactly 12 digits";
+      //   }
+      //   break;
 
       case 'identificationMark':
       case 'fatherOccupation':
@@ -575,6 +575,21 @@ export default function StudentSelfProfiling() {
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
 
+    const virtualAadhaar = formData.virtualAadhar?.trim();
+
+    if (!virtualAadhaar) {
+      setErrors({ virtualAadhar: "Virtual Aadhaar Number is required" });
+      toast.error("Please enter your 16-digit Virtual Aadhaar number");
+      return;
+    }
+
+    if (!/^\d{16}$/.test(virtualAadhaar)) {
+      setErrors({ virtualAadhaar: "Virtual Aadhaar must be exactly 16 digits" });
+      toast.error("Virtual Aadhaar must be exactly 16 digits");
+      return;
+    }
+
+
     // Basic validation
     const newErrors = {};
 
@@ -603,15 +618,17 @@ export default function StudentSelfProfiling() {
     if (!formData.aadharCardDocument) {
       newErrors.aadharCardDocument = "Aadhar Card Photo is required";
     }
-    if (!formData.addharNumber) {
-      newErrors.addharNumber = "Aadhaar Number is required";
-    }
+    // if (!formData.addharNumber) {
+    //   newErrors.addharNumber = "Aadhaar Number is required";
+    // }
 
     // Format validation using validateField function for consistency
     const fieldsToValidate = [
       'rollNo', 'email', 'firstName', 'lastName', 'contactNumber_1', 'contactNumber_2',
       'phoneNumber', 'fatherContact', 'motherContact', 'localGuardianContact',
-      'pinCode', 'addharNumber', 'identificationMark', 'fatherName', 'motherName',
+      'pinCode',
+      // 'addharNumber', 
+      'identificationMark', 'fatherName', 'motherName',
       'localGuardian', 'fatherOccupation', 'motherOccupation', 'photoLink','aadharCardDocument'
     ];
 
@@ -620,7 +637,9 @@ export default function StudentSelfProfiling() {
       'rollNo', 'firstName', 'dob', 'course', 'semester', 'branch',
       'contactNumber_1', 'email', 'gender', 'fatherName', 'fatherContact',
       'motherName', 'motherContact', 'address', 'city', 'state', 'pinCode',
-      'photoLink', 'aadharCardDocument', 'addharNumber', 'bloodGroup'
+      'photoLink', 'aadharCardDocument',
+      //  'addharNumber', 
+      'bloodGroup'
     ];
 
     // Validate each field that has a value
@@ -719,6 +738,7 @@ export default function StudentSelfProfiling() {
     // This approach prevents validation errors from the backend for empty optional fields
     const submissionData = {
       ...formData,
+      addharNumber: virtualAadhaar,
       rollNo: parseInt(formData.rollNo, 10),
       semester: parseInt(formData.semester, 10),
       tokenEmail: formData.email, // Add tokenEmail for the backend
@@ -883,6 +903,27 @@ export default function StudentSelfProfiling() {
       fetchProfileData();
     }
   }, [userData, fetchProfileData, fetchAvailableCourses, updateFormData]);
+
+    // Show masked Aadhaar info popup once per user
+  // useEffect(() => {
+  //   const hasSeenInfo = localStorage.getItem("seenMaskedAadharInfo");
+  //   if (!hasSeenInfo) {
+  //     setShowAadharInfoModal(true);
+  //   }
+  // }, []);
+
+    useEffect(() => {
+      const userEmail = userData?.email || localStorage.getItem("email");
+      if (!userEmail) return;
+
+      const key = `seenMaskedAadharInfo_${userEmail}`;
+      const hasSeenInfo = localStorage.getItem(key);
+
+      if (!hasSeenInfo) {
+        setShowAadharInfoModal(true);
+      }
+    }, [userData]);
+
 
 
 
@@ -1485,7 +1526,7 @@ export default function StudentSelfProfiling() {
             />
             {errors.localGuardianAddress && <p className="text-red-500 text-xs">{errors.localGuardianAddress}</p>}
           </div>
-          <div className="space-y-1">
+          {/* <div className="space-y-1">
             <Label htmlFor="addharNumber">Aadhaar Number <span className="text-red-500">*</span></Label>
             <Input
               id="addharNumber"
@@ -1496,101 +1537,235 @@ export default function StudentSelfProfiling() {
               disabled={isReadOnly}
             />
             {errors.addharNumber && <p className="text-red-500 text-xs">{errors.addharNumber}</p>}
+          </div> */}
+          {/* Virtual Aadhaar Number Section */}
+          {/* Virtual Aadhaar Number Section */}
+          <div className="border rounded-lg p-4 bg-white">
+            <label htmlFor="virtualAadhar" className="block font-medium mb-2">
+              Virtual Aadhaar Number <span className="text-red-500">*</span>
+            </label>
+
+            <input
+              type="text"
+              id="virtualAadhar"
+              name="virtualAadhar"
+              placeholder="Enter your 16-digit Virtual Aadhaar ID"
+              value={formData.virtualAadhar || ""}
+              onChange={(e) => {
+                const value = e.target.value.trim();
+                if (/[^0-9]/.test(value)) return; // allow digits only
+                updateFormData({ virtualAadhar: value });
+              }}
+              onBlur={(e) => {
+                const value = e.target.value.trim();
+                if (!value) return;
+
+                if (value.length === 12) {
+                  setInlineError(
+                    <>
+                      A Virtual Aadhaar is more secure and is of 16 digits. You can obtain it from{" "}
+                      <a
+                        href="https://myaadhaar.uidai.gov.in/genericGenerateOrRetriveVID/en"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 underline"
+                      >
+                        here
+                      </a>.
+                    </>
+                  );
+                } else if (value.length !== 16) {
+                  setInlineError("Please enter a valid 16-digit Virtual Aadhaar ID.");
+                } else {
+                  setInlineError(""); // clear if valid
+                }
+              }}
+              maxLength={16}
+              className="border px-3 py-2 rounded w-full"
+              disabled={isReadOnly}
+            />
+
+            {/* Inline error message */}
+            {inlineError && (
+              <p className="text-sm text-red-500 mt-1">{inlineError}</p>
+            )}
+
+            {/* Help note below input */}
+            <p className="text-sm text-gray-600 mt-2">
+              💡 You can find your 16-digit <strong>Virtual Aadhaar ID</strong> on your masked Aadhaar card (usually printed below the Aadhaar number on the PDF or physical copy).
+            </p>
           </div>
 
 
        {/* Document Upload Section */}
-       <div className="flex items-center justify-center col-span-1 sm:col-span-2 lg:col-start-2 lg:col-end-4 w-full bg-gray-100">
-      <div className="bg-white rounded-2xl shadow-lg p-6 w-full">
-        <h2 className="text-xl font-bold mb-4 text-center">Upload Documents Here</h2>
+       {/* Document Upload Section */}
+<div className="flex items-center justify-center col-span-1 sm:col-span-2 lg:col-start-2 lg:col-end-4 w-full bg-gray-100">
+  <div className="bg-white rounded-2xl shadow-lg p-6 w-full">
+    <h2 className="text-xl font-bold mb-4 text-center">Upload Documents Here</h2>
 
-        <div className="flex flex-col gap-6">
-          {/* Photo Upload Section */}
-          <div className="border rounded-lg p-4 bg-white">
-            <h3 className="font-medium mb-2">Profile Photo <span className="text-red-500">*</span></h3>
-            <FileUpload
-              label="Upload Photo (Passport size)"
-              accept="image/*"
-              fieldName="profilePhoto"
-              fileUrl={formData.photoLink !== "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrxb9rKS0KgjTtqrKPK8dodc0pEeaoC-pY_w&s" ? formData.photoLink : null}
-              onUploadSuccess={(url) => {
-                updateFormData({ photoLink: url });
-              }}
-              disabled={isReadOnly}
-            />
-            {errors.photoLink && <p className="text-red-500 text-xs mt-1">{errors.photoLink}</p>}
-            {formData.photoLink && formData.photoLink !== "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrxb9rKS0KgjTtqrKPK8dodc0pEeaoC-pY_w&s" && (
-              <div className="mt-3 flex items-center">
-                <div className="w-12 h-12 mr-3 overflow-hidden rounded border">
-                  <img
-                    src={formData.photoLink}
-                    alt="Uploaded photo"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div>
-                  <p className="text-sm text-green-600 font-medium">Photo uploaded successfully</p>
-                  <a
-                    href={formData.photoLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs text-blue-600 hover:underline"
-                  >
-                    View uploaded photo
-                  </a>
-                </div>
+    <div className="flex flex-col gap-6">
+      {/* Profile Photo Upload Section */}
+      <div className="border rounded-lg p-4 bg-white">
+        <h3 className="font-medium mb-2">Profile Photo <span className="text-red-500">*</span></h3>
+        <FileUpload
+          label="Upload Photo (Passport size)"
+          accept="image/*"
+          fieldName="profilePhoto"
+          fileUrl={formData.photoLink !== "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrxb9rKS0KgjTtqrKPK8dodc0pEeaoC-pY_w&s" ? formData.photoLink : null}
+          onUploadSuccess={(url) => {
+            updateFormData({ photoLink: url });
+            showToast("Profile photo uploaded successfully", "success");
+          }}
+          disabled={isReadOnly}
+        />
+        {errors.photoLink && <p className="text-red-500 text-xs mt-1">{errors.photoLink}</p>}
+        {formData.photoLink && formData.photoLink !== "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrxb9rKS0KgjTtqrKPK8dodc0pEeaoC-pY_w&s" && (
+          <div className="mt-3 flex items-center">
+            <div className="w-12 h-12 mr-3 overflow-hidden rounded border">
+              <img
+                src={formData.photoLink}
+                alt="Uploaded photo"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div>
+              <p className="text-sm text-green-600 font-medium">Photo uploaded successfully</p>
+              <a
+                href={formData.photoLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-blue-600 hover:underline"
+              >
+                View uploaded photo
+              </a>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Aadhaar Card Upload Section */}
+      <div className="border rounded-lg p-4 bg-white">
+        <h3 className="font-medium mb-2">Aadhaar Card Document <span className="text-red-500">*</span></h3>
+        <p className="text-sm text-yellow-600 mb-2">
+          ⚠️ Please upload only your <strong>masked Aadhaar card</strong> (first 8 digits hidden as <code>XXXX-XXXX-1234</code>).
+          If you upload an unmasked Aadhaar, the admin will reject your application and ask you to reupload.
+        </p>
+
+        <FileUpload
+          label="Upload Masked Aadhaar (PDF or Image)"
+          accept="image/*,.pdf"
+          fieldName="aadharCard"
+          fileUrl={formData.aadharCardDocument}
+          onUploadSuccess={(url, file) => {
+            const fileName = file?.name?.toLowerCase?.() || "";
+            const unmaskedPattern = /\b\d{4}\s*[-]?\s*\d{4}\s*[-]?\s*\d{4}\b/;
+
+            if (unmaskedPattern.test(fileName)) {
+              showToast(
+                "Unmasked Aadhaar detected! Please upload a masked version (only last 4 digits visible).",
+                "error"
+              );
+              updateFormData({ aadharCardDocument: "" });
+              return;
+            }
+
+            updateFormData({ aadharCardDocument: url });
+            showToast("Masked Aadhaar uploaded successfully", "success");
+          }}
+          disabled={isReadOnly}
+        />
+
+        {errors.aadharCardDocument && (
+          <p className="text-red-500 text-xs mt-1">{errors.aadharCardDocument}</p>
+        )}
+
+        {formData.aadharCardDocument && (
+          <div className="mt-3 flex items-center">
+            {formData.aadharCardDocument.includes(".pdf") ? (
+              <div className="w-12 h-12 mr-3 flex items-center justify-center bg-gray-100 rounded border">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
+                </svg>
+              </div>
+            ) : (
+              <div className="w-12 h-12 mr-3 overflow-hidden rounded border">
+                <img
+                  src={formData.aadharCardDocument}
+                  alt="Uploaded masked Aadhaar"
+                  className="w-full h-full object-cover"
+                />
               </div>
             )}
+            <div>
+              <p className="text-sm text-green-600 font-medium">Masked Aadhaar uploaded successfully</p>
+              <a
+                href={formData.aadharCardDocument}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-blue-600 hover:underline"
+              >
+                View uploaded document
+              </a>
+            </div>
           </div>
-
-          {/* Aadhar Card Document Upload Section */}
-          <div className="border rounded-lg p-4 bg-white">
-            <h3 className="font-medium mb-2">Aadhar Card Document <span className="text-red-500">*</span></h3>
-            <FileUpload
-              label="Upload Aadhar Card"
-              accept="image/*,.pdf"
-              fieldName="aadharCard"
-              fileUrl={formData.aadharCardDocument}
-              onUploadSuccess={(url) => {
-                updateFormData({ aadharCardDocument: url });
-              }}
-              disabled={isReadOnly}
-            />
-            {errors.aadharCardDocument && <p className="text-red-500 text-xs mt-1">{errors.aadharCardDocument}</p>}
-            {formData.aadharCardDocument && (
-              <div className="mt-3 flex items-center">
-                {formData.aadharCardDocument.includes('.pdf') ? (
-                  <div className="w-12 h-12 mr-3 flex items-center justify-center bg-gray-100 rounded border">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-red-500" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                ) : (
-                  <div className="w-12 h-12 mr-3 overflow-hidden rounded border">
-                    <img
-                      src={formData.aadharCardDocument}
-                      alt="Uploaded document"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                )}
-                <div>
-                  <p className="text-sm text-green-600 font-medium">Aadhar card document uploaded successfully</p>
-                  <a
-                    href={formData.aadharCardDocument}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs text-blue-600 hover:underline"
-                  >
-                    View uploaded document
-                  </a>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
+        )}
       </div>
     </div>
+  </div>
+</div>
+{/* Masked Aadhaar Information Modal */}
+<Dialog open={showAadharInfoModal} onOpenChange={setShowAadharInfoModal}>
+  <DialogContent className="max-w-lg">
+    <DialogHeader>
+      <DialogTitle className="text-lg font-semibold text-center">
+        🔐 Why You Must Upload a Masked Aadhaar Card
+      </DialogTitle>
+      <DialogDescription className="text-sm text-gray-600 mt-2">
+        For your privacy and security, only <strong>masked Aadhaar cards</strong> are accepted.
+        A masked Aadhaar hides the first 8 digits of your Aadhaar number (e.g. <code>XXXX-XXXX-1234</code>).
+      </DialogDescription>
+    </DialogHeader>
+
+    <div className="space-y-3 mt-4 text-sm text-gray-700">
+      <p className="font-medium text-gray-800">📘 How to Download a Masked Aadhaar:</p>
+      <ol className="list-decimal list-inside space-y-2">
+        <li>Visit the official <a href="https://myaadhaar.uidai.gov.in" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">UIDAI Aadhaar website</a>.</li>
+        <li>Login with your Aadhaar number and OTP.</li>
+        <li>Select <strong>“Download Aadhaar”</strong> → choose <strong>“Masked Aadhaar”</strong> before download.</li>
+      </ol>
+      <p>✅ Upload only this masked version — never share your full Aadhaar card.</p>
+    </div>
+
+    <DialogFooter className="flex flex-col sm:flex-row sm:justify-between mt-4">
+      <div className="flex items-center space-x-2">
+        <Checkbox
+          id="dontShowAgain"
+          checked={dontShowAgain}
+          onCheckedChange={(checked) => setDontShowAgain(checked)}
+        />
+        <label htmlFor="dontShowAgain" className="text-sm text-gray-600">
+          Don’t show this again
+        </label>
+      </div>
+
+      <Button
+        onClick={() => {
+          const userEmail = userData?.email || localStorage.getItem("email");
+          if (dontShowAgain && userEmail) {
+            const key = `seenMaskedAadharInfo_${userEmail}`;
+            localStorage.setItem(key, "true");
+          }
+          setShowAadharInfoModal(false);
+        }}
+      >
+        Got it
+      </Button>
+
+    </DialogFooter>
+  </DialogContent>
+</Dialog>
+
+
 
 
    {/* Buttons Section */}
@@ -1669,6 +1844,8 @@ function CalendarDaysIcon(props) {
     </svg>
   )
 }
+
+
 
 
 

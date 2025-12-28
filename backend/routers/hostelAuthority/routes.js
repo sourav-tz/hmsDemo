@@ -68,7 +68,7 @@ router.post('/bulkCreate',auth, upload.single('file'), csvToJsonConverter, bulkC
 router.patch('/updateBulk',auth, updateBulk);
 
 //* Apis get student information for single or all
-router.get('/studentsInfo',studentsInfo);
+router.get('/studentsInfo', auth,studentsInfo);
 router.get('/student/:rollNo', auth,singleStudentInfo);
 router.get('/getCourses',auth,getCourses)
 router.post('/getSingleCourse',auth,getSingleCourse);
