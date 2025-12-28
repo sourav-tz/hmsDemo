@@ -4,20 +4,41 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { TableHead, TableRow, TableHeader, TableCell, TableBody, Table } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState } from "react"
 import axios from "axios"
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
 import { Switch } from "@/components/ui/switch"
 import { useForm, Controller } from 'react-hook-form';
 import { DevTool } from "@hookform/devtools"
+import { useRef } from 'react';
 import { ToastContainer, toast } from "react-toastify"
 import 'react-toastify/dist/ReactToastify.css'
 import { ImBin } from "react-icons/im";
 import backgroundImage from '../../../Assets/hostel11.jpg';
 
 export default function AddCourses() {
-  const [courses, setCourses] = useState([]);
-  const { register, control, handleSubmit, formState: { errors }, reset } = useForm({ mode: "all" });
+  const [courses, setCourses] = useState([
+    {
+      "courseId": 1,
+      "courseName": "B.Tech",
+      "department": "CSE",
+      "specialization": "",
+      "courseDuration": 4,
+      "lastUpdatedBy": "Admin",
+      "createdAt": "2022-10-10",
+      "updatedAt": "2022-10-10",
+      "deletedAt": null,
+      "active": true
+    },
+  ]);
+  const { register, control, handleSubmit, formState: { errors }, reset } = useForm(
+    {
+      mode: "all",
+
+    }
+  );
+
+
   const editForm = useRef(null);
   //Sourav
   const initialLoad = async () => {
@@ -38,9 +59,12 @@ export default function AddCourses() {
   //
   useEffect(() => {
     initialLoad();
-  }, []);
+  }
+    , [])
 
-  // Update existing course
+
+
+
   const onSubmitEdit = async (data) => {
     console.log("Edit form data:", data);
 
@@ -126,7 +150,6 @@ export default function AddCourses() {
     }
   }
 
-  // Set form values for editing
   const setDefaultValues = (course) => {
     reset({
       courseId: course.courseId,
@@ -555,20 +578,19 @@ const MyForm = () => {
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
+        {/* Grid layout for input fields */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Course Dropdown */}
+          {/* Course Name Field */}
           <div className="space-y-2">
             <Label htmlFor="courseName">Course Name</Label>
-            <select
-              {...register("courseName", { required: "Course name is required" })}
+            <Input
+              {...register("courseName", {
+                required: { value: true, message: "Course name is required" },
+              })}
+              name="courseName"
               id="courseName"
-              className="border rounded-md p-2 w-full"
-            >
-              <option value="">Select Course</option>
-              {validCourses.map((c, i) => (
-                <option key={i} value={c}>{c}</option>
-              ))}
-            </select>
+              placeholder="Enter course name"
+            />
             <p className="text-red-500 text-sm">{errors.courseName?.message}</p>
           </div>
 
@@ -576,7 +598,10 @@ const MyForm = () => {
           <div className="space-y-2">
             <Label htmlFor="department">Department</Label>
             <Input
-              {...register("department", { required: "Department is required" })}
+              {...register("department", {
+                required: { value: true, message: "Department is required" },
+              })}
+              name="department"
               id="department"
               placeholder="Enter department"
             />
@@ -586,24 +611,33 @@ const MyForm = () => {
 
         {/* Grid layout for specialization and duration fields */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Specialization */}
+          {/* Specialization Field */}
           <div className="space-y-2">
             <Label htmlFor="specialization">Specialization</Label>
-            <Input {...register("specialization")} id="specialization" placeholder="Enter specialization" />
+            <Input
+              {...register("specialization", {
+                required: { value: false, message: "Specialization is required" },
+              })}
+              name="specialization"
+              id="specialization"
+              placeholder="Enter specialization"
+            />
+            <p className="text-red-500 text-sm">{errors.specialization?.message}</p>
           </div>
 
           {/* Course Duration Field */}
           <div className="space-y-2">
-            <Label htmlFor="courseDuration">Course Duration(In Years)</Label>
+            <Label htmlFor="courseDuration">Course Duration</Label>
             <Input
               {...register("courseDuration", {
-                required: "Course duration is required",
-                min: { value: 1, message: "Minimum 1 year" },
-                max: { value: 8, message: "Maximum 8 years" },
+                required: { value: true, message: "Course duration is required" },
+                min: { value: 1, message: "Minimum must be 1 year" },
+                max: { value: 8, message: "Maximum must be 8 years" },
               })}
+              name="courseDuration"
               id="courseDuration"
               type="number"
-              placeholder="Enter duration"
+              placeholder="Enter course duration"
             />
             <p className="text-red-500 text-sm">{errors.courseDuration?.message}</p>
           </div>
@@ -613,14 +647,14 @@ const MyForm = () => {
         <div className="flex flex-col md:flex-row justify-end gap-4">
           <Button
             type="button"
-            onClick={() => reset()}
-            className="bg-red-700 hover:bg-red-500 w-full md:w-auto"
+            onClick={() => { reset(); }}
+            className="justify-self-end bg-red-700 hover:bg-red-500 w-full md:w-auto"
           >
             Cancel
           </Button>
 
           <Button
-            className="bg-blue-700 hover:bg-blue-500 w-full md:w-auto"
+            className="justify-self-end bg-blue-700 hover:bg-blue-500 w-full md:w-auto"
             type="submit"
           >
             Add Course
