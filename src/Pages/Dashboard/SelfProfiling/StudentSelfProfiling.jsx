@@ -21,6 +21,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 
 // Create a debounced toast function to prevent duplicate toasts
 // We'll use a combination of message and timestamp to create unique IDs
+// const [rejectionReason, setRejectionReason] = useState('');
+
 const toastTimers = {};
 function showToast(message, type = 'error') {
   // Create a unique key for this message
@@ -60,12 +62,15 @@ export default function StudentSelfProfiling() {
   const [isTempStudent, setIsTempStudent] = useState(false);
   const [status, setStatus] = useState('pending');
   const [loading, setLoading] = useState(false);
+  const profileLoadedRef = useRef(false);
   const [submitting, setSubmitting] = useState(false);
   const [showAadharInfoModal, setShowAadharInfoModal] = useState(false);
   const [dontShowAgain, setDontShowAgain] = useState(false);
   const [date, setDate] = useState();
   const [rejectionReason, setRejectionReason] = useState('');
   const [inlineError, setInlineError] = useState("");
+  // const [allCourseDetails, setAllCourseDetails] = useState([]);
+
 
   
   const Navigator = useNavigate();
@@ -81,41 +86,55 @@ export default function StudentSelfProfiling() {
       lastName: "",
       dob: "",
       course: "",
-      semester: "1", // Always set to 1 for new students
+      semester: "1",
       branch: "",
+      specialization: "",
+  
       contactNumber_1: "",
-      // contactNumber_2: "",
-      // phoneNumber: "", // Added phoneNumber field
+      contactNumber_2: "",          // ✅ ADD
+      phoneNumber: "",              // ✅ ADD
+  
       email: "",
-      identificationMark: "",
+      identificationMark: "",       // ✅ ENSURE PRESENT
+  
       bloodGroup: "",
       gender: "",
+  
       fatherName: "",
       fatherContact: "",
       fatherOccupation: "",
+  
       motherName: "",
       motherContact: "",
       motherOccupation: "",
+  
       address: "",
       city: "",
       state: "",
       pinCode: "",
+  
       localGuardian: "",
-      // localGuardianContact: "",
-      localGuardianAddress: "",
+      localGuardianContact: "",     // ✅ ADD
+      localGuardianAddress: "",     // ✅ ADD
+  
       addharNumber: "",
-      virtualAadhar: "",
+      virtualAadhar: "",            // ✅ ADD
+  
       aadharCardDocument: "",
-      photoLink: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrxb9rKS0KgjTtqrKPK8dodc0pEeaoC-pY_w&s"
+      photoLink:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrxb9rKS0KgjTtqrKPK8dodc0pEeaoC-pY_w&s",
     };
   };
+  
 
   // Form state
   const [formData, setFormData] = useState(getDefaultFormData());
 
   // Available courses and branches from the database
   const [availableCourses, setAvailableCourses] = useState([]);
+  const [allCourseDetails, setAllCourseDetails] = useState([]);
   const [availableBranches, setAvailableBranches] = useState([]);
+  const [availableSpecializations, setAvailableSpecializations] = useState([]);
 
   // Form validation errors
   const [errors, setErrors] = useState({});
@@ -145,38 +164,36 @@ export default function StudentSelfProfiling() {
 
   // Calculate form progress based on required fields
   const calculateFormProgress = useCallback((data) => {
-    // Define required fields
-    const requiredFields = [
+    let requiredFields = [
       'rollNo', 'firstName', 'dob', 'course', 'semester', 'branch',
-      'contactNumber_1', 'email', 'gender', 'bloodGroup', 'fatherName',
-      'fatherContact', 'motherName', 'motherContact',
+      'contactNumber_1', 'email', 'gender', 'bloodGroup',
+      'fatherName', 'fatherContact',
+      'motherName', 'motherContact',
       'address', 'city', 'state', 'pinCode',
-      // 'addharNumber', 
       'aadharCardDocument', 'photoLink'
     ];
-
-    // Count filled required fields
-    const filledFields = requiredFields.filter(field =>
-      data[field] && data[field].toString().trim() !== ''
-    ).length;
-
-    // Calculate percentage
-    const percentage = Math.round((filledFields / requiredFields.length) * 100);
-
-    return percentage;
-  }, []);
+  
+    // ✅ add specialization safely
+    if (availableSpecializations.length > 0) {
+      requiredFields = [...requiredFields, 'specialization'];
+    }
+  
+    const filledFields = requiredFields.filter(field => {
+      const value = data[field];
+      return typeof value === 'string' && value.trim() !== '';
+    }).length;
+  
+    return Math.round((filledFields / requiredFields.length) * 100);
+  }, [availableSpecializations]);
+  
 
   // Simple setFormData function without localStorage
   const updateFormData = useCallback((newData) => {
     setFormData(prevData => {
       const updatedData = { ...prevData, ...newData };
-
-      // Calculate and update form progress
       if (status !== 'profile_submitted' && status !== 'approved') {
-        const progress = calculateFormProgress(updatedData);
-        setFormProgress(progress);
+        setFormProgress(calculateFormProgress(updatedData));
       }
-
       return updatedData;
     });
   }, [status, calculateFormProgress]);
@@ -191,7 +208,6 @@ export default function StudentSelfProfiling() {
       'contactNumber_1', 'email', 'gender', 'bloodGroup', 'fatherName',
       'fatherContact', 'motherName', 'motherContact',
       'address', 'city', 'state', 'pinCode',
-      // 'addharNumber', 
       'aadharCardDocument', 'photoLink'
     ];
 
@@ -321,66 +337,98 @@ export default function StudentSelfProfiling() {
   }, []);
 
   // Handle input changes
-  const handleChange = useCallback((e) => {
-    // Don't update if form is read-only (but allow changes if rejected)
-    if (status === 'profile_submitted' || status === 'approved') {
-      return;
-    }
 
+  const handleChange = useCallback((e) => {
+    if (status === 'profile_submitted' || status === 'approved') return;
     const { id, value } = e.target;
     updateFormData({ [id]: value });
-
-    // Validate the field as user types (immediate feedback for type errors)
     const fieldError = validateField(id, value);
+    setErrors(prev => ({ ...prev, [id]: fieldError }));
 
-    // Update errors state
-    if (fieldError) {
-      setErrors(prev => ({
-        ...prev,
-        [id]: fieldError
-      }));
-    } else if (errors[id]) {
-      // Clear error if field is now valid
-      setErrors(prev => ({
-        ...prev,
-        [id]: null
-      }));
-    }
-
-    // Check roll number when it changes and has at least 5 digits
-    if (id === 'rollNo' && value.length >= 5 && !/^\D/.test(value)) { // Only check if it's a valid number
-      // Debounce the API call to avoid too many requests
+    if (id === 'rollNo' && value.length >= 5 && /^\d+$/.test(value)) {
       clearTimeout(rollNumberCheckTimeout.current);
       rollNumberCheckTimeout.current = setTimeout(async () => {
         const result = await checkRollNumber(value);
         if (result.success && result.exists) {
-          setErrors(prev => ({
-            ...prev,
-            rollNo: 'This roll number already exists in the system. Please verify your roll number.'
-          }));
+          setErrors(prev => ({ ...prev, rollNo: 'This roll number already exists.' }));
         }
       }, 500);
     }
-  }, [status, updateFormData, validateField, errors, checkRollNumber]);
+  }, [status, updateFormData, validateField, checkRollNumber]);
+  // const handleChange = useCallback((e) => {
+  //   // Don't update if form is read-only (but allow changes if rejected)
+  //   if (status === 'profile_submitted' || status === 'approved') {
+  //     return;
+  //   }
+
+  //   const { id, value } = e.target;
+  //   updateFormData({ [name]: value });
+
+  //   // Validate the field as user types (immediate feedback for type errors)
+  //   const fieldError = validateField(id, value);
+
+  //   // Update errors state
+  //   if (fieldError) {
+  //     setErrors(prev => ({
+  //       ...prev,
+  //       [id]: fieldError
+  //     }));
+  //   } else if (errors[id]) {
+  //     // Clear error if field is now valid
+  //     setErrors(prev => ({
+  //       ...prev,
+  //       [id]: null
+  //     }));
+  //   }
+
+  //   // Check roll number when it changes and has at least 5 digits
+  //   if (id === 'rollNo' && value.length >= 5 && !/^\D/.test(value)) { // Only check if it's a valid number
+  //     // Debounce the API call to avoid too many requests
+  //     clearTimeout(rollNumberCheckTimeout.current);
+  //     rollNumberCheckTimeout.current = setTimeout(async () => {
+  //       const result = await checkRollNumber(value);
+  //       if (result.success && result.exists) {
+  //         setErrors(prev => ({
+  //           ...prev,
+  //           rollNo: 'This roll number already exists in the system. Please verify your roll number.'
+  //         }));
+  //       }
+  //     }, 500);
+  //   }
+  // }, [status, updateFormData, validateField, errors, checkRollNumber]);
 
   // Handle select changes
+  // const handleSelectChange = useCallback((value, id) => {
+  //   // Don't update if form is read-only (but allow changes if rejected)
+  //   if (status === 'profile_submitted' || status === 'approved') {
+  //     return;
+  //   }
+
+  //   updateFormData({ [id]: value });
+
+  //   // Clear any errors for this field
+  //   if (errors[id]) {
+  //     setErrors(prev => ({
+  //       ...prev,
+  //       [id]: null
+  //     }));
+  //   }
+  // }, [status, updateFormData, errors]);
   const handleSelectChange = useCallback((value, id) => {
-    // Don't update if form is read-only (but allow changes if rejected)
-    if (status === 'profile_submitted' || status === 'approved') {
-      return;
+    if (status === 'profile_submitted' || status === 'approved') return;
+    const newFormData = { [id]: value };
+    if (id === 'course') {
+      newFormData.branch = "";
+      newFormData.specialization = "";
     }
-
-    updateFormData({ [id]: value });
-
-    // Clear any errors for this field
+    if (id === 'branch') {
+      newFormData.specialization = "";
+    }
+    updateFormData(newFormData);
     if (errors[id]) {
-      setErrors(prev => ({
-        ...prev,
-        [id]: null
-      }));
+      setErrors(prev => ({ ...prev, [id]: null }));
     }
   }, [status, updateFormData, errors]);
-
   // Handle date change
   const handleDateChange = useCallback((newDate) => {
     // Don't update if form is read-only (but allow changes if rejected)
@@ -403,172 +451,288 @@ export default function StudentSelfProfiling() {
   // Fetch available courses and branches
   const fetchAvailableCourses = useCallback(async () => {
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_BASE_URL}/student/getAvailableCourses`,
-        { withCredentials: true }
-      );
-
-      if (response.data.success) {
-        setAvailableCourses(response.data.courses);
-        setAvailableBranches(response.data.branches);
-        console.log("Fetched courses:", response.data.courses);
-        console.log("Fetched branches:", response.data.branches);
+      const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/student/getAvailableCourses`, { withCredentials: true });
+      if (response.data.success && Array.isArray(response.data.courses)) {
+        setAllCourseDetails(response.data.courses);
+        const uniqueCourses = [...new Set(response.data.courses.map(c => c.courseName))].map(course => ({ value: course, label: course }));
+        setAvailableCourses(uniqueCourses);
       } else {
-        console.error("Failed to fetch available courses:", response.data.message);
+        showToast("Could not load course information.", "error");
       }
     } catch (error) {
-      console.error("Error fetching available courses:", error);
-      // Fallback to default courses and branches if API fails
-      setAvailableCourses([
-        { value: "B.Tech", label: "B.Tech" },
-        { value: "M.Tech", label: "M.Tech" },
-        { value: "MBA", label: "MBA" },
-        { value: "MCA", label: "MCA" }
-      ]);
-      setAvailableBranches([
-        { value: "Computer Science", label: "Computer Science" },
-        { value: "Electronics and Communication", label: "Electronics and Communication" },
-        { value: "Mechanical", label: "Mechanical" },
-        { value: "Electrical", label: "Electrical" }
-      ]);
+      console.error("CRITICAL error while fetching available courses:", error);
+      showToast("A network error occurred while loading course data.", "error");
     }
   }, []);
 
   // Fetch profile data
+  // const fetchProfileData = useCallback(async () => {
+  //   try {
+  //     setLoading(true);
+
+  //     // Get the user's email and role
+  //     const userEmail = userData?.email || localStorage.getItem('email');
+  //     const userRole = userData?.roleType || localStorage.getItem('role');
+
+  //     // Make sure we have the email and role
+  //     if (!userEmail || !userRole) {
+  //       toast.error("User information is missing. Please log in again.");
+  //       return;
+  //     }
+
+  //     // Fetch profile data from API
+  //     try {
+  //       const response = await axios.get(
+  //         `${import.meta.env.VITE_BASE_URL}/student/getProfile`,
+  //         {
+  //           params: {
+  //             tokenEmail: userEmail,
+  //             TokenRole: userRole
+  //           },
+  //           withCredentials: true
+  //         }
+  //       );
+
+  //       if (response.data.success) {
+  //         // Update status from API
+  //         const apiStatus = response.data.status || 'pending';
+  //         setStatus(apiStatus);
+  //         console.log("Setting status from API to:", apiStatus);
+
+  //         // Set rejection reason if applicable
+  //         if (apiStatus === 'rejected' && response.data.rejectionReason) {
+  //           setRejectionReason(response.data.rejectionReason);
+  //         }
+
+  //         // If profile data exists in the response, use it
+  //         if (response.data.exists) {
+  //           const profile = response.data.profile;
+
+  //           // Format date if it exists
+  //           if (profile.dob) {
+  //             const dobDate = new Date(profile.dob);
+  //             setDate(dobDate);
+  //           }
+
+  //           // Set form data from API
+  //           setFormData({
+  //             rollNo: profile.rollNo || "",
+  //             firstName: profile.firstName || "",
+  //             lastName: profile.lastName || "",
+  //             dob: profile.dob || "",
+  //             course: profile.course || "",
+  //             semester: profile.semester?.toString() || "",
+  //             branch: profile.branch || "",
+  //             contactNumber_1: profile.contactNumber_1 || "",
+  //             contactNumber_2: profile.contactNumber_2,
+  //             phoneNumber: profile.phoneNumber || profile.contactNumber_1, // Use contactNumber_1 as fallback
+  //             email: profile.email || "",
+  //             identificationMark: profile.identificationMark || "",
+  //             bloodGroup: profile.bloodGroup || "",
+  //             gender: profile.gender || "",
+  //             fatherName: profile.fatherName || "",
+  //             fatherContact: profile.fatherContact || "",
+  //             fatherOccupation: profile.fatherOccupation || "",
+  //             motherName: profile.motherName || "",
+  //             motherContact: profile.motherContact || "",
+  //             motherOccupation: profile.motherOccupation || "",
+  //             address: profile.address || "",
+  //             city: profile.city || "",
+  //             state: profile.state || "",
+  //             pinCode: profile.pinCode || "",
+  //             localGuardian: profile.localGuardian || "",
+  //             localGuardianContact: profile.localGuardianContact,
+  //             localGuardianAddress: profile.localGuardianAddress || "",
+  //             addharNumber: profile.addharNumber || "",
+  //             aadharCardDocument: profile.aadharCardDocument || "",
+  //             photoLink: profile.photoLink || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrxb9rKS0KgjTtqrKPK8dodc0pEeaoC-pY_w&s"
+  //           });
+  //         } else {
+  //           // If no profile data exists, use default form data
+  //           // but keep the email from user data
+  //           const defaultData = getDefaultFormData();
+  //           setFormData({
+  //             ...defaultData,
+  //             email: userEmail
+  //           });
+  //         }
+  //       } else {
+  //         // If API call was successful but didn't return success status
+  //         toast.error(response.data.message || "Failed to load profile data");
+  //         // Use default form data but keep the email
+  //         const defaultData = getDefaultFormData();
+  //         setFormData({
+  //           ...defaultData,
+  //           email: userEmail
+  //         });
+  //       }
+  //     } catch (apiError) {
+  //       console.error("Error fetching profile data from API:", apiError);
+
+  //       // Get detailed error message if available
+  //       const errorMessage = apiError.response?.data?.error ||
+  //                           apiError.response?.data?.details ||
+  //                           apiError.message ||
+  //                           "Failed to load profile data";
+
+  //       // If it's a new user without a profile yet, don't show an error
+  //       if (apiError.response?.status === 404) {
+  //         // This is fine - just means they need to create a profile
+  //         console.log("No profile found, user needs to create one");
+  //         toast.info("Please complete your profile information");
+
+  //         // Use default form data but keep the email
+  //         const defaultData = getDefaultFormData();
+  //         setFormData({
+  //           ...defaultData,
+  //           email: userEmail
+  //         });
+  //       } else {
+  //         // For other errors, show the error message
+  //         toast.error(errorMessage);
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error("Unexpected error in fetchProfileData:", error);
+  //     toast.error("An unexpected error occurred while loading your profile data.");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // }, [userData]);
+
+  // const fetchProfileData = useCallback(async () => {
+  //   const userEmail = userData?.email || localStorage.getItem('email');
+  //   const userRole = userData?.roleType || localStorage.getItem('role');
+  //   if (!userEmail || !userRole) {
+  //     toast.error("User information is missing. Please log in again.");
+  //     setLoading(false);
+  //     return;
+  //   }
+  //   try {
+  //     const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/student/getProfile`, { params: { tokenEmail: userEmail, TokenRole: userRole }, withCredentials: true });
+  //     if (response.data.success) {
+  //       const apiStatus = response.data.status || 'pending';
+  //       setStatus(apiStatus);
+  //       if (apiStatus === 'rejected' && response.data.rejectionReason) {
+  //         setRejectionReason(response.data.rejectionReason);
+  //       }
+  //       if (response.data.exists) {
+  //         const profile = response.data.profile;
+  //         if (profile.dob) 
+  //           setDate(new Date(profile.dob));
+  //         // Use a function to merge to ensure all default keys are present
+  //         setFormData(prev => ({ ...getDefaultFormData(), ...profile }));
+  //       } else {
+  //         setFormData({ ...getDefaultFormData(), email: userEmail });
+  //       }
+  //     } else {
+  //       showToast(response.data.message || "Failed to load profile data", "error");
+  //     }
+  //   } catch (apiError) {
+  //     console.error("Error fetching profile data:", apiError);
+  //     if (apiError.response?.status === 404) {
+  //       showToast("Please complete your profile information", "info");
+  //       setFormData({ ...getDefaultFormData(), email: userEmail });
+  //     } else {
+  //       showToast("Failed to load profile data.", "error");
+  //     }
+  //   }
+  // }, [userData]);
   const fetchProfileData = useCallback(async () => {
+    // 🔒 VERY IMPORTANT: run ONLY once
+    if (profileLoadedRef.current) return;
+    profileLoadedRef.current = true;
+  
+    const userEmail = userData?.email || localStorage.getItem('email');
+    const userRole = userData?.roleType || localStorage.getItem('role');
+  
+    if (!userEmail || !userRole) {
+      showToast("User information is missing. Please log in again.", "error");
+      return;
+    }
+  
     try {
       setLoading(true);
-
-      // Get the user's email and role
-      const userEmail = userData?.email || localStorage.getItem('email');
-      const userRole = userData?.roleType || localStorage.getItem('role');
-
-      // Make sure we have the email and role
-      if (!userEmail || !userRole) {
-        toast.error("User information is missing. Please log in again.");
-        return;
-      }
-
-      // Fetch profile data from API
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/student/getProfile`,
-          {
-            params: {
-              tokenEmail: userEmail,
-              TokenRole: userRole
-            },
-            withCredentials: true
+  
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/student/getProfile`,
+        {
+          params: {
+            tokenEmail: userEmail,
+            TokenRole: userRole,
+          },
+          withCredentials: true,
+        }
+      );
+  
+      if (response.data.success) {
+        const apiStatus = response.data.status || 'pending';
+        setStatus(apiStatus);
+  
+        if (apiStatus === 'rejected' && response.data.rejectionReason) {
+          setRejectionReason(response.data.rejectionReason);
+        }
+  
+        // ✅ PROFILE EXISTS
+        if (response.data.exists && response.data.profile) {
+          const profile = response.data.profile;
+  
+          // set DOB separately for calendar
+          if (profile.dob) {
+            setDate(new Date(profile.dob));
           }
-        );
-
-        if (response.data.success) {
-          // Update status from API
-          const apiStatus = response.data.status || 'pending';
-          setStatus(apiStatus);
-          console.log("Setting status from API to:", apiStatus);
-
-          // Set rejection reason if applicable
-          if (apiStatus === 'rejected' && response.data.rejectionReason) {
-            setRejectionReason(response.data.rejectionReason);
-          }
-
-          // If profile data exists in the response, use it
-          if (response.data.exists) {
-            const profile = response.data.profile;
-
-            // Format date if it exists
-            if (profile.dob) {
-              const dobDate = new Date(profile.dob);
-              setDate(dobDate);
-            }
-
-            // Set form data from API
-            setFormData({
-              rollNo: profile.rollNo || "",
-              firstName: profile.firstName || "",
-              lastName: profile.lastName || "",
-              dob: profile.dob || "",
-              course: profile.course || "",
-              semester: profile.semester?.toString() || "",
-              branch: profile.branch || "",
-              contactNumber_1: profile.contactNumber_1 || "",
-              contactNumber_2: profile.contactNumber_2,
-              phoneNumber: profile.phoneNumber || profile.contactNumber_1, // Use contactNumber_1 as fallback
-              email: profile.email || "",
-              identificationMark: profile.identificationMark || "",
-              bloodGroup: profile.bloodGroup || "",
-              gender: profile.gender || "",
-              fatherName: profile.fatherName || "",
-              fatherContact: profile.fatherContact || "",
-              fatherOccupation: profile.fatherOccupation || "",
-              motherName: profile.motherName || "",
-              motherContact: profile.motherContact || "",
-              motherOccupation: profile.motherOccupation || "",
-              address: profile.address || "",
-              city: profile.city || "",
-              state: profile.state || "",
-              pinCode: profile.pinCode || "",
-              localGuardian: profile.localGuardian || "",
-              localGuardianContact: profile.localGuardianContact,
-              localGuardianAddress: profile.localGuardianAddress || "",
-              addharNumber: profile.addharNumber || "",
-              aadharCardDocument: profile.aadharCardDocument || "",
-              photoLink: profile.photoLink || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrxb9rKS0KgjTtqrKPK8dodc0pEeaoC-pY_w&s"
-            });
-          } else {
-            // If no profile data exists, use default form data
-            // but keep the email from user data
-            const defaultData = getDefaultFormData();
-            setFormData({
-              ...defaultData,
-              email: userEmail
-            });
-          }
-        } else {
-          // If API call was successful but didn't return success status
-          toast.error(response.data.message || "Failed to load profile data");
-          // Use default form data but keep the email
-          const defaultData = getDefaultFormData();
+  
+          // 🔑 CRITICAL: merge with defaults ONCE
           setFormData({
-            ...defaultData,
-            email: userEmail
+            ...getDefaultFormData(),
+            ...profile,
+          });
+        } 
+        // ✅ NEW USER (NO PROFILE YET)
+        else {
+          setFormData({
+            ...getDefaultFormData(),
+            email: userEmail,
           });
         }
-      } catch (apiError) {
-        console.error("Error fetching profile data from API:", apiError);
-
-        // Get detailed error message if available
-        const errorMessage = apiError.response?.data?.error ||
-                            apiError.response?.data?.details ||
-                            apiError.message ||
-                            "Failed to load profile data";
-
-        // If it's a new user without a profile yet, don't show an error
-        if (apiError.response?.status === 404) {
-          // This is fine - just means they need to create a profile
-          console.log("No profile found, user needs to create one");
-          toast.info("Please complete your profile information");
-
-          // Use default form data but keep the email
-          const defaultData = getDefaultFormData();
-          setFormData({
-            ...defaultData,
-            email: userEmail
-          });
-        } else {
-          // For other errors, show the error message
-          toast.error(errorMessage);
-        }
+      } else {
+        showToast(response.data.message || "Failed to load profile data", "error");
       }
     } catch (error) {
-      console.error("Unexpected error in fetchProfileData:", error);
-      toast.error("An unexpected error occurred while loading your profile data.");
+      console.error("Error fetching profile data:", error);
+  
+      if (error.response?.status === 404) {
+        showToast("Please complete your profile information", "info");
+        setFormData({
+          ...getDefaultFormData(),
+          email: userEmail,
+        });
+      } else {
+        showToast("Failed to load profile data.", "error");
+      }
     } finally {
       setLoading(false);
     }
   }, [userData]);
+  
+  
+  useEffect(() => {
+    if (formData.course && allCourseDetails.length > 0) {
+      const branches = allCourseDetails.filter(d => d.courseName === formData.course).map(d => d.department);
+      setAvailableBranches([...new Set(branches)].map(b => ({ value: b, label: b })));
+    } else {
+      setAvailableBranches([]);
+    }
+  }, [formData.course, allCourseDetails]);
 
+  useEffect(() => {
+    if (formData.course && formData.branch && allCourseDetails.length > 0) {
+      const specs = allCourseDetails.filter(d => d.courseName === formData.course && d.department === formData.branch).map(d => d.specialization).filter(s => s && s !== 'NA');
+      setAvailableSpecializations([...new Set(specs)].map(s => ({ value: s, label: s })));
+    } else {
+      setAvailableSpecializations([]);
+    }
+  }, [formData.course, formData.branch, allCourseDetails]);
 
 
   // Handle form submission
@@ -600,6 +764,7 @@ export default function StudentSelfProfiling() {
     if (!formData.course) newErrors.course = "Course is required";
     if (!formData.semester) newErrors.semester = "Semester is required";
     if (!formData.branch) newErrors.branch = "Branch is required";
+    if (!formData.specialization) newErrors.specialization = "Specialization is required";
     if (!formData.contactNumber_1) newErrors.contactNumber_1 = "Contact number is required";
     if (!formData.gender) newErrors.gender = "Gender is required";
     if (!formData.bloodGroup) newErrors.bloodGroup = "Blood Group is required";
@@ -627,7 +792,6 @@ export default function StudentSelfProfiling() {
       'rollNo', 'email', 'firstName', 'lastName', 'contactNumber_1', 'contactNumber_2',
       'phoneNumber', 'fatherContact', 'motherContact', 'localGuardianContact',
       'pinCode',
-      // 'addharNumber', 
       'identificationMark', 'fatherName', 'motherName',
       'localGuardian', 'fatherOccupation', 'motherOccupation', 'photoLink','aadharCardDocument'
     ];
@@ -641,7 +805,9 @@ export default function StudentSelfProfiling() {
       //  'addharNumber', 
       'bloodGroup'
     ];
-
+    if (availableSpecializations.length > 0 && !formData.specialization) {
+      newErrors.specialization = "Specialization is required.";
+    }
     // Validate each field that has a value
     fieldsToValidate.forEach(field => {
       // Skip URL validation for document fields
@@ -682,6 +848,7 @@ export default function StudentSelfProfiling() {
         course: "Course",
         semester: "Semester",
         branch: "Branch",
+        specialization: "Specialization",
         contactNumber_1: "Contact Number",
         contactNumber_2: "Contact Number 2",
         phoneNumber: "Phone Number",
@@ -777,6 +944,7 @@ export default function StudentSelfProfiling() {
           course: "Course",
           semester: "Semester",
           branch: "Branch",
+          specialization: "Specialization",
           contactNumber_1: "Contact Number",
           contactNumber_2: "Contact Number 2",
           phoneNumber: "Phone Number",
@@ -835,7 +1003,7 @@ export default function StudentSelfProfiling() {
       setSubmitting(false);
       console.log(formData);
     }
-  }, [validateField, checkRollNumber, isTempStudent, status, formData]);
+  }, [validateField, checkRollNumber, availableSpecializations, isTempStudent, status, formData]);
 
   // Check if form should be read-only
   const isReadOnly = status === 'profile_submitted' || status === 'approved';
@@ -969,7 +1137,7 @@ export default function StudentSelfProfiling() {
                   <div className="mt-2 p-2 bg-red-100 rounded-md">
                     <p className="font-semibold">Reason for rejection:</p>
                     <p>{rejectionReason}</p>
-                    {rejectionReason.includes('roll number') && (
+                    {rejectionReason?.includes('roll number') && (
                       <div className="mt-2 p-2 bg-yellow-100 rounded-md">
                         <p className="font-semibold text-yellow-800">Important:</p>
                         <p className="text-yellow-800">Your roll number appears to be already registered in our system. Please check if you entered it correctly.</p>
@@ -1054,7 +1222,7 @@ export default function StudentSelfProfiling() {
               className={`${errors.rollNo ? "border-red-500" : ""} ${readOnlyClass}`}
               disabled={isReadOnly}
             />
-            {status === 'rejected' && rejectionReason && rejectionReason.includes('roll number') && (
+            {status === 'rejected' && rejectionReason && rejectionReason?.includes('roll number') && (
               <p className="text-sm text-yellow-600 mt-1">
                 <span className="font-semibold">Note:</span> Please ensure your roll number is correct before resubmitting.
               </p>
@@ -1086,7 +1254,7 @@ export default function StudentSelfProfiling() {
             />
           </div>
           <div className="space-y-1">
-            <Label htmlFor="dob">Date of Birth <span className="text-red-500">*</span></Label>
+            <Label htmlFor="dob">Date of Birth <span className="text-red-500">*</span></Label><br></br>
             <Popover>
               <PopoverTrigger asChild>
                 <Button
@@ -1116,36 +1284,14 @@ export default function StudentSelfProfiling() {
           </div>
 
           <div className="flex space-x-4 col-span-1 ">
-            <div className="space-y-1 w-1/2">
-              <Label htmlFor="course">Course <span className="text-red-500">*</span></Label>
-              <Select
-                value={formData.course}
-                onValueChange={(value) => handleSelectChange(value, 'course')}
-                required
-                disabled={isReadOnly}
-              >
-                <SelectTrigger id="course" className={`${errors.course ? "border-red-500" : ""} ${readOnlyClass}`}>
-                  <SelectValue placeholder="Select course" />
-                </SelectTrigger>
-                <SelectContent>
-                  {availableCourses.length > 0 ? (
-                    availableCourses.map((course) => (
-                      <SelectItem key={course.value} value={course.value}>
-                        {course.label}
-                      </SelectItem>
-                    ))
-                  ) : (
-                    <>
-                      <SelectItem value="B.Tech">B.Tech</SelectItem>
-                      <SelectItem value="M.Tech">M.Tech</SelectItem>
-                      <SelectItem value="MBA">MBA</SelectItem>
-                      <SelectItem value="MCA">MCA</SelectItem>
-                    </>
-                  )}
-                </SelectContent>
-              </Select>
-              {errors.course && <p className="text-red-500 text-xs">{errors.course}</p>}
-            </div>
+          <div className="space-y-1">
+            <Label htmlFor="course">Course <span className="text-red-500">*</span></Label>
+            <Select value={formData.course} onValueChange={(value) => handleSelectChange(value, 'course')} required disabled={isReadOnly}>
+              <SelectTrigger className={`${errors.course ? "border-red-500" : ""} ${readOnlyClass}`}><SelectValue placeholder="Select course" /></SelectTrigger>
+              <SelectContent>{availableCourses.map(c => <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>)}</SelectContent>
+            </Select>
+            {errors.course && <p className="text-red-500 text-xs">{errors.course}</p>}
+          </div>
             <div className="space-y-1 w-1/2">
               <Label htmlFor="semester">Semester <span className="text-red-500">*</span></Label>
               <Select
@@ -1165,34 +1311,22 @@ export default function StudentSelfProfiling() {
 
           <div className="space-y-1">
             <Label htmlFor="branch">Branch <span className="text-red-500">*</span></Label>
-            <Select
-              value={formData.branch}
-              onValueChange={(value) => handleSelectChange(value, 'branch')}
-              required
-              disabled={isReadOnly}
-            >
-              <SelectTrigger id="branch" className={`${errors.branch ? "border-red-500" : ""} ${readOnlyClass}`}>
-                <SelectValue placeholder="Select branch" />
-              </SelectTrigger>
-              <SelectContent>
-                {availableBranches.length > 0 ? (
-                  availableBranches.map((branch) => (
-                    <SelectItem key={branch.value} value={branch.value}>
-                      {branch.label}
-                    </SelectItem>
-                  ))
-                ) : (
-                  <>
-                    <SelectItem value="Computer Science">Computer Science</SelectItem>
-                    <SelectItem value="Electronics and Communication">Electronics and Communication</SelectItem>
-                    <SelectItem value="Mechanical">Mechanical</SelectItem>
-                    <SelectItem value="Electrical">Electrical</SelectItem>
-                  </>
-                )}
-              </SelectContent>
+            <Select value={formData.branch} onValueChange={(value) => handleSelectChange(value, 'branch')} required disabled={isReadOnly || !formData.course}>
+              <SelectTrigger className={`${errors.branch ? "border-red-500" : ""} ${readOnlyClass}`}><SelectValue placeholder="Select branch" /></SelectTrigger>
+              <SelectContent>{availableBranches.map(b => <SelectItem key={b.value} value={b.value}>{b.label}</SelectItem>)}</SelectContent>
             </Select>
             {errors.branch && <p className="text-red-500 text-xs">{errors.branch}</p>}
           </div>
+          {availableSpecializations.length > 0 && (
+            <div className="space-y-1">
+              <Label htmlFor="specialization">Specialization <span className="text-red-500">*</span></Label>
+              <Select value={formData.specialization} onValueChange={(value) => handleSelectChange(value, 'specialization')} required disabled={isReadOnly || !formData.branch}>
+                <SelectTrigger className={`${errors.specialization ? "border-red-500" : ""} ${readOnlyClass}`}><SelectValue placeholder="Select specialization" /></SelectTrigger>
+                <SelectContent>{availableSpecializations.map(s => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}</SelectContent>
+              </Select>
+              {errors.specialization && <p className="text-red-500 text-xs">{errors.specialization}</p>}
+            </div>
+          )}
           <div className="space-y-1">
             <Label htmlFor="contactNumber_1">Contact Number <span className="text-red-500">*</span></Label>
             <Input
@@ -1514,87 +1648,46 @@ export default function StudentSelfProfiling() {
             />
             {errors.localGuardianContact && <p className="text-red-500 text-xs">{errors.localGuardianContact}</p>}
           </div>
-          <div className="space-y-1">
-            <Label htmlFor="localGuardianAddress">Guardian Address</Label>
-            <textarea
-              id="localGuardianAddress"
-              rows={2}
-              className={`resize-none border ${errors.localGuardianAddress ? "border-red-500" : "border-gray-300"} rounded-md w-full p-2 ${readOnlyClass}`}
-              value={formData.localGuardianAddress}
-              onChange={handleChange}
-              disabled={isReadOnly}
-            />
-            {errors.localGuardianAddress && <p className="text-red-500 text-xs">{errors.localGuardianAddress}</p>}
-          </div>
-          {/* <div className="space-y-1">
-            <Label htmlFor="addharNumber">Aadhaar Number <span className="text-red-500">*</span></Label>
-            <Input
-              id="addharNumber"
-              type="text"
-              value={formData.addharNumber}
-              onChange={handleChange}
-              className={`${errors.addharNumber ? "border-red-500" : ""} ${readOnlyClass}`}
-              disabled={isReadOnly}
-            />
-            {errors.addharNumber && <p className="text-red-500 text-xs">{errors.addharNumber}</p>}
-          </div> */}
-          {/* Virtual Aadhaar Number Section */}
-          {/* Virtual Aadhaar Number Section */}
-          <div className="border rounded-lg p-4 bg-white">
-            <label htmlFor="virtualAadhar" className="block font-medium mb-2">
-              Virtual Aadhaar Number <span className="text-red-500">*</span>
-            </label>
+         {/* Guardian Address */}
+<div className="space-y-1 col-span-1 sm:col-span-2">
+  <Label htmlFor="localGuardianAddress">Guardian Address</Label>
+  <textarea
+    id="localGuardianAddress"
+    rows={2}
+    className={`resize-none border rounded-md w-full p-2 ${readOnlyClass}`}
+    value={formData.localGuardianAddress}
+    onChange={handleChange}
+    disabled={isReadOnly}
+  />
+</div>
 
-            <input
-              type="text"
-              id="virtualAadhar"
-              name="virtualAadhar"
-              placeholder="Enter your 16-digit Virtual Aadhaar ID"
-              value={formData.virtualAadhar || ""}
-              onChange={(e) => {
-                const value = e.target.value.trim();
-                if (/[^0-9]/.test(value)) return; // allow digits only
-                updateFormData({ virtualAadhar: value });
-              }}
-              onBlur={(e) => {
-                const value = e.target.value.trim();
-                if (!value) return;
+{/* Virtual Aadhaar */}
+<div className="border rounded-lg p-4 bg-white col-span-1 sm:col-span-2 lg:col-span-3 xl:col-span-4">
+  <label htmlFor="virtualAadhar" className="block font-medium mb-2">
+    Virtual Aadhaar Number <span className="text-red-500">*</span>
+  </label>
 
-                if (value.length === 12) {
-                  setInlineError(
-                    <>
-                      A Virtual Aadhaar is more secure and is of 16 digits. You can obtain it from{" "}
-                      <a
-                        href="https://myaadhaar.uidai.gov.in/genericGenerateOrRetriveVID/en"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 underline"
-                      >
-                        here
-                      </a>.
-                    </>
-                  );
-                } else if (value.length !== 16) {
-                  setInlineError("Please enter a valid 16-digit Virtual Aadhaar ID.");
-                } else {
-                  setInlineError(""); // clear if valid
-                }
-              }}
-              maxLength={16}
-              className="border px-3 py-2 rounded w-full"
-              disabled={isReadOnly}
-            />
+  <input
+    type="text"
+    id="virtualAadhar"
+    value={formData.virtualAadhar || ""}
+    onChange={(e) => {
+      const value = e.target.value.replace(/\D/g, "");
+      updateFormData({ virtualAadhar: value });
+    }}
+    maxLength={16}
+    className="border px-3 py-2 rounded w-full"
+    disabled={isReadOnly}
+  />
 
-            {/* Inline error message */}
-            {inlineError && (
-              <p className="text-sm text-red-500 mt-1">{inlineError}</p>
-            )}
+  {inlineError && (
+    <p className="text-sm text-red-500 mt-1">{inlineError}</p>
+  )}
 
-            {/* Help note below input */}
-            <p className="text-sm text-gray-600 mt-2">
-              💡 You can find your 16-digit <strong>Virtual Aadhaar ID</strong> on your masked Aadhaar card (usually printed below the Aadhaar number on the PDF or physical copy).
-            </p>
-          </div>
+  <p className="text-sm text-gray-600 mt-2">
+    💡 You can find your 16-digit <strong>Virtual Aadhaar ID</strong> on your masked Aadhaar card (usually printed below Aadhaar number on the PDF or physical copy.)
+  </p>
+</div>
 
 
        {/* Document Upload Section */}
@@ -1605,7 +1698,8 @@ export default function StudentSelfProfiling() {
 
     <div className="flex flex-col gap-6">
       {/* Profile Photo Upload Section */}
-      <div className="border rounded-lg p-4 bg-white">
+      <div className="border rounded-lg p-4 bg-white col-span-1 sm:col-span-2 lg:col-span-3 xl:col-span-4">
+
         <h3 className="font-medium mb-2">Profile Photo <span className="text-red-500">*</span></h3>
         <FileUpload
           label="Upload Photo (Passport size)"

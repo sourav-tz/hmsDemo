@@ -65,6 +65,10 @@ module.exports = (sequelize, dataTypes) => {
           len: [1, 100],
         },
       },
+      specialization: { // <-- ADD THIS FIELD
+        type: dataTypes.STRING,
+        allowNull: true
+      },
       contactNumber_1: {
         type: dataTypes.STRING,
         allowNull: false,
