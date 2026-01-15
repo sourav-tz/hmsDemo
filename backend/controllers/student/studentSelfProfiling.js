@@ -234,25 +234,18 @@ exports.profileValidationSchema = {
         errorMessage: 'Pin code is required.',
       },
     },
-    // addharNumber: {
-    //   in: ['body'],
-    //   optional: true,
-    //   matches: {
-    //     options: [/^\d{12}$/],
-    //     errorMessage: 'Aadhaar number must be exactly 12 digits.',
-    //   },
-    // },
+
     addharNumber: {
       in: ['body'],
       notEmpty: {
-        errorMessage: 'Aadhaar or Virtual Aadhaar number is required.',
+        errorMessage: 'Virtual Aadhaar number is required.',
       },
       matches: {
-        options: [/^\d{12}$|^\d{16}$/],
-        errorMessage:
-          'Aadhaar number must be 12 digits or Virtual Aadhaar must be 16 digits.',
+        options: [/^\d{16}$/],
+        errorMessage: 'Virtual Aadhaar number must be exactly 16 digits.',
       },
     },
+
 
     fatherName: {
       in: ['body'],

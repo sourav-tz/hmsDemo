@@ -65,7 +65,7 @@ module.exports = (sequelize, dataTypes) => {
           len: [1, 100],
         },
       },
-      specialization: { // <-- ADD THIS FIELD
+      specialization: { 
         type: dataTypes.STRING,
         allowNull: true
       },
@@ -232,8 +232,8 @@ module.exports = (sequelize, dataTypes) => {
             msg: "Aadhaar number must contain only digits",
           },
           isValidLength(value) {
-            if (value.length !== 12 && value.length !== 16) {
-              throw new Error("Aadhaar number must be 12 or 16 digits");
+            if (value.length !== 16) {
+              throw new Error("Virtual Aadhaar Number must be of 16 digits");
             }
           },
         },

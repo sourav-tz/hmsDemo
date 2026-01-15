@@ -1072,13 +1072,6 @@ export default function StudentSelfProfiling() {
     }
   }, [userData, fetchProfileData, fetchAvailableCourses, updateFormData]);
 
-    // Show masked Aadhaar info popup once per user
-  // useEffect(() => {
-  //   const hasSeenInfo = localStorage.getItem("seenMaskedAadharInfo");
-  //   if (!hasSeenInfo) {
-  //     setShowAadharInfoModal(true);
-  //   }
-  // }, []);
 
     useEffect(() => {
       const userEmail = userData?.email || localStorage.getItem("email");
@@ -1649,17 +1642,17 @@ export default function StudentSelfProfiling() {
             {errors.localGuardianContact && <p className="text-red-500 text-xs">{errors.localGuardianContact}</p>}
           </div>
          {/* Guardian Address */}
-<div className="space-y-1 col-span-1 sm:col-span-2">
-  <Label htmlFor="localGuardianAddress">Guardian Address</Label>
-  <textarea
-    id="localGuardianAddress"
-    rows={2}
-    className={`resize-none border rounded-md w-full p-2 ${readOnlyClass}`}
-    value={formData.localGuardianAddress}
-    onChange={handleChange}
-    disabled={isReadOnly}
-  />
-</div>
+        <div className="space-y-1 col-span-1 sm:col-span-2">
+          <Label htmlFor="localGuardianAddress">Guardian Address</Label>
+          <textarea
+            id="localGuardianAddress"
+            rows={2}
+            className={`resize-none border rounded-md w-full p-2 ${readOnlyClass}`}
+            value={formData.localGuardianAddress}
+            onChange={handleChange}
+            disabled={isReadOnly}
+          />
+        </div>
 
 {/* Virtual Aadhaar */}
 <div className="border rounded-lg p-4 bg-white col-span-1 sm:col-span-2 lg:col-span-3 xl:col-span-4">
@@ -1737,7 +1730,7 @@ export default function StudentSelfProfiling() {
         )}
       </div>
 
-      {/* Aadhaar Card Upload Section */}
+      {/* Masked Aadhaar Card Upload Section */}
       <div className="border rounded-lg p-4 bg-white">
         <h3 className="font-medium mb-2">Aadhaar Card Document <span className="text-red-500">*</span></h3>
         <p className="text-sm text-yellow-600 mb-2">
