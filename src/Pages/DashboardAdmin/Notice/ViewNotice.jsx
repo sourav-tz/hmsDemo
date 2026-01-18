@@ -1,183 +1,207 @@
-
-import React, { useEffect, useState } from 'react';
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label"
-import { useForm, Controller } from "react-hook-form"
-import { ToastContainer, toast } from "react-toastify"
-import 'react-toastify/dist/ReactToastify.css'
-import { DevTool } from "@hookform/devtools"
-import ReactPaginate from 'react-paginate';
-import '../../../MainStyles/Pagination.css';
-import axios from 'axios';
-import { set } from 'date-fns';
-import { useSelector } from 'react-redux';
-import formdata from '../../../config/formdata';
-
+import React, { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import axios from "axios";
+import { useSelector } from "react-redux";
 
 const ViewNotice = () => {
+  const [notices, setNotices] = useState([]);
+  const [deleteId, setDeleteId] = useState(null); // 👈 for confirm popup
+  const userData = useSelector((state) => state.userStorage.data);
 
-    const totalPages = 10;
-    const [notices, setNotices] = useState([]);
-    const userData = useSelector(state => state.userStorage.data);
-
-    const getNotices = async () => {
-        try {
-            const res = await axios({
-                method: 'get',
-                url: import.meta.env.VITE_BASE_URL + '/HA/getNotices',
-                withCredentials: true,
-                params: { hostelNo: userData.dataValues.hostelNo }, // Send hostelNo as query parameter       
-                // withCredentials: true,
-                // params: { hostelNo: userData.dataValues.hostelNo }, // Send hostelNo as query parameter       
-            })
-            console.log("SENT HOSTEL NO_>", userData.dataValues.hostelNo);
-            console.log(res);
-            // printing data
-            console.log("DATA_>", res.data);
-            setNotices(res.data.result);
-        } catch (err) {
-            console.log(err);
+  /* ================= GET NOTICES (SORTED BY DATE) ================= */
+  const getNotices = async () => {
+    try {
+      const res = await axios.get(
+        import.meta.env.VITE_BASE_URL + "/HA/getNotices",
+        {
+          withCredentials: true,
+          params: { hostelNo: userData?.dataValues?.hostelNo },
         }
+      );
+
+      const sortedNotices = (res.data.result || []).sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      );
+
+      setNotices(sortedNotices);
+    } catch (err) {
+      console.error(err);
     }
+  };
 
+  useEffect(() => {
+    getNotices();
+  }, []);
 
-    useEffect(() => {
-        getNotices();
-    }, [])
-
-    const handlePageClick = (data) => {
-        console.log(data.selected);
-    }
-
-    const deleteNotice = async (public_id) => {
-        try {
-            console.log("TRYING DELETE_>", public_id)
-            const res = await axios({
-                method: 'delete',
-                url: import.meta.env.VITE_BASE_URL + '/HA/deleteNotices',
-                data: { public_id },
-                withCredentials: true
-            })
-            // console.log(res);
-            getNotices();
-        } catch (err) {
-            console.log(err);
+  /* ================= DELETE NOTICE ================= */
+  const deleteNotice = async () => {
+    try {
+      await axios.delete(
+        import.meta.env.VITE_BASE_URL + "/HA/deleteNotices",
+        {
+          data: { public_id: deleteId },
+          withCredentials: true,
         }
+      );
+      setDeleteId(null); // close popup
+      getNotices();
+    } catch (err) {
+      console.error(err);
     }
+  };
 
+  /* ================= DIRECT DOWNLOAD ================= */
+  const downloadNotice = (public_id) => {
+    window.location.href =
+      `${import.meta.env.VITE_BASE_URL}/SA/downloadNotice/${public_id}`;
+  };
 
-    return (
-        <>
-            <div className='flex flex-col items-center w-full bg-gray-100 min-h-screen mx-auto item-center'>
-                <h1 className='text-3xl font-semibold mt-10 max-md:mt-24 '>Notice</h1>
-                <p className='text-gray-500'>View Notices</p>
-                <Card className="w-3/4 mt-10 ml-2 max-lg:ml-16 min-lg:ml-16 ">
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead className="">Notice ID</TableHead>
-                                {/* <TableHead className="w-[100px]">Notice ID</TableHead> */}
-                                <TableHead>Title</TableHead>
-                                <TableHead>Date</TableHead>
-                                <TableHead>Role</TableHead>
-                                {/* <TableHead className="text-right">Actions</TableHead> */}
-                                <TableHead className="text-center">Actions</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {/* {notices.length!==0?{notices.map(d=><TableRow>
-                <TableCell className="font-medium">{d.noticeId}</TableCell>
-                <TableCell>{d.title}</TableCell>
-                <TableCell className="text-left">{d.createdAt}</TableCell>
-                <TableCell className="text-right">
-                    <Button className="bg-blue-700 hover:bg-blue-500">View</Button>
-                    <Button className="bg-red-700 hover:bg-red-500">Delete</Button>
-                </TableCell>
-                </TableRow>)}:null} */}
+  return (
+    <>
+      <div className="flex flex-col items-center w-full bg-gray-100 min-h-screen">
+        <h1 className="text-3xl font-semibold mt-10">Notice</h1>
+        <p className="text-gray-500">View Notices</p>
 
-                            {notices.length !== 0 ? notices.map((d, index) => <TableRow>
-                                <TableCell className="font-medium">{index + 1}</TableCell>
-                                <TableCell>{d.title}</TableCell>
-                                {/* <TableCell className="text-left">{d.createdAt.}</TableCell> */}
-                                <TableCell className="text-left">
-                                    {new Date(d.createdAt).toLocaleDateString("en-US", {
-                                        year: "numeric",
-                                        month: "long",
-                                        day: "numeric",
-                                    })}
-                                </TableCell>
-                                <TableCell className="text-left">{d.isGlobal?"Super Admin":"Admin"}</TableCell>
-                                <TableCell className="text-center">
-                                    <Dialog>
-                                        <DialogTrigger>
-                                            <Button className="bg-blue-700 hover:bg-blue-500 mr-10">Download</Button>
-                                        </DialogTrigger>
-                                        <DialogContent>
-                                            <DialogHeader>
-                                                <DialogTitle>{d.title}</DialogTitle>
-                                            </DialogHeader>
-                                            <a href={d.url} target="_blank">Open PDF</a>
-                                        </DialogContent>
-                                    </Dialog>
-                                    {/* <Button disabled={d.isGlobal}  onClick={() => deleteNotice(d.public_id)} className="bg-red-700 hover:bg-red-500">Delete</Button> */}
-                                    <Button
-                                        disabled={d.isGlobal}
-                                        onClick={() => deleteNotice(d.public_id)}
-                                        className="bg-red-700 text-white px-4 py-2 rounded hover:bg-red-500 cursor-pointer disabled:cursor-not-allowed disabled:bg-red-400 disabled:hover:bg-red-400"
-                                    >
-                                        Delete
-                                    </Button>
+        <Card className="w-3/4 mt-10 p-4">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>#</TableHead>
+                <TableHead>Title</TableHead>
+                <TableHead>Date</TableHead>
+                <TableHead>Role</TableHead>
+                <TableHead className="text-center">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
 
+            <TableBody>
+              {notices.length !== 0 ? (
+                notices.map((d, index) => (
+                  <TableRow key={d.public_id}>
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell>{d.title}</TableCell>
+                    <TableCell>
+                      {new Date(d.createdAt).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </TableCell>
+                    <TableCell>
+                      {d.isGlobal ? "Super Admin" : "Admin"}
+                    </TableCell>
 
+                    <TableCell className="text-center">
+                      <div className="flex justify-center gap-3">
 
-                                </TableCell>
-                            </TableRow>) : null}
-                        </TableBody>
-                    </Table>
-                </Card>
-                {/* {notices.length!==0?{notices.map(data=>{
-            // 
-        })}} */}
-                {/* {notices.length !== 0 ? notices.map(data=>{
-          <div>  {data}      <div>  data </div> </div>
-    
-        }):"blank"} */}
-                {/* <ReactPaginate
-        breakLabel="..."
-        nextLabel="next >"
-        onPageChange={handlePageClick}
-        pageRangeDisplayed={3}
-        pageCount={totalPages}
-        previousLabel="< previous"
-        renderOnZeroPageCount={null}
-        containerClassName="pagination justify-content-center"
-            pageClassName="page-item"
-            pageLinkClassName="page-link"
-            previousClassName="page-item"
-            previousLinkClassName="page-link"
-            nextClassName="page-item"
-            nextLinkClassName="page-link"
-            activeLinkClassName="active-page"
-      /> */}
-            </div>
-        </>
-    )
-}
+                        {/* ===== VIEW ===== */}
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button
+                              variant="outline"
+                              className="border-blue-600 text-blue-600"
+                            >
+                              View
+                            </Button>
+                          </DialogTrigger>
+
+                          <DialogContent className="max-w-5xl h-[85vh] p-0 bg-gray-100 flex flex-col">
+                            <div className="px-6 py-3 bg-white border-b shrink-0">
+                              <h2 className="text-lg font-semibold">
+                                {d.title}
+                              </h2>
+                            </div>
+
+                            <div className="flex-1 overflow-hidden">
+                              <iframe
+                                src={`${d.url}#view=FitH&toolbar=0&navpanes=0`}
+                                className="w-full h-full"
+                                style={{ background: "white", border: "none" }}
+                                title="Notice PDF"
+                              />
+                            </div>
+                          </DialogContent>
+                        </Dialog>
+
+                        {/* ===== DOWNLOAD ===== */}
+                        <Button
+                          onClick={() => downloadNotice(d.public_id)}
+                          className="bg-green-700 hover:bg-green-600 text-white"
+                        >
+                          Download
+                        </Button>
+
+                        {/* ===== DELETE (CONFIRM) ===== */}
+                        <Button
+                          disabled={d.isGlobal}
+                          onClick={() => setDeleteId(d.public_id)}
+                          className="bg-red-700 text-white disabled:bg-red-400 disabled:cursor-not-allowed"
+                        >
+                          Delete
+                        </Button>
+
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center">
+                    No notices found
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </Card>
+      </div>
+
+      {/* ================= CONFIRM DELETE POPUP ================= */}
+      <Dialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Are you sure?</DialogTitle>
+          </DialogHeader>
+
+          <p className="text-gray-600">
+            This action will permanently delete the notice.
+          </p>
+
+          <div className="flex justify-end gap-3 mt-6">
+            <Button
+              variant="outline"
+              onClick={() => setDeleteId(null)}
+            >
+              No
+            </Button>
+
+            <Button
+              onClick={deleteNotice}
+              className="bg-red-700 hover:bg-red-600 text-white"
+            >
+              Yes, Delete
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+};
 
 export default ViewNotice;
-
-// make table with the following columns:
-// noticeId
-// title
-// description
-// date
-// - View
-// - Delete
-//use shadcn ui components
-//use tailwind css for styling

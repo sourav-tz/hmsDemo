@@ -23,7 +23,7 @@ const { downloadFile } = require('../../controllers/hostelAuthority/studentModul
 
 const superAdminLoginToken = require('../../controllers/Login/superAdminLoginToken.js');
 const LogOut = require('../../controllers/LoggingOut/LogOut.js');
-const { addnotice, getNotices, deleteNotices } = require('../../controllers/superAdmin/Manage_Notices/notices.js');
+const { addnotice, getNotices, deleteNotices, downloadNotice } = require('../../controllers/superAdmin/Manage_Notices/notices.js');
 
 const getAllRoomsData = require('../../controllers/superAdmin/ManageRooms/getAllRoomsData.js')
 
@@ -75,6 +75,7 @@ router.patch('/updateHostel',auth, updateHostel);
 router.post('/addNotice', auth, upload.single('file'), addnotice);
 router.get('/getNotices', auth, getNotices);
 router.delete('/deleteNotices', auth, deleteNotices);
+router.get('/downloadNotice/:public_id', auth, downloadNotice);
 
 
 // RoomsTypes Api's
