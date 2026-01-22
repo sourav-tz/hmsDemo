@@ -1,0 +1,34 @@
+@import '../../../../MainStyles/global.scss';
+
+
+.container{
+    width:100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    column-gap: 25px;
+}
+
+
+.queryArea{
+    padding: 1rem 2rem;
+    box-shadow: $cardShadow;
+    border-radius: 0.4rem;
+}
+
+.MultiSelect{
+    margin-top: 15px;
+}
+
+.buttonArea{
+    width: 100%;
+    margin-top: 25px;
+    display: flex;
+    justify-content: flex-end;
+    column-gap: 20px;
+    align-items: flex-end;
+}
+
+.tableArea{
+    flex-basis: 100%;
+}

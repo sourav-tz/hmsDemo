@@ -1,0 +1,154 @@
+@import '../../MainStyles/Colors.scss';
+
+*{
+    padding:0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+ul{
+    list-style-type : none;
+}
+
+
+.sidebarContainer{
+    // stick navbar to left
+    position:fixed;
+    top:0;
+    left:0;
+    height: 100vh;
+    background-color: $primary;
+    color: $very-light-grey;
+    transition: width 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    z-index: 100;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);   
+}
+
+.inActive{
+   min-width: 6%;
+   transition: 0.52s;
+
+}
+
+.active{
+    min-width: 220px;
+    // transition: 0.52s;
+}
+
+.hidden{
+    display: none;
+    justify-content: center;
+}
+
+
+
+.itemsContainer{
+    margin-top: 1.5rem;
+    padding: 0px 5px;
+}
+
+
+
+.userIcon{
+    background-color: $secondary;
+    width:50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50px;
+}
+
+.avatarImage{
+    width:50px;
+    height: 50px;
+    display: flex;
+    // justify-content: center;
+    align-items: center;
+    border-radius: 50px;
+}
+
+.userItem{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    
+}
+
+.userRole{
+    color:$light-grey;
+}
+
+
+
+.item{
+    display: flex;
+    flex-direction: column;
+    padding: 0.3px;
+    border-radius: 10px;
+    justify-content: center;
+    margin: 20px 0px;
+    cursor: pointer;
+    li{
+        padding:10px 5px;
+        margin-left: 25px;
+    }
+
+}
+.item:hover{
+    // background-color: $nav-active;
+    border-radius: 10px;
+    color:$tertiary-active;
+    ul{
+        color: aliceblue;
+    }
+
+}
+
+.activeItem{
+    padding: 5px;
+    border-radius: 10px;
+    color:$medium-grey;
+    background-color: $nav-active;
+}
+
+.ItemCloseMenu{
+    justify-content: center;
+    align-items: center;
+    padding: 3px;
+}
+
+.ItemOpenMenu{
+    justify-content: flex-start;
+    p{
+        transition: transform 300ms ease-in-out;
+    }
+    p:hover{
+        transform: scale(1.02);
+        border-radius: 10px;
+    }
+}
+.subOptions{
+    margin-top: 5px;
+    transition: transform 300ms ease-in-out;
+    &:hover{
+        background-color: $tertiary;
+        border-radius: 5px;
+        transform: scale(1.06);
+    }
+}
+
+.activeSubOption{
+    background-color: $secondary;
+    border-radius: 5px;
+}
+
+.Settings{
+    margin-bottom: 50px;
+    padding: 5px;
+}
+
+

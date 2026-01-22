@@ -1,0 +1,26 @@
+@import '../../MainStyles/global.scss';
+@import '../../MainStyles/Colors.scss';
+.Container{
+    min-width: 300px;
+    height: 300px;
+    box-shadow: $cardShadow;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    border-radius: 10px;
+}
+
+.titleArea{
+    flex: 10%;
+    border-bottom: 2px solid $very-light-grey;
+    padding: 10px;
+    text-align: center;
+    color: $medium-grey;
+    h3{
+        font-weight: 400;
+    }
+}
+
+.contentArea{
+    flex:80%;
+}

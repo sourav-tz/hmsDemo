@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "40:80"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - app
+    restart: unless-stopped
+
+  app:
+    build: .
+      #    container_name: app
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_DATABASE}
+      DB_HOST: mysql
+      DB_PORT: ${DB_PORT}
+      DB_DIALECT: ${DB_DIALECT}
+      NODE_ENV: ${NODE_ENV}
+      FRONTEND_URL: ${FRONTEND_URL}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      DB_LOGGING: ${DB_LOGGING}
+      MAIL_HOST: ${MAIL_HOST}
+      MAIL_USER: ${MAIL_USER}
+      MAIL_PASS: ${MAIL_PASS}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      # Standard MySQL variables:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE:     ${DB_DATABASE}
+      MYSQL_USER:         ${DB_USERNAME}
+      MYSQL_PASSWORD:     ${DB_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "4317:3306"
+
+volumes:
+  mysql_data:
+    driver: local

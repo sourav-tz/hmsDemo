@@ -1,0 +1,30 @@
+.pagination{
+    display: flex;
+    column-gap: 10px;
+    width: 80%;
+    justify-content: center;
+    margin-top: 25px;
+}
+
+
+.page-link{
+    padding:0.4rem 0.9rem;
+    border: 1px solid #5F57FF;
+    border-radius: 0.2rem;
+    color:#5F57FF;
+    cursor: pointer;
+    transition: 0.2s ease-in;
+    font-weight: 700;
+}
+
+.page-link:hover{
+    color:white;
+    background-color: #5F57FF;
+}
+
+.active-page{
+    box-sizing: border-box;
+    color:white !important;
+    background-color: #5F57FF;
+}
+
