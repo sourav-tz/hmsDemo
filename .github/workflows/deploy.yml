@@ -25,13 +25,13 @@ jobs:
 
       - name: Build backend image
         run: |
-          docker build \
-            -t ghcr.io/${{ github.repository_owner }}/nit-hostel-backend:latest \
-            ./backend
+          OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          docker build -t ghcr.io/$OWNER/nit-hostel-backend:latest ./backend
 
       - name: Push backend image
         run: |
-          docker push ghcr.io/${{ github.repository_owner }}/nit-hostel-backend:latest
+          OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          docker push ghcr.io/$OWNER/nit-hostel-backend:latest
 
       - name: Deploy on EC2
         uses: appleboy/ssh-action@v1.0.0
@@ -41,6 +41,7 @@ jobs:
           key: ${{ secrets.EC2_KEY }}
           script: |
             cd ~/NIT-HOSTEL-V2
-            docker login ghcr.io -u ${{ github.repository_owner }} -p ${{ secrets.GHCR_TOKEN }}
+            OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+            docker login ghcr.io -u $OWNER -p ${{ secrets.GHCR_TOKEN }}
             docker compose -f compose.prod.yaml pull
             docker compose -f compose.prod.yaml up -d
