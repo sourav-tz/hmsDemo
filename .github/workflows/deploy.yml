@@ -16,23 +16,35 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
+      # -------------------------
+      # Login to GitHub Container Registry
+      # -------------------------
       - name: Login to GHCR
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GHCR_TOKEN }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
+      # -------------------------
+      # Build backend image
+      # -------------------------
       - name: Build backend image
         run: |
           OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
           docker build -t ghcr.io/$OWNER/nit-hostel-backend:latest ./backend
 
+      # -------------------------
+      # Push backend image
+      # -------------------------
       - name: Push backend image
         run: |
           OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
           docker push ghcr.io/$OWNER/nit-hostel-backend:latest
 
+      # -------------------------
+      # Deploy on EC2
+      # -------------------------
       - name: Deploy on EC2
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -40,10 +52,23 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_KEY }}
           script: |
+            set -e
+
             cd ~/NIT-HOSTEL-V2
+
             OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
 
-            docker login ghcr.io -u $OWNER -p ${{ secrets.GHCR_TOKEN }}
+            echo "Logging into GHCR on EC2..."
+            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $OWNER --password-stdin
+
+            echo "Pulling new images..."
+            docker-compose -f compose.prod.yaml pull
+
+            echo "Restarting services..."
+            docker-compose -f compose.prod.yaml down
+            docker-compose -f compose.prod.yaml up -d
+
+            echo "Deployment complete 🚀"
 
             docker-compose -f compose.prod.yaml pull
             docker-compose -f compose.prod.yaml up -d
