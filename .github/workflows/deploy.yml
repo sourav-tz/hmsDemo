@@ -13,18 +13,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # -------------------------
+      # Checkout repository
+      # -------------------------
       - name: Checkout repo
         uses: actions/checkout@v4
 
       # -------------------------
-      # Login to GitHub Container Registry
+      # Login to GHCR (PAT)
       # -------------------------
       - name: Login to GHCR
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          username: xmisra
+          password: ${{ secrets.GHCR_PAT }}
 
       # -------------------------
       # Build backend image
@@ -59,16 +62,13 @@ jobs:
             OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
 
             echo "Logging into GHCR on EC2..."
-            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $OWNER --password-stdin
+            echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u xmisra --password-stdin
 
-            echo "Pulling new images..."
+            echo "Pulling latest images..."
             docker-compose -f compose.prod.yaml pull
 
-            echo "Restarting services..."
+            echo "Restarting containers..."
             docker-compose -f compose.prod.yaml down
             docker-compose -f compose.prod.yaml up -d
 
             echo "Deployment complete 🚀"
-
-            docker-compose -f compose.prod.yaml pull
-            docker-compose -f compose.prod.yaml up -d
