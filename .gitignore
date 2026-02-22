@@ -12,7 +12,7 @@ nodemon.json
 dist
 dist-ssr
 *.local
-
+container_backend_copy/
 # Editor directories and files
 .netlify
 .vscode/*
