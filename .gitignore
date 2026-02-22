@@ -26,6 +26,10 @@ dist-ssr
 *.sw?
 _codux
 .env
+.env*
+backend/.env*
+*.save
+*~
 # Local Netlify folder
 .netlify
 netlify.toml

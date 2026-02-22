@@ -4,15 +4,11 @@
 # If you need more help, visit the Dockerfile reference guide at
 # https://docs.docker.com/go/dockerfile-reference/
 
-# Want to help us make this template better? Share your feedback here: https://forms.gle/ybq9Krt8jtBL3iCk7
-
 ARG NODE_VERSION=21.6.2
 
 FROM node:${NODE_VERSION}-alpine
 
-# Use production node environment by default.
 ENV NODE_ENV=test
-
 
 WORKDIR /usr/src/app
 
@@ -20,14 +16,16 @@ COPY package.json .
 
 RUN npm i
 
-# Run the application as a non-root user.
-USER node
-
-# Copy the rest of the source files into the image.
+# Copy rest of source first
 COPY . .
 
-# Expose the port that the application listens on.
+# Fix ownership AFTER copy
+RUN mkdir -p /usr/src/app/public/uploads \
+ && chown -R node:node /usr/src/app/public
+
+# Run as non-root
+USER node
+
 EXPOSE 3000
 
-# Run the application.
 CMD ["npm", "run", "dev"]

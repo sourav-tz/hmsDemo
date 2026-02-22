@@ -1,15 +1,15 @@
-FROM node:16-alpine
+FROM node:18-alpine
 
-WORKDIR '/app'
+WORKDIR /app
 
-COPY package.json .
-RUN npm install
+ENV NODE_OPTIONS=--max-old-space-size=4096
 
+# Copy dependency files first
+COPY package.json package-lock.json* ./
 
+RUN npm install --legacy-peer-deps
+
+# Copy rest of the app
 COPY . .
 
-
-RUN ls
-
-
-CMD ["npm", "run", "dev"]
+CMD ["npm","run","dev"]
