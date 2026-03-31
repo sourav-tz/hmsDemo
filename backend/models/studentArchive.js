@@ -112,7 +112,7 @@ module.exports = (sequelize, DataTypes) => {
                     msg: "addharNumber must be exactly 16 digits (Virtual Aadhaar ID)",
                 },
             },
-        },
+
         photoLink: {
             type: DataTypes.STRING,
         },

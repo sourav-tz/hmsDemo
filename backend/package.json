@@ -10,7 +10,7 @@
   "author": "Aditya and Deepak",
   "license": "ISC",
   "dependencies": {
-    "axios": "^1.8.4",
+    "axios": "1.13.6",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
     "cloudinary": "^2.2.0",
@@ -34,6 +34,10 @@
     "swagger-jsdoc": "^6.0.0",
     "swagger-ui-express": "^5.0.0",
     "yamljs": "^0.3.0"
+  },
+  
+  "overrides":{
+    "axios": "1.13.6"
   },
   "devDependencies": {
     "sequelize-cli": "^6.6.3"
