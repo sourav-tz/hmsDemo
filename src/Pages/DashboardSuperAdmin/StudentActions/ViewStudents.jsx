@@ -37,9 +37,25 @@ const ViewInfo = ()=>{
   const [selectedYear, setSelectedYear] = useState('');
   const [selectedHostel, setSelectedHostel] = useState('');
 
+  const buildStudentQueryParams = (page = 1) => ({
+    page,
+    limit:10,
+    total:0,
+    ...((searchQuery.firstName !== '' && searchQuery.firstName !== null) && { firstName: searchQuery.firstName }),
+    ...((searchQuery.lastName !== '' && searchQuery.lastName !== null) && { lastName: searchQuery.lastName}),
+    ...((searchQuery.rollNo !== '' && searchQuery.rollNo !== null) && { rollNo: searchQuery.rollNo}),
+    ...((searchQuery.state !== '' && searchQuery.state !== null) && { state: searchQuery.state}),
+    ...((searchQuery.courseId !== '' && searchQuery.courseId !== null) && { courseId: searchQuery.courseId}),
+    ...((searchQuery.year !== '' && searchQuery.year !== null) && { year: searchQuery.year}),
+    ...((searchQuery.hostel !== '') && { hostel: searchQuery.hostel }),
+  });
+
 
   useEffect(()=>{
-      axios.get(import.meta.env.VITE_BASE_URL + '/HA/studentsInfo?page=1&limit=10&total=0',config)
+      axios.get(import.meta.env.VITE_BASE_URL + '/HA/studentsInfo',{
+        ...config,
+        params: buildStudentQueryParams(1)
+      })
       .then(res=>{
         console.log("API Response:", res.data);
         if (res.data && Array.isArray(res.data) && res.data.length > 0 && res.data[0].previous) {
@@ -148,17 +164,7 @@ const ViewInfo = ()=>{
       },
       withCredentials: true,
       params:{
-        page:1,
-        limit:10,
-        total:0,
-        // currHostel:currHostelOnly,
-        ...((searchQuery.firstName !== '' && searchQuery.firstName !== null) && { firstName: searchQuery.firstName }),
-        ...((searchQuery.lastName !== '' && searchQuery.lastName !== null) && { lastName: searchQuery.lastName}),
-        ...((searchQuery.rollNo !== '' && searchQuery.rollNo !== null) && { rollNo: searchQuery.rollNo}),
-        ...((searchQuery.state !== '' && searchQuery.state !== null) && { state: searchQuery.state}),
-        ...((searchQuery.courseId !== '' && searchQuery.courseId !== null) && { courseId: searchQuery.courseId}),
-        ...((searchQuery.year !== '' && searchQuery.year !== null) && { year: searchQuery.year}),
-        ...((searchQuery.hostel !== '') && { hostel: searchQuery.hostel }),
+        ...buildStudentQueryParams(1),
       },
     })
     .then((res) => {
@@ -216,7 +222,10 @@ Dispatcher(setSearchQuery({...searchQuery,courseId:e}));
 
 const handleReset = ()=>{
   setTableLoading(true);
-  axios.get(import.meta.env.VITE_BASE_URL + '/HA/studentsInfo?page=1&limit=10&total=0',config)
+  axios.get(import.meta.env.VITE_BASE_URL + '/HA/studentsInfo',{
+    ...config,
+    params: buildStudentQueryParams(1)
+  })
   .then(res=>{
     console.log("Reset API Response:", res.data);
     if (res.data && Array.isArray(res.data) && res.data.length > 0 && res.data[0].previous) {
@@ -263,17 +272,7 @@ setTableLoading(true);
   axios({
     url:import.meta.env.VITE_BASE_URL + '/HA/studentsInfo',
     params:{
-      page:selectedPage,
-      limit:10,
-      // currHostel:currHostelOnly,
-      total:0,
-        ...((searchQuery.firstName !== '' && searchQuery.firstName !== null) && { firstName: searchQuery.firstName }),
-        ...((searchQuery.lastName !== '' && searchQuery.lastName !== null) && { lastName: searchQuery.lastName}),
-        ...((searchQuery.rollNo !== '' && searchQuery.rollNo !== null) && { rollNo: searchQuery.rollNo}),
-        ...((searchQuery.state !== '' && searchQuery.state !== null) && { state: searchQuery.state}),
-        ...((searchQuery.courseId !== '' && searchQuery.courseId !== null) && { courseId: searchQuery.courseId}),
-        ...((searchQuery.year !== '' && searchQuery.year !== null) && { year: searchQuery.year}),
-        ...((searchQuery.hostel !== '' && searchQuery.hostel !== null) && { hostel: searchQuery.hostel }),
+      ...buildStudentQueryParams(selectedPage),
     },
     headers: {
       "Content-Type": "application/json"

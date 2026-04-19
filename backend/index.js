@@ -33,12 +33,13 @@ app.disable("x-powered-by");
 
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,
+    origin: "http://localhost:5173",   // 🔥 hardcode this
     credentials: true,
   })
 );
 
 // Routes
+
 app.use("/SA", superAdmin);
 app.use("/student", studentRouter);
 app.use("/HA", HARouter);

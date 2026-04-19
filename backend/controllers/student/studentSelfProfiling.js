@@ -1,7 +1,7 @@
 // backend/controllers/student/studentSelfProfiling.js
 
 const db = require('../../models/index');
-const { validationResult, checkSchema } = require('express-validator');
+const { validationResult } = require('express-validator');
 const { uploadToCloudinary } = require('../../utils/cloudinary');
 const mailSender = require('../../utils/mailSender');
 const ProfileSubmission = require('../../MailTemplates/StudentRegistrationTemplates/ProfileSubmission');
@@ -73,7 +73,6 @@ exports.uploadDocument = async (req, res) => {
   }
 };
 
-// Validation schema
 // Validation schema for student profile
 exports.profileValidationSchema = {
     rollNo: {
@@ -160,6 +159,17 @@ exports.profileValidationSchema = {
       },
       notEmpty: {
         errorMessage: 'Branch is required.',
+      },
+    },
+    specialization: {
+      in: ['body'],
+      optional: { options: { nullable: true, checkFalsy: true } },
+      isString: {
+        errorMessage: 'Specialization must be a string.',
+      },
+      isLength: {
+        options: { max: 100 },
+        errorMessage: 'Specialization name must not exceed 100 characters.',
       },
     },
     contactNumber_1: {
@@ -439,21 +449,11 @@ exports.getProfile = async (req, res) => {
   }
 };
 
-// Controller method for submitting profile
-/**
- * Check if a roll number already exists in the system
- *
- * This endpoint verifies if a roll number is already in use by another student.
- * It has special handling for resubmissions to allow students to reuse their own
- * roll number after a profile rejection.
- *
- * Authentication: Required - only logged-in users can check roll numbers
- * Authorization: Any authenticated user (Student or TempStudent)
- */
+
 // Get available courses and branches
 exports.getAvailableCourses = async (req, res) => {
   try {
-    // Fetch all courses from the database
+    // Fetch all courses from the database with the necessary fields
     const courses = await db.courses.findAll({
       attributes: ['courseId', 'courseName', 'department', 'specialization'],
       where: {
@@ -462,36 +462,13 @@ exports.getAvailableCourses = async (req, res) => {
       }
     });
 
-    // Transform the data into a more usable format for the frontend
-    const formattedCourses = [];
-    const branches = new Set();
-
-    courses.forEach(course => {
-      // Add course if not already in the list
-      if (!formattedCourses.some(c => c.value === course.courseName)) {
-        formattedCourses.push({
-          value: course.courseName,
-          label: course.courseName
-        });
-      }
-
-      // Add department/branch if not already in the set
-      if (course.department) {
-        branches.add(course.department);
-      }
-    });
-
-    // Convert branches set to array of objects
-    const formattedBranches = Array.from(branches).map(branch => ({
-      value: branch,
-      label: branch
-    }));
-
+    // Directly return the full list of course objects
+    // The frontend is designed to handle this structure for dynamic filtering
     return res.status(200).json({
       success: true,
-      courses: formattedCourses,
-      branches: formattedBranches
+      courses: courses
     });
+
   } catch (error) {
     console.error('Error fetching available courses:', error);
     return res.status(500).json({
@@ -631,6 +608,7 @@ exports.studentSelfProfiling = async (req, res) => {
         course: req.body.course,
         semester: req.body.semester,
         branch: req.body.branch,
+        specialization: req.body.specialization || null,
         contactNumber_1: req.body.contactNumber_1,
         contactNumber_2: req.body.contactNumber_2 || null,
         phoneNumber: req.body.phoneNumber || null,
@@ -700,6 +678,7 @@ exports.studentSelfProfiling = async (req, res) => {
         course: req.body.course,
         semester: req.body.semester,
         branch: req.body.branch,
+        specialization: req.body.specialization || null,
         contactNumber_1: req.body.contactNumber_1,
         contactNumber_2: req.body.contactNumber_2 || null,
         phoneNumber: req.body.phoneNumber || null,

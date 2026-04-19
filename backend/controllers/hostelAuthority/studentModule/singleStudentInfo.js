@@ -16,6 +16,13 @@ exports.singleStudentInfo=async (req,res)=>{
             {
               model: db.courses,
             },
+            {
+              model: db.hostels,
+            },
+            {
+              model: db.studentRemarks,
+              required: false,
+            },
           ],
         });
     

@@ -298,6 +298,9 @@ function StudentVerifyProfile() {
                                       <Label className="text-gray-600">Branch:</Label>
                                       <div>{student.branch}</div>
 
+                                      <Label className="text-gray-600">Specialization:</Label>
+                                      <div>{student.specialization}</div>
+
                                       <Label className="text-gray-600">Semester:</Label>
                                       <div>{student.semester}</div>
 

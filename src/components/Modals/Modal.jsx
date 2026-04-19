@@ -8,18 +8,41 @@ import { useSelector, useDispatch } from "react-redux";
 import { changeModalState } from "../../Store/Reducers/viewInfoSlice";
 import PdfDownload from "../Tables/ViewInfoTable/PdfDownload";
 import { toast } from 'react-toastify'
+import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 
 
 const Modal = ({ data }) => {
   const [loadingModal, setLoading] = useState(true);
   const mopen = useSelector((state) => state.viewInfoStates.modalState);
-
-  const adminInfo = useSelector((state) => state.adminInfo);
+  const userData = useSelector((state) => state.userStorage.data);
   const [archiveLoading, setArchiveLoading] = useState(false);
-
-
   const [mdata, setMData] = useState({});
+  const [remarks, setRemarks] = useState([]);
+  const [remarksLoading, setRemarksLoading] = useState(false);
+  const [submittingRemark, setSubmittingRemark] = useState(false);
+  const [remarkText, setRemarkText] = useState('');
+  const [remarkImage, setRemarkImage] = useState(null);
+  const roleType = userData?.roleType || userData?.role;
+  const apiPrefix = roleType === 'SuperAdmin' ? '/SA' : '/HA';
+  const canManageRemarks = roleType === 'Hostel-Authority' || roleType === 'SuperAdmin';
+  const adminInfo = {
+    name: userData?.name || userData?.email || "Admin",
+    email: userData?.email || "admin@example.com"
+  };
+  const getSeenLabel = (remark) => {
+    if (remark.createdByRole === 'Hostel-Authority') {
+      return remark.seenBySuperAdminAt ? 'Seen by super admin' : 'Awaiting super admin';
+    }
+
+    if (remark.createdByRole === 'SuperAdmin') {
+      return remark.seenByHostelAuthorityAt ? 'Seen by hostel authority' : 'Awaiting hostel authority';
+    }
+
+    return 'Internal remark';
+  };
 
   useEffect(() => {
     if (data) {
@@ -59,6 +82,32 @@ const Modal = ({ data }) => {
     };
   }, [Dispatcher]);
 
+  const fetchRemarks = async (rollNo) => {
+    if (!rollNo || !canManageRemarks) {
+      return;
+    }
+
+    try {
+      setRemarksLoading(true);
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}${apiPrefix}/student/${rollNo}/remarks`,
+        { withCredentials: true }
+      );
+      setRemarks(response.data.remarks || []);
+    } catch (error) {
+      console.error('Failed to fetch remarks:', error);
+      toast.error(error.response?.data?.message || 'Failed to load student remarks');
+    } finally {
+      setRemarksLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (mopen && data?.rollNo) {
+      fetchRemarks(data.rollNo);
+    }
+  }, [mopen, data?.rollNo]);
+
   const addToArchiveTable = async (rollNo) => {
     try {
       setArchiveLoading(true);
@@ -70,6 +119,47 @@ const Modal = ({ data }) => {
       setArchiveLoading(false);
       const errorMessage = error.response?.data?.message || error.message || 'Failed to archive student';
       toast.error(errorMessage);
+    }
+  };
+
+  const submitRemark = async () => {
+    if (!mdata.rollNo) {
+      return;
+    }
+
+    if (!remarkText.trim() && !remarkImage) {
+      toast.error('Add a remark or select an image');
+      return;
+    }
+
+    try {
+      setSubmittingRemark(true);
+      const formData = new FormData();
+      formData.append('remarks', remarkText.trim());
+
+      if (remarkImage) {
+        formData.append('file', remarkImage);
+      }
+
+      await axios.post(
+        `${import.meta.env.VITE_BASE_URL}${apiPrefix}/student/${mdata.rollNo}/remarks`,
+        formData,
+        { withCredentials: true }
+      );
+
+      setRemarkText('');
+      setRemarkImage(null);
+      const fileInput = document.getElementById('student-remark-image-input');
+      if (fileInput) {
+        fileInput.value = '';
+      }
+      await fetchRemarks(mdata.rollNo);
+      toast.success('Remark added successfully');
+    } catch (error) {
+      console.error('Failed to add remark:', error);
+      toast.error(error.response?.data?.message || 'Failed to add remark');
+    } finally {
+      setSubmittingRemark(false);
     }
   };
 
@@ -162,19 +252,21 @@ const Modal = ({ data }) => {
                 </div>
                 <div className="flex items-center gap-4" style={{marginLeft:"300px"}}>
                   <PdfDownload myData={mdata} adminInfo={adminInfo} />
-                  <button
-                    onClick={() => {
-                      console.log("Archiving rollNo:", mdata.rollNo);
-                      addToArchiveTable(mdata.rollNo);
-                    }}
-                    disabled={archiveLoading}
-                    className={`px-4 py-2.5 rounded-lg text-white transition-all ${
-                      archiveLoading ? 'bg-yellow-400 cursor-not-allowed' : 'bg-yellow-600 hover:bg-yellow-500'
-                    }`}
-                    size="sm"
-                  >
-                    {archiveLoading ? 'Archiving...' : 'Archive'}
-                  </button>
+                  {roleType === 'Hostel-Authority' && (
+                    <button
+                      onClick={() => {
+                        console.log("Archiving rollNo:", mdata.rollNo);
+                        addToArchiveTable(mdata.rollNo);
+                      }}
+                      disabled={archiveLoading}
+                      className={`px-4 py-2.5 rounded-lg text-white transition-all ${
+                        archiveLoading ? 'bg-yellow-400 cursor-not-allowed' : 'bg-yellow-600 hover:bg-yellow-500'
+                      }`}
+                      size="sm"
+                    >
+                      {archiveLoading ? 'Archiving...' : 'Archive'}
+                    </button>
+                  )}
                 </div>
 
                 <div className="bg-blue-50 px-4 py-2 rounded-lg mt-4 md:mt-0">
@@ -374,6 +466,100 @@ const Modal = ({ data }) => {
                   </div>
                 </div>
               </div>
+
+              {canManageRemarks && (
+                <div className="mb-8 bg-white p-6 rounded-lg shadow border border-gray-200">
+                  <h2 className="text-xl font-bold mb-4 text-blue-600 pb-2 border-b border-blue-100">
+                    Internal Remarks
+                  </h2>
+
+                  <div className="grid gap-4 mb-6">
+                    <div>
+                      <p className="text-sm text-gray-500 mb-2">
+                        These notes are hidden from students and visible only to hostel authorities and super admins.
+                      </p>
+                      <Textarea
+                        value={remarkText}
+                        onChange={(event) => setRemarkText(event.target.value)}
+                        placeholder="Add an internal note about this student"
+                        className="min-h-[110px]"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Attach image or PDF
+                      </label>
+                      <Input
+                        id="student-remark-image-input"
+                        type="file"
+                        accept="image/*,.pdf,application/pdf"
+                        onChange={(event) => setRemarkImage(event.target.files?.[0] || null)}
+                      />
+                      {remarkImage && (
+                        <p className="text-sm text-gray-500 mt-2">{remarkImage.name}</p>
+                      )}
+                    </div>
+                    <div>
+                      <Button
+                        onClick={submitRemark}
+                        disabled={submittingRemark}
+                        className="bg-blue-600 hover:bg-blue-500"
+                      >
+                        {submittingRemark ? 'Saving...' : 'Add Remark'}
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    {remarksLoading ? (
+                      <p className="text-sm text-gray-500">Loading remarks...</p>
+                    ) : remarks.length === 0 ? (
+                      <p className="text-sm text-gray-500">No internal remarks have been added yet.</p>
+                    ) : (
+                      remarks.map((remark) => (
+                        <div
+                          key={remark.remarkId}
+                          className="rounded-lg border border-gray-200 bg-gray-50 p-4"
+                        >
+                          <div className="flex flex-wrap items-center gap-2 text-sm text-gray-500 mb-2">
+                            <span className="font-semibold text-gray-700">
+                              {remark.createdByName || remark.createdByEmail || 'Unknown author'}
+                            </span>
+                            <span>{remark.createdByRole || 'Internal'}</span>
+                            <span
+                              className={`rounded-full px-2 py-0.5 text-xs ${
+                                getSeenLabel(remark).startsWith('Seen')
+                                  ? 'bg-green-100 text-green-700'
+                                  : 'bg-orange-100 text-orange-700'
+                              }`}
+                            >
+                              {getSeenLabel(remark)}
+                            </span>
+                            <span>
+                              {remark.createdAt ? new Date(remark.createdAt).toLocaleString() : ''}
+                            </span>
+                          </div>
+
+                          {remark.remarks && (
+                            <p className="text-gray-800 whitespace-pre-wrap mb-3">{remark.remarks}</p>
+                          )}
+
+                          {remark.fileAttachment && (
+                            <a
+                              href={remark.fileAttachment}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex text-blue-600 hover:underline"
+                            >
+                              View attached file
+                            </a>
+                          )}
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              )}
               </div>
             </div>
           </div>

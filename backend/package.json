@@ -14,7 +14,7 @@
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
     "cloudinary": "^2.2.0",
-    "cookie-parser": "^1.4.6",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "csvtojson": "^2.0.10",
     "datauri": "^4.1.0",
@@ -28,6 +28,7 @@
     "nodemailer": "^6.9.13",
     "nodemailer-express-handlebars": "^6.1.2",
     "nodemon": "^3.0.2",
+    "openai": "^6.34.0",
     "otp-generator": "^4.0.1",
     "path": "^0.12.7",
     "sequelize": "^6.37.1",
@@ -36,6 +37,6 @@
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
-    "sequelize-cli": "^6.6.2"
+    "sequelize-cli": "^6.6.3"
   }
 }

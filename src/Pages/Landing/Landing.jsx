@@ -8,6 +8,7 @@ import loginIcon from './../../Assets/login.png';
 import mainLogo from './../../Assets/h.png';
 import abhimanyuBhawanImage from './../../Assets/h1.png';
 import Footer from '../../components/Footer/Footer';
+import UniversalChatbot from "../../components/Chatbot/UniversalChatbot";
 import boysHostelPDF from './../../Assets/boys_hostel.pdf';
 import girlsHostelPDF from './../../Assets/girls_hostel.pdf';
 import hostelRulesPDF from './../../Assets/hostel_rules.pdf';
@@ -395,6 +396,15 @@ return (
 
           {/* Login Button */}
           <div className="flex items-center">
+          <a
+            href="https://docs.google.com/forms/d/e/1FAIpQLSfCnEw9Wu3IGb5RMTwB6-AiDP-6ivYYrciDD3RNJSFzuk_YZA/viewform?usp=header"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold text-white bg-red-500 rounded-full shadow-md hover:bg-red-600 hover:scale-105 hover:shadow-lg transition-transform duration-300 ease-out mr-3 h-[45px]"
+          >
+            Report a Bug
+          </a>
+
             <Link
               to="/role"
               className="flex items-center bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold py-2 px-4 sm:px-5 rounded-full transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105"
@@ -714,6 +724,7 @@ return (
       {selectedHostel && (
         <HostelDetails hostel={selectedHostel} onClose={closeModal} />
       )}
+      <UniversalChatbot />
     </div>
 
   );

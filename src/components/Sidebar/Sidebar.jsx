@@ -231,12 +231,21 @@ export default function Sidebar(){
                     {userData?.avatar!=undefined?<img className={styles.avatarImage} src={userData?.avatar} />:<FaUserLarge size="1.5em" color="white"/>}
                 </div>
                 <div className={state?null:styles.hidden} style={{marginLeft:'8px',marginTop:'0px'}}>
-                    <p>
-                        {userData?.dataValues?.name!==undefined?`${userData?.dataValues?.name}`:"NULL"}<br/>
-                        <span className={styles.userRole} style={{fontSize:'12px'}}>
-                            {userData?.role!==undefined?`Role: ${userData?.role}`:'Role: Null'}
-                        </span>
-                    </p>
+                <p>
+                    {userData?.dataValues?.name ?? "Unknown User"}
+                    <br />
+
+                    <span className={styles.userRole} style={{ fontSize: '12px' }}>
+                        Role: {userData?.role ?? "N/A"}
+                    </span>
+
+                    <br />
+
+                    <span className={styles.userRole} style={{ fontSize: '11px', opacity: 0.85 }}>
+                        Hostel No: {userData?.dataValues?.hostelNo ?? "N/A"}
+                    </span>
+                </p>
+
                 </div>
             </div>
             <div className={styles.listContainer}>

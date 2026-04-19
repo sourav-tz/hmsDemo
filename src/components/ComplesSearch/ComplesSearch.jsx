@@ -90,12 +90,12 @@ const handleChange = (e)=>{
             <div className='flex'>
             <Select onValueChange={(e)=>{setQueryItem(e)}}>
   <SelectTrigger className="w-[250px]">
-    <SelectValue placeholder="first name" />
+    <SelectValue placeholder="First Name" />
   </SelectTrigger>
   <SelectContent>
-    <SelectItem value="firstName">first name</SelectItem>
-    <SelectItem value="lastName">last Name</SelectItem>
-    <SelectItem value="fullname">full name</SelectItem>
+    <SelectItem value="firstName">First Name</SelectItem>
+    <SelectItem value="lastName">Last Name</SelectItem>
+    <SelectItem value="fullname">Full name</SelectItem>
     <SelectItem value="rollNo">Roll No</SelectItem>
   </SelectContent>
 </Select>

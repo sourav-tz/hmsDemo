@@ -1,119 +1,130 @@
 const db = require("../../../models");
 
-
 const getRoomsData = async (req, res) => {
-
     try {
+        const hostelNo = req.user?.hostelNo;
 
-        const filters = {};
-        const hostelNo = req.body.tokenHostelNo;
-        console.log("REQ ",req)
-        console.log("BODY ",req.body)
-        console.log("ROOM DATA FETCHED FOR HOSTEl ", hostelNo)
+        console.log("ROOM DATA FETCHED FOR HOSTEL:", hostelNo);
 
-        const allRoomsData = await db.rooms.findAll({where:{hostelNo: hostelNo}})
-        // console.log('allRoomsData', allRoomsData);
+        if (!hostelNo) {
+            return res.status(400).json({
+                success: false,
+                message: "hostelNo missing in token"
+            });
+        }
+
+        // 📊 Counts
+        const allRoomsData = await db.rooms.findAll({
+            where: { hostelNo }
+        });
+
         const totalRooms = allRoomsData.length;
-        
+
         let fullyFilledCount = 0;
         let partiallyFilledCount = 0;
         let vacantCount = 0;
-        
-        allRoomsData.forEach(element => {
-            if(element.dataValues.currentOccupancy === 'vacant') vacantCount++;
-            else if(element.dataValues.currentOccupancy === 'Partially-Filled') partiallyFilledCount++;
-            else if(element.dataValues.currentOccupancy === 'Fully-Filled')fullyFilledCount++;
+
+        allRoomsData.forEach((room) => {
+            const status = room.currentOccupancy;
+
+            if (status === "vacant") vacantCount++;
+            else if (status === "Partially-Filled") partiallyFilledCount++;
+            else if (status === "Fully-Filled") fullyFilledCount++;
         });
 
-      
+        // ✅ SAFE FILTERS
+        const filters = {
+            hostelNo,
+            ...(req.query.roomNo !== undefined && req.query.roomNo !== "" && {
+                roomNo: req.query.roomNo
+            }),
+            ...(req.query.status !== undefined && req.query.status !== "" && {
+                currentOccupancy: req.query.status
+            }),
+            ...(req.query.floorNo !== undefined && req.query.floorNo !== "" && {
+                floorNo: req.query.floorNo
+            }),
+        };
 
-        // filters based on query parametersroomNo,block,floorNo,maxOccupancy,hostelNo
+        console.log("FILTERS:", filters);
 
-        if (req.query.roomNo) {
-            filters.roomNo = req.query.roomNo;
+        // 🔄 Sorting
+        const sortField = req.query.sortField || "roomNo";
+        const sortOrder = req.query.sortOrder === "desc" ? "DESC" : "ASC";
+
+        // 📄 Pagination
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+
+        const totalCount = await db.rooms.count({ where: filters });
+        const totalPages = Math.ceil(totalCount / limit);
+
+        if (totalPages === 0) {
+            return res.json({
+                success: true,
+                roomsData: [],
+                totalRooms: 0,
+                totalPages: 0,
+                message: "No rooms found"
+            });
         }
 
-        if (req.query.status) {
-
-            filters.currentOccupancy = req.query.status; 
+        if (page > totalPages || page < 1) {
+            return res.status(400).json({
+                success: false,
+                message: `Page out of range. Total pages: ${totalPages}`
+            });
         }
 
-        if (req.query.floorNo) {
-            filters.floorNo = req.query.floorNo;
-        }
+        const offset = (page - 1) * limit;
 
-        filters.hostelNo = hostelNo
-        // filters.roomNo = 435
-        // Data sorting queries 
-        const sortField = req.query.sortField || 'roomNo'; // Default sort field is 'name' if not provided
-        const sortOrder = req.query.sortOrder === 'desc' // Sort order, default is ascending
-
-        // pagination queries
-        let totalpages = parseInt(req.query.total) || 0;
-        const page = parseInt(req.query.page) || 1; // Default to page 1 if not provided
-        const limit = parseInt(req.query.limit) || 10; // Default page size is 10 if not provided
-
-        if (totalpages === 0) {
-            totalpages = Math.ceil((await db.rooms.count({
-                where: filters,
-             
-            })) / limit);
-            console.log(totalpages);
-            if (totalpages == 0) {
-                return res.json({ totalpages: 0, msg: "no pages to show" });
-            }
-            if (page > totalpages || page < 1) {
-                return res.json({ msg: `page value out of range, total pages are ${totalpages}` });
-            }
-        }
-
-        const startIndex = (page - 1) * limit;
-        
         const roomsData = await db.rooms.findAll({
             where: filters,
-            offset: startIndex,
-            limit: limit,
+            offset,
+            limit,
+            order: [[sortField, sortOrder]],
             include: [
                 {
                     model: db.roomsStudentMappings,
-                    required:false,
+                    required: false,
                     where: { checkOutDate: null },
-                    include: [{
-                        model: db.students,
-
-                    }]
+                    include: [{ model: db.students }]
                 }
             ]
         });
 
-        // console.log("After fetching roomsdata");
-        // Return the result
-        nextPage = page >= totalpages ? totalpages : page + 1
-        roomsData.unshift({
-            next: {
-                page: nextPage,
-                limit: limit,
-                totalpages: totalpages
-            }
-        });
-        prevPage = page > 1 ? page - 1 : 1
-        roomsData.unshift({
+        const pagination = {
             previous: {
-                page: prevPage,
-                limit: limit,
-                totalpages: totalpages 
+                page: page > 1 ? page - 1 : 1,
+                limit,
+                totalPages
+            },
+            next: {
+                page: page < totalPages ? page + 1 : totalPages,
+                limit,
+                totalPages
             }
-        })
-        return res.json({roomsData: roomsData , totalRooms: totalRooms , vacantCount: vacantCount,
-        partiallyFilledCount:partiallyFilledCount , fullyFilledCount,fullyFilledCount});
+        };
 
-
+        return res.json({
+            success: true,
+            roomsData,
+            pagination,
+            totalRooms,
+            vacantCount,
+            partiallyFilledCount,
+            fullyFilledCount
+        });
 
     } catch (error) {
-        console.log(error);
-        return res.status(500).json({ error: error.message });
+        console.error("ERROR in getRoomsData:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Failed to fetch rooms data",
+            error: error.message
+        });
     }
-}
+};
 
-
-module.exports = getRoomsData
+module.exports = getRoomsData;
