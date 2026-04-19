@@ -26,6 +26,8 @@ const  updatePassword  = require('../../controllers/hostelAuthority/user/user.co
 const {addnotice,getNotices,deleteNotices} =require("../../controllers/hostelAuthority/notices/notices.js")
 const singleUpload =  require("../../middlewares/multer.js");
 const {addStudentToArchive,getStudentArchiveByRollNo,getAllStudentArchives} = require("../../controllers/hostelAuthority/studentModule/studentArchive.js")
+const { adminNlpQuery } = require('../../controllers/nlp/adminNlp.controller');
+
 
 const {
     getAllApplications,
@@ -41,6 +43,7 @@ const {
 const getRoomTimeline = require('../../controllers/hostelAuthority/RoomModule/getRoomTimeline.js');
 const { studentTempAccCreate, getAllStudentTempAccounts } = require('../../controllers/hostelAuthority/studentModule/studentTempAccCreate.js');
 const { getPendingProfiles, getProfileByEmail, approveProfile, rejectProfile } = require('../../controllers/hostelAuthority/studentModule/studentVerifyProfile.js');
+const { getStudentRemarks, createStudentRemark } = require('../../controllers/hostelAuthority/studentModule/studentRemarks.js');
 
 var storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -70,6 +73,8 @@ router.patch('/updateBulk',auth, updateBulk);
 //* Apis get student information for single or all
 router.get('/studentsInfo', auth,studentsInfo);
 router.get('/student/:rollNo', auth,singleStudentInfo);
+router.get('/student/:rollNo/remarks', auth, getStudentRemarks);
+router.post('/student/:rollNo/remarks', auth, singleUpload, createStudentRemark);
 router.get('/getCourses',auth,getCourses)
 router.post('/getSingleCourse',auth,getSingleCourse);
 
@@ -105,11 +110,14 @@ router.get('/getNotices',auth, getNotices);
 router.delete('/deleteNotices',auth, deleteNotices);
 
 //Complaints Routes
-router.get('/getComplaints',auth,getComplaintsAdmin);
+router.post('/getComplaints',auth,getComplaintsAdmin);
 // can include resolve by /getComplaints?rescomp=true
 // can include rejected by /getComplaints?rejcomp=true
 router.post('/rejectComplaint',auth,rejectComplaint);
 router.post('/resolveComplaint',auth,resoleComplaint);
+
+//NLP routes
+router.post('/nlp/query', auth, adminNlpQuery);
 
 
 //application api

@@ -4,6 +4,7 @@ const auth = require('../../middlewares/auth');
 const router = express.Router();
 const getApplicationStatus = require("../../controllers/GuestModule/getApplicationStatus");
 const {getPendingApplication,rejectApplication,acceptApplication} = require("../../controllers/GuestModule/referrer");
+const { guestChat } = require("../../controllers/guest/guestChat");
 const {getPendingApplicationAdmin , acceptApplicationAdmin,rejectApplicationAdmin,getApprovedApplicationAdmin, bookRoomAdmin, getSchedule, getDetails} = require("../../controllers/GuestModule/admin");
 // Define the route to get the application status by application_id
 router.get("/application-status/:application_id", getApplicationStatus);
@@ -23,5 +24,6 @@ router.get('/getApprovedApplicationAdmin',auth,getApprovedApplicationAdmin);
 router.post('/bookRoomAdmin/:application_id',auth,bookRoomAdmin);
 router.get('/getSchedule',auth,getSchedule);
 router.get('/getDetails/:application_id/:roomId',auth,getDetails);
+router.post("/chat", guestChat);
 
 module.exports = router;

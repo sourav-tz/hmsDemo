@@ -8,6 +8,7 @@ import loginIcon from './../../Assets/login.png';
 import mainLogo from './../../Assets/h.png';
 import abhimanyuBhawanImage from './../../Assets/h1.png';
 import Footer from '../../components/Footer/Footer';
+import UniversalChatbot from "../../components/Chatbot/UniversalChatbot";
 import boysHostelPDF from './../../Assets/boys_hostel.pdf';
 import girlsHostelPDF from './../../Assets/girls_hostel.pdf';
 import hostelRulesPDF from './../../Assets/hostel_rules.pdf';
@@ -723,6 +724,7 @@ return (
       {selectedHostel && (
         <HostelDetails hostel={selectedHostel} onClose={closeModal} />
       )}
+      <UniversalChatbot />
     </div>
 
   );

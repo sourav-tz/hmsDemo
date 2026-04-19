@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { changeModalState } from '../../../Store/Reducers/viewInfoSlice';
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
+import { HiOutlineBellAlert } from "react-icons/hi2";
 import { Dialog, DialogTrigger, DialogContent, DialogFooter, DialogTitle, DialogHeader, DialogDescription } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Label } from "@/components/ui/label";
@@ -41,6 +42,8 @@ const ViewInfoTable = ({ data }) => {
 
   console.log("Admin info in ViewInfoTable:", adminInfo);
 
+  const roleType = adminData?.roleType || adminData?.role;
+
   useEffect(() => {
     if (data && data.length > 0) {
       setRowData(data);
@@ -69,6 +72,42 @@ const ViewInfoTable = ({ data }) => {
     { field: 'courseId', width: 120, headerName: 'Course ID' },
     { field: 'email' },
     { field: 'profile.contactNumber', headerName: 'Contact', width: 140 },
+    {
+      field: 'remarkTracking',
+      headerName: 'Remarks',
+      width: 180,
+      cellRenderer: (params) => {
+        const unseenCount = Number(params.data?.unseenRemarksCount || 0);
+        const latestRemarkBy = params.data?.latestRemarkBy;
+        const latestRemarkAt = params.data?.latestRemarkAt;
+
+        if (!latestRemarkAt && unseenCount === 0) {
+          return <span className="text-xs text-gray-500">No remarks</span>;
+        }
+
+        return (
+          <div className="flex flex-col justify-center py-1">
+            <div className="flex items-center gap-1 text-xs font-medium">
+              {unseenCount > 0 ? (
+                <>
+                  <HiOutlineBellAlert className="text-orange-500" />
+                  <span className="text-orange-600">
+                    {unseenCount} new for {roleType === 'SuperAdmin' ? 'SA' : 'HA'}
+                  </span>
+                </>
+              ) : (
+                <span className="text-green-600">Up to date</span>
+              )}
+            </div>
+            {latestRemarkAt && (
+              <span className="text-[11px] text-gray-500">
+                Latest: {latestRemarkBy || 'Internal'} on {new Date(latestRemarkAt).toLocaleDateString()}
+              </span>
+            )}
+          </div>
+        );
+      }
+    },
     {
       field: 'viewInfo',
       headerName: 'View',

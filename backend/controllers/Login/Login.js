@@ -46,8 +46,14 @@ const Login = async (req, res) => {
       // Step 4: Generate JWT token
       try {
         accessToken = jwt.sign(
-          { email: email, role: user.role, hostelNo: UserData?.hostelNo },
-          process.env.JWT_SECRET_KEY
+          {
+            email: email,
+            role: user.role,
+            rollNo: UserData?.rollNo,
+            hostelNo: UserData?.hostelNo
+          },
+          process.env.JWT_SECRET_KEY,
+          { expiresIn: "1d" }
         );
       } catch (error) {
         console.log("Error generating JWT:", error);
@@ -100,6 +106,7 @@ const Login = async (req, res) => {
       {
         email: tempStudent.email,
         role: 'TempStudent',
+        rollNo: tempStudent.rollNo,
         status: tempStudent.status
       },
       process.env.JWT_SECRET_KEY,

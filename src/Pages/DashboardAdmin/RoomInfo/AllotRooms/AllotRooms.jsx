@@ -218,29 +218,33 @@ const AllotRooms = ()=>{
 
 
 
-    const initialLoad = async ()=>{
-        try{
+    const initialLoad = async () => {
+        try {
             const res = await axios({
                 method: 'GET',
-                url:import.meta.env.VITE_BASE_URL  + '/HA/getRoomsData',
-                params: {
-                    "hostelNo":"1",
-                },
-                withCredentials:true
-              });
-              setRowData(res.data.roomsData);
-              setTotalRooms(res.data.totalRooms);
-              setPartiallyFilled(res.data.partiallyFilledCount);
-              setVacant(res.data.vacantCount);
-              setFullyFilled(res.data.fullyFilledCount);
-              setTotalPage(res.data.roomsData[0].previous.totalpages);
-        }catch(err){
-            // console.log(err);
-            if(err.status === 401){
+                url: import.meta.env.VITE_BASE_URL + '/HA/getRoomsData',
+                withCredentials: true
+            });
+    
+            console.log("API DATA:", res.data);
+    
+            setRowData(res.data.roomsData || []);
+            setTotalRooms(res.data.totalRooms);
+            setPartiallyFilled(res.data.partiallyFilledCount);
+            setVacant(res.data.vacantCount);
+            setFullyFilled(res.data.fullyFilledCount);
+    
+            // ✅ FIXED PAGINATION
+            setTotalPage(res.data.pagination?.totalPages || 0);
+    
+        } catch (err) {
+            console.log(err);
+    
+            if (err.response?.status === 401) {
                 navigator('/adminLogin');
             }
         }
-    }
+    };
 
     useEffect(()=>{
         initialLoad();
@@ -303,34 +307,29 @@ const roomAlloted = ()=>{
 }
 
 
-const handlePageClick = (e)=>{
-    
-// console.log(e)
-
-
-        (async ()=>{
-        try{
+const handlePageClick = (e) => {
+    (async () => {
+        try {
             const res = await axios({
-                url:import.meta.env.VITE_BASE_URL + '/HA/getRoomsData',
-                method:'GET',
-                params:{
-                    page:e.selected+1,
-                    roomNo:rooms,
-                    floorNo:floorNo
+                url: import.meta.env.VITE_BASE_URL + '/HA/getRoomsData',
+                method: 'GET',
+                params: {
+                    page: e.selected + 1,
+                    roomNo: rooms,
+                    floorNo: floorNo,
+                    status: status
                 },
-                withCredentials:true
-            })
-            if(res.data.roomsData!==undefined){
-                setRowData(res.data.roomsData);
-                setTotalPage(res.data.roomsData[0].previous.totalpages)
-            }else{  
-                setRowData([]);
-            }
-        }catch(err){
+                withCredentials: true
+            });
+
+            setRowData(res.data.roomsData || []);
+            setTotalPage(res.data.pagination?.totalPages || 0);
+
+        } catch (err) {
             console.log(err);
         }
-    })()
-}
+    })();
+};
 
 const handleRooms = (e)=>{
     setRooms(e.target.value);
@@ -346,42 +345,30 @@ const handleFloor = (e) =>{
     setFloorNo(e);
 }
 
-const handleSearch = ()=>{
-
-
-    ;(async ()=>{
-        try{
+const handleSearch = () => {
+    (async () => {
+        try {
             const res = await axios({
-                url:import.meta.env.VITE_BASE_URL + '/HA/getRoomsData',
-                method:'get',
-                params:{
-                    hostelNo:1,
-                    roomNo:rooms,
-                    status:status,
-                    floorNo:floorNo                   
+                url: import.meta.env.VITE_BASE_URL + '/HA/getRoomsData',
+                method: 'get',
+                params: {
+                    roomNo: rooms,
+                    status: status,
+                    floorNo: floorNo
                 },
-                withCredentials:true
-            })
+                withCredentials: true
+            });
 
-            console.log(res.data)
+            console.log("SEARCH DATA:", res.data);
 
-            if(res.data.roomsData!==undefined){
-                setRowData(res.data.roomsData);
-                setTotalPage(res.data.roomsData[0].previous.totalpages);
+            setRowData(res.data.roomsData || []);
+            setTotalPage(res.data.pagination?.totalPages || 0);
 
-            }else{
-                setRowData([]);
-                setTotalPage(0);
-            }
-
-        }catch(error){
-
+        } catch (error) {
+            console.log(error);
         }
-    })()
-
-
-
-}
+    })();
+};
 
 
 const removeStudentFromRoom = async(d,roomData)=>{
@@ -513,8 +500,13 @@ const handleStudentInfo =(rollNo)=>{
         </div>
 
         <div className={styles.tableArea+' mt-4 p-4 min-w-[300px] w-full md:min-w-[600px] md:max-w-[900px]'}>
-                {rowData===null?<TableLoader />
-                :<RoomTable data={rowData}/>}
+        {rowData === null ? (
+            <TableLoader />
+        ) : rowData.length === 0 ? (
+            <p className="text-center text-gray-500">No rooms found</p>
+        ) : (
+            <RoomTable data={rowData} />
+        )}
             </div>
 
 
