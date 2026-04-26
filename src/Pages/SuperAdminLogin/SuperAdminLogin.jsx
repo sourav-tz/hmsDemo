@@ -81,14 +81,28 @@ export default function SuperAdminLogin() {
     })
   }
 
+  const handleEnterSubmit = (e) => {
+    if (e.key === 'Enter') {
+      handleSubmit(e)
+    }
+  }
+
   const takeOTP = (e) => {
     setOTP(e);
+  }
+
+  const handleOtpEnter = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      verfiyOTP()
+    }
   }
 
   // GOOGLE OAuth
   const handelGoogleClick = async () => {}
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e?.preventDefault()
     setLoading(true)
     try {
       const res = await axios({
@@ -205,6 +219,7 @@ export default function SuperAdminLogin() {
                 <Textinput
                   style={{ minWidth: '300px' }}
                   onChange={handleEmail}
+                  onKeyDown={handleEnterSubmit}
                   label='Email'
                 />
                 <div className='relative'>
@@ -212,6 +227,7 @@ export default function SuperAdminLogin() {
                   type={visible?'text': 'password'}
                   style={{ marginTop: '0px', minWidth: '300px' }}
                   onChange={handlePassword}
+                  onKeyDown={handleEnterSubmit}
                   label='Password' 
                 />
                 {visible?<FaEye className='absolute min-[300px]:top-[3.1rem] sm:top-9 md:top-8 right-3 cursor-pointer min-[300px]:size-6 sm:size-4 md:size-4' color='#5F57FF' onClick={handleShowPassword}></FaEye>:             
@@ -249,7 +265,10 @@ export default function SuperAdminLogin() {
           <h1 className='text-3xl font-semibold mt-10'>OTP Verification</h1>
           <p className='text-indigo-950'>Enter the OTP sent to your email</p>
           <p className='text-indigo-950'>Expires in : {expire}</p>
-          <div className='mt-36 flex-col items-center'>
+          <div
+            className='mt-36 flex-col items-center'
+            onKeyDown={handleOtpEnter}
+          >
             <InputOTP maxLength={6} onChange={takeOTP}>
               <InputOTPGroup>
                 <InputOTPSlot index={0} />
@@ -270,7 +289,7 @@ export default function SuperAdminLogin() {
               </Button>
               <p className='text-center mt-4'>
                 Didn't receive the OTP?{' '}
-                <button className={`${expire==='0:00'?'text-indigo-950 hover:text-white cursor-pointer':'text-gray-300 hover:text-gray-300 cursor-wait'} `} disable={expire==='0:00'?false:true} onClick={()=>{againOTP()}}>Resend</button>
+                <button type='button' className={`${expire==='0:00'?'text-indigo-950 hover:text-white cursor-pointer':'text-gray-300 hover:text-gray-300 cursor-wait'} `} disable={expire==='0:00'?false:true} onClick={()=>{againOTP()}}>Resend</button>
               </p>
             </div>
           </div>

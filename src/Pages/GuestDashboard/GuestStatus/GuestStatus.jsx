@@ -27,7 +27,8 @@ const GuestStatus = () => {
   }
   };
 
-  const checkStatus = async () => {
+  const checkStatus = async (e) => {
+    e?.preventDefault();
     // Simulate checking status (replace this logic with actual API call if needed)
     const resMessage = await getGuestsSchedule(); // Call API.
     if (!resMessage) {
@@ -53,6 +54,12 @@ const GuestStatus = () => {
         break;
       default:
         setGuestStatus(resMessage);
+    }
+  };
+
+  const handleEnterCheck = (e) => {
+    if (e.key === 'Enter') {
+      checkStatus(e);
     }
   };
 
@@ -86,6 +93,7 @@ const GuestStatus = () => {
                 type="text"
                 value={application_id}
                 onChange={(e) => setApplicationId(e.target.value)}
+                onKeyDown={handleEnterCheck}
                 className="w-full p-3 rounded-md text-black"
                 placeholder="Enter Application ID"
               />

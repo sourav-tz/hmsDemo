@@ -6,10 +6,13 @@ const sendOtpForForgetPassword = async (req, res) => {
     try {
 
         const { email } = req.body;
- 
-        const user = await db.users.findOne({ where: { email: email } });
-        console.log(user);
-        if (!user) return res.status(404).json({ error: `User doesn't exists` })
+
+        // Check main users table first, then studentTemp (TempStudents only exist there)
+        const user = await db.users.findOne({ where: { email } });
+        if (!user) {
+            const tempStudent = await db.studentTemp.findOne({ where: { email } });
+            if (!tempStudent) return res.status(404).json({ error: `User doesn't exist` });
+        }
 
             let title = 'OTP for Forget Password || NIT KURUKSHETRA'
              await sendOtp(email,title,ForgetPassOtp("User")).then(() =>{

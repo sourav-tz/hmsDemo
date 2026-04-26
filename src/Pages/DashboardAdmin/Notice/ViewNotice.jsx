@@ -82,7 +82,7 @@ const ViewNotice = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>#</TableHead>
+                <TableHead>No.</TableHead>
                 <TableHead>Title</TableHead>
                 <TableHead>Date</TableHead>
                 <TableHead>Role</TableHead>
@@ -104,7 +104,7 @@ const ViewNotice = () => {
                       })}
                     </TableCell>
                     <TableCell>
-                      {d.isGlobal ? "Super Admin" : "Admin"}
+                      {d.uploadedBy === "SA" ? "Super Admin" : "Admin"}
                     </TableCell>
 
                     <TableCell className="text-center">
@@ -126,6 +126,11 @@ const ViewNotice = () => {
                               <h2 className="text-lg font-semibold">
                                 {d.title}
                               </h2>
+                              {d.details ? (
+                                <p className="text-sm text-gray-600 mt-2 whitespace-pre-wrap">
+                                  {d.details}
+                                </p>
+                              ) : null}
                             </div>
 
                             <div className="flex-1 overflow-hidden">
@@ -149,7 +154,7 @@ const ViewNotice = () => {
 
                         {/* ===== DELETE (CONFIRM) ===== */}
                         <Button
-                          disabled={d.isGlobal}
+                          disabled={d.uploadedBy === "SA"}
                           onClick={() => setDeleteId(d.public_id)}
                           className="bg-red-700 text-white disabled:bg-red-400 disabled:cursor-not-allowed"
                         >

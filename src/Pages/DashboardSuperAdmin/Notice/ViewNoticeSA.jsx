@@ -80,7 +80,7 @@ const ViewNoticeSA = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Notice ID</TableHead>
+                <TableHead>No.</TableHead>
                 <TableHead>Title</TableHead>
                 <TableHead>Date</TableHead>
                 <TableHead className="text-center">Actions</TableHead>
@@ -124,6 +124,11 @@ const ViewNoticeSA = () => {
                           <DialogContent className="max-w-5xl h-[85vh] p-0 bg-gray-100 flex flex-col">
                             <div className="px-6 py-3 bg-white border-b">
                               <h2 className="text-lg font-semibold">{d.title}</h2>
+                              {d.details ? (
+                                <p className="text-sm text-gray-600 mt-2 whitespace-pre-wrap">
+                                  {d.details}
+                                </p>
+                              ) : null}
                             </div>
                             <div className="flex-1 overflow-hidden">
                               <iframe

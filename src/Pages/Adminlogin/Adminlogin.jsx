@@ -32,11 +32,18 @@ export default function AdminLogin() {
     setData((prev) => ({ ...prev, password: e.target.value }))
   }
 
+  const handleEnterSubmit = (e) => {
+    if (e.key === 'Enter') {
+      handleSubmit(e)
+    }
+  }
+
   // 👁 Toggle Password Visibility
   const handleShowPassword = () => setVisible(!visible)
 
   // 🧠 Normal Email/Password Login
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e?.preventDefault()
     setLoading(true)
     try {
       const config = {
@@ -146,6 +153,7 @@ export default function AdminLogin() {
               <Textinput
                 style={{ minWidth: '300px' }}
                 onChange={handleEmail}
+                onKeyDown={handleEnterSubmit}
                 label="Email"
               />
 
@@ -154,6 +162,7 @@ export default function AdminLogin() {
                   type={visible ? 'text' : 'password'}
                   style={{ marginTop: '0px', minWidth: '300px' }}
                   onChange={handlePassword}
+                  onKeyDown={handleEnterSubmit}
                   label="Password"
                 />
 

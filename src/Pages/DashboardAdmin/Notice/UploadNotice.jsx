@@ -19,6 +19,7 @@ const UploadNotice = ()=>{
             mode:'onBlur',
             defaultValues:{
                 title:'',
+                details:'',
                 notice:null
             }
         }
@@ -37,19 +38,14 @@ const UploadNotice = ()=>{
       try{
         const formData = new FormData();
         formData.append('title',data.title);
+        formData.append('details',data.details || '');
         formData.append('file',data.notice[0]);
         formData.append('hostelNo',userData.dataValues.hostelNo)
         // console.log("USER DATA_>",userData);
         const res = axios({
           method:'post',
-          url:import.meta.env.VITE_BASE_URL + '/HA/addnotice',
+          url:import.meta.env.VITE_BASE_URL + '/HA/addNotice',
           data:formData,
-          // tokenHostelNo:userData.hostelNo,
-          headers:{
-            "Content-Type": "multipart/form-data; boundary=${formData.getBoundary()}",
-            "x-rapidapi-host": "file-upload8.p.rapidapi.com",
-            "x-rapidapi-key": "af582c969cmshc0186c63f1e9d28p10fbf5jsn1a1c05604d94",
-          },
           withCredentials:true
         });
         toast.promise(res,{
@@ -85,6 +81,14 @@ const UploadNotice = ()=>{
                 </div>
                 <p className='text-red-500 text-sm'>{errors.title && errors.title.message}</p>
                 <div className='flex flex-col gap-2'>
+                  <label className='text-sm font-semibold'>Notice Details</label>
+                  <Textarea
+                    {...register("details")}
+                    className="w-full max-w-lg min-h-[120px]"
+                    placeholder='Write notice details'
+                  />
+                </div>
+                <div className='flex flex-col gap-2'>
                   <label className='text-sm font-semibold'>Upload Notice</label>
                   <Input {...register("notice",{required:{value:true,message:'Notice is required',}})} className="w-full max-w-lg" type='file' name="notice" />
                     <p className='text-red-500 text-sm'>{errors.notice && errors.notice.message}</p>
@@ -105,4 +109,3 @@ export default UploadNotice;
 // - make upload page with a form to upload notice in pdf form
 // apply check if not pdf then show error with toastify
 // make drag drop area to upload pdf
-

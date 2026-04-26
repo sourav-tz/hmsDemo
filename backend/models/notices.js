@@ -11,6 +11,14 @@ module.exports = (sequelize, dataTypes) => {
         url: {
             type: dataTypes.STRING,
         },
+        details: {
+            type: dataTypes.TEXT,
+            allowNull: true,
+        },
+        uploadedBy: {
+            type: dataTypes.ENUM('HA', 'SA'),
+            allowNull: true,
+        },
         isGlobal: {
             type: dataTypes.BOOLEAN,
             allowNull: false,

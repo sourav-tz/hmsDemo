@@ -7,6 +7,9 @@ const cookieParser = require("cookie-parser");
 const cloudinary = require("cloudinary");
 const cron = require("node-cron");
 const { Op } = require("sequelize");
+const whatsappRoutes = require("./routers/whatsapp");
+
+
 
 // Routers
 const superAdmin = require("./routers/superAdmin/routes");
@@ -24,10 +27,12 @@ cloudinary.v2.config({
 });
 
 // Middleware
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use("/public", express.static(path.join(__dirname, "public")));
+app.use("/whatsapp", whatsappRoutes);
 
 app.disable("x-powered-by");
 
@@ -46,8 +51,11 @@ app.use("/", othersRouter);
 app.use("/guest", guestRouter);
 
 // Start server and handle DB connection
-app.listen(3000, () => {
-  console.log("Server is listening on port 3000");
+const PORT = Number(process.env.PORT || 3000);
+const HOST = process.env.HOST || "127.0.0.1";
+
+app.listen(PORT, HOST, () => {
+  console.log(`Server is listening on http://${HOST}:${PORT}`);
 });
 
 db.sequelize

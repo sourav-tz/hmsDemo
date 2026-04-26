@@ -22,7 +22,7 @@ const singleStudentRemove = require('../../controllers/hostelAuthority/RoomModul
 const getRoomsData = require('../../controllers/hostelAuthority/RoomModule/getRoomsData');
 const { getCourses, getSingleCourse } = require('../../controllers/hostelAuthority/studentModule/getCourses.controller.js');
 const {getComplaintsAdmin,rejectComplaint,resoleComplaint}=require('../../controllers/student/complaints');
-const  updatePassword  = require('../../controllers/hostelAuthority/user/user.controller.js');
+const { updatePassword, getProfile, updateMobile } = require('../../controllers/hostelAuthority/user/user.controller.js');
 const {addnotice,getNotices,deleteNotices} =require("../../controllers/hostelAuthority/notices/notices.js")
 const singleUpload =  require("../../middlewares/multer.js");
 const {addStudentToArchive,getStudentArchiveByRollNo,getAllStudentArchives} = require("../../controllers/hostelAuthority/studentModule/studentArchive.js")
@@ -121,6 +121,11 @@ router.post('/applications/reject/:id', auth, rejectApplication);
 router.post('/applications/forward/:id', auth, forwardApplication); 
 router.post('/applications/edit/:applicationId', auth, editApplication);
 router.post("/applications/bulk-hostel-change", auth, raiseBulkHostelChangeByAdmin);
+
+// Profile Routes
+router.get('/getProfile', auth, getProfile);
+router.patch('/updateMobile', auth, updateMobile);
+router.post('/updatePassword', auth, updatePassword);
 
 // studentArchive
 

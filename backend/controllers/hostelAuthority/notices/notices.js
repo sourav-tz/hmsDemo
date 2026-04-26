@@ -3,15 +3,21 @@ const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
 const path = require('path');
 const { Op } = require('sequelize');
+const { sendNoticeEmailsToStudents } = require('../../../utils/noticeEmailService');
 // Function to handle adding a notice
 const addnotice = async (req, res) => {
     try {
-        const { title, hostelNo } = req.body;
+        const { title, hostelNo, details } = req.body;
         const file = req.file;
+        const tokenHostelNo = req.body.tokenHostelNo;
+        const effectiveHostelNo = tokenHostelNo || hostelNo;
 
         // Check if a file was uploaded
         if (!file) {
             return res.status(400).json({ success: false, message: 'No file uploaded' });
+        }
+        if (!effectiveHostelNo) {
+            return res.status(400).json({ success: false, message: 'Hostel number is required' });
         }
         // Construct the public URL for the uploaded file
         const fileUrl = `${req.protocol}://${req.get('host')}/public/uploads/${file.filename}`; // Use filename instead of file.path
@@ -19,9 +25,29 @@ const addnotice = async (req, res) => {
         const newNotice = await db.notices.create({
             title: title,
             url: fileUrl,
+            details: details || null,
             public_id: uuidv4(),
-            hostelNo: hostelNo
+            hostelNo: effectiveHostelNo,
+            uploadedBy: 'HA'
         });
+
+        const uploadedByLabel = req.body.tokenEmail
+            ? `Admin (${req.body.tokenEmail})`
+            : 'Hostel Admin';
+
+        sendNoticeEmailsToStudents({
+            noticeTitle: title,
+            noticeUrl: fileUrl,
+            uploadedByLabel,
+            hostelNo: effectiveHostelNo,
+            isGlobal: false,
+        })
+            .then((summary) => {
+                console.log('Notice email dispatch summary (HA):', summary);
+            })
+            .catch((mailError) => {
+                console.error('Notice email dispatch failed (HA):', mailError);
+            });
 
         // Remove the file from the local storage
 
@@ -57,7 +83,7 @@ const getNotices = async (req, res) => {
                     { isGlobal: true }         // OR global notices
                 ]
             },
-            attributes: ['title', 'url', 'public_id', 'createdAt', 'isGlobal']
+            attributes: ['title', 'url', 'details', 'public_id', 'createdAt', 'isGlobal', 'uploadedBy']
         });
         return res.status(200).json({
             success: true,

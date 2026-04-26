@@ -53,7 +53,12 @@ module.exports = (sequelize, dataTypes) => {
             type: dataTypes.BOOLEAN,
             defaultValue: true,
             allowNull: false,
-        }
+        },
+        mobile: {
+            type: dataTypes.STRING(10),
+            allowNull: true,
+            validate: { is: /^[0-9]{10}$/i },
+        },
     }, {
         updatedAt: 'last_updated_at',
         paranoid:true

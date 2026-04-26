@@ -3,9 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 
-dotenv.config({
-    path: '../../.env'
-});
+dotenv.config({ path: '../../.env' });
 
 const verifyOldPassword = async (req, res) => {
     try {
@@ -46,5 +44,39 @@ const updatePassword = async (req, res) => {
 }
 
 
-module.exports = { verifyOldPassword, updatePassword }
+const getProfile = async (req, res) => {
+    try {
+        const email = req.tokenData?.email || req.body.tokenEmail;
+        if (!email) return res.status(401).json({ error: 'Unauthorized' });
+
+        const user = await db.users.findOne({
+            where: { email },
+            attributes: ['email', 'role', 'mobile'],
+        });
+        if (!user) return res.status(404).json({ error: 'User not found' });
+
+        return res.status(200).json({ success: true, data: user });
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+};
+
+const updateMobile = async (req, res) => {
+    try {
+        const email = req.tokenData?.email || req.body.tokenEmail;
+        if (!email) return res.status(401).json({ error: 'Unauthorized' });
+
+        const { mobile } = req.body;
+        if (!mobile || !/^[0-9]{10}$/.test(mobile)) {
+            return res.status(400).json({ error: 'Enter a valid 10-digit mobile number' });
+        }
+
+        await db.users.update({ mobile }, { where: { email } });
+        return res.status(200).json({ success: true, message: 'Mobile number updated successfully' });
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+};
+
+module.exports = { verifyOldPassword, updatePassword, getProfile, updateMobile }
 

@@ -15,8 +15,7 @@ const addRoomsToHostels = require('../../controllers/superAdmin/Manage_Hostels/a
 const {deleteAdmin} = require('../../controllers/superAdmin/Manage_Admins/index.js');
 const auth = require('../../middlewares/auth');
 const Login = require('../../controllers/Login/Login');
-const {verifyOldPassword} = require('../../controllers/superAdmin/Settings');
-const {updatePassword} = require('../../controllers/superAdmin/Settings');
+const { verifyOldPassword, updatePassword, getProfile, updateMobile } = require('../../controllers/superAdmin/Settings');
 const {getAdminsAgainstHostel} = require('../../controllers/superAdmin/Manage_Hostels/Hostels.js');
 const superAdminLogin = require('../../controllers/Login/superAdminLogin.js');
 const { downloadFile } = require('../../controllers/hostelAuthority/studentModule/downloadFile');
@@ -53,8 +52,10 @@ router.get('/', (req, res) => {
 router.post('/superlogin', superAdminLogin);
 router.post('/superAdminLoginToken',superAdminLoginToken);
 router.get('/superAdminLogout', auth, LogOut);
-router.post('/verifyOldPassword',auth,verifyOldPassword);
-router.post('/updatePassword',auth,updatePassword);
+router.post('/verifyOldPassword', auth, verifyOldPassword);
+router.post('/updatePassword', auth, updatePassword);
+router.get('/getProfile', auth, getProfile);
+router.patch('/updateMobile', auth, updateMobile);
 
 
 // Manage Course

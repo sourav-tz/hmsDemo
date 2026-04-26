@@ -41,7 +41,7 @@ const getNotices = async (req, res) => {
                     { isGlobal: true }
                 ]
             },
-            attributes: ['title', 'url', 'public_id', 'createdAt', 'isGlobal']
+            attributes: ['title', 'url', 'details', 'public_id', 'createdAt', 'isGlobal']
         });
 
         return res.status(200).json({

@@ -115,6 +115,11 @@ const ViewNotices = () => {
                                 <h2 className="text-lg font-semibold">
                                   {d.title}
                                 </h2>
+                                {d.details ? (
+                                  <p className="text-sm text-gray-600 mt-2 whitespace-pre-wrap">
+                                    {d.details}
+                                  </p>
+                                ) : null}
                               </div>
 
                               {/* PDF Viewer */}

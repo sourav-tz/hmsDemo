@@ -28,6 +28,7 @@ import { RxHamburgerMenu } from "react-icons/rx";
 import Loadingpage from './components/Loadingpage/Loadingpage';
 import { useNavigate } from 'react-router-dom';
 import Securitysettings from './Pages/DashboardSuperAdmin/Settings/Securitysettings';
+import SAProfilesettings from './Pages/DashboardSuperAdmin/Settings/Profilesettings';
 import AddCourses from './Pages/DashboardSuperAdmin/StudentActions/AddCourses.jsx';
 import StudentProfileSettings from './Pages/Dashboard/Settings/StudentProfileSettings.jsx';
 import Register from './Pages/Dashboard/Complaints/Register.jsx';
@@ -47,6 +48,7 @@ import ViewNotice from './Pages/DashboardAdmin/Notice/ViewNotice.jsx';
 import RegisterStudent from './Pages/DashboardAdmin/StudentsInfo/RegisterStudent/RegisterStudent.jsx';
 import UpdateStudent from './Pages/DashboardAdmin/StudentsInfo/RegisterStudent/UpdateStudent.jsx';
 import AdminSecuritysettings from './Pages/DashboardAdmin/Settings/AdminSecuritysettings.jsx';
+import AdminProfilesettings from './Pages/DashboardAdmin/Settings/Profilesettings.jsx';
 import ManageRooms from './Pages/DashboardSuperAdmin/RoomActions/ManageRooms/ManageRooms.jsx';
 import axios from 'axios';
 import CloseRoute from "./Auth/CloseRoute.jsx";
@@ -230,11 +232,10 @@ const handleStudentLogout = ()=>{
         <DropdownMenuItem
           onClick={() => {
             if (admin) {
-              Navigator('/adminDashboard/main/home');
+              Navigator('/adminDashboard/settings/profile');
             } else if (superAdmin) {
-              Navigator('/superAdminDashboard/main/home');
+              Navigator('/superAdminDashboard/settings/profile');
             } else if (student) {
-              // Check if user is a TempStudent
               const isTempStudent = localStorage.getItem('role') === 'TempStudent';
               if (isTempStudent) {
                 Navigator('/studentDashboard/main/selfProfiling');
@@ -243,7 +244,6 @@ const handleStudentLogout = ()=>{
               }
             }
           }}
-
             >Profile</DropdownMenuItem>
             <DropdownMenuItem onClick={() => {
               admin ? Navigator('/adminDashboard/settings/security') : superAdmin ? Navigator('/superAdminDashboard/settings/security') : Navigator('/ResetPassword')
@@ -299,6 +299,7 @@ const handleStudentLogout = ()=>{
             <Route path='/adminDashboard/admin/applicationstatus' element={<CloseRoute><ApplicationStatusAdmin /></CloseRoute>} />
             <Route path='/adminDashboard/notice/uploadNotice' element={<CloseRoute><UploadNotice /></CloseRoute>} />
             <Route path='/adminDashboard/notice/viewNotice' element={<CloseRoute><ViewNotice /></CloseRoute>} />
+            <Route path='/adminDashboard/settings/profile' element={<CloseRoute><AdminProfilesettings /></CloseRoute>} />
             <Route path='/adminDashboard/settings/security' element={<CloseRoute><AdminSecuritysettings /></CloseRoute>} />
 
             {/* Admin Guest Pages */}
@@ -319,6 +320,7 @@ const handleStudentLogout = ()=>{
             <Route path='/superAdminDashboard/roomActions/manageRooms' element={<CloseRoute><ManageRooms /></CloseRoute>} />
             <Route path='/superAdminDashboard/notice/uploadNotice' element={<CloseRoute><UploadNoticeSA /></CloseRoute>} />
             <Route path='/superAdminDashboard/notice/viewNotice' element={<CloseRoute><ViewNoticeSA /></CloseRoute>} />
+            <Route path='/superAdminDashboard/settings/profile' element={<CloseRoute><SAProfilesettings /></CloseRoute>} />
             <Route path='/superAdminDashboard/settings/security' element={<CloseRoute><Securitysettings /></CloseRoute>} />
             <Route path='/superAdminDashboard/studentActions/addCourses' element={<CloseRoute><AddCourses /></CloseRoute>} />
             <Route path='/superAdminDashboard/application/applicationStatus' element={<CloseRoute><ApplicationStatusSuperAdmin /></CloseRoute>} />
