@@ -88,7 +88,8 @@ export default function SuperAdminLogin() {
   // GOOGLE OAuth
   const handelGoogleClick = async () => {}
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    if (e) e.preventDefault()
     setLoading(true)
     try {
       const res = await axios({
@@ -202,31 +203,31 @@ export default function SuperAdminLogin() {
             </div>
             <div className={styles.inputSection}>
               <div className={styles.inputBoxes}>
-                <Textinput
-                  style={{ minWidth: '300px' }}
-                  onChange={handleEmail}
-                  label='Email'
-                />
-                <div className='relative'>
-                <Textinput
-                  type={visible?'text': 'password'}
-                  style={{ marginTop: '0px', minWidth: '300px' }}
-                  onChange={handlePassword}
-                  label='Password' 
-                />
-                {visible?<FaEye className='absolute min-[300px]:top-[3.1rem] sm:top-9 md:top-8 right-3 cursor-pointer min-[300px]:size-6 sm:size-4 md:size-4' color='#5F57FF' onClick={handleShowPassword}></FaEye>:             
-                <FaEyeSlash className='absolute min-[300px]:top-[3.1rem] sm:top-9 md:top-8 right-3 cursor-pointer min-[300px]:size-6 sm:size-4 md:size-4' color='#5F57FF' onClick={handleShowPassword}></FaEyeSlash>}
-   
-                </div>
-                
-              
-                <Button2
-                  onClick={handleSubmit}
-                  loading={loading}
-                  variant='contained'
-                  style={{ marginTop: '0px', minWidth: '300px' }}
-                  text='login'
-                />
+                <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
+                  <Textinput
+                    style={{ minWidth: '300px' }}
+                    onChange={handleEmail}
+                    label='Email'
+                  />
+                  <div className='relative'>
+                    <Textinput
+                      type={visible?'text': 'password'}
+                      style={{ marginTop: '0px', minWidth: '300px' }}
+                      onChange={handlePassword}
+                      label='Password'
+                    />
+                    {visible?<FaEye className='absolute min-[300px]:top-[3.1rem] sm:top-9 md:top-8 right-3 cursor-pointer min-[300px]:size-6 sm:size-4 md:size-4' color='#5F57FF' onClick={handleShowPassword}></FaEye>:
+                    <FaEyeSlash className='absolute min-[300px]:top-[3.1rem] sm:top-9 md:top-8 right-3 cursor-pointer min-[300px]:size-6 sm:size-4 md:size-4' color='#5F57FF' onClick={handleShowPassword}></FaEyeSlash>}
+                  </div>
+
+                  <Button2
+                    type='submit'
+                    loading={loading}
+                    variant='contained'
+                    style={{ marginTop: '0px', minWidth: '300px' }}
+                    text='login'
+                  />
+                </form>
 
                 <GoogleButton
                   onClick={handelGoogleClick}
@@ -236,7 +237,7 @@ export default function SuperAdminLogin() {
                   text='Continue With Google'
                 />
 
-<p onClick={()=>{Navigator('/forgetPass')}} className='cursor-pointer' style={{ marginTop: '0px' }}>Forgot Password?</p>
+                <p onClick={()=>{Navigator('/forgetPass')}} className='cursor-pointer' style={{ marginTop: '0px' }}>Forgot Password?</p>
               </div>
             </div>
           </div>
@@ -250,6 +251,7 @@ export default function SuperAdminLogin() {
           <p className='text-indigo-950'>Enter the OTP sent to your email</p>
           <p className='text-indigo-950'>Expires in : {expire}</p>
           <div className='mt-36 flex-col items-center'>
+            <form onSubmit={(e) => { e.preventDefault(); verfiyOTP(); }}>
             <InputOTP maxLength={6} onChange={takeOTP}>
               <InputOTPGroup>
                 <InputOTPSlot index={0} />
@@ -265,7 +267,7 @@ export default function SuperAdminLogin() {
             </InputOTP>
 
             <div className='mt-10'>
-              <Button onClick={verfiyOTP} className='bg-white text-black  hover:bg-gray-200 w-full'>
+              <Button type='submit' className='bg-white text-black  hover:bg-gray-200 w-full'>
                 Verify
               </Button>
               <p className='text-center mt-4'>
@@ -273,6 +275,7 @@ export default function SuperAdminLogin() {
                 <button className={`${expire==='0:00'?'text-indigo-950 hover:text-white cursor-pointer':'text-gray-300 hover:text-gray-300 cursor-wait'} `} disable={expire==='0:00'?false:true} onClick={()=>{againOTP()}}>Resend</button>
               </p>
             </div>
+            </form>
           </div>
           <ToastContainer />
         </div>
