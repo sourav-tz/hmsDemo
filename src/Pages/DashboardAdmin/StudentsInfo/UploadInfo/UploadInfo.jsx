@@ -41,6 +41,14 @@ const UploadInfo = ()=>{
     const [courseId,setCourseId] = useState([]);
     const userData = useSelector(state=>state.userStorage.data);
 
+    const clearSelectedFile = () => {
+      if (inputElement.current) {
+        inputElement.current.value = '';
+      }
+      setFiles(null);
+      setStep(1);
+    };
+
     useEffect(()=>{
       console.log(updateData);
     },[updateData])
@@ -157,18 +165,25 @@ const handleDragEnter = (e) => {
             .then(res => {
               setMainSteps(1);
               setLoading(false)
-              if(res.data[0].length!==0){
-                setSuccessData(res.data[0]);
-                if(res.data[1].length!==0){
+              const [successRows = [], failedRows = []] = Array.isArray(res.data) ? res.data : [[], []];
+
+              setSuccessData(successRows);
+              setFailedData(failedRows);
+
+              if(successRows.length!==0){
+                if(failedRows.length!==0){
                   resolve("Some Data Uploaded Successfully!!");
                 }else{
                   resolve("All Data Uploaded Successfully");
                 }
               }
 
-              if(res.data[1].length!==0){
-                setFailedData(res.data[1]);
+              if(failedRows.length!==0){
                 reject("Something Wrong in data!!!");
+              }
+
+              if(successRows.length===0 && failedRows.length===0){
+                reject(typeof res.data === 'string' ? res.data : "No rows were uploaded");
               }
             })
             .catch(err => {
@@ -264,21 +279,13 @@ const handleDragEnter = (e) => {
                   pending: 'Uploading Data',
                   success: {
                     render({data}){
-                      // Clear file input safely
-                      if (inputElement.current) {
-                        inputElement.current.value = '';
-                      }
-                      setFiles(null);
+                      clearSelectedFile();
                       return data;
                     }
                   },
                   error: {
                     render({data}){
-                      // Clear file input safely
-                      if (inputElement.current) {
-                        inputElement.current.value = '';
-                      }
-                      setFiles(null);
+                      clearSelectedFile();
                       // Show the actual validation error
                       return data?.toString() || 'Upload failed';
                     }
@@ -310,8 +317,8 @@ const handleDragEnter = (e) => {
                     <p>Drag and Drop Files <br/>Or</p>
                     <Button onClick={handleButtonClick} variant="contained" style={{marginTop:'10px'}} text="Browser Files" /></>:null}
                     {step===0?<FileCheckLoading/>:null}
-                    {step===2?<><div className='flex items-center'>
-                      <FaFileCsv size="60"/><p className='ml-4'>{file.name}</p>
+                    {step===2 && file ? <><div className='flex items-center'>
+                      <FaFileCsv size="60"/><p className='ml-4'>{file?.name ?? 'Selected CSV file'}</p>
                     </div>
                     <div className='flex gap-4'>
                       <Button className="mt-4" onClick={()=>{setStep(1);setFiles(null);}} text="Discard"/>
