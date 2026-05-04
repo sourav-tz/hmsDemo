@@ -36,7 +36,8 @@ export default function AdminLogin() {
   const handleShowPassword = () => setVisible(!visible)
 
   // 🧠 Normal Email/Password Login
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    if (e) e.preventDefault()
     setLoading(true)
     try {
       const config = {
@@ -143,42 +144,44 @@ export default function AdminLogin() {
 
           <div className={styles.inputSection}>
             <div className={styles.inputBoxes}>
-              <Textinput
-                style={{ minWidth: '300px' }}
-                onChange={handleEmail}
-                label="Email"
-              />
-
-              <div className="relative">
+              <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
                 <Textinput
-                  type={visible ? 'text' : 'password'}
-                  style={{ marginTop: '0px', minWidth: '300px' }}
-                  onChange={handlePassword}
-                  label="Password"
+                  style={{ minWidth: '300px' }}
+                  onChange={handleEmail}
+                  label="Email"
                 />
 
-                {visible ? (
-                  <FaEye
-                    className="absolute min-[300px]:top-[3.1rem] sm:top-9 md:top-8 right-3 cursor-pointer min-[300px]:size-6 sm:size-4 md:size-4"
-                    color="#5F57FF"
-                    onClick={handleShowPassword}
+                <div className="relative">
+                  <Textinput
+                    type={visible ? 'text' : 'password'}
+                    style={{ marginTop: '0px', minWidth: '300px' }}
+                    onChange={handlePassword}
+                    label="Password"
                   />
-                ) : (
-                  <FaEyeSlash
-                    className="absolute min-[300px]:top-[3.1rem] sm:top-9 md:top-8 right-3 cursor-pointer min-[300px]:size-6 sm:size-4 md:size-4"
-                    color="#5F57FF"
-                    onClick={handleShowPassword}
-                  />
-                )}
-              </div>
 
-              <Button
-                onClick={handleSubmit}
-                loading={loading}
-                variant="contained"
-                style={{ marginTop: '0px', minWidth: '300px' }}
-                text="Login"
-              />
+                  {visible ? (
+                    <FaEye
+                      className="absolute min-[300px]:top-[3.1rem] sm:top-9 md:top-8 right-3 cursor-pointer min-[300px]:size-6 sm:size-4 md:size-4"
+                      color="#5F57FF"
+                      onClick={handleShowPassword}
+                    />
+                  ) : (
+                    <FaEyeSlash
+                      className="absolute min-[300px]:top-[3.1rem] sm:top-9 md:top-8 right-3 cursor-pointer min-[300px]:size-6 sm:size-4 md:size-4"
+                      color="#5F57FF"
+                      onClick={handleShowPassword}
+                    />
+                  )}
+                </div>
+
+                <Button
+                  type="submit"
+                  loading={loading}
+                  variant="contained"
+                  style={{ marginTop: '0px', minWidth: '300px' }}
+                  text="Login"
+                />
+              </form>
 
               <GoogleButton
                 onClick={handelGoogleClick}

@@ -130,20 +130,12 @@ app.use("/public", express.static(path.join(__dirname, "public")));
 
 app.disable("x-powered-by");
 
-// --------------------
-// ✅ CORS CONFIG
-// --------------------
-app.use(cors({
-  origin: process.env.FRONTEND_URL,
-  credentials: true,
-  methods: ["GET","POST","PUT","PATCH","DELETE","OPTIONS"],
-  allowedHeaders: [
-    "Content-Type",
-    "Authorization",
-    "x-rapidapi-key",
-    "x-rapidapi-host"
-  ]
-}));
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 
 
 // ✅ Preflight handler (VERY IMPORTANT for browsers)

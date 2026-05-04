@@ -1,13 +1,28 @@
 const db = require('../../../models/index');
 const {Op} = require('sequelize');
 
+const buildRemarkTrackingSummary = (student, currentRole) => {
+  const remarks = Array.isArray(student.studentRemarks) ? student.studentRemarks : [];
+  const unseenKey = currentRole === 'SuperAdmin' ? 'seenBySuperAdminAt' : 'seenByHostelAuthorityAt';
+  const unseenRemarksCount = remarks.filter((remark) => !remark[unseenKey]).length;
+  const latestRemark = remarks
+    .slice()
+    .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0))[0];
+
+  return {
+    unseenRemarksCount,
+    latestRemarkAt: latestRemark?.createdAt || null,
+    latestRemarkBy: latestRemark?.createdByName || latestRemark?.createdByEmail || null,
+  };
+};
+
 exports.studentsInfo = async (req, res) => {
   try {
     // console.log("studentsInfo API called with query params:", req.query);
     // console.log("Admin token info:", { email: req.body.tokenEmail, hostelNo: req.body.tokenHostelNo });
     // console.log("checking the request body:", req.body);
 
-    const userRole = req.body.TokenRole; // e.g., 'Hostel-Authority' or 'SuperAdmin'
+    const userRole = req.user?.role;
 
     let page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
@@ -21,7 +36,7 @@ exports.studentsInfo = async (req, res) => {
  
     if (userRole === 'Hostel-Authority') {
       // Admins can *only* see their hostel's students
-      myQuery.hostelNo = req.body.tokenHostelNo;
+      myQuery.hostelNo = req.user.hostelNo;
     } else if (userRole === 'SuperAdmin') {
       // Super admin can filter by hostel using query param
       if (req.query.hostel) {
@@ -103,6 +118,32 @@ exports.studentsInfo = async (req, res) => {
       where: myQuery,
       offset: startIndex,
       limit: limit,
+      order: [
+        [
+          db.sequelize.literal(`
+            CASE
+              WHEN EXISTS (
+                SELECT 1
+                FROM studentRemarks AS sr
+                WHERE sr.rollNo = students.rollNo
+              ) THEN 0
+              ELSE 1
+            END
+          `),
+          'ASC'
+        ],
+        [
+          db.sequelize.literal(`
+            (
+              SELECT MAX(sr.createdAt)
+              FROM studentRemarks AS sr
+              WHERE sr.rollNo = students.rollNo
+            )
+          `),
+          'DESC'
+        ],
+        ['rollNo', 'ASC']
+      ],
       include: [
         {
           model: db.profiles,
@@ -115,8 +156,28 @@ exports.studentsInfo = async (req, res) => {
         {
           model: db.hostels,
           attributes: ['hostelName', 'type']
+        },
+        {
+          model: db.studentRemarks,
+          attributes: [
+            'remarkId',
+            'createdAt',
+            'createdByName',
+            'createdByEmail',
+            'seenByHostelAuthorityAt',
+            'seenBySuperAdminAt'
+          ],
+          required: false,
         }
       ]
+    });
+
+    const studentsWithRemarkSummary = students.map((student) => {
+      const plainStudent = student.get({ plain: true });
+      return {
+        ...plainStudent,
+        ...buildRemarkTrackingSummary(plainStudent, userRole),
+      };
     });
 
     // console.log("STUDENTS DATA_>",students)
@@ -124,7 +185,7 @@ exports.studentsInfo = async (req, res) => {
     // console.log(`Found ${students.length} students`);
     // Return the result
     let nextPage = page >= totalpages ? totalpages : page + 1;
-    students.unshift({
+    studentsWithRemarkSummary.unshift({
       next: {
         page: nextPage,
         limit: limit,
@@ -132,14 +193,14 @@ exports.studentsInfo = async (req, res) => {
       }
     });
     let prevPage = page > 1 ? page - 1 : 1;
-    students.unshift({
+    studentsWithRemarkSummary.unshift({
       previous: {
         page: prevPage,
         limit: limit,
         totalpages: totalpages
       }
     })
-    return res.status(200).json(students);
+    return res.status(200).json(studentsWithRemarkSummary);
   } catch (error) {
     console.error('Error fetching data:', error);
     return res.status(500).json({ error: 'Internal Server Error' });

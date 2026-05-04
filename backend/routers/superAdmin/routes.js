@@ -32,6 +32,8 @@ const {
     approveBySuperAdmin,
     rejectBySuperAdmin
   } = require('../../controllers/superAdmin/Manage_Applications/application.controllers.js')
+const { getStudentRemarks, createStudentRemark } = require('../../controllers/hostelAuthority/studentModule/studentRemarks.js');
+const singleUpload = require('../../middlewares/multer.js');
 
 var storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -113,6 +115,8 @@ router.get('/applications', auth, getAllForwardedApplications);
 router.post('/applications/approve/:id', auth, approveBySuperAdmin);
 
 router.post('/applications/reject/:id',auth,rejectBySuperAdmin);
+router.get('/student/:rollNo/remarks', auth, getStudentRemarks);
+router.post('/student/:rollNo/remarks', auth, singleUpload, createStudentRemark);
 
 
 module.exports = router;

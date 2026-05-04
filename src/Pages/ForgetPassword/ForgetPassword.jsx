@@ -14,7 +14,8 @@ const ForgetPassword = () => {
     setEmail(e.target.value);
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    if (e) e.preventDefault();
     if (!email) {
       toast.error('Email cannot be empty');
       return;
@@ -60,7 +61,7 @@ const ForgetPassword = () => {
         </div>
         <div className="mt-4 sm:mx-auto sm:w-full sm:max-w-md">
           <div className="px-4 py-6 bg-[#131133] sm:rounded-lg sm:px-10">
-            <form className="space-y-6" action="#" method="POST">
+            <form className="space-y-6" onSubmit={handleSubmit}>
               <div>
                 <label htmlFor="email" className="block text-lg font-large text-white">Email Address</label>
                 <div className="mt-2">
@@ -78,9 +79,8 @@ const ForgetPassword = () => {
               </div>
               <div>
                 <button
-                  type="button"
-                  onClick={handleSubmit}
-                  disabled={loading} // Disable button while loading
+                  type="submit"
+                  disabled={loading}
                   className={`w-full flex-2 justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-base font-medium text-white ${loading ? 'bg-gray-400' : 'bg-[#5F57FF] hover:bg-[#33CFFF]'} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
                 >
                   {loading ? 'Sending...' : 'Send'}
