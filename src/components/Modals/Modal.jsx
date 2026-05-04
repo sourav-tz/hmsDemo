@@ -3,6 +3,7 @@ import axios from 'axios';
 
 import { animated, useSpring } from "@react-spring/web";
 import { useEffect, useState } from "react";
+import { useCallback } from "react";
 import { CgClose } from "react-icons/cg";
 import { useSelector, useDispatch } from "react-redux";
 import { changeModalState } from "../../Store/Reducers/viewInfoSlice";
@@ -11,6 +12,7 @@ import { toast } from 'react-toastify'
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import PropTypes from "prop-types";
 
 
 
@@ -82,7 +84,7 @@ const Modal = ({ data }) => {
     };
   }, [Dispatcher]);
 
-  const fetchRemarks = async (rollNo) => {
+  const fetchRemarks = useCallback(async (rollNo) => {
     if (!rollNo || !canManageRemarks) {
       return;
     }
@@ -100,20 +102,24 @@ const Modal = ({ data }) => {
     } finally {
       setRemarksLoading(false);
     }
-  };
+  }, [apiPrefix, canManageRemarks]);
 
   useEffect(() => {
     if (mopen && data?.rollNo) {
       fetchRemarks(data.rollNo);
     }
-  }, [mopen, data?.rollNo]);
+  }, [data?.rollNo, fetchRemarks, mopen]);
 
   const addToArchiveTable = async (rollNo) => {
     try {
       setArchiveLoading(true);
       console.log(rollNo)
-      const { data } = await axios.post(import.meta.env.VITE_BASE_URL + '/HA/student-archive', { rollNo });
-      toast.success(data.message || 'Student archived successfully!');
+      const response = await axios.post(
+        import.meta.env.VITE_BASE_URL + '/HA/student-archive',
+        { rollNo },
+        { withCredentials: true }
+      );
+      toast.success(response.data.message || 'Student archived successfully!');
       setArchiveLoading(false);
     } catch (error) {
       setArchiveLoading(false);
@@ -571,3 +577,9 @@ const Modal = ({ data }) => {
 };
 
 export default Modal;
+
+Modal.propTypes = {
+  data: PropTypes.shape({
+    rollNo: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  }),
+};

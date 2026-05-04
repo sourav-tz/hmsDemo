@@ -22,7 +22,8 @@ exports.studentsInfo = async (req, res) => {
     // console.log("Admin token info:", { email: req.body.tokenEmail, hostelNo: req.body.tokenHostelNo });
     // console.log("checking the request body:", req.body);
 
-    const userRole = req.user?.role;
+    const currentUser = req.user || req.tokenData || {};
+    const userRole = currentUser.role;
 
     let page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
@@ -36,12 +37,14 @@ exports.studentsInfo = async (req, res) => {
  
     if (userRole === 'Hostel-Authority') {
       // Admins can *only* see their hostel's students
-      myQuery.hostelNo = req.user.hostelNo;
+      myQuery.hostelNo = currentUser.hostelNo;
     } else if (userRole === 'SuperAdmin') {
       // Super admin can filter by hostel using query param
       if (req.query.hostel) {
         myQuery.hostelNo = parseInt(req.query.hostel); // Convert to number
       }
+    } else {
+      return res.status(403).json({ error: 'You are not allowed to view students' });
     }
 
     if (req.query.rollNo) {

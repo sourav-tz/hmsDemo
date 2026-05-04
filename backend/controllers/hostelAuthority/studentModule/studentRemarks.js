@@ -169,3 +169,42 @@ exports.createStudentRemark = async (req, res) => {
     return res.status(500).json({ message: 'Failed to add student remark' });
   }
 };
+
+exports.acknowledgeRemark = async (req, res) => {
+  try {
+    if (!['Hostel-Authority', 'SuperAdmin'].includes(req.user.role)) {
+      return res.status(403).json({ message: 'You are not allowed to acknowledge student remarks' });
+    }
+
+    const rollNo = Number(req.params.rollNo);
+    const remarkId = Number(req.params.remarkId);
+    const student = await ensureCanAccessStudent(req, res, rollNo);
+
+    if (!student) {
+      return;
+    }
+
+    const seenColumn = getSeenColumnForRole(req.user.role);
+    if (!seenColumn) {
+      return res.status(403).json({ message: 'Unsupported role for remark acknowledgement' });
+    }
+
+    const remark = await db.studentRemarks.findOne({
+      where: { remarkId, rollNo },
+    });
+
+    if (!remark) {
+      return res.status(404).json({ message: 'Remark not found' });
+    }
+
+    await remark.update({ [seenColumn]: new Date() });
+
+    return res.status(200).json({
+      message: 'Remark acknowledged successfully',
+      remark,
+    });
+  } catch (error) {
+    console.error('Error acknowledging student remark:', error);
+    return res.status(500).json({ message: 'Failed to acknowledge student remark' });
+  }
+};

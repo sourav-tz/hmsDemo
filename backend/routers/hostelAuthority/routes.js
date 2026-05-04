@@ -27,7 +27,11 @@ const {addnotice,getNotices,deleteNotices,editNotice} =require("../../controller
 const singleUpload =  require("../../middlewares/multer.js");
 const {addStudentToArchive,getStudentArchiveByRollNo,getAllStudentArchives} = require("../../controllers/hostelAuthority/studentModule/studentArchive.js")
 const { adminNlpQuery } = require('../../controllers/nlp/adminNlp.controller');
-
+const {
+    getStudentRemarks,
+    createStudentRemark,
+    acknowledgeRemark,
+} = require('../../controllers/hostelAuthority/studentModule/studentRemarks');
 
 const {
     getAllApplications,
@@ -43,7 +47,6 @@ const {
 const getRoomTimeline = require('../../controllers/hostelAuthority/RoomModule/getRoomTimeline.js');
 const { studentTempAccCreate, getAllStudentTempAccounts } = require('../../controllers/hostelAuthority/studentModule/studentTempAccCreate.js');
 const { getPendingProfiles, getProfileByEmail, approveProfile, rejectProfile } = require('../../controllers/hostelAuthority/studentModule/studentVerifyProfile.js');
-const { getStudentRemarks, createStudentRemark } = require('../../controllers/hostelAuthority/studentModule/studentRemarks.js');
 
 var storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -75,6 +78,7 @@ router.get('/studentsInfo', auth,studentsInfo);
 router.get('/student/:rollNo', auth,singleStudentInfo);
 router.get('/student/:rollNo/remarks', auth, getStudentRemarks);
 router.post('/student/:rollNo/remarks', auth, singleUpload, createStudentRemark);
+router.patch('/student/:rollNo/remarks/:remarkId/acknowledge', auth, acknowledgeRemark);
 router.get('/getCourses',auth,getCourses)
 router.post('/getSingleCourse',auth,getSingleCourse);
 

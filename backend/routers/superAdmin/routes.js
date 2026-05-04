@@ -24,6 +24,12 @@ const { downloadFile } = require('../../controllers/hostelAuthority/studentModul
 const superAdminLoginToken = require('../../controllers/Login/superAdminLoginToken.js');
 const LogOut = require('../../controllers/LoggingOut/LogOut.js');
 const { addnotice, getNotices, deleteNotices, downloadNotice, editNotice } = require('../../controllers/superAdmin/Manage_Notices/notices.js');
+const singleUpload = require('../../middlewares/multer.js');
+const {
+    getStudentRemarks,
+    createStudentRemark,
+    acknowledgeRemark,
+} = require('../../controllers/hostelAuthority/studentModule/studentRemarks');
 
 const getAllRoomsData = require('../../controllers/superAdmin/ManageRooms/getAllRoomsData.js')
 
@@ -32,9 +38,6 @@ const {
     approveBySuperAdmin,
     rejectBySuperAdmin
   } = require('../../controllers/superAdmin/Manage_Applications/application.controllers.js')
-const { getStudentRemarks, createStudentRemark } = require('../../controllers/hostelAuthority/studentModule/studentRemarks.js');
-const singleUpload = require('../../middlewares/multer.js');
-
 var storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, path.join(__dirname, '../../public/uploads'))
@@ -80,6 +83,9 @@ router.delete('/deleteNotices', auth, deleteNotices);
 router.get('/downloadNotice/:public_id', auth, downloadNotice);
 // Bug fix by Ravi: Bug 15 - No edit/update route existed for notices
 router.patch('/editNotice', auth, editNotice);
+router.get('/student/:rollNo/remarks', auth, getStudentRemarks);
+router.post('/student/:rollNo/remarks', auth, singleUpload, createStudentRemark);
+router.patch('/student/:rollNo/remarks/:remarkId/acknowledge', auth, acknowledgeRemark);
 
 
 // RoomsTypes Api's
@@ -115,8 +121,6 @@ router.get('/applications', auth, getAllForwardedApplications);
 router.post('/applications/approve/:id', auth, approveBySuperAdmin);
 
 router.post('/applications/reject/:id',auth,rejectBySuperAdmin);
-router.get('/student/:rollNo/remarks', auth, getStudentRemarks);
-router.post('/student/:rollNo/remarks', auth, singleUpload, createStudentRemark);
 
 
 module.exports = router;

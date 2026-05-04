@@ -9,7 +9,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { changeModalState } from '../../../Store/Reducers/viewInfoSlice';
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
-import { HiOutlineBellAlert } from "react-icons/hi2";
 import { Dialog, DialogContent, DialogFooter, DialogTitle, DialogHeader, DialogDescription } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Label } from "@/components/ui/label";
@@ -25,29 +24,28 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea";
+import PropTypes from 'prop-types';
 
 const ViewInfoTable = ({ data }) => {
 
   const [rowData, setRowData] = useState([]);
   const Dispatcher = useDispatch();
   const [modalData, setModalData] = useState(null);
-  const [archiveLoading, setArchiveLoading] = useState(false);
-
-  // Bug fix by Ravi: Bug 8/9 - Save button had no onClick; inputs were uncontrolled so values couldn't be read
-  // External dialog state so the save handler can access the latest edited values
+  const [remarksDialogOpen, setRemarksDialogOpen] = useState(false);
+  const [remarksDialogStudent, setRemarksDialogStudent] = useState(null);
+  const [remarksDialogData, setRemarksDialogData] = useState([]);
+  const [remarksDialogLoading, setRemarksDialogLoading] = useState(false);
+  const [addRemarkDialogOpen, setAddRemarkDialogOpen] = useState(false);
+  const [addRemarkStudent, setAddRemarkStudent] = useState(null);
+  const [remarkText, setRemarkText] = useState('');
+  const [remarkFile, setRemarkFile] = useState(null);
+  const [submittingRemark, setSubmittingRemark] = useState(false);
   const [editRowData, setEditRowData] = useState(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
 
   const adminData = useSelector(state => state.userStorage.data);
-  const adminDataValues = adminData?.dataValues || {};
-  const adminInfo = {
-    name: adminDataValues?.name || adminData?.name || "Admin",
-    email: adminDataValues?.email || adminData?.email || "admin@example.com"
-  };
-
-  console.log("Admin info in ViewInfoTable:", adminInfo);
-
   const roleType = adminData?.roleType || adminData?.role;
+  const apiPrefix = roleType === 'SuperAdmin' ? '/SA' : '/HA';
 
   useEffect(() => {
     if (data && data.length > 0) {
@@ -55,21 +53,122 @@ const ViewInfoTable = ({ data }) => {
     }
   }, [data]);
 
-  const addToArchiveTable = async (rollNo) => {
+  const updateStudentRemarkSummary = (student, createdRemark) => {
+    if (!student?.rollNo || !createdRemark) {
+      return;
+    }
+
+    setRowData((currentRows) =>
+      currentRows.map((row) => {
+        if (row.rollNo !== student.rollNo) {
+          return row;
+        }
+
+        return {
+          ...row,
+          latestRemarkAt: createdRemark.createdAt || new Date().toISOString(),
+          latestRemarkBy: createdRemark.createdByName || createdRemark.createdByEmail || null,
+          unseenRemarksCount: 0,
+        };
+      })
+    );
+  };
+
+  const openRemarksDialog = async (student) => {
+    if (!student?.rollNo) {
+      return;
+    }
+
     try {
-      setArchiveLoading(true);
-      console.log(rollNo)
-      const { data } = await axios.post(import.meta.env.VITE_BASE_URL + '/HA/student-archive', { rollNo });
-      toast.success(data.message || 'Student archived successfully!');
-      setArchiveLoading(false);
+      setRemarksDialogStudent(student);
+      setRemarksDialogOpen(true);
+      setRemarksDialogLoading(true);
+
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}${apiPrefix}/student/${student.rollNo}/remarks`,
+        { withCredentials: true }
+      );
+
+      setRemarksDialogData(response.data?.remarks || []);
     } catch (error) {
-      setArchiveLoading(false);
-      const errorMessage = error.response?.data?.message || error.message || 'Failed to archive student';
-      toast.error(errorMessage);
+      setRemarksDialogData([]);
+      toast.error(error.response?.data?.message || 'Failed to load remarks');
+    } finally {
+      setRemarksDialogLoading(false);
     }
   };
 
-  // Bug fix by Ravi: Bug 8/9 - Save function calls PATCH /HA/updateSingleStudent with the edited data
+  const openAddRemarkDialog = (student) => {
+    setAddRemarkStudent(student);
+    setRemarkText('');
+    setRemarkFile(null);
+    setAddRemarkDialogOpen(true);
+  };
+
+  const acknowledgeRemark = async (remarkId) => {
+    if (!remarksDialogStudent?.rollNo) return;
+    try {
+      const response = await axios.patch(
+        `${import.meta.env.VITE_BASE_URL}${apiPrefix}/student/${remarksDialogStudent.rollNo}/remarks/${remarkId}/acknowledge`,
+        {},
+        { withCredentials: true }
+      );
+      const updatedRemark = response.data?.remark;
+      setRemarksDialogData((prev) =>
+        prev.map((r) => (r.remarkId === remarkId ? { ...r, ...updatedRemark } : r))
+      );
+      setRowData((currentRows) =>
+        currentRows.map((row) =>
+          row.rollNo === remarksDialogStudent.rollNo
+            ? { ...row, unseenRemarksCount: Math.max(0, (row.unseenRemarksCount || 1) - 1) }
+            : row
+        )
+      );
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to acknowledge remark');
+    }
+  };
+
+  const submitRemark = async () => {
+    if (!addRemarkStudent?.rollNo) {
+      return;
+    }
+
+    if (!remarkText.trim() && !remarkFile) {
+      toast.error('Add a remark or attach a file');
+      return;
+    }
+
+    try {
+      setSubmittingRemark(true);
+
+      const formData = new FormData();
+      formData.append('remarks', remarkText.trim());
+
+      if (remarkFile) {
+        formData.append('file', remarkFile);
+      }
+
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}${apiPrefix}/student/${addRemarkStudent.rollNo}/remarks`,
+        formData,
+        { withCredentials: true }
+      );
+
+      const createdRemark = response.data?.remark;
+
+      updateStudentRemarkSummary(addRemarkStudent, createdRemark);
+      setAddRemarkDialogOpen(false);
+      setRemarkText('');
+      setRemarkFile(null);
+      toast.success('Remark added successfully');
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to add remark');
+    } finally {
+      setSubmittingRemark(false);
+    }
+  };
+
   const saveStudent = async () => {
     try {
       await axios({
@@ -86,64 +185,80 @@ const ViewInfoTable = ({ data }) => {
     }
   };
 
-  const [colDefs] = useState([
-    // Bug fix by Ravi: Bug 16 - filter: true enables AG Grid's built-in column filter
-    // Replaced hardcoded width with flex+minWidth so columns fill available space instead of truncating on smaller/production screens
-    { field: 'rollNo', filter: true, pinned: 'left', minWidth: 120 },
-    { field: 'firstName', filter: true, pinned: 'left', flex: 1, minWidth: 130 },
-    { field: 'lastName', filter: true, pinned: 'left', flex: 1, minWidth: 130 },
-    { field: 'year', filter: true, minWidth: 90 },
-    // Bug fix by Ravi: Bug 17 - courseId was showing numeric ID; course.courseName shows readable name (backend already includes course association)
-    // { field: 'courseId', width: 120, headerName: 'Course ID' },  // Bug 17: commented out - showed numeric courseId instead of name
-    { field: 'course.courseName', filter: true, flex: 1, minWidth: 140, headerName: 'Course' },
-    { field: 'email', filter: true, flex: 2, minWidth: 220, tooltipField: 'email' },
-    { field: 'profile.contactNumber', filter: true, headerName: 'Contact', minWidth: 140 },
-    // Bug fix by Ravi: Bug 18 - Room allotment information was missing from the student list
-    { field: 'roomId', filter: true, headerName: 'Room No', minWidth: 100 },
-    // Bug fix by Ravi: Bug 20 - Hostel number was missing from student records
-    { field: 'hostelNo', filter: true, headerName: 'Hostel No', minWidth: 110 },
-    // Bug fix by Ravi: Bug 21 - Hostel category (Boys/Girls) was missing from student records
-    { field: 'hostel.type', filter: true, headerName: 'Hostel Type', minWidth: 120 },
+  const colDefs = [
+    { field: 'rollNo', pinned: 'left', width: 110 },
+    { field: 'firstName', pinned: 'left', width: 120 },
+    { field: 'lastName', pinned: 'left', width: 120 },
+    { field: 'year', width: 80 },
+    { field: 'courseId', width: 120, headerName: 'Course ID' },
+    { field: 'email', flex: 1, minWidth: 220 },
+    { field: 'profile.contactNumber', headerName: 'Contact', width: 150 },
     {
       field: 'remarkTracking',
       headerName: 'Remarks',
-      width: 180,
-      cellRenderer: (params) => {
-        const unseenCount = Number(params.data?.unseenRemarksCount || 0);
-        const latestRemarkBy = params.data?.latestRemarkBy;
-        const latestRemarkAt = params.data?.latestRemarkAt;
+      width: 190,
+      minWidth: 190,
+      maxWidth: 190,
+      suppressSizeToFit: true,
+      cellStyle: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+cellRenderer: (params) => {
+  const unseenCount = Number(params.data?.unseenRemarksCount || 0);
+  const latestRemarkAt = params.data?.latestRemarkAt;
+  const hasRemarks = Boolean(latestRemarkAt);
 
-        if (!latestRemarkAt && unseenCount === 0) {
-          return <span className="text-xs text-gray-500">No remarks</span>;
-        }
+  return (
+    <div className="flex h-full w-full items-center justify-center gap-2">
 
-        return (
-          <div className="flex flex-col justify-center py-1">
-            <div className="flex items-center gap-1 text-xs font-medium">
-              {unseenCount > 0 ? (
-                <>
-                  <HiOutlineBellAlert className="text-orange-500" />
-                  <span className="text-orange-600">
-                    {unseenCount} new for {roleType === 'SuperAdmin' ? 'SA' : 'HA'}
-                  </span>
-                </>
-              ) : (
-                <span className="text-green-600">Up to date</span>
-              )}
-            </div>
-            {latestRemarkAt && (
-              <span className="text-[11px] text-gray-500">
-                Latest: {latestRemarkBy || 'Internal'} on {new Date(latestRemarkAt).toLocaleDateString()}
-              </span>
-            )}
-          </div>
-        );
-      }
+      {/* View Button (only if remarks exist) */}
+      {hasRemarks ? (
+        <Button
+          className="inline-flex h-9 min-w-[82px] items-center justify-center gap-1 bg-orange-600 px-3 text-[11px] hover:bg-orange-500"
+          size="sm"
+          onClick={() => {
+            openRemarksDialog(params.data);
+          }}
+        >
+          View
+          {unseenCount > 0 && (
+            <span className="inline-flex min-w-[18px] items-center justify-center rounded-full bg-white px-1.5 text-[10px] font-semibold text-orange-600">
+              {unseenCount}
+            </span>
+          )}
+        </Button>
+      ) : (
+        <span className="text-xs text-gray-400">No remarks</span>
+      )}
+
+      {/* ✅ ALWAYS VISIBLE ADD BUTTON */}
+      <Button
+        className="inline-flex h-9 min-w-[64px] items-center justify-center bg-slate-700 px-3 text-[11px] hover:bg-slate-600"
+        size="sm"
+        onClick={() => {
+          openAddRemarkDialog(params.data);
+        }}
+      >
+        Add
+      </Button>
+    </div>
+  );
+}
     },
     {
       field: 'viewInfo',
       headerName: 'View',
-      minWidth: 90,
+      width: 92,
+      minWidth: 92,
+      maxWidth: 92,
+      suppressSizeToFit: true,
+      cellStyle: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
       cellRenderer: (params) => {
         return <Button className="bg-blue-600 hover:bg-blue-500 transition-all" size="sm" onClick={() => { Dispatcher(changeModalState(true)); setModalData(params.data); }}><MdOutlineRemoveRedEye />
         </Button>
@@ -152,20 +267,16 @@ const ViewInfoTable = ({ data }) => {
     {
       field: 'edit',
       headerName: 'Edit',
-      minWidth: 90,
+      width: 92,
+      minWidth: 92,
+      maxWidth: 92,
+      suppressSizeToFit: true,
+      cellStyle: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
       cellRenderer: (params) => {
-        // Bug fix by Ravi: Bug 8/9 - Old inline Dialog had no Save onClick handler and uncontrolled inputs
-        // Replaced with external dialog (below) so save handler can access current state values
-        // Old inline approach (commented out to preserve original code):
-        // return <Dialog>
-        //   <DialogTrigger asChild>
-        //     <Button className="bg-green-600 hover:bg-green-500 transition-all" size="sm"><CiEdit /></Button>
-        //   </DialogTrigger>
-        //   <DialogContent>
-        //     ... all Input fields with defaultValue (uncontrolled - save had no access to values) ...
-        //     <Button className="bg-green-600 hover:bg-green-500 transition-all" size="sm">Save</Button>  {/* No onClick */}
-        //   </DialogContent>
-        // </Dialog>
         return (
           <Button
             className="bg-green-600 hover:bg-green-500 transition-all"
@@ -180,10 +291,10 @@ const ViewInfoTable = ({ data }) => {
         );
       }
     },
-    // Bug fix by Ravi: Bug 7/11 - Delete button was completely missing from the student management table
     {
       field: 'delete',
       headerName: 'Delete',
+      width: 100,
       minWidth: 100,
       cellRenderer: (params) => {
         return (
@@ -208,32 +319,145 @@ const ViewInfoTable = ({ data }) => {
         );
       }
     },
-  ]);
-
-  // Replaced fitGridWidth autoSizeStrategy with onFirstDataRendered sizeColumnsToFit — fitGridWidth compresses columns on load before font metrics are available in production, causing truncation
-  const onFirstDataRendered = (params) => {
-    params.api.sizeColumnsToFit();
-  };
+  ];
 
   return <>
-    {/* overflow-x-auto allows horizontal scroll instead of compressing columns on narrow screens */}
-    <div className="w-full overflow-x-auto">
-      <div className="ag-theme-quartz" style={{ height: 475, minWidth: '1200px' }}>
+    {/* I've set the width to 100% to ensure the container takes up full space */}
+    <div
+      className="ag-theme-quartz mx-auto"
+      style={{ height: 475, width: '92%' }}
+    >
 
-        {/* Bug fix by Ravi: Bug 16 - floatingFilter shows per-column search boxes at the top */}
-        <AgGridReact
-          rowData={rowData}
-          columnDefs={colDefs}
-          rowSelection='single'
-          floatingFilter={true}
-          onFirstDataRendered={onFirstDataRendered}
-        />
-        <Modal data={modalData} />
-        <ToastContainer position="bottom-right" autoClose={5000} hideProgressBar={false} />
-      </div>
+      {/* The autoSizeStrategy prop is added here to enable auto-resizing */}
+      <AgGridReact
+        rowData={rowData}
+        columnDefs={colDefs}
+        defaultColDef={{
+          resizable: true,
+        }}
+        rowSelection='single'
+        rowHeight={64}
+      />
+      <Dialog open={remarksDialogOpen} onOpenChange={setRemarksDialogOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Student Remarks</DialogTitle>
+            <DialogDescription>
+              {remarksDialogStudent
+                ? `Internal remarks for ${remarksDialogStudent.firstName} ${remarksDialogStudent.lastName}`
+                : 'Internal remarks and attachments'}
+            </DialogDescription>
+          </DialogHeader>
+
+          <ScrollArea className="max-h-[60vh] pr-4">
+            <div className="space-y-4">
+              {remarksDialogLoading ? (
+                <p className="text-sm text-gray-500">Loading remarks...</p>
+              ) : remarksDialogData.length === 0 ? (
+                <p className="text-sm text-gray-500">No remarks found for this student.</p>
+              ) : (
+                remarksDialogData.map((remark) => (
+                  <div
+                    key={remark.remarkId}
+                    className="rounded-lg border border-gray-200 bg-gray-50 p-4"
+                  >
+                    <div className="mb-2 flex flex-wrap items-center gap-2 text-sm text-gray-500">
+                      <span className="font-semibold text-gray-700">
+                        {remark.createdByName || remark.createdByEmail || 'Unknown author'}
+                      </span>
+                      <span>{remark.createdByRole || 'Internal'}</span>
+                      <span>
+                        {remark.createdAt ? new Date(remark.createdAt).toLocaleString() : ''}
+                      </span>
+                    </div>
+
+                    {remark.remarks && (
+                      <p className="mb-3 whitespace-pre-wrap text-gray-800">{remark.remarks}</p>
+                    )}
+
+                    {remark.fileAttachment && (
+                      <a
+                        href={remark.fileAttachment}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex text-sm font-medium text-blue-600 hover:underline"
+                      >
+                        View attached file
+                      </a>
+                    )}
+
+                    {(() => {
+                      const mySeenAt = roleType === 'SuperAdmin'
+                        ? remark.seenBySuperAdminAt
+                        : remark.seenByHostelAuthorityAt;
+                      const showAcknowledge = remark.createdByRole !== roleType && !mySeenAt;
+                      return showAcknowledge ? (
+                        <div className="mt-3 flex justify-end">
+                          <Button
+                            size="sm"
+                            className="bg-green-600 hover:bg-green-500 text-xs h-7 px-3"
+                            onClick={() => acknowledgeRemark(remark.remarkId)}
+                          >
+                            Acknowledge
+                          </Button>
+                        </div>
+                      ) : null;
+                    })()}
+                  </div>
+                ))
+              )}
+            </div>
+          </ScrollArea>
+        </DialogContent>
+      </Dialog>
+      <Dialog open={addRemarkDialogOpen} onOpenChange={setAddRemarkDialogOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Add Remark</DialogTitle>
+            <DialogDescription>
+              {addRemarkStudent
+                ? `Add an internal remark for ${addRemarkStudent.firstName} ${addRemarkStudent.lastName}`
+                : 'Add an internal remark'}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="grid gap-4">
+            <div>
+              <Label className="mb-2 block">Remark</Label>
+              <Textarea
+                value={remarkText}
+                onChange={(event) => setRemarkText(event.target.value)}
+                placeholder="Add an internal note"
+                className="min-h-[120px]"
+              />
+            </div>
+            <div>
+              <Label className="mb-2 block">Attach image or PDF</Label>
+              <Input
+                type="file"
+                accept="image/*,.pdf,application/pdf"
+                onChange={(event) => setRemarkFile(event.target.files?.[0] || null)}
+              />
+              {remarkFile && (
+                <p className="mt-2 text-sm text-gray-500">{remarkFile.name}</p>
+              )}
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button
+              className="bg-orange-600 hover:bg-orange-500"
+              onClick={submitRemark}
+              disabled={submittingRemark}
+            >
+              {submittingRemark ? 'Saving...' : 'Add Remark'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      <Modal data={modalData} />
+      <ToastContainer position="bottom-right" autoClose={5000} hideProgressBar={false} />
     </div>
-
-    {/* Bug fix by Ravi: Bug 8/9 - External edit dialog with controlled inputs so Save can read and submit current values */}
     {editDialogOpen && editRowData && (
       <Dialog open={editDialogOpen} onOpenChange={(open) => { if (!open) { setEditDialogOpen(false); setEditRowData(null); } }}>
         <DialogContent>
@@ -297,7 +521,6 @@ const ViewInfoTable = ({ data }) => {
             </div>
           </ScrollArea>
           <DialogFooter className="mt-4">
-            {/* Bug fix by Ravi: Bug 8/9 - Save button now calls saveStudent which hits PATCH /HA/updateSingleStudent */}
             <Button className="bg-green-600 hover:bg-green-500 transition-all" size="sm" onClick={saveStudent}>Save</Button>
           </DialogFooter>
         </DialogContent>
@@ -307,3 +530,7 @@ const ViewInfoTable = ({ data }) => {
 };
 
 export default ViewInfoTable;
+
+ViewInfoTable.propTypes = {
+  data: PropTypes.arrayOf(PropTypes.object),
+};

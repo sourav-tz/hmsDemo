@@ -17,13 +17,23 @@ const auth = (req, res, next) => {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
 
+    req.tokenData = decoded;
     req.user = {
       email: decoded.email,
       role: decoded.role,
-      hostelNo: decoded.hostelNo,
-      rollNo: decoded.rollNo,
-      status: decoded.status
+      hostelNo: decoded.hostelNo ?? null,
+      rollNo: decoded.rollNo ?? null,
+      status: decoded.status ?? null
     };
+
+    req.body.tokenEmail = decoded.email;
+    req.body.TokenRole = decoded.role;
+
+    if (decoded.role === 'TempStudent') {
+      req.body.tempAccountStatus = decoded.status;
+    } else {
+      req.body.tokenHostelNo = decoded.hostelNo;
+    }
 
     next();
 
