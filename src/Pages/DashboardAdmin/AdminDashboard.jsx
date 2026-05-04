@@ -38,6 +38,8 @@ const AdminDashboard = () => {
   const [partiallyFilled, setPartiallyFilled] = useState(0);
   const [vacant, setVacant] = useState(0);
   const [fullyFilled, setFullyFilled] = useState(0);
+  // Bug fix by Ravi: Bug 14 - Dashboard showed hardcoded "No Complaints" text; now fetches real complaint count
+  const [complaintCount, setComplaintCount] = useState(0);
 
   // ✅ Fetch admin details from Redux or localStorage
   const userData = useSelector((state) => state.userStorage.data);
@@ -72,6 +74,13 @@ const AdminDashboard = () => {
   useEffect(() => {
     initialLoad();
   }, [hostelNo]);
+
+  // Bug fix by Ravi: Bug 14 - Complaint count was hardcoded "No Complaints"; fetch real data from /HA/getComplaints
+  useEffect(() => {
+    axios.get(import.meta.env.VITE_BASE_URL + '/HA/getComplaints', { withCredentials: true })
+      .then(r => setComplaintCount(r.data.result?.length || 0))
+      .catch(() => setComplaintCount(0));
+  }, []);
 
   Chart.defaults.plugins.legend.title.text = `Out of ${totalRooms}`;
   const data = {
@@ -140,7 +149,9 @@ const AdminDashboard = () => {
                     Check the Complaints of Hostel {hostelNo || "N/A"}
                   </CardDescription>
                   <CardContent>
-                    <p>No Complaints</p>
+                    {/* Bug fix by Ravi: Bug 14 - "No Complaints" was hardcoded; now shows real count from API */}
+                    {/* <p>No Complaints</p> */}
+                    <p>{complaintCount > 0 ? `${complaintCount} complaint(s) pending` : 'No complaints'}</p>
                   </CardContent>
                 </CardHeader>
               </Card>

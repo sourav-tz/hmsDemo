@@ -212,6 +212,11 @@ const handleLogout = ()=>{}
                         {/* </ul> */}
             </div>
 
+            {/* Bug fix by Ravi: Bug 5 - Smart Room Generator had no sidebar link; SA could not discover or navigate to the page */}
+            <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
+                        <p onClick={()=>{changeSubMenu('roomActions');Navigator('/superAdminDashboard/roomActions/roomGenerator')}} className={(activeOption==='roomGenerator'?styles.activeItem:null)+ ' flex items-center gap-2'}><MdOutlineBedroomChild /> <span className={(state?null:styles.hidden)+' mt-1'}>Room Generator</span></p>
+            </div>
+
 
             {/* Manage Hostels */}
             <div  className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>

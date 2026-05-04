@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { getCourses, addCourse, removeCourse, enableCourse, updateCourse } = require('../../controllers/superAdmin/Manage_Courses/Courses');
 const { getHostels, addHostel, removeHostel, enableHostel, updateHostel } = require('../../controllers/superAdmin/Manage_Hostels/Hostels');
-const { getrooms,addroom,updateroom ,deleteroom} = require('../../controllers/superAdmin/ManageRooms/managerooms.js');
+const { getrooms,addroom,updateroom ,deleteroom, getHostelCapacitySummary} = require('../../controllers/superAdmin/ManageRooms/managerooms.js');
 const {addRoomType,deleteRoomType,getRoomTypes } = require('../../controllers/superAdmin/Manage_roomTypes');
 const { getAdmins,revokeLoginAcess,giveLoginAccess,changeHostel } = require('../../controllers/superAdmin/Manage_Admins');
 const multer = require('multer');
@@ -23,7 +23,7 @@ const { downloadFile } = require('../../controllers/hostelAuthority/studentModul
 
 const superAdminLoginToken = require('../../controllers/Login/superAdminLoginToken.js');
 const LogOut = require('../../controllers/LoggingOut/LogOut.js');
-const { addnotice, getNotices, deleteNotices, downloadNotice } = require('../../controllers/superAdmin/Manage_Notices/notices.js');
+const { addnotice, getNotices, deleteNotices, downloadNotice, editNotice } = require('../../controllers/superAdmin/Manage_Notices/notices.js');
 
 const getAllRoomsData = require('../../controllers/superAdmin/ManageRooms/getAllRoomsData.js')
 
@@ -76,6 +76,8 @@ router.post('/addNotice', auth, upload.single('file'), addnotice);
 router.get('/getNotices', auth, getNotices);
 router.delete('/deleteNotices', auth, deleteNotices);
 router.get('/downloadNotice/:public_id', auth, downloadNotice);
+// Bug fix by Ravi: Bug 15 - No edit/update route existed for notices
+router.patch('/editNotice', auth, editNotice);
 
 
 // RoomsTypes Api's
@@ -92,6 +94,8 @@ router.get('/getAllRoomsData',auth,getAllRoomsData);
 router.post('/addroom',auth,addroom);
 router.patch('/updateroom',auth,updateroom);
 router.delete('/deleteroom',auth,deleteroom);
+// Bug fix by Ravi: Bug 4 - SA had no endpoint to view aggregated hostel capacity stats
+router.get('/hostelCapacity', auth, getHostelCapacitySummary);
 
 //manage admins
 router.post('/adminReg',auth, AdminRegister)

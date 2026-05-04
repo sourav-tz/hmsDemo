@@ -20,10 +20,18 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+// Bug fix by Ravi: Bug 15 - Input needed for edit dialog
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 
 const ViewNoticeSA = () => {
   const [notices, setNotices] = useState([]);
   const [deleteId, setDeleteId] = useState(null); // 👈 for confirmation popup
+  // Bug fix by Ravi: Bug 15 - No edit option existed for notices; adding edit state and dialog
+  const [editNotice, setEditNotice] = useState(null);
+  const [editTitle, setEditTitle] = useState('');
+  const [editDescription, setEditDescription] = useState('');
 
   /* ================= GET NOTICES ================= */
   const getNotices = async () => {
@@ -59,6 +67,24 @@ const ViewNoticeSA = () => {
     } catch (err) {
       console.error(err);
       toast.error("Delete failed");
+    }
+  };
+
+  /* ================= EDIT NOTICE ================= */
+  // Bug fix by Ravi: Bug 15 - No edit/update function existed; adds PATCH /SA/editNotice call
+  const saveEditNotice = async () => {
+    try {
+      await axios.patch(
+        import.meta.env.VITE_BASE_URL + '/SA/editNotice',
+        { public_id: editNotice.public_id, title: editTitle, description: editDescription },
+        { withCredentials: true }
+      );
+      toast.success('Notice updated');
+      setEditNotice(null);
+      getNotices();
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to update notice');
     }
   };
 
@@ -144,6 +170,14 @@ const ViewNoticeSA = () => {
                           Download
                         </Button>
 
+                        {/* Bug fix by Ravi: Bug 15 - Edit button was missing; opens edit dialog for title and description */}
+                        <Button
+                          onClick={() => { setEditNotice(d); setEditTitle(d.title); setEditDescription(d.description || ''); }}
+                          className="bg-yellow-500 hover:bg-yellow-400 text-white"
+                        >
+                          Edit
+                        </Button>
+
                         {/* ===== DELETE (CONFIRM) ===== */}
                         <Button
                           onClick={() => setDeleteId(d.public_id)}
@@ -161,6 +195,25 @@ const ViewNoticeSA = () => {
           </Table>
         </Card>
       </div>
+
+      {/* Bug fix by Ravi: Bug 15 - Edit notice dialog; allows updating title and description */}
+      <Dialog open={!!editNotice} onOpenChange={() => setEditNotice(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit Notice</DialogTitle>
+          </DialogHeader>
+          <div className="flex flex-col gap-3 mt-2">
+            <Label>Title</Label>
+            <Input value={editTitle} onChange={(e) => setEditTitle(e.target.value)} placeholder="Notice title" />
+            <Label>Description (optional)</Label>
+            <Textarea value={editDescription} onChange={(e) => setEditDescription(e.target.value)} placeholder="Notice description" />
+          </div>
+          <div className="flex justify-end gap-3 mt-4">
+            <Button variant="outline" onClick={() => setEditNotice(null)}>Cancel</Button>
+            <Button onClick={saveEditNotice} className="bg-yellow-500 hover:bg-yellow-400 text-white">Save</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* ================= CONFIRM DELETE POPUP ================= */}
       <Dialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>

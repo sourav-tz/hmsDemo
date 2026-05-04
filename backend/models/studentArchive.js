@@ -112,6 +112,7 @@ module.exports = (sequelize, DataTypes) => {
                     msg: "addharNumber must be exactly 16 digits (Virtual Aadhaar ID)",
                 },
             },
+        },  // closing brace for addharNumber was missing — photoLink and all fields below it were being parsed as nested inside addharNumber, causing SyntaxError at line 149
 
         photoLink: {
             type: DataTypes.STRING,

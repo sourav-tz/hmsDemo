@@ -47,7 +47,10 @@ import ViewNotice from './Pages/DashboardAdmin/Notice/ViewNotice.jsx';
 import RegisterStudent from './Pages/DashboardAdmin/StudentsInfo/RegisterStudent/RegisterStudent.jsx';
 import UpdateStudent from './Pages/DashboardAdmin/StudentsInfo/RegisterStudent/UpdateStudent.jsx';
 import AdminSecuritysettings from './Pages/DashboardAdmin/Settings/AdminSecuritysettings.jsx';
+import AdminProfilesettings from './Pages/DashboardAdmin/Settings/Profilesettings.jsx';
 import ManageRooms from './Pages/DashboardSuperAdmin/RoomActions/ManageRooms/ManageRooms.jsx';
+// Bug fix by Ravi: Bug 5 - RoomGenerator component was created but never imported or routed; SA had no way to navigate to it
+import RoomGenerator from './Pages/DashboardSuperAdmin/RoomActions/ManageRooms/RoomGenerator.jsx';
 import axios from 'axios';
 import CloseRoute from "./Auth/CloseRoute.jsx";
 import OpenRoute from "./Auth/OpenRoute.jsx";
@@ -76,6 +79,8 @@ import StudentAccountCreate from './Pages/DashboardAdmin/StudentsInfo/RegisterSt
 import StudentVerifyProfile from './Pages/DashboardAdmin/StudentsInfo/RegisterStudent/StudentVerifyProfile.jsx';
 import StudentSelfProfiling from './Pages/Dashboard/SelfProfiling/StudentSelfProfiling.jsx';
 import ViewStudents from './Pages/DashboardSuperAdmin/StudentActions/ViewStudents.jsx';
+// Bug fix by Ravi: Bug 10 - TransferStudent component was created but never imported or routed; HA had no way to navigate to it
+import TransferStudent from './Pages/DashboardAdmin/StudentsInfo/TransferStudent.jsx';
 
 import Landing from './Pages/Landing/Landing.jsx'; 
 
@@ -230,20 +235,14 @@ const handleStudentLogout = ()=>{
         <DropdownMenuItem
           onClick={() => {
             if (admin) {
-              Navigator('/adminDashboard/main/home');
+              Navigator('/adminDashboard/settings/profile');
             } else if (superAdmin) {
-              Navigator('/superAdminDashboard/main/home');
+              Navigator('/superAdminDashboard/settings/profile');
             } else if (student) {
-              // Check if user is a TempStudent
               const isTempStudent = localStorage.getItem('role') === 'TempStudent';
-              if (isTempStudent) {
-                Navigator('/studentDashboard/main/selfProfiling');
-              } else {
-                Navigator('/studentDashboard/main/home');
-              }
+              Navigator(isTempStudent ? '/studentDashboard/main/selfProfiling' : '/studentDashboard/settings/profile');
             }
           }}
-
             >Profile</DropdownMenuItem>
             <DropdownMenuItem onClick={() => {
               admin ? Navigator('/adminDashboard/settings/security') : superAdmin ? Navigator('/superAdminDashboard/settings/security') : Navigator('/ResetPassword')
@@ -293,6 +292,8 @@ const handleStudentLogout = ()=>{
             <Route path='/adminDashboard/studentInfo/update' element={<CloseRoute><UpdateStudent/></CloseRoute>} />
             <Route path='/adminDashboard/studentInfo/viewInfo' element={<CloseRoute><ViewInfo /></CloseRoute>} />
             <Route path='/adminDashboard/studentInfo/uploadInfo' element={<CloseRoute><UploadInfo /></CloseRoute>} />
+            {/* Bug fix by Ravi: Bug 10 - Route for Transfer Student was missing; HA could not access TransferStudent page */}
+            <Route path='/adminDashboard/studentInfo/transferStudent' element={<CloseRoute><TransferStudent /></CloseRoute>} />
             <Route path='/adminDashboard/roomInfo/allotRooms' element={<CloseRoute><AllotRooms /></CloseRoute>} />
             <Route path='/adminDashboard/complaints/complaints' element={<CloseRoute><Complaints /></CloseRoute>} />
             <Route path='/adminDashboard/admin/application' element={<CloseRoute><ApplicationAdmin /></CloseRoute>} />
@@ -300,6 +301,7 @@ const handleStudentLogout = ()=>{
             <Route path='/adminDashboard/notice/uploadNotice' element={<CloseRoute><UploadNotice /></CloseRoute>} />
             <Route path='/adminDashboard/notice/viewNotice' element={<CloseRoute><ViewNotice /></CloseRoute>} />
             <Route path='/adminDashboard/settings/security' element={<CloseRoute><AdminSecuritysettings /></CloseRoute>} />
+            <Route path='/adminDashboard/settings/profile' element={<CloseRoute><AdminProfilesettings /></CloseRoute>} />
 
             {/* Admin Guest Pages */}
             <Route path='/adminDashboard/guest/verify' element={<CloseRoute><GuestVerify /></CloseRoute>} />
@@ -324,6 +326,8 @@ const handleStudentLogout = ()=>{
             <Route path='/superAdminDashboard/application/applicationStatus' element={<CloseRoute><ApplicationStatusSuperAdmin /></CloseRoute>} />
 
             <Route path='/superAdminDashboard/studentActions/viewStudents' element={<CloseRoute><ViewStudents /></CloseRoute>} />
+            {/* Bug fix by Ravi: Bug 5 - Route for Smart Room Generator was missing; SA could not access RoomGenerator page */}
+            <Route path='/superAdminDashboard/roomActions/roomGenerator' element={<CloseRoute><RoomGenerator /></CloseRoute>} />
 
 
             {/* Guest Routes */}

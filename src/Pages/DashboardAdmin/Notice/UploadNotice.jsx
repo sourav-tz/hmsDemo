@@ -19,7 +19,9 @@ const UploadNotice = ()=>{
             mode:'onBlur',
             defaultValues:{
                 title:'',
-                notice:null
+                notice:null,
+                // Bug fix by Ravi: Bug 23 - description field was missing from HA notice creation form
+                description:'',
             }
         }
     );
@@ -38,7 +40,9 @@ const UploadNotice = ()=>{
         const formData = new FormData();
         formData.append('title',data.title);
         formData.append('file',data.notice[0]);
-        formData.append('hostelNo',userData.dataValues.hostelNo)
+        formData.append('hostelNo',userData.dataValues.hostelNo);
+        // Bug fix by Ravi: Bug 23 - description was not being sent to backend
+        if (data.description) formData.append('description', data.description);
         // console.log("USER DATA_>",userData);
         const res = axios({
           method:'post',
@@ -84,6 +88,11 @@ const UploadNotice = ()=>{
                   <Input {...register("title",{required:{value:true,message:'Title is required'}})} className="w-full max-w-lg" name="title" placeholder='Enter Title'  />
                 </div>
                 <p className='text-red-500 text-sm'>{errors.title && errors.title.message}</p>
+                {/* Bug fix by Ravi: Bug 23 - description field was missing from HA notice creation form */}
+                <div className='flex flex-col gap-2'>
+                  <label className='text-sm font-semibold'>Description (optional)</label>
+                  <Textarea {...register("description")} className="w-full max-w-lg" placeholder='Enter notice description' />
+                </div>
                 <div className='flex flex-col gap-2'>
                   <label className='text-sm font-semibold'>Upload Notice</label>
                   <Input {...register("notice",{required:{value:true,message:'Notice is required',}})} className="w-full max-w-lg" type='file' name="notice" />

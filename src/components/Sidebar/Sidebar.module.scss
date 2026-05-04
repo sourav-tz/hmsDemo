@@ -12,7 +12,6 @@ ul{
 
 
 .sidebarContainer{
-    // stick navbar to left
     position:fixed;
     top:0;
     left:0;
@@ -24,18 +23,16 @@ ul{
     flex-direction: column;
     justify-content: space-between;
     z-index: 100;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);   
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
 }
 
 .inActive{
    min-width: 6%;
    transition: 0.52s;
-
 }
 
 .active{
     min-width: 220px;
-    // transition: 0.52s;
 }
 
 .hidden{
@@ -44,75 +41,101 @@ ul{
 }
 
 
-
 .itemsContainer{
     margin-top: 1.5rem;
     padding: 0px 5px;
 }
 
 
-
 .userIcon{
     background-color: $secondary;
-    width:50px;
+    width: 50px;
     height: 50px;
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 50px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+// Initials avatar shown when no profile photo is uploaded
+.initialsAvatar{
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background-color: #4f46e5;
+    color: white;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    line-height: 1;
+    flex-shrink: 0;
 }
 
 .avatarImage{
-    width:50px;
+    width: 50px;
     height: 50px;
     display: flex;
-    // justify-content: center;
     align-items: center;
-    border-radius: 50px;
+    border-radius: 50%;
+    object-fit: cover;
 }
 
 .userItem{
     display: flex;
+    align-items: center;
     justify-content: center;
-    margin-bottom: 1.5rem;
-    
+    // Extra bottom margin separates profile from nav links
+    margin-bottom: 1.75rem;
+    padding-bottom: 1rem;
+    // Subtle divider line under profile section
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+// Role / hostel-no text — #757575 was too dark on the dark sidebar bg; slate-400 is legible without drawing attention
 .userRole{
-    color:$light-grey;
+    color: #94a3b8;
 }
-
 
 
 .item{
     display: flex;
     flex-direction: column;
+    position: relative;
     padding: 0.3px;
     border-radius: 10px;
     justify-content: center;
-    margin: 20px 0px;
+    margin: 16px 0px;
     cursor: pointer;
-    li{
-        padding:10px 5px;
-        margin-left: 25px;
+
+    // Vertical connector line — margin-left = p left-padding (8) + icon width (20) + gap (8) = 36px, so the line sits under the text not the icon
+    ul{
+        margin-left: 36px;
+        padding-left: 10px;
+        border-left: 2px solid rgba(255, 255, 255, 0.10);
     }
 
+    li{
+        padding: 8px 5px;
+    }
 }
+
 .item:hover{
-    // background-color: $nav-active;
     border-radius: 10px;
-    color:$tertiary-active;
+    color: $tertiary-active;
     ul{
         color: aliceblue;
     }
-
 }
 
+// Parent active state: subtle bg + bright blue text so it's clearly the highest-contrast item in the list
 .activeItem{
-    padding: 5px;
-    border-radius: 10px;
-    color:$medium-grey;
-    background-color: $nav-active;
+    border-radius: 8px;
+    color: #60a5fa;
+    background-color: rgba(255, 255, 255, 0.08);
 }
 
 .ItemCloseMenu{
@@ -124,31 +147,94 @@ ul{
 .ItemOpenMenu{
     justify-content: flex-start;
     p{
-        transition: transform 300ms ease-in-out;
+        // Uniform padding on every p so icon left-edges form a single vertical column (active/inactive identical)
+        padding: 6px 8px;
+        border-radius: 8px;
+        transition: background-color 200ms ease;
     }
     p:hover{
-        transform: scale(1.02);
-        border-radius: 10px;
-    }
-}
-.subOptions{
-    margin-top: 5px;
-    transition: transform 300ms ease-in-out;
-    &:hover{
-        background-color: $tertiary;
-        border-radius: 5px;
-        transform: scale(1.06);
+        background-color: rgba(255, 255, 255, 0.06);
     }
 }
 
+.subOptions{
+    margin-top: 4px;
+    border-radius: 5px;
+    transition: transform 300ms ease-in-out;
+    &:hover{
+        background-color: rgba(255, 255, 255, 0.06);
+        border-radius: 5px;
+        transform: scale(1.03);
+    }
+}
+
+// Active sub-item is the primary visual focus — bright accent with white text
 .activeSubOption{
     background-color: $secondary;
     border-radius: 5px;
+    color: white;
+    font-weight: 500;
+}
+
+// Tooltip shown on icon-only (collapsed) state — visible during the expand delay window
+.navTooltip{
+    position: absolute;
+    left: calc(100% + 10px);
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #0f0e2e;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #e2e8f0;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 120ms ease;
+    z-index: 200;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+
+    // Arrow pointing left toward the icon
+    &::before{
+        content: '';
+        position: absolute;
+        right: 100%;
+        top: 50%;
+        transform: translateY(-50%);
+        border: 5px solid transparent;
+        border-right-color: rgba(255, 255, 255, 0.12);
+    }
+    &::after{
+        content: '';
+        position: absolute;
+        right: calc(100% - 1px);
+        top: 50%;
+        transform: translateY(-50%);
+        border: 5px solid transparent;
+        border-right-color: #0f0e2e;
+    }
+}
+
+.item:hover .navTooltip{
+    opacity: 1;
+}
+
+// Role pill badge in profile section
+.roleBadge{
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #bfdbfe;
+    background-color: rgba(99, 102, 241, 0.18);
+    padding: 2px 8px;
+    border-radius: 999px;
+    letter-spacing: 0.2px;
+    border: 1px solid rgba(99, 102, 241, 0.3);
 }
 
 .Settings{
     margin-bottom: 50px;
     padding: 5px;
 }
-
-

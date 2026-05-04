@@ -107,6 +107,11 @@ const [fullyFilled,setFullyFilled] = useState(0);
 
 const [hostelData, setHostelData] = useState([]);
 const [hostelNo, setHostelNo] = useState();
+// Bug fix by Ravi: Bug 4 - SA had no way to view hostel capacity stats
+const [capacitySummary, setCapacitySummary] = useState({});
+// Bug fix by Ravi: Bug 6 - Block-wise filtering was missing; rooms grouped by block
+const [allRooms, setAllRooms] = useState([]);
+const [blockFilter, setBlockFilter] = useState('all');
 
 
 const getHostelRoomsData = async ()=>{
@@ -133,8 +138,28 @@ useEffect(()=>{
     getHostelsTry();
     if (hostelNo) {
       getHostelRoomsData();
+      // Bug fix by Ravi: Bug 4 - fetch capacity summary when hostel changes
+      fetchCapacitySummary();
+      // Bug fix by Ravi: Bug 6 - fetch all rooms for block filtering
+      fetchAllRooms();
     }
 },[hostelNo])
+
+// Bug fix by Ravi: Bug 4 - Fetches aggregated capacity stats per hostel from new /SA/hostelCapacity endpoint
+const fetchCapacitySummary = async () => {
+  try {
+    const res = await axios({ url: import.meta.env.VITE_BASE_URL + '/SA/hostelCapacity', method: 'GET', withCredentials: true });
+    setCapacitySummary(res.data.result || {});
+  } catch (err) { console.log(err); }
+};
+
+// Bug fix by Ravi: Bug 6 - Fetch rooms so block filter dropdown can be built
+const fetchAllRooms = async () => {
+  try {
+    const res = await axios({ url: import.meta.env.VITE_BASE_URL + '/SA/getrooms', method: 'GET', withCredentials: true });
+    setAllRooms(res.data || []);
+  } catch (err) { console.log(err); }
+};
 
 
 // getting hostel names
@@ -225,7 +250,63 @@ const data = {
           </div>
           
          </div>
-          <div className="container mx-auto mt-10">
+          {/* Bug fix by Ravi: Bug 4 - Capacity summary card showing total/occupied/vacant for selected hostel */}
+        {hostelNo && capacitySummary[hostelNo] && (
+          <div className="container mx-auto mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Hostel H{hostelNo} — Capacity Summary</CardTitle>
+                <CardDescription>Total beds, occupied, and available capacity</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex gap-8 text-sm">
+                  <div><span className="font-semibold">Total Beds:</span> {capacitySummary[hostelNo].total}</div>
+                  <div><span className="font-semibold text-red-600">Occupied Rooms:</span> {capacitySummary[hostelNo].occupied}</div>
+                  <div><span className="font-semibold text-green-600">Vacant Rooms:</span> {capacitySummary[hostelNo].vacant}</div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* Bug fix by Ravi: Bug 6 - Block-wise filter; shows rooms grouped by block for selected hostel */}
+        {hostelNo && allRooms.length > 0 && (
+          <div className="container mx-auto mt-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Block-wise Room Filter</CardTitle>
+                <CardDescription>Filter rooms by block for Hostel H{hostelNo}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Select onValueChange={setBlockFilter} defaultValue="all">
+                  <SelectTrigger className="w-[200px] mb-4">
+                    <SelectValue placeholder="Select Block" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Blocks</SelectItem>
+                    {[...new Set(allRooms.filter(r => String(r.hostelNo) === String(hostelNo)).map(r => r.block).filter(Boolean))].map(b => (
+                      <SelectItem key={b} value={b}>Block {b}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <div className="grid grid-cols-4 gap-2 text-xs">
+                  {allRooms
+                    .filter(r => String(r.hostelNo) === String(hostelNo))
+                    .filter(r => blockFilter === 'all' || r.block === blockFilter)
+                    .map(r => (
+                      <div key={r.roomId} className="border rounded p-2 text-center">
+                        <div className="font-semibold">Room {r.roomNo}</div>
+                        <div className="text-gray-500">Block {r.block} | Floor {r.floorNo}</div>
+                        <div className={r.currentOccupancy === 'vacant' ? 'text-green-600' : 'text-red-600'}>{r.currentOccupancy}</div>
+                      </div>
+                    ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        <div className="container mx-auto mt-10">
             <Card>
             <CardHeader>
                 <CardTitle>Rooms Status</CardTitle>

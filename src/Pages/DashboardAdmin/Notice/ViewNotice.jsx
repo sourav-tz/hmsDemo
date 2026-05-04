@@ -17,12 +17,20 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import axios from "axios";
+// Bug fix by Ravi: Bug 15 - Input/Label/Textarea needed for edit dialog
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import { useSelector } from "react-redux";
 
 const ViewNotice = () => {
   const [notices, setNotices] = useState([]);
   const [deleteId, setDeleteId] = useState(null); // 👈 for confirm popup
   const userData = useSelector((state) => state.userStorage.data);
+  // Bug fix by Ravi: Bug 15 - No edit option existed for HA notices
+  const [editNotice, setEditNotice] = useState(null);
+  const [editTitle, setEditTitle] = useState('');
+  const [editDescription, setEditDescription] = useState('');
 
   /* ================= GET NOTICES (SORTED BY DATE) ================= */
   const getNotices = async () => {
@@ -60,6 +68,22 @@ const ViewNotice = () => {
         }
       );
       setDeleteId(null); // close popup
+      getNotices();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  /* ================= EDIT NOTICE ================= */
+  // Bug fix by Ravi: Bug 15 - No edit/update function existed for HA notices; calls PATCH /HA/editNotice
+  const saveEditNotice = async () => {
+    try {
+      await axios.patch(
+        import.meta.env.VITE_BASE_URL + '/HA/editNotice',
+        { public_id: editNotice.public_id, title: editTitle, description: editDescription },
+        { withCredentials: true }
+      );
+      setEditNotice(null);
       getNotices();
     } catch (err) {
       console.error(err);
@@ -147,6 +171,15 @@ const ViewNotice = () => {
                           Download
                         </Button>
 
+                        {/* Bug fix by Ravi: Bug 15 - Edit button was missing for HA notices; global notices cannot be edited */}
+                        <Button
+                          disabled={d.isGlobal}
+                          onClick={() => { setEditNotice(d); setEditTitle(d.title); setEditDescription(d.description || ''); }}
+                          className="bg-yellow-500 text-white disabled:bg-yellow-300 disabled:cursor-not-allowed"
+                        >
+                          Edit
+                        </Button>
+
                         {/* ===== DELETE (CONFIRM) ===== */}
                         <Button
                           disabled={d.isGlobal}
@@ -171,6 +204,25 @@ const ViewNotice = () => {
           </Table>
         </Card>
       </div>
+
+      {/* Bug fix by Ravi: Bug 15 - Edit notice dialog for HA; global notices are disabled */}
+      <Dialog open={!!editNotice} onOpenChange={() => setEditNotice(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit Notice</DialogTitle>
+          </DialogHeader>
+          <div className="flex flex-col gap-3 mt-2">
+            <Label>Title</Label>
+            <Input value={editTitle} onChange={(e) => setEditTitle(e.target.value)} placeholder="Notice title" />
+            <Label>Description (optional)</Label>
+            <Textarea value={editDescription} onChange={(e) => setEditDescription(e.target.value)} placeholder="Notice description" />
+          </div>
+          <div className="flex justify-end gap-3 mt-4">
+            <Button variant="outline" onClick={() => setEditNotice(null)}>Cancel</Button>
+            <Button onClick={saveEditNotice} className="bg-yellow-500 hover:bg-yellow-400 text-white">Save</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* ================= CONFIRM DELETE POPUP ================= */}
       <Dialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>

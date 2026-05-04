@@ -23,7 +23,7 @@ const getRoomsData = require('../../controllers/hostelAuthority/RoomModule/getRo
 const { getCourses, getSingleCourse } = require('../../controllers/hostelAuthority/studentModule/getCourses.controller.js');
 const {getComplaintsAdmin,rejectComplaint,resoleComplaint}=require('../../controllers/student/complaints');
 const  updatePassword  = require('../../controllers/hostelAuthority/user/user.controller.js');
-const {addnotice,getNotices,deleteNotices} =require("../../controllers/hostelAuthority/notices/notices.js")
+const {addnotice,getNotices,deleteNotices,editNotice} =require("../../controllers/hostelAuthority/notices/notices.js")
 const singleUpload =  require("../../middlewares/multer.js");
 const {addStudentToArchive,getStudentArchiveByRollNo,getAllStudentArchives} = require("../../controllers/hostelAuthority/studentModule/studentArchive.js")
 
@@ -105,6 +105,8 @@ router.post('/addNotice', singleUpload, addnotice);
 
 router.get('/getNotices',auth, getNotices);
 router.delete('/deleteNotices',auth, deleteNotices);
+// Bug fix by Ravi: Bug 15 - No edit/update route existed for HA notices
+router.patch('/editNotice', auth, editNotice);
 
 //Complaints Routes
 router.get('/getComplaints',auth,getComplaintsAdmin);

@@ -6,7 +6,8 @@ const { Op } = require('sequelize');
 // Function to handle adding a notice
 const addnotice = async (req, res) => {
     try {
-        const { title, hostelNo } = req.body;
+        // Bug fix by Ravi: Bug 23 - description field was missing from notice creation
+        const { title, hostelNo, description } = req.body;
         const file = req.file;
 
         // Check if a file was uploaded
@@ -20,7 +21,9 @@ const addnotice = async (req, res) => {
             title: title,
             url: fileUrl,
             public_id: uuidv4(),
-            hostelNo: hostelNo
+            hostelNo: hostelNo,
+            // Bug fix by Ravi: Bug 23 - persist description field
+            description: description || null,
         });
 
         // Remove the file from the local storage
@@ -94,18 +97,21 @@ const deleteNotices = async (req, res) => {
         const filePath = path.join(__dirname, '../../../', 'public', 'uploads', fileName);  // Construct full path to the file on server
         console.log(filePath); // Print
 
-        // Check if the file exists
-        if (fs.existsSync(filePath)) {
-            // Delete the file
-            fs.unlink(filePath, (err) => {
-                if (err) {
-                    console.error('Failed to delete file:', err);
-                    return res.status(500).json({ success: false, message: 'Failed to delete file' });
-                }
+        //With soft-delete the file should NOT be deleted from disk to allow recovery if needed. If hard-delete is implemented, then the file can be removed.
+        // bug fix: Uncommenting the file deletion code to ensure files are removed when a notice is deleted. This is important to prevent orphaned files consuming disk space.
+        // fix by Ravi
+        // // Check if the file exists
+        // if (fs.existsSync(filePath)) {
+        //     // Delete the file
+        //     fs.unlink(filePath, (err) => {
+        //         if (err) {
+        //             console.error('Failed to delete file:', err);
+        //             return res.status(500).json({ success: false, message: 'Failed to delete file' });
+        //         }
 
-                console.log('File deleted successfully:', filePath);
-            });
-        }
+        //         console.log('File deleted successfully:', filePath);
+        //     });
+        // }
 
         // Delete the notice from the database
         await db.notices.destroy({ where: { public_id } });
@@ -118,6 +124,28 @@ const deleteNotices = async (req, res) => {
 };
 
 
+// Bug fix by Ravi: Bug 15 - No edit/update function existed for HA notices
+const editNotice = async (req, res) => {
+    try {
+        const { public_id, title, description } = req.body;
+        if (!public_id) {
+            return res.status(400).json({ success: false, message: 'public_id is required' });
+        }
+        const notice = await db.notices.findByPk(public_id);
+        if (!notice) {
+            return res.status(404).json({ success: false, message: 'Notice not found' });
+        }
+        if (notice.isGlobal === true) {
+            return res.status(403).json({ success: false, message: 'Unauthorized: cannot edit global notices' });
+        }
+        await db.notices.update({ title, description }, { where: { public_id } });
+        return res.status(200).json({ success: true, message: 'Notice updated successfully' });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ success: false, message: 'Failed to update notice' });
+    }
+};
+
 module.exports = {
-    addnotice, getNotices, deleteNotices
+    addnotice, getNotices, deleteNotices, editNotice
 }

@@ -56,7 +56,8 @@ const Complaints = () => {
       setSelectedComplaint(complaintToView);
       setIsDescriptionDialogOpen(true);
     } else if (action === 'resolve' || action === 'reject') {
-      setSelectedComplaint(complaintId);
+      // Bug fix by Ravi: Bug 1 & 2 - selectedComplaint was storing only the ID (integer); full object needed so complaint details (subject, rollNo, description) are visible in the action dialog
+      setSelectedComplaint(complaints.find(c => c.complaintId === complaintId));
       setActionType(action);
     }
   };
@@ -64,7 +65,8 @@ const Complaints = () => {
   // Confirm action
   const confirmAction = () => {
     if (actionType) {
-      handleComplaintAction(selectedComplaint, actionType);
+      // Bug fix by Ravi: Bug 1 & 2 - extract complaintId from the full selectedComplaint object (was passing the raw ID before)
+      handleComplaintAction(selectedComplaint.complaintId, actionType);
     }
     resetState();
   };
@@ -74,7 +76,8 @@ const Complaints = () => {
     setActionType(null);
     setSelectedComplaint(null);
     setComment('');
-    setActionStates(prev => ({ ...prev, [selectedComplaint]: 'view' })); // Reset to 'view'
+    // Bug fix by Ravi: Bug 1 & 2 - use optional chaining since selectedComplaint is now a full object, not a plain ID
+    setActionStates(prev => ({ ...prev, [selectedComplaint?.complaintId]: 'view' }));
   };
 
   // Handle cancel action
@@ -174,6 +177,11 @@ const Complaints = () => {
               <label className="block mt-4 font-medium">
                 Add a comment <span className="text-red-600">*</span>
               </label>
+              {/* Bug fix by Ravi: Bug 1 & 2 - complaint details were not shown before resolve/reject; selectedComplaint now holds the full object so these fields are available */}
+              <p><strong>Subject:</strong> {selectedComplaint?.subject}</p>
+              <p><strong>Roll No:</strong> {selectedComplaint?.rollNo}</p>
+              <p><strong>Description:</strong> {selectedComplaint?.description}</p>
+              <hr className="my-2" />
               <Textarea
                 placeholder="Add a comment (mandatory)"
                 value={comment}

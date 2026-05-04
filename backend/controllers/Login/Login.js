@@ -55,12 +55,14 @@ const Login = async (req, res) => {
       }
 
       // Step 5: Cookie settings
+      // Bug fix by Ravi: Local dev fix - secure+sameSite:none requires HTTPS; on localhost cookies were silently dropped causing 401 on every request after login
+      const isProduction = process.env.NODE_ENV === 'production';
       const options = {
         expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
         httpOnly: true,
         path: "/",
-        sameSite: "none",
-        secure: true
+        sameSite: isProduction ? "none" : "lax",
+        secure: isProduction,
       };
 
       // ✅ Return response in the same Sequelize structure
@@ -106,12 +108,13 @@ const Login = async (req, res) => {
       { expiresIn: '1d' }
     );
 
+    // Bug fix by Ravi: Local dev fix - same as above; TempStudent cookie also needs lax/insecure for localhost
     const options = {
       expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
       httpOnly: true,
       path: "/",
-      sameSite: 'none',
-      secure: true
+      sameSite: isProduction ? 'none' : 'lax',
+      secure: isProduction,
     };
 
     const plainTempStudent = tempStudent.get({ plain: true });
