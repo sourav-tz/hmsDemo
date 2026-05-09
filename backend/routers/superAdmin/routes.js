@@ -17,6 +17,7 @@ const auth = require('../../middlewares/auth');
 const Login = require('../../controllers/Login/Login');
 const {verifyOldPassword} = require('../../controllers/superAdmin/Settings');
 const {updatePassword} = require('../../controllers/superAdmin/Settings');
+const { updateMobile } = require('../../controllers/user/mobile');
 const {getAdminsAgainstHostel} = require('../../controllers/superAdmin/Manage_Hostels/Hostels.js');
 const superAdminLogin = require('../../controllers/Login/superAdminLogin.js');
 const { downloadFile } = require('../../controllers/hostelAuthority/studentModule/downloadFile');
@@ -60,6 +61,7 @@ router.post('/superAdminLoginToken',superAdminLoginToken);
 router.get('/superAdminLogout', auth, LogOut);
 router.post('/verifyOldPassword',auth,verifyOldPassword);
 router.post('/updatePassword',auth,updatePassword);
+router.patch('/updateMobile', auth, updateMobile);
 
 
 // Manage Course

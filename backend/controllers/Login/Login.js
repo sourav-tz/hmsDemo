@@ -75,7 +75,8 @@ const Login = async (req, res) => {
       return res.cookie('hostelAccessToken', accessToken, options).json({
         ...UserData, // keeps Sequelize object (dataValues, etc.)
         role: user.role,
-        roleType: user.role
+        roleType: user.role,
+        mobile: user.mobile
       });
     }
 

@@ -12,7 +12,7 @@ import UniversalChatbot from "../../components/Chatbot/UniversalChatbot";
 import boysHostelPDF from './../../Assets/boys_hostel.pdf';
 import girlsHostelPDF from './../../Assets/girls_hostel.pdf';
 import hostelRulesPDF from './../../Assets/hostel_rules.pdf';
-import { FaSearch, FaMapMarkerAlt, FaPhone, FaEnvelope, FaQuestionCircle, FaBook, FaHome, FaArrowRight } from 'react-icons/fa';
+import { FaSearch, FaMapMarkerAlt, FaPhone, FaEnvelope, FaQuestionCircle, FaBook, FaHome, FaArrowRight, FaTelegramPlane } from 'react-icons/fa';
 
 // Custom animation styles
 import './animations.css';
@@ -26,7 +26,14 @@ const customStyles = `
   .animate-marquee {
     animation: marquee 15s linear infinite;
   }
+
+  @keyframes telegramAgentPulse {
+    0% { transform: scale(1); opacity: 0.8; }
+    100% { transform: scale(1.7); opacity: 0; }
+  }
 `;
+
+const telegramAgentUrl = import.meta.env.VITE_TELEGRAM_AGENT_URL || 'https://t.me/agentHmsBot';
 
 // HostelDetails Component - Displays details of a selected hostel in a popup (modal)
 const HostelDetails = ({ hostel, onClose }) => {
@@ -281,6 +288,33 @@ const Landing = () => {
           }}
         />
       </section>
+    );
+  };
+
+  const TelegramAgentButton = () => {
+    return (
+      <a
+        href={telegramAgentUrl}
+        target="_blank"
+        rel="noreferrer"
+        aria-label="Open Telegram agent"
+        title="Open Telegram agent"
+        className="fixed bottom-[96px] right-6 z-[9998] flex h-[52px] w-[52px] items-center justify-center rounded-full border-0 text-white transition duration-200 hover:scale-110 hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-indigo-200"
+        style={{
+          background: 'linear-gradient(135deg, #4f46e5, #7c3aed)',
+          boxShadow: '0 4px 20px rgba(79,70,229,0.45)'
+        }}
+      >
+        <span
+          className="absolute -inset-[3px] rounded-full border-[2.5px] border-[rgba(99,102,241,0.55)]"
+          style={{ animation: 'telegramAgentPulse 2s cubic-bezier(0.4,0,0.6,1) infinite' }}
+        />
+        <span
+          className="absolute -inset-[3px] rounded-full border-[2.5px] border-[rgba(99,102,241,0.55)]"
+          style={{ animation: 'telegramAgentPulse 2s cubic-bezier(0.4,0,0.6,1) infinite', animationDelay: '0.75s' }}
+        />
+        <FaTelegramPlane className="relative z-10 text-[22px]" />
+      </a>
     );
   };
 
@@ -724,6 +758,7 @@ return (
       {selectedHostel && (
         <HostelDetails hostel={selectedHostel} onClose={closeModal} />
       )}
+      <TelegramAgentButton />
       <UniversalChatbot />
     </div>
 

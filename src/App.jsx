@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import React from 'react';
 import { Route, Routes, useLocation } from "react-router-dom";
 import Role from "./Pages/Role/Role";
@@ -28,6 +28,7 @@ import { RxHamburgerMenu } from "react-icons/rx";
 import Loadingpage from './components/Loadingpage/Loadingpage';
 import { useNavigate } from 'react-router-dom';
 import Securitysettings from './Pages/DashboardSuperAdmin/Settings/Securitysettings';
+import Profilesettings from './Pages/DashboardSuperAdmin/Settings/Profilesettings';
 import AddCourses from './Pages/DashboardSuperAdmin/StudentActions/AddCourses.jsx';
 import StudentProfileSettings from './Pages/Dashboard/Settings/StudentProfileSettings.jsx';
 import Register from './Pages/Dashboard/Complaints/Register.jsx';
@@ -56,7 +57,7 @@ import CloseRoute from "./Auth/CloseRoute.jsx";
 import OpenRoute from "./Auth/OpenRoute.jsx";
 import { FiSettings } from 'react-icons/fi';
 
-import { removeUserData } from './Store/Reducers/userSlice.js'
+import { removeUserData, setUserData } from './Store/Reducers/userSlice.js'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -101,6 +102,38 @@ const [loading,setLoadingPage] = useState(false);
 const location = useLocation();
 const Navigator = useNavigate();
 const Dispatcher = useDispatch();
+const userData = useSelector(state => state.userStorage.data);
+const [mobileInput, setMobileInput] = useState('');
+const [mobileSaving, setMobileSaving] = useState(false);
+
+const userMobile = userData?.mobile || userData?.dataValues?.mobile || '';
+const shouldAskSuperAdminMobile = superAdmin && userData?.role === 'SuperAdmin' && !userMobile;
+
+const handleSaveSuperAdminMobile = async (e) => {
+  e.preventDefault();
+  const mobile = mobileInput.replace(/\D/g, '').slice(-10);
+
+  if (!/^[6-9]\d{9}$/.test(mobile)) {
+    toast.error('Enter a valid 10 digit mobile number');
+    return;
+  }
+
+  setMobileSaving(true);
+  try {
+    const res = await axios.patch(
+      import.meta.env.VITE_BASE_URL + '/SA/updateMobile',
+      { mobile },
+      { withCredentials: true }
+    );
+
+    Dispatcher(setUserData({ ...userData, mobile: res.data.mobile }));
+    toast.success('Mobile number saved');
+  } catch (error) {
+    toast.error(error.response?.data?.message || 'Failed to save mobile number');
+  } finally {
+    setMobileSaving(false);
+  }
+};
 useEffect(()=>{
   // Log the current path for debugging
   console.log("Current path:", location.pathname.split('/')[1]);
@@ -226,6 +259,32 @@ const handleStudentLogout = ()=>{
     {student?<StudentSidebar />:null}
     {guest?<GuestSidebar />:null}
 
+    {shouldAskSuperAdminMobile ? (
+      <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/50 px-4">
+        <form onSubmit={handleSaveSuperAdminMobile} className="w-full max-w-sm rounded-lg bg-white p-6 shadow-xl">
+          <h2 className="text-lg font-semibold text-gray-900">Mobile number required</h2>
+          <p className="mt-2 text-sm text-gray-600">
+            Add your mobile number to enable Telegram HMS verification.
+          </p>
+          <label className="mt-5 block text-sm font-medium text-gray-700">Mobile number</label>
+          <input
+            value={mobileInput}
+            onChange={(event) => setMobileInput(event.target.value.replace(/\D/g, '').slice(0, 10))}
+            className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            placeholder="10 digit mobile number"
+            required
+          />
+          <button
+            type="submit"
+            disabled={mobileSaving}
+            className="mt-5 w-full rounded-md bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {mobileSaving ? 'Saving...' : 'Save mobile number'}
+          </button>
+        </form>
+      </div>
+    ) : null}
+
     {admin||superAdmin||student?<div className='absolute top-3 right-20'>
       <DropdownMenu>
       <DropdownMenuTrigger><div className='bg-white relative text-[#131133] p-2 rounded-xl z-50 transition transform hover:scale-125 duration-300 ease-in-out shadow hover:shadow-md hover:backdrop-blur-2xl'><FiSettings size={25}/></div></DropdownMenuTrigger>
@@ -322,6 +381,7 @@ const handleStudentLogout = ()=>{
             <Route path='/superAdminDashboard/notice/uploadNotice' element={<CloseRoute><UploadNoticeSA /></CloseRoute>} />
             <Route path='/superAdminDashboard/notice/viewNotice' element={<CloseRoute><ViewNoticeSA /></CloseRoute>} />
             <Route path='/superAdminDashboard/settings/security' element={<CloseRoute><Securitysettings /></CloseRoute>} />
+            <Route path='/superAdminDashboard/settings/profile' element={<CloseRoute><Profilesettings /></CloseRoute>} />
             <Route path='/superAdminDashboard/studentActions/addCourses' element={<CloseRoute><AddCourses /></CloseRoute>} />
             <Route path='/superAdminDashboard/application/applicationStatus' element={<CloseRoute><ApplicationStatusSuperAdmin /></CloseRoute>} />
 

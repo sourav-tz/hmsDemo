@@ -7,6 +7,7 @@ const Login = require('../../controllers/Login/Login');
 const auth = require('../../middlewares/auth');
 const { getNotices } = require("../../controllers/hostelAuthority/notices/notices.js");
 const LogOut = require('../../controllers/LoggingOut/LogOut');
+const { updateMobile } = require('../../controllers/user/mobile');
 //const singleUpload = require('../../middlewares/multer.js');
 const memoryUpload = require('../../middlewares/multerMemory.js');
 
@@ -28,6 +29,7 @@ router.get('/', (req, res) => {
 // Authentication Routes
 router.post('/login', Login);
 router.get('/studentLogout',auth,LogOut);
+router.patch('/updateMobile', auth, updateMobile);
 router.post('/studentReg' , studentRegistration);
 
 // self profiling page

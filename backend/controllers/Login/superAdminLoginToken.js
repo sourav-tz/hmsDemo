@@ -40,7 +40,7 @@ const superAdminLoginToken = async(req,res) => {
         }
         // console.log(accessToken);
         // we are storing cookie in jwtoken and it will expires in 30days
-        res.cookie('hostelAccessToken', accessToken, options).json({...userData,role:user.role,message:'OTP verified Successfully'});
+        res.cookie('hostelAccessToken', accessToken, options).json({...userData, role:user.role, mobile: user.mobile, message:'OTP verified Successfully'});
 
     }catch(error){
 

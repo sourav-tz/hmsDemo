@@ -3,13 +3,49 @@
  * @see https://v0.dev/t/0gRW3DtWS5h
  * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
  */
+import { useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import axios from "axios"
+import { toast } from "react-toastify"
 import { Input } from "@/components/ui/input"
 import { SelectValue, SelectTrigger, SelectItem, SelectContent, Select } from "@/components/ui/select"
 import { Calendar } from "@/components/ui/calendar"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
+import { setUserData } from "../../../Store/Reducers/userSlice"
 
 export default function StudentProfileSettings() {
+  const dispatch = useDispatch();
+  const userData = useSelector(state => state.userStorage.data);
+  const [mobile, setMobile] = useState(userData?.mobile || "");
+  const [savingMobile, setSavingMobile] = useState(false);
+
+  const saveMobile = async (event) => {
+    event.preventDefault();
+    const cleanMobile = mobile.replace(/\D/g, "").slice(-10);
+
+    if (!/^[6-9]\d{9}$/.test(cleanMobile)) {
+      toast.error("Enter a valid 10 digit mobile number");
+      return;
+    }
+
+    setSavingMobile(true);
+    try {
+      const res = await axios.patch(
+        import.meta.env.VITE_BASE_URL + "/student/updateMobile",
+        { mobile: cleanMobile },
+        { withCredentials: true }
+      );
+
+      dispatch(setUserData({ ...userData, mobile: res.data.mobile }));
+      toast.success("Mobile number updated");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to update mobile number");
+    } finally {
+      setSavingMobile(false);
+    }
+  };
+
   return (
     <div className="w-full bg-gray-100">
     <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8">
@@ -18,6 +54,28 @@ export default function StudentProfileSettings() {
           <h1 className="text-3xl font-bold tracking-tight">Profile Settings</h1>
           <p className="mt-2 text-gray-500 dark:text-gray-400">Update your profile information.</p>
         </div>
+        <form onSubmit={saveMobile} className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
+          <h2 className="text-lg font-medium leading-6 text-gray-900">Telegram Verification Mobile</h2>
+          <p className="mt-1 text-sm text-gray-500">This number is mandatory for Telegram HMS verification.</p>
+          <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-end">
+            <div className="flex-1">
+              <label className="block text-sm font-medium text-gray-700" htmlFor="telegram-mobile">
+                Mobile Number
+              </label>
+              <Input
+                id="telegram-mobile"
+                value={mobile}
+                onChange={(event) => setMobile(event.target.value.replace(/\D/g, "").slice(0, 10))}
+                placeholder="10 digit mobile number"
+                required
+                className="mt-1"
+              />
+            </div>
+            <Button type="submit" disabled={savingMobile}>
+              {savingMobile ? "Saving..." : "Save"}
+            </Button>
+          </div>
+        </form>
         <form className="space-y-8 divide-y divide-gray-200 dark:divide-gray-800">
           <div className="space-y-8 sm:space-y-5">
             <div>
@@ -559,5 +617,4 @@ export default function StudentProfileSettings() {
     </div>
   )
 }
-
 

@@ -75,6 +75,10 @@ const AdminRegistration = async (req, res) => {
   const { email, name, roleType, mobile, password, hostelNo } = req.body;
 
   try {
+    if (!/^[6-9]\d{9}$/.test(String(mobile || ''))) {
+      return res.status(400).json({ message: 'A valid 10 digit mobile number is required' });
+    }
+
     // Check if user already exists
     const isExist = await db.users.findOne({ where: { email } });
     if (isExist) {
@@ -91,7 +95,7 @@ const AdminRegistration = async (req, res) => {
       const securePassword = await bcrypt.hash(password, salt);
 
       // Payloads
-      const userPayload = { email, password: securePassword, role: 'Hostel-Authority' };
+      const userPayload = { email, password: securePassword, role: 'Hostel-Authority', mobile };
       const authorityPayload = { email, name, roleType, mobile, hostelNo };
 
       // Create both records

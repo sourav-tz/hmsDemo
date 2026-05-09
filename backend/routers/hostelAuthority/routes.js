@@ -23,6 +23,7 @@ const getRoomsData = require('../../controllers/hostelAuthority/RoomModule/getRo
 const { getCourses, getSingleCourse } = require('../../controllers/hostelAuthority/studentModule/getCourses.controller.js');
 const {getComplaintsAdmin,rejectComplaint,resoleComplaint}=require('../../controllers/student/complaints');
 const  updatePassword  = require('../../controllers/hostelAuthority/user/user.controller.js');
+const { updateMobile } = require('../../controllers/user/mobile');
 const {addnotice,getNotices,deleteNotices,editNotice} =require("../../controllers/hostelAuthority/notices/notices.js")
 const singleUpload =  require("../../middlewares/multer.js");
 const {addStudentToArchive,getStudentArchiveByRollNo,getAllStudentArchives} = require("../../controllers/hostelAuthority/studentModule/studentArchive.js")
@@ -67,6 +68,7 @@ router.post('/adminLogin', Login)
 router.post('/adminGoogleLogin', AdminGoogleLogin)
 router.get('/adminLogout', auth, Logout)
 router.get('/isCookie', isCookie)
+router.patch('/updateMobile', auth, updateMobile);
 
 ///viewInfo Module
 //* Apis for bulk
