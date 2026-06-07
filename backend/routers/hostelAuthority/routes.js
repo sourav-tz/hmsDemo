@@ -48,6 +48,7 @@ const {
 const getRoomTimeline = require('../../controllers/hostelAuthority/RoomModule/getRoomTimeline.js');
 const { studentTempAccCreate, getAllStudentTempAccounts } = require('../../controllers/hostelAuthority/studentModule/studentTempAccCreate.js');
 const { getPendingProfiles, getProfileByEmail, approveProfile, rejectProfile } = require('../../controllers/hostelAuthority/studentModule/studentVerifyProfile.js');
+const { getMessMenu, setMessMenu } = require('../../controllers/messMenu/messMenu.controller.js');
 
 var storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -147,5 +148,9 @@ router.get('/student-archive/:rollNo', getStudentArchiveByRollNo);
 // Route to get all archives
 router.get('/student-archive', getAllStudentArchives);
 
+
+// Mess Menu routes
+router.get('/messMenu', auth, getMessMenu);
+router.post('/messMenu', auth, setMessMenu);
 
 module.exports = router;

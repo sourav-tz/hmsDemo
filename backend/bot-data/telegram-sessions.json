@@ -1,0 +1,37 @@
+{
+  "1111778241": {
+    "role": "Student",
+    "name": "sourav Mondal",
+    "email": "factiverse85@gmail.com",
+    "rollNo": 524110066,
+    "hostelNo": 11,
+    "phone": "9073406167",
+    "telegramUserId": 1111778241,
+    "verifiedAt": "2026-05-10T10:51:56.985Z"
+  },
+  "1310496293": {
+    "role": "SuperAdmin",
+    "name": "Super Admin",
+    "email": "523110024@nitkkr.ac.in",
+    "phone": "7439551611",
+    "telegramUserId": 1310496293,
+    "verifiedAt": "2026-05-10T16:12:42.525Z"
+  },
+  "1813437167": {
+    "role": "SuperAdmin",
+    "name": "Super Admin",
+    "email": "523110024@nitkkr.ac.in",
+    "phone": "9874989366",
+    "telegramUserId": 1813437167,
+    "verifiedAt": "2026-05-18T20:09:46.076Z"
+  },
+  "1846525390": {
+    "role": "Hostel-Authority",
+    "name": "Sourav Mondal",
+    "email": "fokirhub@gmail.com",
+    "hostelNo": 11,
+    "phone": "9073018660",
+    "telegramUserId": 1846525390,
+    "verifiedAt": "2026-05-20T09:51:53.330Z"
+  }
+}

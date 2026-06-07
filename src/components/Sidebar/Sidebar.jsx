@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import styles from './Sidebar.module.scss';
-import { Home, Info, BedDouble, StickyNote, Headphones, FileText, Hotel, ChevronDown } from 'lucide-react';
+import { Home, Info, BedDouble, StickyNote, Headphones, FileText, Hotel, ChevronDown, Utensils } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
@@ -41,6 +41,7 @@ export default function Sidebar(){
     const [subApplication,setsubApplication] = useState(false);
     const [subApplicationStatus,setsubApplicationStatus] = useState(false);
     const [subGuest,setSubGuest] = useState(false);
+    const [subMess,setSubMess] = useState(false);
 
     // Delay expansion so tooltips are visible during the hover window before the sidebar opens
     const openMenu = () => {
@@ -96,6 +97,12 @@ export default function Sidebar(){
             setSubHome(false); setSubStudent(false); setSubRoom(false); setSubSettings(false);
             setSubNotice(false); setSubComplaint(false); setsubApplication(false); setsubApplicationStatus(false);
             setSubGuest(prev => !prev);
+            setSubMess(false);
+        }else if(value == 'mess'){
+            setSubHome(false); setSubStudent(false); setSubRoom(false); setSubSettings(false);
+            setSubNotice(false); setSubComplaint(false); setsubApplication(false); setsubApplicationStatus(false);
+            setSubGuest(false);
+            setSubMess(prev => !prev);
         }
     }
 
@@ -256,6 +263,19 @@ export default function Sidebar(){
                     </ul>
                 </div>
 
+                {/* Mess Menu */}
+                <div className={styles.item +' '+(state?styles.ItemOpenMenu:styles.ItemCloseMenu)}>
+                    {!state && <span className={styles.navTooltip}>Mess Menu</span>}
+                    <p onClick={()=>{changeSubMenu('mess')}} className={(activeOption==='mess'?styles.activeItem:'')+ ' flex items-center gap-2'}>
+                        <Utensils size={20}/>
+                        <span className={(state?null:styles.hidden)+' mt-1 flex-1'}>Mess Menu</span>
+                        <Chevron open={subMess}/>
+                    </p>
+                    <ul className={state&&subMess?null:styles.hidden}>
+                        <li onClick={()=>{navigator('/adminDashboard/mess/menu')}} className={styles.subOptions+' '+(activeSubOption==='menu'?styles.activeSubOption:'')}>Manage Menu</li>
+                    </ul>
+                </div>
+
             </div>
             </div>
         </div>
@@ -344,6 +364,15 @@ export default function Sidebar(){
                             <li onClick={()=>{Navigator('/adminDashboard/guest/viewSchedule');handleHamBurger()}} className={`text-xl hover:scale-110 transition-all rounded-md px-2 py-[2px] ${activeSubOption==='viewSchedule'?'bg-blue-900 font-normal':''}`}>View Guests Schedule</li>
                             <li onClick={()=>{Navigator('/adminDashboard/guest/allot');handleHamBurger()}} className={`text-xl hover:scale-110 transition-all rounded-md px-2 py-[2px] ${activeSubOption==='allot'?'bg-blue-900 font-normal':''}`}>Allot Rooms to Guests</li>
                             <li onClick={()=>{Navigator('/adminDashboard/guest/viewDetail');handleHamBurger()}} className={`text-xl hover:scale-110 transition-all rounded-md px-2 py-[2px] ${activeSubOption==='viewDetail'?'bg-blue-900 font-normal':''}`}>View Guests Details</li>
+                        </ul>
+                    </li>
+
+                    <li className='mt-4 cursor-pointer flex flex-col text-xl font-semibold'>
+                        <div onClick={()=>{changeSubMenu('mess')}} className={`flex items-center gap-2 ${activeOption==='mess'?'text-orange-400':'text-white'}`}>
+                            <Utensils size={15}/> Mess Menu
+                        </div>
+                        <ul className={`${subMess?'':'hidden'} text-sm text-white font-thin ml-8 transition-all`}>
+                            <li onClick={()=>{Navigator('/adminDashboard/mess/menu');handleHamBurger()}} className={`text-xl hover:scale-110 transition-all rounded-md px-2 py-[2px] ${activeSubOption==='menu'?'bg-blue-900 font-normal':''}`}>Manage Menu</li>
                         </ul>
                     </li>
                 </ul>

@@ -12,6 +12,7 @@ const { updateMobile } = require('../../controllers/user/mobile');
 const memoryUpload = require('../../middlewares/multerMemory.js');
 
 
+const { getMessMenu } = require('../../controllers/messMenu/messMenu.controller.js');
 const { checkSchema } = require('express-validator');
 const {
   studentSelfProfiling,
@@ -38,6 +39,9 @@ router.get('/getProfile', auth, getProfile);
 router.get('/checkRollNumber/:rollNo', auth, checkRollNumber); // Added auth middleware for security
 router.get('/getAvailableCourses', auth, getAvailableCourses); // Get available courses and branches
 router.post('/uploadDocument', auth, memoryUpload, uploadDocument); // Upload documents to Cloudinary
+
+// Mess Menu
+router.get('/messMenu', auth, getMessMenu);
 
 // Complaints Module
 router.post("/raiseComplaint", auth, raiseComplaint);

@@ -10,11 +10,26 @@ const Login = async (req, res) => {
       return res.status(400).json({ message: "Email, password and role are required." });
     }
 
+    // Bug fix by Ravi: must be declared here so it's in scope for both the main-user
+    // path and the TempStudent path below; previously declared inside if(user){} causing
+    // ReferenceError on TempStudent login
+    const isProduction = process.env.NODE_ENV === 'production';
+    const cookieOptions = {
+      expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+      httpOnly: true,
+      path: "/",
+      sameSite: isProduction ? "none" : "lax",
+      secure: isProduction,
+    };
+
     // Step 1: Check in main users table
     const user = await db.users.findOne({ where: { email: email } });
-    console.log("Main user record:", user);
 
     if (user) {
+      if (!user.isActive) {
+        return res.status(403).json({ message: "Account is disabled. Please contact the administrator." });
+      }
+
       // Check password
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
@@ -29,21 +44,23 @@ const Login = async (req, res) => {
         });
       }
 
-      let accessToken;
-      let UserData;
-
       // Step 3: Fetch user-specific data
+      let UserData = null;
+      let studentPhotoLink = null;
       if (user.role === 'Student') {
         UserData = await db.students.findOne({ where: { email: email } });
+        if (UserData?.rollNo) {
+          const profileRow = await db.profiles.findOne({ where: { rollNo: UserData.rollNo }, attributes: ['photoLink'] });
+          studentPhotoLink = profileRow?.photoLink ?? null;
+        }
       } else if (user.role === 'Hostel-Authority') {
         UserData = await db.hostelauthoritys.findOne({ where: { email: email } });
       } else if (user.role === 'Admin') {
-        UserData = await db.admins.findOne({ where: { email: email } }); // optional if you have admin table
+        UserData = await db.admins?.findOne({ where: { email: email } }) ?? null;
       }
 
-      console.log("UserData fetched:", UserData);
-
       // Step 4: Generate JWT token
+      let accessToken;
       try {
         accessToken = jwt.sign(
           {
@@ -60,23 +77,16 @@ const Login = async (req, res) => {
         return res.status(400).json({ message: "Error generating token" });
       }
 
-      // Step 5: Cookie settings
-      // Bug fix by Ravi: Local dev fix - secure+sameSite:none requires HTTPS; on localhost cookies were silently dropped causing 401 on every request after login
-      const isProduction = process.env.NODE_ENV === 'production';
-      const options = {
-        expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
-        httpOnly: true,
-        path: "/",
-        sameSite: isProduction ? "none" : "lax",
-        secure: isProduction,
-      };
+      // Step 5: Serialize using get({ plain: true }) to avoid Sequelize internals
+      const plainData = UserData ? UserData.get({ plain: true }) : {};
 
-      // ✅ Return response in the same Sequelize structure
-      return res.cookie('hostelAccessToken', accessToken, options).json({
-        ...UserData, // keeps Sequelize object (dataValues, etc.)
+      return res.cookie('hostelAccessToken', accessToken, cookieOptions).json({
+        ...plainData,
+        dataValues: plainData,
         role: user.role,
         roleType: user.role,
-        mobile: user.mobile
+        mobile: user.mobile,
+        ...(studentPhotoLink ? { avatar: studentPhotoLink } : {})
       });
     }
 
@@ -96,15 +106,7 @@ const Login = async (req, res) => {
       return res.status(401).json({ message: "Invalid Username or Password" });
     }
 
-    // Step 7: Role check for temp student
-    // if (role !== 'TempStudent') {
-    //   return res.status(403).json({
-    //     message: "Unauthorized access. Role mismatch.",
-    //     expectedRole: "TempStudent"
-    //   });
-    // }
-
-    // Step 8: Generate token
+    // Step 7: Generate token
     const accessToken = jwt.sign(
       {
         email: tempStudent.email,
@@ -116,19 +118,10 @@ const Login = async (req, res) => {
       { expiresIn: '1d' }
     );
 
-    // Bug fix by Ravi: Local dev fix - same as above; TempStudent cookie also needs lax/insecure for localhost
-    const options = {
-      expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
-      httpOnly: true,
-      path: "/",
-      sameSite: isProduction ? 'none' : 'lax',
-      secure: isProduction,
-    };
-
     const plainTempStudent = tempStudent.get({ plain: true });
 
     return res
-      .cookie('hostelAccessToken', accessToken, options)
+      .cookie('hostelAccessToken', accessToken, cookieOptions)
       .json({
         email: plainTempStudent.email,
         roleType: 'TempStudent',

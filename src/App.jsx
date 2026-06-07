@@ -44,6 +44,7 @@ import UploadNotice from './Pages/DashboardAdmin/Notice/UploadNotice.jsx';
 import UploadNoticeSA from './Pages/DashboardSuperAdmin/Notice/UploadNoticeSA.jsx';
 import ViewNoticeSA from './Pages/DashboardSuperAdmin/Notice/ViewNoticeSA.jsx';
 import NewMenu from './Pages/Dashboard/Mess/NewMenu.jsx';
+import MessMenu from './Pages/DashboardAdmin/MessMenu/MessMenu.jsx';
 import ViewNotice from './Pages/DashboardAdmin/Notice/ViewNotice.jsx';
 import RegisterStudent from './Pages/DashboardAdmin/StudentsInfo/RegisterStudent/RegisterStudent.jsx';
 import UpdateStudent from './Pages/DashboardAdmin/StudentsInfo/RegisterStudent/UpdateStudent.jsx';
@@ -367,6 +368,7 @@ const handleStudentLogout = ()=>{
             <Route path='/adminDashboard/guest/viewSchedule' element={<CloseRoute><GuestView /></CloseRoute>} />
             <Route path='/adminDashboard/guest/allot' element={<CloseRoute><GuestAllot /></CloseRoute>} />
             <Route path='/adminDashboard/guest/viewDetail' element={<CloseRoute><GuestFinal /></CloseRoute>} />
+            <Route path='/adminDashboard/mess/menu' element={<CloseRoute><MessMenu /></CloseRoute>} />
 
 
 

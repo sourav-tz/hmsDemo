@@ -4,17 +4,17 @@
 # If you need more help, visit the Dockerfile reference guide at
 # https://docs.docker.com/go/dockerfile-reference/
 
-ARG NODE_VERSION=21.6.2
+ARG NODE_VERSION=20
 
 FROM node:${NODE_VERSION}-alpine
 
-ENV NODE_ENV=test
+ENV NODE_ENV=production
 
 WORKDIR /usr/src/app
 
-COPY package.json .
+COPY package.json package-lock.json ./
 
-RUN npm i
+RUN npm ci --omit=dev
 
 # Copy rest of source first
 COPY . .
@@ -28,4 +28,4 @@ USER node
 
 EXPOSE 3000
 
-CMD ["npm", "run", "dev"]
+CMD ["npm", "start"]
