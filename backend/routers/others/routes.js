@@ -13,6 +13,10 @@ router.post('/verifyotp',verifyOtpForForgetPassword);
 // setp 3 match new paas ans confirm password then change password in db
 router.post('/forgotPassword',forgotPassword);
 
+// change password (authenticated)
+const auth = require('../../middlewares/auth');
+router.post('/changePassword', auth, changePassword);
+
 
 
 

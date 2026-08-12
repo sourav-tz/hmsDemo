@@ -49,6 +49,16 @@ module.exports = (sequelize, dataTypes) => {
             type: dataTypes.STRING,
             allowNull: false,
         },
+        mobile: {
+            type: dataTypes.STRING,
+            allowNull: true,
+            validate: {
+                is: {
+                    args: /^[6-9]\d{9}$/,
+                    msg: "mobile must be a valid 10 digit Indian mobile number"
+                }
+            },
+        },
         isActive: {
             type: dataTypes.BOOLEAN,
             defaultValue: true,

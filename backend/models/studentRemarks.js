@@ -3,37 +3,59 @@ module.exports = (sequelize, DataTypes) => {
         remarkId: {
             type: DataTypes.INTEGER,
             primaryKey: true,
-            autoIncrement: true,  // Automatically increments with each new remark
+            autoIncrement: true,
         },
         rollNo: {
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {
-                model: 'students',  // Reference the 'students' table
-                key: 'rollNo',      // Match the 'rollNo' in the 'students' table
+                model: 'students',
+                key: 'rollNo',
             },
         },
         remarks: {
             type: DataTypes.TEXT,
-            allowNull: false,  // Remarks are required
+            allowNull: true,
         },
         fileAttachment: {
-            type: DataTypes.STRING,  // Can store file path or URL of the attachment
-            allowNull: true,  // This is optional
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+        fileAttachmentPublicId: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+        createdByEmail: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+        createdByName: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+        createdByRole: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+        seenByHostelAuthorityAt: {
+            type: DataTypes.DATE,
+            allowNull: true,
+        },
+        seenBySuperAdminAt: {
+            type: DataTypes.DATE,
+            allowNull: true,
         },
         createdAt: {
-            type: DataTypes.DATE,
-            defaultValue: DataTypes.NOW,  // Automatically set the creation time
+            type: DataTypes.DATE
         },
     }, {
-        tableName: 'studentRemarks',  // Explicit table name
-        updatedAt: false,  // If you don't want to track updates (no `updatedAt` field)
+        tableName: 'studentRemarks',
     });
 
     studentRemarks.associate = (models) => {
         studentRemarks.belongsTo(models.students, {
             foreignKey: 'rollNo',
-            targetKey: 'rollNo',  // This links 'rollNo' in 'studentRemarks' to 'rollNo' in 'students'
+            targetKey: 'rollNo',
         });
     };
 

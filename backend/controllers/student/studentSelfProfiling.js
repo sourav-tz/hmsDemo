@@ -424,10 +424,15 @@ exports.getProfile = async (req, res) => {
         return res.status(404).json({ error: 'Student record not found' });
       }
 
+      const profileRow = await db.profiles.findOne({
+        where: { rollNo: student.rollNo },
+        attributes: ['photoLink']
+      });
+
       return res.status(200).json({
         success: true,
         exists: true,
-        profile: student
+        profile: { ...student.get({ plain: true }), photoLink: profileRow?.photoLink ?? null }
       });
     } else {
       return res.status(403).json({ error: 'Unauthorized role' });

@@ -23,9 +23,16 @@ const getRoomsData = require('../../controllers/hostelAuthority/RoomModule/getRo
 const { getCourses, getSingleCourse } = require('../../controllers/hostelAuthority/studentModule/getCourses.controller.js');
 const {getComplaintsAdmin,rejectComplaint,resoleComplaint}=require('../../controllers/student/complaints');
 const  updatePassword  = require('../../controllers/hostelAuthority/user/user.controller.js');
-const {addnotice,getNotices,deleteNotices} =require("../../controllers/hostelAuthority/notices/notices.js")
+const { updateMobile } = require('../../controllers/user/mobile');
+const {addnotice,getNotices,deleteNotices,editNotice} =require("../../controllers/hostelAuthority/notices/notices.js")
 const singleUpload =  require("../../middlewares/multer.js");
 const {addStudentToArchive,getStudentArchiveByRollNo,getAllStudentArchives} = require("../../controllers/hostelAuthority/studentModule/studentArchive.js")
+const { adminNlpQuery } = require('../../controllers/nlp/adminNlp.controller');
+const {
+    getStudentRemarks,
+    createStudentRemark,
+    acknowledgeRemark,
+} = require('../../controllers/hostelAuthority/studentModule/studentRemarks');
 
 const {
     getAllApplications,
@@ -41,6 +48,7 @@ const {
 const getRoomTimeline = require('../../controllers/hostelAuthority/RoomModule/getRoomTimeline.js');
 const { studentTempAccCreate, getAllStudentTempAccounts } = require('../../controllers/hostelAuthority/studentModule/studentTempAccCreate.js');
 const { getPendingProfiles, getProfileByEmail, approveProfile, rejectProfile } = require('../../controllers/hostelAuthority/studentModule/studentVerifyProfile.js');
+const { getMessMenu, setMessMenu } = require('../../controllers/messMenu/messMenu.controller.js');
 
 var storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -61,6 +69,7 @@ router.post('/adminLogin', Login)
 router.post('/adminGoogleLogin', AdminGoogleLogin)
 router.get('/adminLogout', auth, Logout)
 router.get('/isCookie', isCookie)
+router.patch('/updateMobile', auth, updateMobile);
 
 ///viewInfo Module
 //* Apis for bulk
@@ -70,6 +79,9 @@ router.patch('/updateBulk',auth, updateBulk);
 //* Apis get student information for single or all
 router.get('/studentsInfo', auth,studentsInfo);
 router.get('/student/:rollNo', auth,singleStudentInfo);
+router.get('/student/:rollNo/remarks', auth, getStudentRemarks);
+router.post('/student/:rollNo/remarks', auth, singleUpload, createStudentRemark);
+router.patch('/student/:rollNo/remarks/:remarkId/acknowledge', auth, acknowledgeRemark);
 router.get('/getCourses',auth,getCourses)
 router.post('/getSingleCourse',auth,getSingleCourse);
 
@@ -100,16 +112,23 @@ router.get('/getRoomsData',auth, getRoomsData)
 
 
 // Notice Routes
-router.post('/addNotice',auth,upload.single('file'), addnotice);
+//router.post('/addNotice',auth,upload.single('file'), addnotice);
+router.post('/addNotice', singleUpload, addnotice);
+
 router.get('/getNotices',auth, getNotices);
 router.delete('/deleteNotices',auth, deleteNotices);
+// Bug fix by Ravi: Bug 15 - No edit/update route existed for HA notices
+router.patch('/editNotice', auth, editNotice);
 
 //Complaints Routes
-router.get('/getComplaints',auth,getComplaintsAdmin);
+router.post('/getComplaints',auth,getComplaintsAdmin);
 // can include resolve by /getComplaints?rescomp=true
 // can include rejected by /getComplaints?rejcomp=true
 router.post('/rejectComplaint',auth,rejectComplaint);
 router.post('/resolveComplaint',auth,resoleComplaint);
+
+//NLP routes
+router.post('/nlp/query', auth, adminNlpQuery);
 
 
 //application api
@@ -129,5 +148,9 @@ router.get('/student-archive/:rollNo', getStudentArchiveByRollNo);
 // Route to get all archives
 router.get('/student-archive', getAllStudentArchives);
 
+
+// Mess Menu routes
+router.get('/messMenu', auth, getMessMenu);
+router.post('/messMenu', auth, setMessMenu);
 
 module.exports = router;

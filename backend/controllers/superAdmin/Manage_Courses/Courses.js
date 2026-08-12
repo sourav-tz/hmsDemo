@@ -33,8 +33,6 @@ const getCourses = async (req, res) => {
   }
 };
 //end
-
-//sourav
 const addCourse = async (req, res) => {
   try {
     const { courseName, department, specialization, courseDuration } = req.body;
@@ -83,9 +81,6 @@ const addCourse = async (req, res) => {
   }
 };
 //end
-
-//Sourav
-
 const removeCourse = async (req, res) => {
   try {
     const { courseId } = req.query;
@@ -104,7 +99,6 @@ const removeCourse = async (req, res) => {
   }
 };
 //end
-//Sourav
 
 const enableCourse = async (req,res)=>{
     try {

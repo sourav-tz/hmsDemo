@@ -4,6 +4,10 @@ const singleStudentUpload=async (req,res)=>{
     try {
           //? get json data from body
           const data = req.body;
+        if (!/^[6-9]\d{9}$/.test(String(data.contactNumber || ''))) {
+          return res.status(400).json({ error: 'Valid 10 digit contact number is required' });
+        }
+
         const studentData = await db.students.findOne({
           where: { rollNo:data.rollNo}
         });
@@ -25,6 +29,7 @@ const singleStudentUpload=async (req,res)=>{
                 email: data.email,
                 password:securePassword,
                 role: 'Student',
+                mobile: data.contactNumber,
               };
           
               const insertedUser = await db.users.create(usersData, { transaction, validate: true });

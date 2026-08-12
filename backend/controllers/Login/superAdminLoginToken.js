@@ -26,17 +26,21 @@ const superAdminLoginToken = async(req,res) => {
             return res.status(400).json("the error occurred in generate auth token function" + e);
         }
 
+        // Bug fix by Ravi: Local dev fix - secure+sameSite:none requires HTTPS; on localhost cookies were silently dropped causing 401 on every request after login. domain:.hmsnitkkr.me locked cookies to production domain, also blocking localhost
+        const isProduction = process.env.NODE_ENV === 'production';
         const options = {
-            expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+            // expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
             // expires:10000,
             httpOnly: true,
             path: "/",
-            sameSite: 'lax',
-            secure: true
+            sameSite: isProduction ? "none" : "lax",
+            // domain: ".hmsnitkkr.me",  // commented: hardcoded production domain breaks localhost; now only set in production
+            ...(isProduction && { domain: ".hmsnitkkr.me" }),
+            secure: isProduction,
         }
         // console.log(accessToken);
         // we are storing cookie in jwtoken and it will expires in 30days
-        res.cookie('hostelAccessToken', accessToken, options).json({...userData,role:user.role,message:'OTP verified Successfully'});
+        res.cookie('hostelAccessToken', accessToken, options).json({...userData, role:user.role, mobile: user.mobile, message:'OTP verified Successfully'});
 
     }catch(error){
 

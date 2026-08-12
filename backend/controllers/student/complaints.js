@@ -1,4 +1,5 @@
 const db = require('../../models/index')
+const { enrichComplaintsWithPriority } = require('../../services/complaintPriority.service');
 const { Op } = require('sequelize');
 const raiseComplaint=async (req, res) => {
     try {
@@ -51,6 +52,7 @@ const getComplaints=async (req, res) => {
       return res.status(500).json({success:false, error: error });
     }
   };
+  //Key 
 const getComplaintsAdmin=async (req, res) => {
     try {
       const hostelNo=req.body.tokenHostelNo;
@@ -70,13 +72,49 @@ if (rejectedB) {
 
 const result = await db.complaints.findAll({
   where: {
-    hostelNo,  // Assuming hostelNo is a variable with some value
+    hostelNo,
     status: {
-      [Op.in]: statuses  // Filter by dynamically built statuses array
+      [Op.in]: statuses
     }
   }
 });
-      return res.status(200).json({success:true, result:result});
+console.log("Complaints fetched:", result.length);
+
+// Fetch room numbers for each unique rollNo
+const rollNos = [...new Set(result.map(c => c.rollNo))];
+const roomMappings = await db.roomsStudentMappings.findAll({
+  where: { rollNo: { [Op.in]: rollNos } },
+  include: [{ model: db.rooms, attributes: ['roomNo', 'block'] }],
+  attributes: ['rollNo', 'roomId'],
+});
+
+// Build a map of rollNo -> roomNo
+const rollNoToRoom = {};
+roomMappings.forEach(m => {
+  if (!rollNoToRoom[m.rollNo] && m.room) {
+    rollNoToRoom[m.rollNo] = m.room.roomNo;
+  }
+});
+
+// Inject roomNo into dataValues so enrichComplaintsWithPriority can read it
+result.forEach(c => {
+  c.dataValues.student = { room: { roomNo: rollNoToRoom[c.rollNo] ?? null } };
+});
+
+const enrichedResult = enrichComplaintsWithPriority(result);
+
+const priorityOrder = {
+  HIGH: 1,
+  MEDIUM: 2,
+  LOW: 3
+};
+
+enrichedResult.sort((a, b) => {
+  return priorityOrder[a.priority] - priorityOrder[b.priority];
+});
+
+console.log("Complaints enriched");
+      return res.status(200).json({success:true, result:enrichedResult});
     } catch (error) {
       console.error(error);
       return res.status(500).json({success:false, error: error });

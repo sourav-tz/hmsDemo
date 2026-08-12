@@ -11,7 +11,13 @@ const getrooms=async (req, res) => {
 }
 const addroom=async (req,res)=>{
     try {
-        const {roomNo,block,floorNo,maxOccupancy,hostelNo}=req.body;
+        const {roomNo,block,maxOccupancy,hostelNo}=req.body;
+        // Bug fix by Ravi: Bug 19 - Floor must be manually entered; auto-derive floorNo from roomNo (1XX→0, 2XX→1, 3XX→2, etc.)
+        let { floorNo } = req.body;
+        if (!floorNo && roomNo) {
+            const prefix = Math.floor(Number(roomNo) / 100);
+            floorNo = prefix > 0 ? prefix - 1 : 0;
+        }
         const alreadyExists= await db.rooms.findOne({
             where:{hostelNo,roomNo,block,floorNo}
         });
@@ -57,6 +63,27 @@ const deleteroom = async (req,res)=>{
       }
 }
 
+// Bug fix by Ravi: Bug 4 - Super Admin had no way to view total/occupied/available capacity per hostel
+const getHostelCapacitySummary = async (req, res) => {
+    try {
+        const rooms = await db.rooms.findAll({});
+        const summary = {};
+        rooms.forEach(r => {
+            if (!summary[r.hostelNo]) summary[r.hostelNo] = { total: 0, occupied: 0, vacant: 0 };
+            summary[r.hostelNo].total += Number(r.maxOccupancy) || 0;
+            if (r.currentOccupancy === 'vacant') {
+                summary[r.hostelNo].vacant += 1;
+            } else {
+                summary[r.hostelNo].occupied += 1;
+            }
+        });
+        return res.status(200).json({ success: true, result: summary });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
+
 module.exports={
-    getrooms,addroom,updateroom,deleteroom
+    getrooms, addroom, updateroom, deleteroom, getHostelCapacitySummary
 }

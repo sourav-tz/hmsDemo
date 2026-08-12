@@ -7,8 +7,12 @@ const Login = require('../../controllers/Login/Login');
 const auth = require('../../middlewares/auth');
 const { getNotices } = require("../../controllers/hostelAuthority/notices/notices.js");
 const LogOut = require('../../controllers/LoggingOut/LogOut');
-const singleUpload = require('../../middlewares/multer.js');
+const { updateMobile } = require('../../controllers/user/mobile');
+//const singleUpload = require('../../middlewares/multer.js');
+const memoryUpload = require('../../middlewares/multerMemory.js');
 
+
+const { getMessMenu } = require('../../controllers/messMenu/messMenu.controller.js');
 const { checkSchema } = require('express-validator');
 const {
   studentSelfProfiling,
@@ -26,6 +30,7 @@ router.get('/', (req, res) => {
 // Authentication Routes
 router.post('/login', Login);
 router.get('/studentLogout',auth,LogOut);
+router.patch('/updateMobile', auth, updateMobile);
 router.post('/studentReg' , studentRegistration);
 
 // self profiling page
@@ -33,7 +38,10 @@ router.post('/studentSelfProfiling',auth,checkSchema(profileValidationSchema), s
 router.get('/getProfile', auth, getProfile);
 router.get('/checkRollNumber/:rollNo', auth, checkRollNumber); // Added auth middleware for security
 router.get('/getAvailableCourses', auth, getAvailableCourses); // Get available courses and branches
-router.post('/uploadDocument', auth, singleUpload, uploadDocument); // Upload documents to Cloudinary
+router.post('/uploadDocument', auth, memoryUpload, uploadDocument); // Upload documents to Cloudinary
+
+// Mess Menu
+router.get('/messMenu', auth, getMessMenu);
 
 // Complaints Module
 router.post("/raiseComplaint", auth, raiseComplaint);

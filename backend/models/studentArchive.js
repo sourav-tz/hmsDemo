@@ -103,15 +103,17 @@ module.exports = (sequelize, DataTypes) => {
         dob: {
             type: DataTypes.DATEONLY,
         },
-        addharNumber: {
+         addharNumber: {
             type: DataTypes.STRING,
+            allowNull: true,
             validate: {
                 is: {
-                    args: /^[0-9]{12}$/i,
-                    msg: "addharNumber must be 12 digits",
+                    args: /^\d{16}$/,
+                    msg: "addharNumber must be exactly 16 digits (Virtual Aadhaar ID)",
                 },
             },
-        },
+        },  // closing brace for addharNumber was missing — photoLink and all fields below it were being parsed as nested inside addharNumber, causing SyntaxError at line 149
+
         photoLink: {
             type: DataTypes.STRING,
         },

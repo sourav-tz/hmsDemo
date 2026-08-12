@@ -223,7 +223,8 @@ exports.approveProfile = async (req, res) => {
     await db.users.create({
       email: tempProfile.email,
       password: tempAccount.password, // Password is already hashed
-      role: 'Student'
+      role: 'Student',
+      mobile: tempProfile.contactNumber_1
     }, { transaction: t });
 
     // Create a new student in the main students table

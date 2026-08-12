@@ -29,6 +29,10 @@ function filterDuplicates(array) {
 
 async function uploadStudents(data, hostelNo) {
   try {
+    if (!/^[6-9]\d{9}$/.test(String(data.contactNumber || ''))) {
+      throw new Error(`Valid 10 digit contactNumber is required for ${data.email}`);
+    }
+
     const transaction = await db.sequelize.transaction();
     try {
       // 1. Create user account
@@ -40,6 +44,7 @@ async function uploadStudents(data, hostelNo) {
         email: data.email,
         password: securePassword,
         role: 'Student',
+        mobile: data.contactNumber,
       }, { transaction, validate: true });
 
       // 2. Create student record
