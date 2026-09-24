@@ -31,3 +31,7 @@ Developers may be contacted to take credentials to try the software.
 3.  The format of issue must be like this
 
 ![image](https://github.com/nitkkrhostels/NIT-HOSTEL-V2/assets/123573035/3bfd953d-7bee-4fcd-bd46-f4b0951e9ba0)
+
+
+## Demo For WhatsApp Agent >>
+<img width="1231" height="1050" alt="Screenshot 2026-09-24 at 5 02 41 PM" src="https://github.com/user-attachments/assets/63c3ae64-0008-4a54-8b16-3e2b38454de3" />
