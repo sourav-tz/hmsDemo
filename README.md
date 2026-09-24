@@ -36,6 +36,7 @@ Developers may be contacted to take credentials to try the software.
 ## Demo of WhatsApp Agent >>
 <img width="1231" height="1050" alt="Screenshot 2026-09-24 at 5 02 41 PM" src="https://github.com/user-attachments/assets/63c3ae64-0008-4a54-8b16-3e2b38454de3" />
 <img width="1228" height="616" alt="Screenshot 2026-09-24 at 5 03 08 PM" src="https://github.com/user-attachments/assets/8fb46cdc-5dd1-4864-845d-1ce21ae381b2" />
-<img width="1228" height="616" alt="Screenshot 2026-09-24 at 5 03 08 PM" src="https://github.com/user-attachments/assets/379ea1a4-5ee5-4e8a-bfb6-dcfbeef30ee3" />
+<img width="1230" height="948" alt="Screenshot 2026-09-24 at 5 03 31 PM" src="https://github.com/user-attachments/assets/52bb7a7e-2e03-42a8-9284-92f0f40802b0" />
+
 
 
